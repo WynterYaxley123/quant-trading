@@ -1,0 +1,27 @@
+# Quant Trading - 基础依赖
+#
+# 当前阶段只装基础数据/分析/测试包，不引入重型框架。
+#
+# 明确不装（除非后续明确需要）：
+#   freqtrade / vn.py / qlib / backtrader / rqalpha
+
+# 数据处理与分析
+pandas
+numpy
+scipy
+
+# 可视化
+matplotlib
+
+# 网络与配置
+requests
+pyyaml
+python-dotenv
+
+# 交互式研究
+jupyter
+
+# 测试
+pytest
+
+# 精确复现用锁定版本见 requirements.lock.txt
