@@ -111,13 +111,12 @@ Hermes 负责：
 以下目录**默认属于 ChatGPT**，Hermes 未经用户明确要求不得主动修改：
 
 ```
-src/strategies/
-src/factors/
-src/signals/
-src/risk/
-src/portfolio/
-research/
+strategies/              策略包集合（自包含）
+research/                研究草稿
 ```
+
+策略包是自包含的：每个策略含自己的 `src/`、`config/`、`tests/`、`docs/`，
+不依赖顶层 `src/`。
 
 以下目录**由 Hermes 维护**：
 

@@ -58,7 +58,7 @@ GitHub push（未来）
 
 | 项 | 规则 |
 |----|------|
-| 存放位置 | `src/strategies/imported/joinquant/` |
+| 存放位置 | 策略包内 `strategies/<strategy_name>/src/original/` |
 | 文件命名 | 保留聚宽原策略名，建议加日期前缀：`YYYYMMDD_<name>.py` |
 | 修改 | **禁止**修改原始文件内容 |
 | 元信息 | 建议同目录加 `YYYYMMDD_<name>.meta.md`，记录来源链接、抓取日期、作者 |
@@ -108,13 +108,20 @@ GitHub push（未来）
 
 ## 6. 目录约定
 
+每个策略是**自包含策略包**，位于顶层 `strategies/`：
+
 ```
-src/strategies/
-├─ imported/
-│  └─ joinquant/          ← 原始聚宽代码（只读，不改）
-├─ hikyuu/                ← Hikyuu 实现
-└─ rqalpha/               ← RQAlpha 验证版
+strategies/
+└─ <strategy_name>/
+   ├─ src/
+   │  ├─ original/       ← 原始聚宽代码（只读，不改）
+   │  └─ ...             ← 迁移实现（Hikyuu / RQAlpha 共用核心）
+   ├─ config/
+   ├─ tests/
+   └─ docs/
 ```
+
+框架基础设施在顶层 `src/`，与策略包分离。参见 `strategies/README.md`。
 
 ---
 
