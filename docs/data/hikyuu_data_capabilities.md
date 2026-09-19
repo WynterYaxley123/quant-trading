@@ -263,7 +263,58 @@ K线类型（ktype）：`DAY`、`WEEK`、`MONTH`、`QUARTER`、`HALFYEAR`、`YEA
 
 ---
 
-## 十二、未实测 / 待验证项
+## 十二、回测执行 API（第二阶段实测补充）
+
+### 12.1 最小执行链路（实测可用）
+
+```python
+import hikyuu
+hikyuu.load_hikyuu()
+sm = hikyuu.StockManager.instance()
+stk = sm['sh510300']                      # 必须带市场前缀
+
+tm = hikyuu.crtTM(init_cash=100000)       # 交易账户
+sg = hikyuu.SG_Cross(hikyuu.MA(hikyuu.CLOSE(), 5),
+                     hikyuu.MA(hikyuu.CLOSE(), 20))
+mm = hikyuu.MM_FixedCount(1000)
+st = hikyuu.ST_FixedPercent(0.05)
+sys = hikyuu.SYS_Simple(tm=tm, sg=sg, mm=mm, st=st)
+sys.run(stk, hikyuu.Query(hikyuu.Datetime(20200101), hikyuu.Datetime(20241231)))
+```
+
+### 12.2 TradeManager 实测要点
+
+| 方法/属性 | 实测签名与说明 |
+|---|---|
+| `get_trade_list()` | 返回 `TradeRecord` 列表；**首条是 `BUSINESS.INIT`**（建账，number=0） |
+| `TradeRecord` 字段 | `datetime` / `stock` / `business` / **`real_price`（成交价，不是 `price`）** / `plan_price` / `number` / `cash` / `cost.total` / `part` / `stoploss` |
+| `get_funds_curve(dates)` | **只接受 `DatetimeList`**，不接受 `Query`；返回 `list[float]` |
+| `get_funds(datetime)` | 返回 `FundsRecord(现金, 市值, ...)` |
+| `get_funds_list(dates)` | 返回 `list[FundsRecord]` |
+| `get_history_position_list()` | 历史持仓 |
+| `get_max_pull_back()` | **无参数**；实测未平仓状态下返回 0.0（不可靠） |
+| `get_performance(datetime, ktype)` | 返回 `Performance`（`to_dict()` 53 个中文键）；实测部分日期参数下全 0 |
+
+### 12.3 三个必须避免的坑（实测）
+
+1. **`Query(20200101, 20241231)`（int 形式）会导致 `get_funds_curve` 返回空**。
+   必须用显式 `hikyuu.Datetime(...)` 构造 Query。
+2. **`sym in sm` 恒返回 `False`**（`StockManager.__contains__` 实现问题）。
+   必须直接索引 `sm[sym]` 再检查 `.valid`。
+3. **`get_max_pull_back()` 与 `get_performance()` 不可靠**。
+   最大回撤/年化/Sharpe 建议从 `get_funds_curve` 自行计算，
+   公式透明、可追溯。
+
+### 12.4 现成组件（`default` hub）
+
+`SYS_Simple` / `SYS_WalkForward` / `SG_*` / `MM_*` / `ST_*` / `PG_*` /
+`SP_*` / `CN_*` 均为顶层可用函数。
+`get_part('default.pf.base_最低单因子轮动')` 等组合模板可复用，
+但**自带选股逻辑**，接入本项目策略时需注意避免污染策略核心。
+
+---
+
+## 十三、未实测 / 待验证项
 
 1. `get_trading_calendar` 在空 SM 下的行为（预期依赖已装载数据）。
 2. 完整市场数据导入的耗时与体积（本轮只做最小集）。
