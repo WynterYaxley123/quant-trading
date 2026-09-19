@@ -1,0 +1,117 @@
+# SW Sector Rotation Core —— 策略配置
+#
+# 状态: MIGRATED / NOT YET BACKTESTED
+# 来源: Legacy china-market-data v5 (commit 1923f9d0fb00eeece9538ae1d0af9db57bbb02d5)
+#
+# 重要: 本文件中所有数值均为 LEGACY INITIAL DEFAULT，**不是最终最优参数**。
+#       任何历史收益数字都不得引用为当前系统业绩。
+#
+# 禁止项（对应迁移任务书第三节 G/H/I）:
+#   - fundamentals (profit_growth / roe / pb_inv) 不得进入训练
+#   - 动量族 (m5 / m20 / m60 / accel) 与量比 (vr5 / vr20) 不迁移
+#   - 资金流只能做 inference 期 post-hoc 修正，默认关闭
+
+strategy:
+  name: SW Sector Rotation Core
+  source: Legacy china-market-data v5
+  status: MIGRATED / NOT YET BACKTESTED
+  universe: shenwan_level2_sectors
+
+model:
+  type: cross_sectional_ridge
+  # NOTE: 当前环境无 scikit-learn，使用 NumPyRidge 兼容实现
+  #       (src/strategies/hikyuu/sw_sector_rotation/model.py)
+  implementation: numpy_ridge
+  alpha: 0.01          # LEGACY INITIAL DEFAULT
+  train_months: 6      # LEGACY INITIAL DEFAULT
+  top_n: 5             # LEGACY INITIAL DEFAULT
+  min_train_dates: 30  # 至少 30 个有效训练日期才允许训练
+  horizons:
+    short: 10
+    medium: 40
+    long: 120
+  fusion_weights:      # LEGACY INITIAL DEFAULT
+    short: 0.25
+    medium: 0.50
+    long: 0.25
+
+features:
+  # 全部为价格类因子，纯计算自 OHLCVA
+  ma_deviation:        # 价格相对均线位置
+    - d5
+    - d10
+    - d20
+    - d60
+    - d120
+  range_position:      # MAPP 稳位置: 价格在滚动高低区间的位置
+    - p5
+    - p10
+    - p20
+    - p60
+    - p120
+  trend_alignment:
+    - align            # MA5>MA10 (3) / MA10>MA20 (2) / MA20>MA60 (1), 归一化
+  volatility:
+    - v5
+    - v20
+    - vc               # v5 / v20
+  reversal:
+    - rev5
+    - rev10            # 过去平均收益取负
+  rsi:
+    - rsi              # RSI14
+  rsrs:
+    - rsrs             # n=18, m=600, z-score × beta × R²
+  drawdown:
+    - dd20
+    - dd60
+  optional:
+    macro_pit: false   # 宏观 PIT 时点对齐，默认关闭
+    fund_flow_posthoc: false  # 资金流 post-hoc，默认关闭，限制 ±0.02
+  disabled:
+    - fundamentals     # 无可信 PIT 快照
+    - pure_momentum    # m5 / m20 / m60 / accel 已消融
+    - volume_ratio     # vr5 / vr20 已消融
+
+risk:
+  # 五指标行业风险状态。只输出 RiskState，不修改 ranking。
+  # 风险敞口调整接口 apply_risk_budget 当前 NOT_IMPLEMENTED。
+  market_breadth:
+    red_below: 0.4
+  new_high_low:
+    red_below: 1.0
+    high_tolerance: 0.995
+    low_tolerance: 1.005
+    lookback_days: 20
+  cross_sectional_vol:
+    sigma_multiple: 1.5
+  volume_concentration:
+    red_above: 0.35
+    top_n: 5
+  average_correlation:
+    red_below: 0.2
+    lookback_days: 20
+    exclude_diagonal: true   # HARD GUARDRAIL
+  confidence_map:
+    0: 1.00
+    1: 1.00
+    2: 0.85
+    3: 0.70
+    4: 0.70
+    5: 0.70
+
+trading_rules:
+  # 初始默认，非最终。真实成本由 Hikyuu transaction cost model
+  # 与 RQAlpha validation 分别实现。
+  # 不得把 legacy 的 round_trip_cost = 4 * ... 当作固定公式。
+  etf_commission: 0.00025
+  min_commission: 5.0
+  etf_stamp_duty: 0.0
+  slippage: 0.001
+
+temporal_integrity:
+  # 由 src/common/temporal_integrity.py 强制实现，不得绕过
+  forward_label_purge: true
+  training_requires_realized_label: true
+  inference_allows_unlabelled_latest_row: true
+  non_overlapping_periods_for_performance: true
