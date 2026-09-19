@@ -5,7 +5,7 @@
 | **Name** | SW Sector Rotation Core |
 | **Source** | Legacy china-market-data v5 |
 | **Release commit** | `1923f9d0fb00eeece9538ae1d0af9db57bbb02d5` |
-| **Status** | **MIGRATED / NOT YET BACKTESTED** |
+| **Status** | **CORE AUDITED / RESEARCH DECISIONS REQUIRED / NOT YET BACKTESTED** |
 | **Universe** | 申万二级行业（Shenwan Level-2 sectors） |
 | **Model** | Cross-sectional Ridge ranking |
 | **Horizons** | 10 / 40 / 120 trading days |
@@ -19,6 +19,9 @@
 ## 1. 目标命题
 
 预测**行业的相对排名**，而不是预测绝对涨跌。
+
+这是研究目标，不等于当前回归 target：代码实际预测 absolute forward return 后排序。
+本轮未更换 target；市场 Beta 风险与后续决策见 [核心审计报告](core_hardening_report.md)。
 
 ```
 行业数据 (OHLCVA)
@@ -105,6 +108,8 @@ RSRS = z_t * beta_t * R2_t
 
 默认 `n = 18`、`m = 600`。实现：`strategies.sw_sector_rotation.src.factors.rsrs.compute_rsrs()`
 
+RSRS 当前计算为诊断列，但不在默认 19 列 `TRAIN_FEATURES_PRICE` 中，本轮未加入训练。
+
 **关键**：z-score 窗口为 `[t-m, t)`，**严格不含当前值**，有单元测试守护
 （`test_rsrs_zscore_window_excludes_current_value`）。
 
@@ -154,7 +159,8 @@ dd60 = close / max(close, 60) - 1
 | long | 120 |
 
 训练样本组织：**全部行业 × 滚动训练窗口内的日期** 堆叠成一个矩阵。
-标签：未来对应周期的行业相对收益。
+标签：`close[calendar[pos(t)+h]] / close[t] - 1`，未来对应周期的行业绝对收益。
+缺失端点保留 NaN。每个有效 date × sector 样本同权，覆盖率可查；不进行全截面去均值。
 
 ### 5.2 初始超参（LEGACY INITIAL DEFAULT）
 
@@ -180,9 +186,11 @@ min_train_dates = 30        # 至少 30 个有效训练日期才允许训练
 - 目标函数 `||Xw + b - y||^2 + alpha||w||^2`
 - **intercept 不做 L2 惩罚**（与 sklearn 默认一致，有专门测试）
 - 提供 `fit` / `predict` / `coef_` / `intercept_`，API 与 sklearn 对齐
-- 数值与闭式解 `(XᵀX + αI)⁻¹Xᵀy` 逐元素一致（有测试）
+- 中心化 + 增广最小二乘，保持同一目标、避免正规方程放大条件数
+- 未做 feature scaling；非有限值/形状错误/不可靠数值秩明确失败
 
-未来若环境出现 sklearn，可无缝替换。
+仅保证上述有限接口，不宣称完整 sklearn 行为兼容。
+三周期缺任一周期则不融合；默认权重读自 YAML，不静默重新分配可用周期权重。
 
 ---
 
@@ -253,8 +261,13 @@ legacy `strategy.py` 在红灯 ≥ 3 时把 Top5 缩到 Top3，再归一化到 1
 ```
 label_cutoff = calendar[pred_pos - fwd]      # 训练标签边界
 train_start  = label_cutoff - train_months
-realized_end = calendar[pred_pos + fwd]      # 本次预测的目标实现日
+realized_end = calendar[pred_pos + fwd]      # 本次预测的目标实现日；未知则 None
 ```
+
+标签终点不等于持仓退出日。signal_date=t、decision_time=after_close，
+execution_date 必须晚于 t；下一交易日只是执行日期下界，不保证成交。
+实际 execution_date、rebalance_cadence、holding_period、holding_end 均未定义/实现，
+保留 null，正式回测前必须决策。`validate_execution_date` 是待执行引擎接入的校验接口。
 
 ### 7.2 禁止事项（全部有测试守护）
 
@@ -315,10 +328,10 @@ src/
 │  ├─ sector_rotation.py      # MA/MAPP、波动率、反转、回撤、RSI（纯函数）
 │  ├─ rsrs.py                 # RSRS
 │  └─ macro_pit.py            # 宏观 PIT 时点对齐（默认关闭）
-├─ strategies/hikyuu/sw_sector_rotation/
+├─ model/
 │  ├─ model.py                # NumPyRidge + 三周期横截面模型
 │  ├─ ranking.py              # 排名 / 权重（纯函数，不碰风险）
-│  └─ strategy.py             # 编排器（框架无关）
+├─ strategy.py                # 编排器（框架无关）
 ├─ risk/sector_rotation.py    # 五指标风险状态
 ├─ portfolio/sector_etf_mapping.py   # ETF 映射 + apply_risk_budget 接口
 ├─ common/temporal_integrity.py      # 时点完整性护栏
@@ -336,8 +349,8 @@ Legacy 映射参考：`strategies/sw_sector_rotation/docs/legacy/sector_etf_mapp
 
 ## 11. Known Limitations
 
-1. **行情未初始化**：Hikyuu 行情库为空，无法做正式回测，
-   Hikyuu adapter 的 Portfolio 接线路径未验证。
+1. **完整行业数据未就绪**：已有 ETF 数据与框架 LEVEL A smoke，
+   但未接入完整申万二级行业 PIT 数据，策略 Portfolio 端到端仍未验证。
 2. **未回测**：本策略**尚未产生任何绩效数据**。所有历史收益数字均属
    legacy 系统，不可沿用。
 3. **ETF 映射未验证**：`strategies/sw_sector_rotation/config/sw_sector_rotation_mapping.example.yaml`
@@ -351,6 +364,9 @@ Legacy 映射参考：`strategies/sw_sector_rotation/docs/legacy/sector_etf_mapp
 ---
 
 ## 12. 验收状态
+
+当前核心审计验收详见 [core_hardening_report.md](core_hardening_report.md)。
+以下是旧迁移阶段的历史记录，不能代表当前数据状态或测试数量。
 
 ```
 LEGACY CORE MIGRATION COMPLETE - DATA NOT INITIALIZED

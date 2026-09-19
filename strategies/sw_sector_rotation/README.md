@@ -1,9 +1,13 @@
 # SW Sector Rotation Core
 
-**状态：MIGRATED / NOT YET BACKTESTED**
+**状态：CORE AUDITED / RESEARCH DECISIONS REQUIRED / NOT YET BACKTESTED**
 
 申万二级行业横截面轮动策略。核心命题是**预测行业的相对排名**，
 而不是预测绝对涨跌。
+
+当前实现实际预测 **absolute close-to-close forward return 后排序**，
+并非 rank/relative-return target。完整事实、修复和未决事项见
+[核心审计报告](docs/core_hardening_report.md)。
 
 来源：Legacy china-market-data v5
 （release commit `1923f9d0fb00eeece9538ae1d0af9db57bbb02d5`）
@@ -53,10 +57,11 @@ sw_sector_rotation/
 │  ├─ adapters/hikyuu/    Hikyuu 适配器
 │  └─ strategy.py         总入口编排器
 ├─ config/                策略配置
-├─ tests/                 策略测试（121 个）
+├─ tests/                 策略测试（188 个）
 └─ docs/
    ├─ spec.md             Strategy Specification（完整规格）
    ├─ migration_report.md 迁移报告
+   ├─ core_hardening_report.md 核心审计与正式回测前置决策
    └─ legacy/             旧 ETF 映射参考（只读）
 ```
 
@@ -71,7 +76,7 @@ market_frame (OHLCVA)
   → src/model/model.py         训练 + 打分
   → src/model/ranking.py       排名 + 权重
   → src/portfolio/             映射到 ETF
-  → src/adapters/hikyuu/       交给 Hikyuu 执行
+  → src/adapters/hikyuu/       候选描述与桥接接口（尚非完整策略执行器）
 ```
 
 风险状态（`src/risk/`）是**旁路**：只输出 `RiskState`，
@@ -96,7 +101,9 @@ market_frame (OHLCVA)
    - 资金流：仅 inference 期 post-hoc 修正，默认关闭
 
 4. **时点完整性**
-   13 项 HARD GUARDRAILS 由测试守护，防止未来数据泄露。
+   core.run 先截断未来价格，标签和 purge 使用同一交易日历。
+   t close 后决策不得同日成交；调仓频率和持有期仍未定义。
+   任一 horizon 不可用时不生成融合排名，返回 NOT_READY。
 
 ---
 
@@ -106,7 +113,7 @@ market_frame (OHLCVA)
 docker compose exec quant-research python -m pytest strategies/sw_sector_rotation/tests
 ```
 
-121 个测试。测试使用 synthetic fixtures，**不下载真实行情**。
+188 个测试（原有 121 + hardening 新增 67）。测试使用 synthetic fixtures，**不下载真实行情**。
 
 ---
 
@@ -124,8 +131,9 @@ docker compose exec quant-research python ...
 
 ## 尚未完成
 
-- 未接数据（`data/` 为空，Hikyuu 行情库未初始化）
+- 完整申万二级行业 PIT 数据尚未接入策略；框架已有 ETF 数据及 LEVEL A smoke，不是策略结果
 - 未回测（收益率、回撤、夏普全部未知）
 - 参数未调优
 - Hikyuu Portfolio 端到端接线未验证
 - ETF 映射需重新核实（ETF 会清盘改名）
+- 调仓/持有、成交价格、总风险敞口及研究假设决策，详见核心审计报告
