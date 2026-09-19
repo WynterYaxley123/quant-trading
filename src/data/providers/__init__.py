@@ -12,7 +12,7 @@
 
 from __future__ import annotations
 
-from .base import DataProvider, ProviderUnavailable
+from .base import DataProvider, ProviderCapabilities, ProviderUnavailable
 from .hikyuu_preflight import (
     HikyuuDataIntegrityError,
     PreflightReport,
@@ -22,6 +22,7 @@ from .hikyuu_provider import HikyuuProvider
 
 __all__ = [
     "DataProvider",
+    "ProviderCapabilities",
     "ProviderUnavailable",
     "HikyuuProvider",
     "HikyuuDataIntegrityError",
