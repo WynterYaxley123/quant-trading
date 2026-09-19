@@ -1,41 +1,109 @@
-# quant-trading — A股/ETF 量化研究环境
+# quant-trading — A股/ETF 量化研究项目
 
-> Environment Setup 阶段。当前仓库只包含研究环境，**不含任何策略、回测或交易代码**。
+> **ENVIRONMENT + QUANT WORKFLOW FOUNDATION COMPLETE**
+> 环境已部署验证通过，开发工作流已定型。当前仓库**不含任何策略、回测或交易代码**。
 
-## 项目用途
+## 项目定位
 
-面向 A 股 / ETF 的量化研究环境。目标是把研究用的 Python 依赖全部收敛进 Docker 容器，
-Windows 宿主机只保留工具链（Git / VS Code / Docker / Codex），不在宿主机装任何量化依赖。
+面向 A 股 / ETF 的量化研究项目。研究用的 Python 依赖全部收敛进 Docker 容器，
+Windows 宿主机只保留工具链（Git / VS Code / Docker / ChatGPT），
+不在宿主机装任何量化依赖。
+
+## 角色分工
+
+| 角色 | 承担方 | 状态 |
+|------|--------|------|
+| 主要代码开发 | Windows ChatGPT | 现行 |
+| 环境与自动化编排 | Hermes | 现行 |
+| 主研究框架 | Hikyuu | 已部署，未开始使用 |
+| 独立验证框架 | RQAlpha | 已部署，未开始使用 |
+| 数据获取 | AKShare | 已部署 |
+| 交互研究界面 | JupyterLab | 已部署 |
+| 备用工具 | WSL codex-cli | 可选 |
+| 模拟盘 | JoinQuant | 未来 |
+| 通知推送 | 飞书 | 未来 |
+| 代码与成果同步 | GitHub | 未来（账号 suspended） |
+| 实盘执行 | QMT / MiniQMT | 未来 |
+
+**Hermes 默认不修改核心量化逻辑**（`src/strategies/`、`src/factors/`、
+`src/signals/`、`src/risk/`、`src/portfolio/`、`research/`）。
+详见 `AGENTS.md` 与 `docs/architecture.md`。
+
+## 开发架构
+
+```
+User
+ │
+ ▼
+Windows ChatGPT                 ← 主要开发入口
+ │
+ ▼
+D:\quant-trading                ← 项目根目录
+ │
+ ├──────────────┬───────────────┐
+ ▼              ▼               │
+Local Git  Docker Desktop       │
+                │               │
+                ▼               │
+         quant-research         │
+                │               │
+        ┌───────┴───────┐       │
+        ▼               ▼       │
+     Hikyuu          RQAlpha    │
+    Main Research   Validation  │
+        └───────┬───────┘       │
+                ▼               │
+            Reports             │
+                │               │
+        ┌───────┴───────┐       │
+        ▼               ▼       │
+      Feishu         GitHub     │
+   Notification     Archive     │
+     (future)       (future)    │
+```
+
+完整说明见 `docs/architecture.md`。
+
+## 执行原则
+
+ChatGPT 执行量化 Python 代码**必须**通过 `quant-research` 容器：
+
+```bash
+docker compose exec quant-research python <script.py>
+docker compose exec quant-research pytest tests -q
+```
+
+**不使用 Windows 全局 Python。**
 
 ## 当前技术栈
 
-| 组件 | 角色 | 版本/状态 |
+| 组件 | 角色 | 版本 |
 |------|------|------|
-| Hikyuu | 主研究框架 | 2.8.2（已接入） |
-| RQAlpha | 独立验证框架 | 6.4.0（已接入） |
-| AKShare | 数据获取 | 1.18.88（已接入） |
-| JupyterLab | 交互研究界面 | 4.4.9（随服务启动） |
-| Docker | 环境隔离 | 本阶段 |
-| Codex | 编码助手 | 本阶段 |
-| Git | 本地版本控制 | 本阶段 |
+| Python | 运行时 | 3.12.11 |
+| Hikyuu | 主研究框架 | 2.8.2 |
+| RQAlpha | 独立验证框架 | 6.4.0 |
+| AKShare | 数据获取 | 1.18.88 |
+| NumPy | 数值计算 | 2.3.5 |
+| Pandas | 数据处理 | 2.3.3 |
+| SciPy | 科学计算 | 1.16.3 |
+| JupyterLab | 交互研究界面 | 4.4.9 |
+| Docker 镜像 | 环境隔离 | `quant-research:py3.12` |
 
-## 未来规划
-
-- Hikyuu —— 主研究框架
-- RQAlpha —— 独立验证框架（与 Hikyuu 交叉验证，互为参照）
-- JoinQuant —— 模拟盘
-- QMT / MiniQMT —— 未来实盘执行层
+**以上版本为稳定基线，除确有必要外不得修改。**
+依赖冲突的解决记录见 `docs/dependency_conflicts.md`。
 
 ## 当前明确边界
 
 ```
 NO STRATEGY
+NO FACTOR
+NO DATA DOWNLOAD
 NO BACKTEST
 NO PAPER TRADING
 NO LIVE TRADING
 ```
 
-本阶段只做环境搭建与依赖验证，不产生任何交易逻辑。
+本阶段只做项目结构、角色定义、工作流、文档与接口骨架。
 
 ## 远程仓库状态
 
@@ -44,8 +112,27 @@ GitHub remote currently unavailable due to account suspension.
 Project currently uses local Git only.
 ```
 
-GitHub 账号处于 suspended 状态，因此本仓库**没有配置任何远程仓库**。
+GitHub 账号处于 suspended 状态，本仓库**没有配置任何远程仓库**。
 这是预期状态，不视为部署失败。账号恢复后再补 remote。
+项目保持 **GitHub-ready** 结构，详见 `docs/github_workflow.md`。
+
+## 文档索引
+
+| 文档 | 用途 |
+|------|------|
+| `AGENTS.md` | 强制约束与角色定义 |
+| `docs/architecture.md` | 项目架构与角色定义 |
+| `docs/chatgpt_workflow.md` | ChatGPT 标准工作流 |
+| `docs/joinquant_import.md` | 聚宽策略导入流程 |
+| `docs/strategy_specification.md` | 策略规格模板 |
+| `docs/report_schema.md` | 报告输出标准 |
+| `docs/feishu_integration.md` | 飞书集成规划 |
+| `docs/github_workflow.md` | GitHub 工作流规划 |
+| `docs/future_quant_api.md` | 未来 API / MCP 规划 |
+| `docs/environment_setup_report.md` | 环境验收报告 |
+| `docs/dependency_conflicts.md` | 依赖冲突记录 |
+| `docs/codex_usage.md` | WSL codex-cli 备用工具说明 |
+
 
 ## 环境搭建
 
@@ -161,16 +248,41 @@ quant-trading/
 │  └─ Dockerfile           固定 Python 3.12（Ubuntu 24.04 底座），仅装依赖
 ├─ .devcontainer/
 │  └─ devcontainer.json    Reopen in Container 配置
+├─ src/
+│  ├─ strategies/
+│  │  ├─ imported/
+│  │  │  └─ joinquant/     原始聚宽代码（只读，不覆盖）
+│  │  ├─ hikyuu/           Hikyuu 实现（主研究）
+│  │  └─ rqalpha/          RQAlpha 验证版（独立验证）
+│  ├─ factors/             因子计算
+│  ├─ signals/             信号生成
+│  ├─ risk/                风控指标（TGT / TR / RGrid / ZMB / SL）
+│  ├─ portfolio/           组合与仓位管理
+│  ├─ adapters/            框架适配层
+│  ├─ reporting/           报告生成
+│  ├─ notifications/       通知（飞书骨架已就位）
+│  ├─ common/              通用工具
+│  └─ data/                数据获取与清洗
+├─ research/
+│  └─ factors/             因子研究笔记
+├─ reports/
+│  ├─ strategies/          策略规格汇总
+│  ├─ backtests/           回测结果
+│  ├─ factors/             因子研究结果
+│  ├─ comparisons/         双框架交叉验证
+│  └─ daily/               日常研究记录
+├─ scripts/
+│  └─ automation/          自动化脚本（Hermes 维护）
+├─ notebooks/              Jupyter 笔记本（当前只有说明）
 ├─ data/                   行情数据（挂载，不进 Git）
 ├─ logs/                   运行日志（不进 Git）
-├─ notebooks/              Jupyter 笔记本（当前只有说明）
-├─ src/                    源码占位
+├─ secrets/                敏感配置（不进 Git）
 ├─ tests/
 │  └─ test_environment.py  仅验证依赖可导入
-├─ docs/                   研究文档
+├─ docs/                   项目文档
 ├─ .gitignore
 ├─ .dockerignore
-├─ docker-compose.yml      服务: quant-research + jupyter
+├─ docker-compose.yml      服务: quant-research + quant-jupyter
 ├─ requirements.txt
 ├─ README.md
 └─ AGENTS.md
@@ -180,10 +292,13 @@ quant-trading/
 
 | 分支 | 用途 |
 |------|------|
-| `main` | 稳定环境版本 |
-| `dev` | 当前开发环境 |
+| `main` | 稳定环境 + 已验证成果 |
+| `dev` | 开发主线 |
+| `experiment/<name>` | 试验性工作 |
 
 **不创建** `live` / `production` / `trading` 等任何实盘相关分支。
+
+当前 `main` 与 `dev` 均指向稳定基线。GitHub 账号恢复前不使用远程仓库。
 
 ## 安全声明
 
@@ -194,3 +309,18 @@ quant-trading/
 - 不接入任何券商接口
 - 所有端口映射仅绑定 `127.0.0.1`，不对局域网暴露
 - Jupyter 使用密码认证（argon2 哈希存于 .env），不使用无认证模式
+- 飞书凭证项仅留空值模板，不填真实值
+- 回测报告不编造数据，未产生结果为 `null`
+
+## 下一阶段（尚未开始）
+
+以下事项**均未开始**，需用户明确指令后启动：
+
+- 行情数据准备
+- Hikyuu 数据导入
+- 策略开发
+- 因子开发
+- 回测
+- RQAlpha 交叉验证
+- JoinQuant 模拟盘
+
