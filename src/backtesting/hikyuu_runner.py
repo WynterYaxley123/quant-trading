@@ -33,7 +33,7 @@ from .result import (
     now_run_id,
 )
 from .runner import BacktestRequest, StrategySpec, register_framework
-from .testing.smoke_strategy import SMOKE_NOTICE
+from .testing.smoke_strategy import EXECUTION_SMOKE_NAME, SMOKE_NOTICE
 
 __all__ = ["run_hikyuu_backtest", "register"]
 
@@ -262,6 +262,12 @@ def run_hikyuu_backtest(
 ) -> BacktestResult:
     """执行一次 Hikyuu 回测（当前为 LEVEL A smoke 链路）。
 
+    ⚠️ **本函数当前只产生 execution_smoke 结果，不是策略回测。**
+    写入的 metadata 为 ``strategy="hikyuu_execution_smoke"``、
+    ``run_type="execution_smoke"``，输出目录为
+    ``reports/backtests/hikyuu_execution_smoke/<run_id>/``。
+    其中的收益/回撤/Sharpe **不得用于评价 sw_sector_rotation 或任何策略**。
+
     :param symbols: 交易标的（Hikyuu 形式，如 ``sh510300``）；
         None 时使用 :data:`LEVEL_A_SYMBOLS`。
     """
@@ -381,7 +387,7 @@ def run_hikyuu_backtest(
     )
 
     meta = BacktestMetadata(
-        strategy=request.strategy,
+        strategy=EXECUTION_SMOKE_NAME,
         strategy_version=spec.version,
         framework="hikyuu",
         framework_version=_HIKYUU_VERSION,
@@ -395,6 +401,7 @@ def run_hikyuu_backtest(
         commission=_sum_cost(trades),
         slippage=None,
         status="LEVEL_A_SMOKE",
+        run_type="execution_smoke",
         adjust_mode="none",
         limit_up_down_modeled=False,
         suspension_modeled=False,

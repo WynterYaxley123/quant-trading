@@ -2,7 +2,7 @@
 
 设计原则（任务书第十四、十五、十六节）：
 
-1. 结果统一写入 ``reports/backtests/<strategy>/<run_id>/``。
+1. 结果统一写入 ``reports/backtests/<output_dir_name>/<run_id>/``。
 2. 不支持的字段用 :data:`UNSUPPORTED`（序列化为 ``null``），
    **绝不用 0 冒充不存在的数据**。
 3. metadata 必须完整到可以追溯任何一次回测。
@@ -59,6 +59,16 @@ class BacktestMetadata:
     commission: float | None
     slippage: float | None
     status: str
+    # --- 运行类型（本轮新增） ---
+    #: 本次运行的性质。取值：
+    #:
+    #: - ``"strategy_backtest"`` —— 真实策略回测，指标可用于评价策略。
+    #: - ``"execution_smoke"`` —— 仅验证执行链路（KData → System → 订单 →
+    #:   TradeManager → 净值）。**指标不得用于评价任何策略。**
+    #:
+    #: 默认值取 ``"strategy_backtest"`` 是刻意选择：若忘记设置，宁可被当成
+    #: 正式回测而被人工质疑，也不能默认伪装成 smoke 来逃避 scrutiny。
+    run_type: str = "strategy_backtest"
     # --- 扩展（本轮新增，用于如实记录未建模项） ---
     #: 复权口径：``none``（未复权）/ ``backward`` / ``forward``
     adjust_mode: str = "none"
@@ -75,6 +85,22 @@ class BacktestMetadata:
 
     def to_dict(self) -> dict:
         return asdict(self)
+
+    @property
+    def output_dir_name(self) -> str:
+        """结果目录名 —— 决定 ``reports/backtests/<output_dir_name>/<run_id>/``。
+
+        execution_smoke 运行**不允许**占用策略名目录，否则会让人误以为
+        该目录下的数字是策略绩效。因此强制映射到 ``hikyuu_execution_smoke``。
+        """
+        if self.run_type == "execution_smoke":
+            return "hikyuu_execution_smoke"
+        return self.strategy
+
+    @property
+    def is_execution_smoke(self) -> bool:
+        """是否为执行冒烟运行（其指标不可用于评价策略）。"""
+        return self.run_type == "execution_smoke"
 
 
 @dataclass
@@ -119,11 +145,15 @@ class BacktestResult:
     # -- 落盘 ---------------------------------------------------------------
 
     def write(self, root: str) -> str:
-        """写入 ``root/<strategy>/<run_id>/``，返回输出目录。
+        """写入 ``root/<output_dir_name>/<run_id>/``，返回输出目录。
+
+        ``output_dir_name`` 由 metadata 决定（见
+        :attr:`BacktestMetadata.output_dir_name`）：execution_smoke 运行会被
+        强制写入 ``hikyuu_execution_smoke/``，不占用策略名目录。
 
         所有文件都会写出（即便为空表），以保证目录结构可预测。
         """
-        out = os.path.join(root, self.metadata.strategy, self.metadata.run_id)
+        out = os.path.join(root, self.metadata.output_dir_name, self.metadata.run_id)
         os.makedirs(out, exist_ok=True)
 
         with open(os.path.join(out, "metadata.json"), "w", encoding="utf-8") as f:
@@ -155,7 +185,25 @@ class BacktestResult:
         lines: list[str] = []
         lines.append(f"# 回测报告 — {md.strategy}")
         lines.append("")
+        if md.is_execution_smoke:
+            # 必须在任何人读到数字之前看到这段。
+            lines.append("> ## ⚠️ THIS IS NOT A SW_SECTOR_ROTATION STRATEGY BACKTEST.")
+            lines.append("> ")
+            lines.append("> 本次运行 ``run_type = execution_smoke``：仅验证 Hikyuu 执行链路")
+            lines.append("> （KData → System → 订单 → TradeManager → 净值/成交记录）能否在")
+            lines.append("> **真实行情**上跑通。")
+            lines.append("> ")
+            lines.append("> 使用的规则是确定性的极简测试规则（固定均线交叉 + 固定手数 +")
+            lines.append("> 固定止损），**未做任何参数优化**。")
+            lines.append("> ")
+            lines.append("> **下方所有指标（收益/回撤/Sharpe/成交数）均不得用于评价**")
+            lines.append("> ``sw_sector_rotation`` **或其他任何策略的质量。**")
+            lines.append("> ")
+            lines.append("> sw_sector_rotation 的完整回测（LEVEL B）尚未执行 —— 原因：")
+            lines.append("> 申万二级行业数据未初始化，无法产生行业 ranking。")
+            lines.append("")
         lines.append(f"- run_id: `{md.run_id}`")
+        lines.append(f"- 运行类型: **{md.run_type}**")
         lines.append(f"- 框架: {md.framework} {md.framework_version}")
         lines.append(f"- 策略版本: {md.strategy_version}")
         lines.append(f"- git commit: `{md.git_commit}`")

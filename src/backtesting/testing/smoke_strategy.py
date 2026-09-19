@@ -16,7 +16,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-__all__ = ["SmokeConfig", "build_smoke_system", "SMOKE_NOTICE"]
+__all__ = ["SmokeConfig", "build_smoke_system", "SMOKE_NOTICE", "EXECUTION_SMOKE_NAME"]
+
+
+#: execution_smoke 运行使用的 run_type 值（写入 metadata.run_type）
+EXECUTION_SMOKE_RUN_TYPE = "execution_smoke"
+
+#: execution_smoke 运行使用的 strategy 名。
+#: 刻意**不叫** ``sw_sector_rotation`` —— 否则读 metadata 的人会误以为
+#: 这些数字是 sw_sector_rotation 的绩效。
+EXECUTION_SMOKE_NAME = "hikyuu_execution_smoke"
 
 
 #: 出现在任何 smoke 输出中的醒目声明
