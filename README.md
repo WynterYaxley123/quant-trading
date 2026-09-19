@@ -84,36 +84,57 @@ docker exec -it quant-research bash
 
 ### JupyterLab
 
-#### 配置 token
+#### 配置密码
 
-Jupyter 使用 token 认证，token 存于宿主机 `.env`（该文件已被 `.gitignore` 忽略，
-不会进入 Git）。首次使用请自行生成并写入：
+Jupyter 使用**密码认证**。宿主机 `.env` 中只存密码的 argon2 哈希（不存明文），
+该文件已被 `.gitignore` 忽略，不会进入 Git。
+
+配置步骤：
 
 ```bash
-# 生成随机 token 并追加到 .env
-echo "JUPYTER_TOKEN=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')" >> .env
-echo "JUPYTER_PORT=8888" >> .env
+# 1. 生成密码哈希（把 <你的密码> 换成自己要设的密码）
+docker exec quant-jupyter python -c \
+  "from jupyter_server.auth import passwd; print(passwd('<你的密码>'))"
+
+# 2. 写入 .env（注意：哈希中的每个 $ 必须写成 $$，否则会被 compose 插值破坏）
+#    JUPYTER_PASSWORD=argon2:$$argon2id$$v=19$$m=10240,t=10,p=8$$xxxx$$yyyy
 ```
 
-`.env.example` 中的 `JUPYTER_TOKEN` 保持为空，仅作模板，不填任何真实值。
+`.env.example` 中的 `JUPYTER_PASSWORD` 保持为空，仅作模板，不填任何真实值。
+
+#### 为什么哈希里的 `$` 要写成 `$$`
+
+Docker Compose 会对 `.env` 中的值做变量插值，`$argon2id`、`$v` 这类片段会被
+当成变量名展开成空字符串，导致哈希被静默破坏、密码永远校验失败。写成 `$$`
+后 compose 输出单个 `$`，哈希还原正确。
+
+验证方法（应输出 105 和 5，即长度 105、含 5 个 `$`）：
+
+```bash
+docker exec quant-jupyter bash -c \
+  'v="$JUPYTER_PASSWORD"; echo "len=${#v} dollars=$(printf %s "$v" | tr -cd "$" | wc -c)"'
+```
 
 #### 访问
 
 启动服务后，在 Windows 浏览器打开：
 
 ```
-http://localhost:8888/lab?token=<.env 中的 JUPYTER_TOKEN 值>
+http://localhost:8888/lab
 ```
 
+- 首次访问跳出登录页，输入密码即可
+- 浏览器会记住会话，之后直接访问 `localhost:8888/lab` 无需重复输入
+- 未认证访问 `/lab` 返回 302（跳登录页）
 - 工作目录为 `/workspace`（对应宿主机 `D:\quant-trading`）
-- 无需登录，token 直接带在 URL 中
-- 未带 token 会跳转登录页；错误 token 返回 403
 
 #### 安全边界
 
 - 端口映射为 `127.0.0.1:8888:8888`，**仅监听 Windows 本机回环地址**
-- 局域网内其他设备无法访问（不会绑定 `0.0.0.0`）
-- 不使用长期无认证模式
+- 局域网内其他设备无法访问（端口不绑定 `0.0.0.0`）
+- 不使用无认证模式；密码哈希存于 `.env`，不进 Git
+- 容器内监听 `0.0.0.0:8888` 是端口映射的必要条件（服务只绑 loopback 时宿主机转发不进来），
+  对外暴露面由宿主机侧 `127.0.0.1` 绑定限定
 
 ### VS Code 开发容器
 
@@ -172,4 +193,4 @@ quant-trading/
 - 不配置任何真实账号、Token、Cookie
 - 不接入任何券商接口
 - 所有端口映射仅绑定 `127.0.0.1`，不对局域网暴露
-- Jupyter 使用 token 认证，不使用长期无认证模式
+- Jupyter 使用密码认证（argon2 哈希存于 .env），不使用无认证模式
