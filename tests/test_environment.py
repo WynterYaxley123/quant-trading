@@ -14,8 +14,13 @@ import pytest
 
 
 def test_python_version():
-    """确认 Python 版本为 3.11.x"""
-    assert sys.version_info[:2] == (3, 11), f"expected 3.11, got {sys.version}"
+    """确认 Python 版本为 3.12.x
+
+    为何是 3.12：hikyuu 2.7+ 要求 numpy>=2.0，而 rqalpha 6.4.0 在
+    python<=3.11 下要求 numpy<2.0。升到 3.12 后 rqalpha 的约束变为
+    numpy>=2.0，两库兼容。详见 docs/dependency_conflicts.md
+    """
+    assert sys.version_info[:2] == (3, 12), f"expected 3.12, got {sys.version}"
 
 
 def test_import_numpy():

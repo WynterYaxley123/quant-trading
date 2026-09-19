@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    image: quant-research:py3.11
+    image: quant-research:py3.12
     container_name: quant-research
     working_dir: /workspace
     volumes:

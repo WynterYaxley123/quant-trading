@@ -1,17 +1,20 @@
 # quant-research 依赖锁定
-# Python 3.11
+# Python 3.12
 #
-# 关键约束：hikyuu 与 rqalpha 的 numpy 要求对立
-#   hikyuu >=2.7 要求 numpy>=2.0
-#   rqalpha 6.4.0 (py<=3.11) 要求 numpy<2.0.0
-# 解法：锁定 hikyuu==2.6.8.4（最后一个不限制 numpy 版本的版本）
+# 版本决策（2026-09-19 修订）：
+#   hikyuu 2.6.8.4 的预编译扩展在本机 CPU 上 SIGILL 崩溃
+#     （官方文档承认 2.6.8/2.6.9 存在崩溃问题，建议升 2.7.0+）
+#   hikyuu 2.7+ 要求 numpy>=2.0
+#   rqalpha 6.4.0 在 python<=3.11 下要求 numpy<2.0 —— 与 hikyuu 2.7+ 冲突
+#   解法：升到 Python 3.12，此时 rqalpha 约束变为 numpy>=2.0，冲突消失
+#   两库的 numpy 要求均指向 >=2.0，可共存
 # 详见 docs/dependency_conflicts.md
 # 所有版本经 `pip install --dry-run` 解析器验证
 
 # ---- 核心数值计算 ----
-numpy==1.26.4
+numpy==2.3.5
 pandas==2.3.3
-scipy==1.15.3
+scipy==1.16.3
 
 # ---- 可视化 ----
 matplotlib==3.10.9
@@ -35,6 +38,7 @@ jupyter_client==8.6.3
 akshare==1.18.88
 
 # ---- 研究框架 ----
-# hikyuu 必须锁在 2.6.8.4，勿升级（升级会拉 numpy>=2.0 导致 rqalpha 不可用）
-hikyuu==2.6.8.4
+# hikyuu 必须 >=2.7（2.6.x 的 C 扩展在本机 CPU 崩溃）
+hikyuu==2.8.2
+# rqalpha 在 py3.12 下要求 numpy>=2.0，与 hikyuu 2.8.2 一致
 rqalpha==6.4.0

@@ -91,7 +91,7 @@ docker compose run --rm quant-research pytest -v
 ```
 quant-trading/
 ├─ docker/
-│  └─ Dockerfile           固定 Python 3.11，仅装依赖
+│  └─ Dockerfile           固定 Python 3.12（Ubuntu 24.04 底座），仅装依赖
 ├─ .devcontainer/
 │  └─ devcontainer.json    Reopen in Container 配置
 ├─ data/                   行情数据（挂载，不进 Git）
