@@ -1,59 +1,16 @@
-# ===== 虚拟环境 =====
-.venv/
-venv/
-env/
-ENV/
+# .gitignore — quant-trading
 
-# ===== 敏感信息（绝对禁止提交）=====
-.env
-.env.local
-.env.*.local
-secrets/
-*.pem
-*.key
-*.p12
-*.pfx
-credentials.json
-token.json
-auth.json
-
-# 真实账户 / API 凭证（显式兜底）
-*api_key*
-*apikey*
-*secret_key*
-*token*
-*password*
-*passwd*
-*credential*
-config.local.*
-
-# ===== 数据（本地行情数据不上传）=====
+# 数据与日志（永不进 Git）
 data/
-*.csv
-*.parquet
-*.h5
-*.hdf5
-*.feather
-*.pkl
-*.pickle
-*.db
-*.sqlite
-*.sqlite3
-*.duckdb
-
-# 例外：保留 data 目录本身与说明文件
-!data/.gitkeep
-!data/README.md
-!backtests/results/.gitkeep
-!backtests/configs/.gitkeep
-
-# ===== 日志 =====
 logs/
-*.log
-*.log.*
-*_log.txt
+secrets/
 
-# ===== Python =====
+# 环境变量
+.env
+.env.*
+!.env.example
+
+# Python 缓存
 __pycache__/
 *.py[cod]
 *$py.class
@@ -61,66 +18,36 @@ __pycache__/
 .Python
 build/
 dist/
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib60/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-pip-wheel-metadata/
-share/python-wheels/
+.eggs/
 
-# ===== 测试 / 覆盖率 =====
+# 虚拟环境（本项目不使用，防御性忽略）
+.venv/
+venv/
+ENV/
+env/
+
+# 测试与检查缓存
 .pytest_cache/
-.tox/
-.nox/
 .coverage
-.coverage.*
 htmlcov/
-coverage.xml
-*.cover
-.hypothesis/
-tests/.cache/
+.tox/
+.mypy_cache/
+.ruff_cache/
 
-# ===== Jupyter =====
+# Notebook
 .ipynb_checkpoints/
-*.ipynb_checkpoints
+*.ipynb_checkpoints/
 
-# ===== IDE / 编辑器 =====
-.vscode/settings.local.json
-.vscode/*.local.json
+# 日志
+*.log
+
+# 编辑器与系统
+.vscode/*
+!.vscode/settings.json
 .idea/
-*.swp
-*.swo
-*~
-.spyderproject
-.spyproject
-.ropeproject
-
-# ===== 系统 =====
 .DS_Store
 Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
 
-# ===== 量化专用 =====
-# 回测结果大文件（保留小型汇总，忽略明细）
-backtests/results/**/*.csv
-backtests/results/**/*.parquet
-backtests/results/**/*.pkl
-backtests/results/*.html
-# 掘金 / 券商本地配置
-myquant_config.json
-broker_config.json
-qmt_config.json
-# 策略临时导出
-exports/
-tmp/
-temp/
+# Docker
+docker/*.log

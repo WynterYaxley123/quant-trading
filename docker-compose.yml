@@ -1,0 +1,18 @@
+services:
+  quant-research:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: quant-research:py3.11
+    container_name: quant-research
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+      - ./data:/workspace/data
+    environment:
+      - TZ=Asia/Shanghai
+      - PYTHONUNBUFFERED=1
+    tty: true
+    stdin_open: true
+    command: bash
+    # 不配置任何真实账号或 Token

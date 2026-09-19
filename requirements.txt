@@ -1,27 +1,40 @@
-# Quant Trading - 基础依赖
+# quant-research 依赖锁定
+# Python 3.11
 #
-# 当前阶段只装基础数据/分析/测试包，不引入重型框架。
-#
-# 明确不装（除非后续明确需要）：
-#   freqtrade / vn.py / qlib / backtrader / rqalpha
+# 关键约束：hikyuu 与 rqalpha 的 numpy 要求对立
+#   hikyuu >=2.7 要求 numpy>=2.0
+#   rqalpha 6.4.0 (py<=3.11) 要求 numpy<2.0.0
+# 解法：锁定 hikyuu==2.6.8.4（最后一个不限制 numpy 版本的版本）
+# 详见 docs/dependency_conflicts.md
+# 所有版本经 `pip install --dry-run` 解析器验证
 
-# 数据处理与分析
-pandas
-numpy
-scipy
+# ---- 核心数值计算 ----
+numpy==1.26.4
+pandas==2.3.3
+scipy==1.15.3
 
-# 可视化
-matplotlib
+# ---- 可视化 ----
+matplotlib==3.10.9
 
-# 网络与配置
-requests
-pyyaml
-python-dotenv
+# ---- 工具链 ----
+pyyaml==6.0.3
+requests==2.34.2
+python-dotenv==1.1.1
 
-# 交互式研究
-jupyter
+# ---- 测试 ----
+pytest==8.4.2
 
-# 测试
-pytest
+# ---- Notebook ----
+jupyter==1.1.1
+notebook==7.4.5
+jupyterlab==4.4.9
+ipykernel==6.30.1
+jupyter_client==8.6.3
 
-# 精确复现用锁定版本见 requirements.lock.txt
+# ---- 数据获取 ----
+akshare==1.18.88
+
+# ---- 研究框架 ----
+# hikyuu 必须锁在 2.6.8.4，勿升级（升级会拉 numpy>=2.0 导致 rqalpha 不可用）
+hikyuu==2.6.8.4
+rqalpha==6.4.0

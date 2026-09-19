@@ -1,0 +1,33 @@
+{
+  "name": "quant-research",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "quant-research",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.languageServer": "Pylance",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests"],
+        "python.terminal.activateEnvironment": false,
+        "jupyter.notebookFileRoot": "/workspace",
+        "files.encoding": "utf8",
+        "editor.rulers": [88],
+        "telemetry.telemetryLevel": "off"
+      }
+    }
+  },
+
+  "remoteUser": "root",
+  "postCreateCommand": "python -c \"import numpy, pandas, akshare, hikyuu, rqalpha; print('deps ok')\""
+}

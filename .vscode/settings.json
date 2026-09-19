@@ -1,18 +1,19 @@
 {
-    "python.defaultInterpreterPath": ".venv\\Scripts\\python.exe",
-    "python.terminal.activateEnvironment": true,
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.terminal.activateEnvironment": false,
     "python.analysis.typeCheckingMode": "basic",
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "python.testing.pytestArgs": [
         "tests"
     ],
+    "jupyter.notebookFileRoot": "${workspaceFolder}",
     "files.encoding": "utf8",
     "files.eol": "\n",
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
     "editor.formatOnSave": false,
-    "git.autofetch": true,
+    "git.autofetch": false,
     "git.confirmSync": false,
     "editor.rulers": [
         88

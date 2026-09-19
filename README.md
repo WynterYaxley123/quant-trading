@@ -1,140 +1,126 @@
-# Quant Trading
+# quant-trading — A股/ETF 量化研究环境
 
-A股 / ETF 量化策略研究与开发工作区。
+> Environment Setup 阶段。当前仓库只包含研究环境，**不含任何策略、回测或交易代码**。
 
-## 用途
+## 项目用途
 
-- A股 / ETF 量化策略研究
-- 聚宽（JoinQuant）策略学习与向本地迁移
-- 掘金量化（MyQuant）回测 / 仿真
-- Codex 辅助策略开发
-- GitHub 版本管理与协作
+面向 A 股 / ETF 的量化研究环境。目标是把研究用的 Python 依赖全部收敛进 Docker 容器，
+Windows 宿主机只保留工具链（Git / VS Code / Docker / Codex），不在宿主机装任何量化依赖。
+
+## 当前技术栈
+
+| 组件 | 角色 | 状态 |
+|------|------|------|
+| Hikyuu | 主研究框架 | 待接入 |
+| RQAlpha | 独立验证框架 | 待接入 |
+| AKShare | 数据获取 | 待接入 |
+| Docker | 环境隔离 | 本阶段 |
+| Codex | 编码助手 | 本阶段 |
+| Git | 本地版本控制 | 本阶段 |
+
+## 未来规划
+
+- Hikyuu —— 主研究框架
+- RQAlpha —— 独立验证框架（与 Hikyuu 交叉验证，互为参照）
+- JoinQuant —— 模拟盘
+- QMT / MiniQMT —— 未来实盘执行层
+
+## 当前明确边界
+
+```
+NO STRATEGY
+NO BACKTEST
+NO PAPER TRADING
+NO LIVE TRADING
+```
+
+本阶段只做环境搭建与依赖验证，不产生任何交易逻辑。
+
+## 远程仓库状态
+
+```
+GitHub remote currently unavailable due to account suspension.
+Project currently uses local Git only.
+```
+
+GitHub 账号处于 suspended 状态，因此本仓库**没有配置任何远程仓库**。
+这是预期状态，不视为部署失败。账号恢复后再补 remote。
+
+## 环境搭建
+
+### 宿主机前置
+
+- Git for Windows
+- VS Code（扩展：Python / Pylance / Docker / Dev Containers / Jupyter）
+- Docker Desktop（WSL2 后端）
+- Codex
+- GitHub Desktop（已安装，未登录）
+
+### 构建容器
+
+```bash
+docker compose build
+```
+
+### 进入容器
+
+```bash
+docker compose run --rm quant-research bash
+```
+
+### VS Code 开发容器
+
+在 VS Code 中执行 `Dev Containers: Reopen in Container`，进入后：
+
+- 工作目录为 `/workspace`
+- Python 解释器为容器内的 `/usr/local/bin/python`
+- 可使用 Hikyuu / RQAlpha / AKShare
+- 可运行 `pytest`
+- 可启动 Jupyter
+
+**不要建立 .venv** —— 所有 Python 依赖统一在容器内。
+
+### 运行环境测试
+
+```bash
+docker compose run --rm quant-research pytest -v
+```
 
 ## 目录结构
 
 ```
 quant-trading/
-|-- strategies/          交易策略
-|   `-- myquant/         掘金量化策略（预留）
-|-- factors/             因子计算
-|-- risk/                仓位管理、止损、风控
-|-- backtests/           回测
-|   |-- configs/         回测参数配置
-|   `-- results/         回测结果
-|-- tests/               自动化测试
-|-- docs/                策略说明与研究日志
-|   `-- strategy_notes.md
-|-- data/                本地行情数据（不入 Git）
-|-- logs/                运行日志（不入 Git）
-|-- secrets/             本地敏感配置（不入 Git）
-|-- .env.example         环境变量模板
-|-- .gitignore
-|-- requirements.txt
-`-- AGENTS.md            Codex 协作规则
+├─ docker/
+│  └─ Dockerfile           固定 Python 3.11，仅装依赖
+├─ .devcontainer/
+│  └─ devcontainer.json    Reopen in Container 配置
+├─ data/                   行情数据（挂载，不进 Git）
+├─ logs/                   运行日志（不进 Git）
+├─ notebooks/              Jupyter 笔记本（当前只有说明）
+├─ src/                    源码占位
+├─ tests/
+│  └─ test_environment.py  仅验证依赖可导入
+├─ docs/                   研究文档
+├─ .gitignore
+├─ .dockerignore
+├─ docker-compose.yml      服务名 quant-research
+├─ requirements.txt
+├─ README.md
+└─ AGENTS.md
 ```
 
-## 开发流程
-
-```
-策略想法
-  -> Codex 实现（dev / experiment 分支）
-  -> 本地测试（pytest）
-  -> 本地回测
-  -> 结果分析
-  -> Git Commit
-  -> Push GitHub
-  -> 仿真
-  -> 人工审核
-  -> 实盘
-```
-
-## 安全声明
-
-> **Codex 不得直接把未经验证的新策略部署到实盘。**
-
-任何策略上线实盘前，必须依次通过：
-
-1. 单元测试
-2. 历史回测
-3. 样本外验证
-4. 仿真
-5. 用户人工确认
-
-## 分支规范
+## 版本管理规则
 
 | 分支 | 用途 |
 |------|------|
-| `main` | 稳定代码 |
-| `dev` | 日常开发 |
-| `experiment/*` | 实验性策略 |
-| `live` | 未来实盘策略，仅在明确批准后使用 |
+| `main` | 稳定环境版本 |
+| `dev` | 当前开发环境 |
 
-当前阶段只使用 `main` 与 `dev`，**不创建任何实盘交易逻辑**。
+**不创建** `live` / `production` / `trading` 等任何实盘相关分支。
 
-Codex 修改策略时默认从 `dev` 创建实验分支：
+## 安全声明
 
-```
-experiment/etf-rotation
-experiment/momentum
-experiment/multi-factor
-```
-
-**禁止直接在 `live` 上自动修改。**
-
-## 环境搭建
-
-```bash
-# 创建虚拟环境
-python -m venv .venv
-
-# 激活（Windows PowerShell）
-.venv\Scripts\Activate.ps1
-
-# 升级 pip 并安装依赖
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-## 环境变量
-
-复制模板并填写（**仅本地**）：
-
-```bash
-cp .env.example .env
-```
-
-`.env` 已被 `.gitignore` 忽略，不会进入 Git。
-
-## 测试
-
-```bash
-pytest
-```
-
-## 掘金量化（后续）
-
-当前阶段**不配置真实 Token**，仅预留 `strategies/myquant/`。
-
-后续计划：
-
-1. 安装掘金 Python SDK
-2. 配置回测
-3. 配置仿真
-4. 将策略迁移至 MyQuant
-5. 后期再考虑实盘
-
-## 当前阶段范围
-
-已完成：Git + Python + GitHub + 项目结构 + Codex 开发环境
-
-尚未开始（明确不做）：
-
-- 配置真实证券账户
-- 安装券商交易 API
-- 自动下单
-- QMT / MiniQMT / PTrade
-- Freqtrade / vn.py / Qlib
-- 大规模行情下载
-- 数据库集群
-- Web Quant Platform
-- 云服务器
+- `.env`、`data/`、`logs/`、`secrets/` 永不进入 Git
+- 不在宿主机全局 Python 环境安装量化依赖
+- 不配置任何真实账号、Token、Cookie
+- 不接入任何券商接口
