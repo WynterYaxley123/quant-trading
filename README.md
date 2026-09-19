@@ -9,11 +9,12 @@ Windows 宿主机只保留工具链（Git / VS Code / Docker / Codex），不在
 
 ## 当前技术栈
 
-| 组件 | 角色 | 状态 |
+| 组件 | 角色 | 版本/状态 |
 |------|------|------|
-| Hikyuu | 主研究框架 | 待接入 |
-| RQAlpha | 独立验证框架 | 待接入 |
-| AKShare | 数据获取 | 待接入 |
+| Hikyuu | 主研究框架 | 2.8.2（已接入） |
+| RQAlpha | 独立验证框架 | 6.4.0（已接入） |
+| AKShare | 数据获取 | 1.18.88（已接入） |
+| JupyterLab | 交互研究界面 | 4.4.9（随服务启动） |
 | Docker | 环境隔离 | 本阶段 |
 | Codex | 编码助手 | 本阶段 |
 | Git | 本地版本控制 | 本阶段 |
@@ -62,28 +63,73 @@ GitHub 账号处于 suspended 状态，因此本仓库**没有配置任何远程
 docker compose build
 ```
 
+### 启动服务
+
+```bash
+docker compose up -d
+```
+
+启动两个容器：
+
+| 容器 | 作用 | 端口（仅绑定 Windows localhost） |
+|------|------|--------------------------------|
+| `quant-research` | 研究环境（常驻 bash） | 9200 / 9201（hikyuu 行情服务预留） |
+| `quant-jupyter` | JupyterLab 交互界面 | 8888 |
+
 ### 进入容器
 
 ```bash
-docker compose run --rm quant-research bash
+docker exec -it quant-research bash
 ```
+
+### JupyterLab
+
+#### 配置 token
+
+Jupyter 使用 token 认证，token 存于宿主机 `.env`（该文件已被 `.gitignore` 忽略，
+不会进入 Git）。首次使用请自行生成并写入：
+
+```bash
+# 生成随机 token 并追加到 .env
+echo "JUPYTER_TOKEN=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')" >> .env
+echo "JUPYTER_PORT=8888" >> .env
+```
+
+`.env.example` 中的 `JUPYTER_TOKEN` 保持为空，仅作模板，不填任何真实值。
+
+#### 访问
+
+启动服务后，在 Windows 浏览器打开：
+
+```
+http://localhost:8888/lab?token=<.env 中的 JUPYTER_TOKEN 值>
+```
+
+- 工作目录为 `/workspace`（对应宿主机 `D:\quant-trading`）
+- 无需登录，token 直接带在 URL 中
+- 未带 token 会跳转登录页；错误 token 返回 403
+
+#### 安全边界
+
+- 端口映射为 `127.0.0.1:8888:8888`，**仅监听 Windows 本机回环地址**
+- 局域网内其他设备无法访问（不会绑定 `0.0.0.0`）
+- 不使用长期无认证模式
 
 ### VS Code 开发容器
 
 在 VS Code 中执行 `Dev Containers: Reopen in Container`，进入后：
 
 - 工作目录为 `/workspace`
-- Python 解释器为容器内的 `/usr/local/bin/python`
+- Python 解释器为容器内的 `/opt/conda/bin/python`
 - 可使用 Hikyuu / RQAlpha / AKShare
 - 可运行 `pytest`
-- 可启动 Jupyter
 
 **不要建立 .venv** —— 所有 Python 依赖统一在容器内。
 
 ### 运行环境测试
 
 ```bash
-docker compose run --rm quant-research pytest -v
+docker exec quant-research pytest tests -v
 ```
 
 ## 目录结构
@@ -103,7 +149,7 @@ quant-trading/
 ├─ docs/                   研究文档
 ├─ .gitignore
 ├─ .dockerignore
-├─ docker-compose.yml      服务名 quant-research
+├─ docker-compose.yml      服务: quant-research + jupyter
 ├─ requirements.txt
 ├─ README.md
 └─ AGENTS.md
@@ -121,6 +167,9 @@ quant-trading/
 ## 安全声明
 
 - `.env`、`data/`、`logs/`、`secrets/` 永不进入 Git
+- `.env.example` 所有凭证项保持空值，仅作模板
 - 不在宿主机全局 Python 环境安装量化依赖
 - 不配置任何真实账号、Token、Cookie
 - 不接入任何券商接口
+- 所有端口映射仅绑定 `127.0.0.1`，不对局域网暴露
+- Jupyter 使用 token 认证，不使用长期无认证模式

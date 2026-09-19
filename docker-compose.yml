@@ -12,7 +12,41 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - PYTHONUNBUFFERED=1
+    ports:
+      # hikyuu dataserver（行情推送，tcp 协议）
+      - "127.0.0.1:9201:9201"
+      # hikyuu spot_server（实时行情）
+      - "127.0.0.1:9200:9200"
     tty: true
     stdin_open: true
     command: bash
     # 不配置任何真实账号或 Token
+
+  jupyter:
+    image: quant-research:py3.12
+    container_name: quant-jupyter
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+      - ./data:/workspace/data
+    environment:
+      - TZ=Asia/Shanghai
+      - PYTHONUNBUFFERED=1
+      # token 由宿主机 .env 提供（.env 已被 .gitignore 忽略）
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:?JUPYTER_TOKEN 未设置，请在 .env 中配置}
+      - JUPYTER_PORT=${JUPYTER_PORT:-8888}
+    ports:
+      # 仅绑定 Windows localhost，不对局域网暴露
+      - "127.0.0.1:8888:8888"
+    command: >
+      bash -c "
+      jupyter lab
+      --ip=0.0.0.0
+      --port=8888
+      --no-browser
+      --ServerApp.token=\"$${JUPYTER_TOKEN}\"
+      --ServerApp.password=''
+      --ServerApp.allow_root=True
+      --notebook-dir=/workspace
+      "
+    restart: unless-stopped
