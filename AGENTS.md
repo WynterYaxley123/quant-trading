@@ -67,21 +67,74 @@ CI 配置
 
 ## 四、代码开发入口
 
-**主要开发入口：Windows 端 ChatGPT。**
+**唯一主要开发入口：Windows 端 ChatGPT 桌面应用。**
 
-执行路径：
+用户已明确定义：本项目所说的 "Codex / AI 开发"，指的是 **Windows 端 ChatGPT 应用**
+（`OpenAI.Codex` Appx 包，版本 0.155.0-alpha.2.6），
+**不是** WSL 内的 codex-cli，也**不是** VS Code 插件。
+
+### 正式开发链路
 
 ```
-ChatGPT
-  → D:\quant-trading
-  → docker compose exec quant-research ...
-  → 容器内 Python
+User
+  ↓
+Windows ChatGPT
+  ↓
+D:\quant-trading          （Windows 侧项目路径）
+  ↓
+Docker Desktop            （Windows named pipe，不经 WSL vsock）
+  ↓
+quant-research            （量化执行容器，容器内路径 /workspace）
+  ↓
+Hikyuu / RQAlpha / AKShare
 ```
 
-**禁止使用 Windows 全局 Python 执行量化代码。**
+### 路径对照
 
-WSL codex-cli 仅为**可选备用工具**，其 `-s danger-full-access` 用法
-**不属于主工作流前置要求**。详见 `docs/architecture.md` 第 7 节。
+| 位置 | 路径 |
+|------|------|
+| Windows 项目路径 | `D:\quant-trading` |
+| Docker 容器内工作路径 | `/workspace` |
+| WSL 访问路径 | `/mnt/d/quant-trading` |
+| 量化执行环境 | `quant-research` |
+| Docker CLI（完整路径） | `C:\Program Files\Docker\Docker\resources\bin\docker.exe` |
+
+### 强制规则：所有量化执行必须走 Docker
+
+标准方式：
+
+```bash
+docker compose exec quant-research python ...
+docker compose exec quant-research pytest
+```
+
+**严禁：**
+
+- 在 Windows 全局 Python 中 `pip install hikyuu` / `rqalpha` / `akshare`
+- 在 Windows 全局 Python 中执行正式量化研究代码
+- 使用 `.venv` —— 宿主机不建虚拟环境
+
+量化依赖只存在于 Docker 镜像 `quant-research:py3.12` 内。
+
+### Docker CLI 路径说明
+
+`C:\Program Files\Docker\Docker\resources\bin` 已存在于 **Machine PATH 注册表**中。
+但若当前进程（如已打开的应用）继承的是旧环境快照，可能仍找不到 `docker` 命令。
+此时允许临时使用完整路径：
+
+```
+"C:\Program Files\Docker\Docker\resources\bin\docker.exe" compose exec quant-research python ...
+```
+
+长期推荐：重启 ChatGPT/Codex 应用使 PATH 生效后，直接使用 `docker`。
+
+### WSL codex-cli 定位
+
+WSL codex-cli 仅为 **OPTIONAL FALLBACK ONLY**。
+除非用户明确要求，**不要切换到 WSL codex-cli**。
+其 `-s danger-full-access`、vsock、`~/bin/docker` wrapper 等
+**不属于 Windows ChatGPT 主工作流的必要条件**，仅作为备用技术记录保留在
+`docs/codex_usage.md`。
 
 ---
 
@@ -200,7 +253,8 @@ reports/backtests/<strategy>/<run_id>/
 | 文档 | 用途 |
 |------|------|
 | `docs/architecture.md` | 项目架构与角色定义 |
-| `docs/chatgpt_workflow.md` | ChatGPT 标准工作流 |
+| `docs/chatgpt_workflow.md` | ChatGPT 标准工作流与开发链路 |
+| `docs/windows_chatgpt_environment.md` | Windows ChatGPT 环境说明与 config.toml 风险记录 |
 | `docs/joinquant_import.md` | 聚宽策略导入流程 |
 | `docs/strategy_specification.md` | 策略规格模板 |
 | `docs/report_schema.md` | 报告输出标准 |

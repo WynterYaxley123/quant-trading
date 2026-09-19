@@ -7,7 +7,43 @@
 
 ## 1. 环境前置
 
-所有量化 Python 执行必须通过 `quant-research` 容器：
+### 正式开发链路
+
+```
+User
+  ↓
+Windows ChatGPT            （主要开发 Agent）
+  ↓
+D:\quant-trading           （Windows 侧项目路径）
+  ↓
+Docker Desktop             （Windows named pipe）
+  ↓
+quant-research             （量化执行容器，/workspace）
+  ↓
+Hikyuu / RQAlpha / AKShare
+```
+
+### 关键事实：Windows named pipe
+
+Windows 端 ChatGPT 调用 Docker Desktop，走的是 **Windows named pipe**：
+
+```
+npipe:////./pipe/dockerDesktopLinuxEngine
+```
+
+**不经过 WSL vsock。**
+
+因此以下 WSL 专有内容，**都不是** Windows ChatGPT 主工作流的必要条件：
+
+| WSL 专有内容 | 说明 |
+|--------------|------|
+| `-s danger-full-access` | WSL 沙箱阻断 vsock 才需要 |
+| `UtilBindVsockAnyPort` 报错 | WSL 特有 |
+| `~/bin/docker` wrapper | WSL → docker.exe 路径转换才需要 |
+
+这些只保留在备用文档 `docs/codex_usage.md` 中，不出现在主流程的必备步骤里。
+
+### 前置检查
 
 ```bash
 cd D:\quant-trading
@@ -16,6 +52,19 @@ docker compose exec quant-research python --version
 ```
 
 **不要使用 Windows 全局 Python。**
+
+### Docker CLI 路径
+
+`C:\Program Files\Docker\Docker\resources\bin` 已在 Machine PATH 注册表中。
+若当前进程继承旧环境快照而找不到 `docker`，使用完整路径：
+
+```
+"C:\Program Files\Docker\Docker\resources\bin\docker.exe" compose ps
+"C:\Program Files\Docker\Docker\resources\bin\docker.exe" compose exec quant-research python --version
+```
+
+重启 ChatGPT/Codex 应用后，PATH 生效即可直接使用 `docker`。
+**PATH 缺失不代表 Docker 不可用。**
 
 ---
 

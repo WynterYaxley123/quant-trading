@@ -75,6 +75,18 @@ docker compose exec quant-research pytest tests -q
 
 **不使用 Windows 全局 Python。**
 
+### Windows 侧 Docker CLI 路径
+
+`C:\Program Files\Docker\Docker\resources\bin` 已在 Machine PATH 注册表中。
+若当前进程继承旧环境快照而找不到 `docker` 命令，使用完整路径：
+
+```
+"C:\Program Files\Docker\Docker\resources\bin\docker.exe" compose ps
+```
+
+**PATH 缺失不代表 Docker 不可用。**
+重启 ChatGPT/Codex 应用后 PATH 生效，即可直接使用 `docker`。
+
 ## 当前技术栈
 
 | 组件 | 角色 | 版本 |
