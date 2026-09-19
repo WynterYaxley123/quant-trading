@@ -25,8 +25,7 @@ Windows 宿主机只保留工具链（Git / VS Code / Docker / ChatGPT），
 | 代码与成果同步 | GitHub | 未来（账号 suspended） |
 | 实盘执行 | QMT / MiniQMT | 未来 |
 
-**Hermes 默认不修改核心量化逻辑**（`src/strategies/`、`src/factors/`、
-`src/signals/`、`src/risk/`、`src/portfolio/`、`research/`）。
+**Hermes 默认不修改核心量化逻辑**（`strategies/` 下的策略包、`research/`）。
 详见 `AGENTS.md` 与 `docs/architecture.md`。
 
 ## 开发架构

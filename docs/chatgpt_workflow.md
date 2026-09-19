@@ -84,18 +84,19 @@ docker compose exec quant-research python --version
 | 2 | 解释策略 | 策略原理说明 |
 | 3 | 检查未来函数 / 偏差 | 偏差检查结论 |
 | 4 | 生成 Strategy Specification | `docs/strategy_specification.md` 填充版 |
-| 5 | 创建实验目录 | `experiment/<strategy-name>` |
-| 6 | 实现 Hikyuu 版本 | `src/strategies/hikyuu/` |
-| 7 | Docker 运行 pytest | 测试通过 |
-| 8 | Docker 运行 Hikyuu 回测 | 回测结果 |
-| 9 | 分析结果 | 结果分析 |
-| 10 | 编写 RQAlpha 验证版 | `src/strategies/rqalpha/` |
-| 11 | Docker 运行 RQAlpha 验证 | 验证结果 |
-| 12 | 比较结果 | 差异分析 |
-| 13 | 生成报告 | `reports/backtests/<strategy>/<run_id>/` |
-| 14 | 飞书推送 | 通知（未来） |
-| 15 | Git commit | 版本记录 |
-| 16 | GitHub push | 远程归档（未来，账号恢复后） |
+| 5 | 创建实验分支 | `experiment/<strategy-name>` |
+| 6 | 创建自包含策略包 | `strategies/<strategy_name>/` |
+| 7 | 实现 Hikyuu 版本 | 策略包内 `src/` |
+| 8 | Docker 运行 pytest | 测试通过 |
+| 9 | Docker 运行 Hikyuu 回测 | 回测结果 |
+| 10 | 分析结果 | 结果分析 |
+| 11 | 编写 RQAlpha 验证版 | 策略包内 `src/` |
+| 12 | Docker 运行 RQAlpha 验证 | 验证结果 |
+| 13 | 比较结果 | 差异分析 |
+| 14 | 生成报告 | `reports/backtests/<strategy>/<run_id>/` |
+| 15 | 飞书推送 | 通知（未来） |
+| 16 | Git commit | 版本记录 |
+| 17 | GitHub push | 远程归档（未来，账号恢复后） |
 
 ---
 
@@ -103,19 +104,28 @@ docker compose exec quant-research python --version
 
 **必须保留原始版本。**
 
-- 存放位置：`src/strategies/imported/joinquant/`
+- 存放位置：策略包内 `strategies/<strategy_name>/src/original/`
+  （原始聚宽代码，**只读，不覆盖**）
 - **ChatGPT 不直接覆盖原始代码**
-- 迁移逻辑写入 `src/strategies/hikyuu/`，与原始版本分离
+- 迁移后的实现写入策略包内 `src/`，与原始版本分离
 
 ---
 
 ## 4. 策略实现目录约定
 
+每个策略是**自包含策略包**：
+
 | 内容 | 目录 |
 |------|------|
-| 原始聚宽代码（保留原样） | `src/strategies/imported/joinquant/` |
-| Hikyuu 实现 | `src/strategies/hikyuu/` |
-| RQAlpha 验证版 | `src/strategies/rqalpha/` |
+| 原始聚宽代码（保留原样，只读） | `strategies/<name>/src/original/` |
+| 迁移实现（Hikyuu） | `strategies/<name>/src/` |
+| RQAlpha 验证版 | `strategies/<name>/src/`（框架 adapter） |
+| 策略配置 | `strategies/<name>/config/` |
+| 策略测试 | `strategies/<name>/tests/` |
+| 策略文档 | `strategies/<name>/docs/` |
+
+策略包之间互相独立，共同位于顶层 `strategies/`。
+框架基础设施在顶层 `src/`，两者分离。参见 `strategies/README.md`。
 
 ---
 

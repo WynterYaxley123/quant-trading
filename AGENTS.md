@@ -35,15 +35,14 @@
 ### 默认属于 ChatGPT 的目录
 
 ```
-src/strategies/
-src/factors/
-src/signals/
-src/risk/
-src/portfolio/
-research/
+strategies/              策略包集合（自包含）
+research/                研究草稿
 ```
 
 **Hermes 未经用户明确要求，不得主动修改上述核心研究代码。**
+
+策略包是**自包含**的：每个策略包含自己的 `src/`、`config/`、`tests/`、`docs/`，
+不依赖顶层 `src/`，也不被顶层 `src/` 依赖。
 
 ### 由 Hermes 维护的目录
 
@@ -62,6 +61,18 @@ CI 配置
 
 **Hermes 默认不得与 ChatGPT 并行修改核心策略代码。**
 如需改动核心研究代码，必须由用户明确指示。
+
+### 目录职责分工
+
+| 目录 | 职责 | 归属 |
+|------|------|------|
+| `strategies/` | 自包含策略包 | ChatGPT |
+| `src/` | 框架基础设施（通知、数据入口、第三方导入插槽） | Hermes |
+| `tests/` | 框架级测试（环境、框架 smoke） | Hermes |
+| `docs/` | 通用项目文档 | 共用 |
+
+**原则**：有真实职责才保留目录，不为"未来可能使用"保留空骨架。
+复用需求出现之前不做共享抽象。
 
 ---
 
