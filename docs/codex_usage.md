@@ -18,6 +18,18 @@
 **因此，不得在 README 或主工作流中把 `codex -s danger-full-access`
 写成普通开发的前置步骤。**
 
+### 与 Windows ChatGPT 的对比
+
+| 项 | Windows ChatGPT（主） | WSL codex-cli（备用） |
+|----|----------------------|----------------------|
+| Docker 通道 | Windows named pipe | WSL vsock |
+| 是否需要 danger-full-access | **否** | 是 |
+| 是否需要 `~/bin/docker` wrapper | **否** | 是 |
+| 是否主工作流 | **是** | 否 |
+
+Windows 端走 `npipe:////./pipe/dockerDesktopLinuxEngine`，
+不经过 WSL vsock，因此上表右列的所有 WSL 专有配置对主工作流**均不适用**。
+
 ---
 
 ## 2. 实际架构（经 2026-09-19 实测）
