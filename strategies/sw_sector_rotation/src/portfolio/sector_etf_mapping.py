@@ -26,6 +26,8 @@ legacy ``strategy.py`` 在红灯 ≥ 3 时把 Top5 缩到 Top3，再归一化到
 from __future__ import annotations
 
 from typing import Mapping, Sequence
+import math
+import warnings
 
 __all__ = [
     "NOT_IMPLEMENTED",
@@ -72,16 +74,24 @@ def match_etfs_for_sectors(
     同一 ETF 只出现一次，其分数为所覆盖行业的最高分。
     """
     by_etf: dict[str, dict] = {}
+    seen = set()
     for sector, score in ranked_sectors:
+        if sector in seen or not math.isfinite(float(score)):
+            raise ValueError("ranking 含重复行业或非有限 score")
+        seen.add(sector)
         entry = mapping.get(sector)
         if not entry:
+            warnings.warn(f"missing ETF mapping: {sector}", RuntimeWarning, stacklevel=2)
             continue
+        if not isinstance(entry, Mapping):
+            raise ValueError(f"{sector}: 一个行业多个 ETF 的分配规则尚未定义")
         code = entry.get("code")
-        if not code:
-            continue
+        if not isinstance(code, str) or not code.strip():
+            raise ValueError(f"{sector}: ETF code 必须为非空字符串")
+        code = code.strip()
         relation = entry.get("relation", RELATION_PROXY)
         if relation not in _VALID_RELATIONS:
-            relation = RELATION_PROXY
+            raise ValueError(f"{sector}: unknown relation {relation}")
         rec = by_etf.get(code)
         if rec is None:
             by_etf[code] = {
@@ -97,7 +107,7 @@ def match_etfs_for_sectors(
             # 混含直接与包含关系时，保留更强的 direct
             if relation == RELATION_DIRECT:
                 rec["relation"] = RELATION_DIRECT
-    return sorted(by_etf.values(), key=lambda r: r["score"], reverse=True)
+    return sorted(by_etf.values(), key=lambda r: (-r["score"], r["etf_code"]))
 
 
 def normalize_scores_to_weights(scores: Mapping[str, float]) -> dict[str, float]:
@@ -109,9 +119,13 @@ def normalize_scores_to_weights(scores: Mapping[str, float]) -> dict[str, float]
     if not scores:
         return {}
     vals = {k: float(v) for k, v in scores.items()}
+    if not all(math.isfinite(v) for v in vals.values()):
+        raise ValueError("score 含 NaN/Inf")
     lo = min(vals.values())
     shifted = {k: v - lo + 1e-9 for k, v in vals.items()}
     total = sum(shifted.values())
+    if not math.isfinite(total):
+        raise ValueError("score 权重归一化溢出")
     if total <= 0:
         n = len(vals)
         return {k: 1.0 / n for k in vals}
@@ -127,10 +141,17 @@ def passthrough_sector_weights(
     否则对 ``sectors_in_etf`` 等权。
     """
     explicit = etf_entry.get("sector_weights")
-    if explicit:
+    if explicit is not None:
+        if not isinstance(explicit, Mapping) or not explicit:
+            raise ValueError("sector_weights 必须为非空 mapping")
+        if any(not math.isfinite(float(v)) or float(v) < 0 for v in explicit.values()):
+            raise ValueError("sector_weights 必须为有限非负值")
         total = sum(float(v) for v in explicit.values())
-        if total > 0:
+        if math.isfinite(total) and total > 0:
             return {k: float(v) / total for k, v in explicit.items()}
+        raise ValueError("sector_weights 总和必须为有限正数")
+    if len(set(sectors_in_etf)) != len(sectors_in_etf):
+        raise ValueError("穿透行业不得重复")
     if not sectors_in_etf:
         return {}
     w = 1.0 / len(sectors_in_etf)

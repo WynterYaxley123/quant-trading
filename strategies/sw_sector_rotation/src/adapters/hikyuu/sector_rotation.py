@@ -39,6 +39,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Protocol, Sequence, runtime_checkable
+import math
+import warnings
 
 import pandas as pd
 
@@ -190,14 +192,27 @@ def ranked_sectors_to_targets(
 ) -> list[SectorWeightTarget]:
     """行业排名 → 目标权重记录。
 
-    ``etf_candidates`` 非空时以 ETF 为单位；否则以行业为单位。
+    ``etf_candidates`` 为列表时以 ETF 为单位（空列表仍为空）；
+    仅 ``None`` 保留旧行业描述路径，不代表行业代码可交易。
     权重取自候选自身的 ``weight`` 字段（若存在），否则等权。
     """
-    if etf_candidates:
+    if etf_candidates is not None:
+        if not etf_candidates:
+            return []  # 显式空 ETF 集绝不能回退成行业代码交易
         n = len(etf_candidates) or 1
         out = []
+        codes = [c.get("etf_code") for c in etf_candidates]
+        if any(not isinstance(c, str) or not c.strip() for c in codes):
+            raise ValueError("ETF candidate 缺少 symbol")
+        if len(set(codes)) != len(codes):
+            raise ValueError("ETF candidates 含 duplicate ETF，请先完成映射合并")
+        present = ["weight" in c for c in etf_candidates]
+        if any(present) and not all(present):
+            raise ValueError("ETF weights 不得部分缺失")
         for cand in etf_candidates:
             w = float(cand.get("weight", 1.0 / n))
+            if not math.isfinite(w) or w < 0:
+                raise ValueError("ETF weight 必须为有限非负数")
             out.append(
                 SectorWeightTarget(
                     symbol=str(cand.get("etf_code", "")),
@@ -207,11 +222,15 @@ def ranked_sectors_to_targets(
                 )
             )
         total = sum(t.target_weight for t in out)
+        if not math.isfinite(total) or total <= 0:
+            raise ValueError("ETF weight 总和必须为有限正数")
         if total > 0:
             for t in out:
                 t.target_weight = t.target_weight / total
         return out
 
+    if len({s for s, _ in ranked_sectors}) != len(ranked_sectors):
+        raise ValueError("行业 targets 不得重复")
     n = len(ranked_sectors) or 1
     return [
         SectorWeightTarget(symbol=sector, target_weight=1.0 / n, sectors=[sector])
@@ -226,6 +245,9 @@ def targets_to_system_weights(targets: Sequence[SectorWeightTarget]) -> list[dic
     ``{"symbol", "weight"}``，实际 ``System`` 实例需在行情初始化后由
     ChatGPT 侧构造并绑定。
     """
+    _validate_targets(targets)
+    if any(not t.symbol for t in targets):
+        warnings.warn("跳过缺少 symbol 的 legacy target；不得作为完整订单", RuntimeWarning, stacklevel=2)
     return [
         {"symbol": t.symbol, "weight": float(t.target_weight)}
         for t in targets
@@ -247,6 +269,11 @@ def build_stock_selector_input(
     为 ``None`` 时原样传递 symbol。
     """
     resolver = symbol_resolver or {}
+    _validate_targets(targets)
+    if any(not t.symbol for t in targets):
+        raise ValueError("Selector target 缺少 symbol")
+    if symbol_resolver is not None and any(t.symbol not in resolver for t in targets):
+        raise ValueError("symbol_resolver 缺少 ETF 映射")
     stock_list = []
     scores = {}
     weights = {}
@@ -256,6 +283,14 @@ def build_stock_selector_input(
         weights[t.symbol] = float(t.target_weight)
         scores[t.symbol] = float(t.target_weight)
     return {"stock_list": stock_list, "scores": scores, "weights": weights}
+
+
+def _validate_targets(targets: Sequence[SectorWeightTarget]) -> None:
+    symbols = [t.symbol for t in targets if t.symbol]
+    if len(symbols) != len(set(symbols)):
+        raise ValueError("duplicate target symbol")
+    if any(not math.isfinite(t.target_weight) or t.target_weight < 0 for t in targets):
+        raise ValueError("target weight 必须为有限非负数")
 
 
 # ---------------------------------------------------------------------------

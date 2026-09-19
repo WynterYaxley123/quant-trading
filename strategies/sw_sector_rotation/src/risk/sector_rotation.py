@@ -40,6 +40,8 @@ from typing import Mapping
 import numpy as np
 import pandas as pd
 
+from ..common.temporal_integrity import as_of_truncate
+
 __all__ = [
     "RISK_THRESHOLDS",
     "RiskState",
@@ -85,6 +87,7 @@ class RiskState:
     confidence: float
     details: dict = field(default_factory=dict)
     metrics: dict = field(default_factory=dict)
+    status: str = "OK"
 
     def as_dict(self) -> dict:
         return {
@@ -92,6 +95,7 @@ class RiskState:
             "confidence": self.confidence,
             "details": dict(self.details),
             "metrics": dict(self.metrics),
+            "status": self.status,
         }
 
 
@@ -130,6 +134,7 @@ def compute_risk_state(
     *,
     thresholds: Mapping[str, float] | None = None,
     historical_cross_vols: list[float] | None = None,
+    as_of=None,
 ) -> RiskState:
     """计算风险状态。
 
@@ -152,6 +157,18 @@ def compute_risk_state(
     if thresholds:
         th.update(dict(thresholds))
 
+    if as_of is not None:
+        prices = {name: as_of_truncate(frame, as_of) for name, frame in prices.items()}
+    if historical_cross_vols is not None and not np.isfinite(historical_cross_vols).all():
+        raise ValueError("historical_cross_vols 含 NaN/Inf")
+    for name, frame in prices.items():
+        if (not isinstance(frame.index, pd.DatetimeIndex) or frame.index.has_duplicates
+                or frame.index.hasnans or not frame.index.is_monotonic_increasing):
+            raise ValueError(f"{name}: risk 日期不合法")
+        for col in ("close", "amount"):
+            if col not in frame or not np.isfinite(frame[col].to_numpy(dtype=float)).all():
+                raise ValueError(f"{name}: risk {col} 缺失或含 NaN/Inf")
+
     names = list(prices.keys())
     if len(names) < th["min_sectors"]:
         return RiskState(
@@ -159,7 +176,13 @@ def compute_risk_state(
             confidence=1.0,
             details={},
             metrics={"error": "insufficient data", "n_sectors": len(names)},
+            status="INSUFFICIENT_DATA",
         )
+
+    endpoints = {frame.index[-1] for frame in prices.values() if not frame.empty}
+    if (any(len(frame) < th["min_history"] for frame in prices.values()) or len(endpoints) != 1
+            or (as_of is not None and endpoints != {pd.Timestamp(as_of)})):
+        return RiskState(0, 1.0, metrics={"error": "insufficient or stale data"}, status="INSUFFICIENT_DATA")
 
     closes = _aligned_closes(prices, 60)
 
@@ -197,7 +220,7 @@ def compute_risk_state(
     for c in closes.values():
         if len(c) < 10:
             continue
-        r = c.pct_change().dropna()
+        r = c.pct_change(fill_method=None).dropna()
         if len(r) >= 5:
             rets_5d.append(float(r.iloc[-5:].mean()))
     cross_vol = float(np.std(rets_5d)) if len(rets_5d) > 5 else 0.0
@@ -227,7 +250,7 @@ def compute_risk_state(
     # 5. 相关性（排除对角线）
     ret_frames = {}
     for name, c in closes.items():
-        r = c.pct_change().dropna()
+        r = c.pct_change(fill_method=None).dropna()
         if len(r) >= th["corr_lookback_days"]:
             ret_frames[name] = r.iloc[-int(th["corr_lookback_days"]):]
     if len(ret_frames) >= th["min_sectors"]:

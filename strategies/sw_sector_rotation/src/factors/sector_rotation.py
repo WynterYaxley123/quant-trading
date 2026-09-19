@@ -98,6 +98,15 @@ def validate_market_frame(frame: pd.DataFrame) -> None:
         raise TypeError("market frame index 必须是 DatetimeIndex")
     if len(frame.index) and not frame.index.is_monotonic_increasing:
         raise ValueError("market frame index 必须升序排列")
+    if frame.index.has_duplicates or frame.index.hasnans or frame.columns.has_duplicates:
+        raise ValueError("market frame 不允许重复日期、NaT 或重复列")
+    if frame.index.tz is not None or not frame.index.equals(frame.index.normalize()):
+        raise ValueError("market frame 必须使用无时区的日频日期")
+    values = frame.loc[:, list(CANONICAL_COLUMNS)].to_numpy(dtype=float)
+    if not np.isfinite(values).all():
+        raise ValueError("market frame 含 NaN/Inf")
+    if (values[:, :4] <= 0).any() or (values[:, 4:] < 0).any():
+        raise ValueError("价格必须为正数，volume/amount 不得为负")
 
 
 # ---------------------------------------------------------------------------
@@ -144,7 +153,7 @@ def compute_volatility_features(frame: pd.DataFrame) -> pd.DataFrame:
     ``v5`` / ``v20``: 日收益的滚动标准差。
     ``vc``: 短期波动 / 中期波动，> 1 表示波动放大。
     """
-    r = frame["close"].pct_change()
+    r = frame["close"].pct_change(fill_method=None)
     out = pd.DataFrame(index=frame.index)
     out["v5"] = r.rolling(5).std()
     out["v20"] = r.rolling(20).std()
@@ -154,7 +163,7 @@ def compute_volatility_features(frame: pd.DataFrame) -> pd.DataFrame:
 
 def compute_reversal_features(frame: pd.DataFrame) -> pd.DataFrame:
     """反转因子：过去平均收益取负。"""
-    r = frame["close"].pct_change()
+    r = frame["close"].pct_change(fill_method=None)
     out = pd.DataFrame(index=frame.index)
     for p in (5, 10):
         out[f"rev{p}"] = -r.rolling(p).mean()
@@ -172,7 +181,7 @@ def compute_drawdown_features(frame: pd.DataFrame) -> pd.DataFrame:
 
 def compute_rsi_feature(frame: pd.DataFrame, period: int = 14) -> pd.Series:
     """RSI（0-100），legacy 使用 14 日简单平均的改进版。"""
-    r = frame["close"].pct_change()
+    r = frame["close"].pct_change(fill_method=None)
     gains = r.clip(lower=0)
     losses = (-r).clip(lower=0)
     rs = gains.rolling(period).mean() / (losses.rolling(period).mean() + _EPS)

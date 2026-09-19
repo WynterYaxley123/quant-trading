@@ -28,6 +28,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Iterable, Sequence
 
+import numpy as np
 import pandas as pd
 
 __all__ = [
@@ -44,6 +45,8 @@ __all__ = [
     "ALLOWED_TRAIN_GROUPS",
     "FORBIDDEN_TRAIN_FEATURES",
     "validate_train_features",
+    "signal_timing",
+    "validate_execution_date",
 ]
 
 # ---------------------------------------------------------------------------
@@ -99,7 +102,40 @@ def validate_train_features(features: Iterable[str]) -> None:
 
 def trading_calendar(dates: Iterable) -> pd.DatetimeIndex:
     """把任意日期序列整理成去重、升序的 ``DatetimeIndex``。"""
-    return pd.DatetimeIndex(sorted(pd.to_datetime(pd.Series(list(dates))).unique()))
+    cal = pd.DatetimeIndex(list(dates))
+    if cal.hasnans or cal.tz is not None or not cal.equals(cal.normalize()):
+        raise ValueError("交易日历必须为无 NaT、无时区的日频日期")
+    return cal.unique().sort_values()
+
+
+def validate_execution_date(signal_date, execution_date) -> None:
+    """收盘后决策不得在同日或更早成交；可交易性由执行层另行验证。"""
+    signal, execution = pd.Timestamp(signal_date), pd.Timestamp(execution_date)
+    if pd.isna(signal) or pd.isna(execution) or execution.normalize() <= signal.normalize():
+        raise ValueError("execution_date 必须晚于 signal_date；信号在收盘后产生")
+
+
+def signal_timing(calendar: Sequence, signal_date, forward_days: int) -> dict:
+    """标签观察期与交易持有期分开；next session 仅是执行下界，不保证成交。"""
+    if isinstance(forward_days, bool) or not isinstance(forward_days, (int, np.integer)) or forward_days <= 0:
+        raise ValueError("forward_days 必须为正整数")
+    cal = trading_calendar(calendar)
+    signal = pd.Timestamp(signal_date)
+    pos = position_of(cal, signal)
+    if pos is None:
+        raise ValueError("signal_date 不在交易日历中")
+    return {
+        "signal_date": signal,
+        "decision_time": "after_close",
+        "earliest_execution_date": cal[pos + 1] if pos + 1 < len(cal) else None,
+        "execution_date": None,  # 实际成交日只能由执行引擎提供
+        "label_start": signal,
+        "label_end": cal[pos + forward_days] if pos + forward_days < len(cal) else None,
+        "prediction_horizon": int(forward_days),
+        "rebalance_cadence": None,
+        "holding_period": None,
+        "holding_end": None,
+    }
 
 
 def position_of(calendar: pd.DatetimeIndex, date) -> int | None:
@@ -138,7 +174,8 @@ class TemporalBoundaries:
         最后一条允许进入训练的日期。其 forward label 在 ``pred_date``
         时已完全实现，即 ``label_cutoff + fwd`` 交易日 <= ``pred_date``。
     realized_end:
-        ``label_cutoff`` 对应的标签实现日 = ``calendar[pred_pos]``。
+        本次预测的标签实现日 = ``calendar[pred_pos + fwd]``；未知则 None。
+        最后训练标签的实现日为 pred_date，与本字段不同。
     train_start:
         滚动训练窗口起点 = ``label_cutoff - train_months``。
     forward_days:
@@ -147,7 +184,7 @@ class TemporalBoundaries:
 
     pred_date: pd.Timestamp
     label_cutoff: pd.Timestamp
-    realized_end: pd.Timestamp
+    realized_end: pd.Timestamp | None
     train_start: pd.Timestamp
     forward_days: int
 
@@ -155,7 +192,7 @@ class TemporalBoundaries:
         return {
             "pred_date": str(self.pred_date.date()),
             "label_cutoff": str(self.label_cutoff.date()),
-            "realized_end": str(self.realized_end.date()),
+            "realized_end": str(self.realized_end.date()) if self.realized_end is not None else None,
             "train_start": str(self.train_start.date()),
             "forward_days": self.forward_days,
         }
@@ -172,7 +209,7 @@ def temporal_boundaries(
     参数
     ----
     calendar:
-        交易日历（可含非交易日，会被整理）。
+        交易日历（去重排序；调用方必须提供真实交易日，不能传普通自然日）。
     pred_date:
         预测日。
     forward_days:
@@ -183,22 +220,25 @@ def temporal_boundaries(
     返回
     ----
     ``TemporalBoundaries``，若 ``pred_date`` 不在日历中、或日历长度不足以
-    在两侧各留出 ``forward_days``，则返回 ``None``。
+    在历史侧留出 ``forward_days``，则返回 ``None``。推理不要求未来日历。
 
     关键：``label_cutoff = calendar[pred_pos - forward_days]``。
     这保证 ``label_cutoff`` 的 fwd 日收益在 ``pred_date`` 当天已经实现完毕，
     即训练集里**不存在**任何依赖未来价格的标签。这正是 purge 的含义。
     """
+    for name, value in (("forward_days", forward_days), ("train_months", train_months)):
+        if isinstance(value, bool) or not isinstance(value, (int, np.integer)) or value <= 0:
+            raise ValueError(f"{name} 必须为正整数")
     cal = trading_calendar(calendar)
     pred_ts = pd.Timestamp(pred_date)
     pred_pos = position_of(cal, pred_ts)
     if pred_pos is None:
         return None
-    if pred_pos < forward_days or pred_pos + forward_days >= len(cal):
+    if pred_pos < forward_days:
         return None
 
     label_cutoff = cal[pred_pos - forward_days]
-    realized_end = cal[pred_pos + forward_days]
+    realized_end = cal[pred_pos + forward_days] if pred_pos + forward_days < len(cal) else None
     train_start = label_cutoff - pd.DateOffset(months=train_months)
     return TemporalBoundaries(
         pred_date=pred_ts,
@@ -214,14 +254,28 @@ def temporal_boundaries(
 # ---------------------------------------------------------------------------
 
 
-def make_forward_label(close: pd.Series, forward_days: int) -> pd.Series:
+def make_forward_label(close: pd.Series, forward_days: int, *, calendar: Sequence | None = None) -> pd.Series:
     """构造未来 ``forward_days`` 日收益标签。
 
-    ``label[t] = close[t+fwd] / close[t] - 1``，最后 ``fwd`` 行为 NaN，
-    因为它们对应的未来价格尚未实现。
+    ``label[t] = close[calendar[pos(t)+fwd]] / close[t] - 1``。
+    缺失终点保留 NaN，不填价格。省略 calendar 仅适用于完整日历序列；
+    核心编排器始终传入公共交易日历，不能用行业自身缺日的行数代替。
     """
+    if isinstance(forward_days, bool) or not isinstance(forward_days, (int, np.integer)) or forward_days <= 0:
+        raise ValueError("forward_days 必须为正整数")
+    if not isinstance(close.index, pd.DatetimeIndex) or close.index.has_duplicates or close.index.hasnans:
+        raise ValueError("label index 必须为唯一、无 NaT 的 DatetimeIndex")
     close = close.sort_index()
-    return close.shift(-forward_days) / close - 1.0
+    values = close.to_numpy(dtype=float)
+    if not np.isfinite(values).all() or (values <= 0).any():
+        raise ValueError("label close 必须为有限正价格")
+    cal = trading_calendar(close.index if calendar is None else calendar)
+    if not close.index.isin(cal).all():
+        raise ValueError("close 日期不在公共交易日历中")
+    aligned = close.reindex(cal)  # 缺失日期保留 NaN，绝不移动终点或填价格
+    with np.errstate(over="raise", invalid="raise", divide="raise"):
+        labels = aligned.shift(-forward_days) / aligned - 1.0
+    return labels.reindex(close.index)
 
 
 def training_window(

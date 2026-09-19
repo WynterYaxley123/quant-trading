@@ -188,8 +188,8 @@ def add_macro_features(
 ) -> pd.DataFrame:
     """把时点对齐的宏观特征并入行业特征 DataFrame。
 
-    对 ``features_df`` 的每个唯一日期求一次快照，然后 reindex + ffill。
-    绝不使用未来快照填充过去行。
+    对每个日期独立求快照。尚未发布的指标保留 NaN，不伪造零值。
+    publication_date 的固定规则仅为 legacy 估计，启用前须有真实发布/修订时点。
     """
     if macro_raw is None or macro_raw.empty or features_df.empty:
         return features_df.copy()
@@ -200,7 +200,7 @@ def add_macro_features(
     snapshots = {d: macro_available_at(d, macro_raw) for d in sorted(set(dates))}
     macro_df = pd.DataFrame.from_dict(snapshots, orient="index")
     macro_df.index = pd.to_datetime(macro_df.index)
-    macro_df = macro_df.reindex(pd.to_datetime(dates)).ffill().fillna(0.0)
+    macro_df = macro_df.reindex(pd.to_datetime(dates))
     macro_df.index = features_df.index
 
     result = features_df.copy()

@@ -30,6 +30,8 @@ __all__ = [
 
 def rank_sectors(scores: Mapping[str, float]) -> list[tuple[str, float]]:
     """按分数降序排名。分值相同按行业名稳定排序。"""
+    if not np.isfinite(list(scores.values())).all():
+        raise ValueError("ranking score 含 NaN/Inf")
     return sorted(scores.items(), key=lambda kv: (-float(kv[1]), kv[0]))
 
 
@@ -54,10 +56,14 @@ def sector_scores_to_weights(
         return {}
     names = [s for s, _ in ranked]
     vals = np.array([float(v) for _, v in ranked], dtype=float)
+    if len(set(names)) != len(names) or not np.isfinite(vals).all():
+        raise ValueError("权重输入含重复行业或非有限 score")
     if long_only:
         vals = vals - vals.min() + 1e-9
     total = float(vals.sum())
-    if total <= 0 or not np.isfinite(total):
+    if not np.isfinite(total):
+        raise ValueError("权重归一化溢出")
+    if total <= 0:
         w = 1.0 / len(names)
         return {s: w for s in names}
     return {s: float(v / total) for s, v in zip(names, vals)}
