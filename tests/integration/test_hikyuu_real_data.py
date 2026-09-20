@@ -155,6 +155,14 @@ def test_level_a_smoke_runs_real_backtest(datadir):
     assert res.metrics.max_drawdown <= 0
     # 未建模项必须明确为 None
     assert res.metrics.slippage is None
+    assert res.metrics.commission is None
+    assert res.metadata.commission is None
+    # 持仓来自逐日真实 TM 快照，不再从已平仓记录读取不存在的字段补零。
+    assert res.positions["datetime"].tolist() == res.equity_curve["date"].tolist()
+    assert res.positions["number"].nunique() > 1
+    assert res.positions["cash"].nunique() > 1
+    assert ((res.positions["cash"] + res.positions["market_value"]
+             - res.equity_curve["equity"]).abs() < .02).all()
 
 
 def test_level_a_writes_standard_output(datadir, tmp_path):

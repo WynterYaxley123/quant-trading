@@ -226,28 +226,25 @@ def _closing_dates(stk, start, end):
     return kd.get_datetime_list() if len(kd) else None
 
 
-def positions_from_tm(tm) -> pd.DataFrame:
-    """历史持仓记录。"""
-    try:
-        plist = tm.get_history_position_list()
-    except Exception:  # noqa: BLE001
-        plist = []
-    rows: list[dict] = []
-    for p in plist:
-        d = getattr(p, "datetime", None)
-        rows.append(
-            {
-                "datetime": (
-                    f"{int(d.year):04d}-{int(d.month):02d}-{int(d.day):02d}" if d else ""
-                ),
-                "symbol": str(getattr(p, "stock", "")),
-                "number": float(getattr(p, "number", 0.0) or 0.0),
-                "price": float(getattr(p, "price", 0.0) or 0.0),
-            }
-        )
-    if not rows:
-        return pd.DataFrame(columns=["datetime", "symbol", "number", "price"])
-    return pd.DataFrame(rows)
+def positions_from_tm(tm, dates, stock) -> pd.DataFrame:
+    """单标的 smoke 的逐交易日持仓及账户快照。
+
+    Hikyuu 2.8.2 实测：PositionRecord 无 datetime/price 字段，已平仓历史
+    record.number 为零。使用 get_position(date, stock).number；日期来自真实
+    KData，现金/市值来自 get_funds(date)，不伪造平均成本或吞掉 API 错误。
+    """
+    rows = []
+    for d in dates:
+        p = tm.get_position(d, stock)
+        funds = tm.get_funds(d)
+        rows.append({
+            "datetime": f"{int(d.year):04d}-{int(d.month):02d}-{int(d.day):02d}",
+            "symbol": str(stock.market).lower() + str(stock.code),
+            "number": float(p.number),
+            "cash": float(funds.cash),
+            "market_value": float(funds.market_value),
+        })
+    return pd.DataFrame(rows, columns=["datetime", "symbol", "number", "cash", "market_value"])
 
 
 # --- 主链路 ---------------------------------------------------------------
@@ -347,7 +344,7 @@ def run_hikyuu_backtest(
     # --- 提取结果 ---
     trades = trades_from_tm(tm_best)
     equity = equity_curve_from_tm(tm_best, sym_dates.get(chosen))
-    positions = positions_from_tm(tm_best)
+    positions = positions_from_tm(tm_best, sym_dates[chosen], sm[chosen])
 
     final_value = float(equity["equity"].iloc[-1]) if len(equity) else None
     total_return = (
@@ -371,7 +368,7 @@ def run_hikyuu_backtest(
         volatility=vol,
         sharpe=sharpe,
         trade_count=int(len(trades)),
-        commission=_sum_cost(trades),
+        commission=None,  # TC_Zero 仅为执行占位，并未单独建模实际佣金
         slippage=None,  # cost_func 为 crtTM 默认（TC_Zero），未单独建模滑点
         execution_time=time.time() - t0,
     )
@@ -382,7 +379,11 @@ def run_hikyuu_backtest(
             "未建模涨跌停",
             "未建模停牌",
             "未做组合级资金分配（单标的运行）",
-            f"框架默认交易成本（crtTM 默认 TC_Zero，即零成本）",
+            "执行仍使用 crtTM 默认 TC_Zero；真实佣金和滑点未单独建模，报告为 null。trades.cost=0 仅是引擎占位输出，不代表实际交易免费。",
+            "yearly_returns.csv 为空表：年度收益聚合尚未实现。",
+            "Query 日期区间为 [start_date, end_date)，资金曲线仅含实际 KData 日期。",
+            "未人为强制期末平仓；positions.csv 为单标的逐交易日快照。",
+            "年化按 252 个交易日，无风险利率按 0 的 smoke 计算假设。",
         ]
     )
 
@@ -398,7 +399,7 @@ def run_hikyuu_backtest(
         data_source="hikyuu:pytdx-hdf5",
         data_snapshot=None,
         initial_cash=float(request.initial_cash),
-        commission=_sum_cost(trades),
+        commission=None,
         slippage=None,
         status="LEVEL_A_SMOKE",
         run_type="execution_smoke",
