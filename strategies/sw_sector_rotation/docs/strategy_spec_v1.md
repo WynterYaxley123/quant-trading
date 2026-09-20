@@ -2,6 +2,11 @@
 
 状态：**STRATEGY SPEC V1 DRAFT - USER DECISIONS REQUIRED**
 
+更新：用户已批准本文件第 20 节所列 LEVEL B 研究规则；**当前阻塞为 DATA NOT READY**。
+第 20 节及 `config/sw_sector_rotation_level_b_research.yaml` 是新增批准记录的权威补充。
+第 1–19 节保留原草稿作为决策来历，其中“未批准”描述若与第 20 节冲突，以第 20 节为准。
+批准研究方案不代表数据合格、实现完成或 OOS 已锁定。
+
 文档版本：`v1-draft.1`；日期：2026-09-20。
 
 事实基线：`experiment/sw-sector-core-hardening`，commit `3af2398b408bce9827b61df6b92269da99bc8348`。
@@ -456,3 +461,45 @@ B 明确安排末日后可执行的清算 session 并计成本/扩展实际区�
 rank/percentile target、RSRS 入模、alpha/horizon/fusion 权重、新因子均为其他独立研究，
 不得与 A/B/C 同时变更。未来实验保存独立 experiment_id、parent_baseline、唯一变量差异和完整元数据，
 不得覆盖 Baseline v1 结果，也不能将多个变化后的表现称为某一变量的因果效果。
+
+## 20. LEVEL B research authorization and data gate
+
+本次任务批准：t after_close → 下一 session open；每 10 个交易日目标差额再平衡；
+Top5 行业 → validated primary ETF → ETF 去重等权；RiskState record-only；
+未成交订单当日取消；期末 mark-to-market、不强平。
+保留全部第 17 节模型基线。成本 0.00025 佣金、最低 5 CNY、印花税 0、滑点 0.001，
+记录为 `research-cost-v1`，不是生产费率声明。最低佣金聚合、资金取整、可成交性等细节仍须明确。
+
+旧决策编号的更新：D01=open、D02=10 sessions、D03=目标差额、D04=去重 ETF 等权、
+D05=record-only、D08=validated primary（未验证的 legacy proxy 不自动获得批准）、
+D09=上述研究成本数字、D11=当日撤余单、D16=期末不强平，D15=按时间 Development/Validation/Final OOS。
+该批准记录只约束未来 LEVEL B；没有改动现有 core 的模型/参数或 LEVEL A 执行模型。
+
+研究计划配置：[sw_sector_rotation_level_b_research.yaml](../config/sw_sector_rotation_level_b_research.yaml)。
+**它是声明式计划，当前 core/runner 不读取它，不能作为已实现的执行/OOS 隔离系统。**
+数据检查报告：[baseline_v1_research_report.md](baseline_v1_research_report.md)。
+
+当前合格行业数据范围、历史分类/映射版本均未知，因此三段 start/end、rebalance_anchor、
+partition lock commit 均为 null，dates_locked=false，OOS_LOCKED=false。
+不以现有 ETF 数据范围冒充完整行业可研究范围；不机械用 60/20/20 填日期。
+正式数据仍不足，按用户要求停止于数据阶段，未运行 Baseline 或参数研究。
+
+后续分区必须遵循：
+
+1. 先按历史有效行业和 ETF 的实际可用覆盖确定研究范围，预留 120 日 label purge、
+   各 horizon cutoff 前 6 个月训练窗及 120 行特征预热；不能把预热不足当作有效评价区间。
+2. 时间顺序 Development → Validation → Final OOS；60/20/20 仅为参考。
+   牛/熊/震荡覆盖不是凭比例能保证的。需事先定义客观行情状态口径和最短区间要求，
+   若实际跨度不足以让三段均有充分状态覆盖，暂停并报告，不能反复看 OOS 后挑边界。
+3. 边界、评价/基准/成本定义及研究选择门槛在研究前写入配置并 commit。
+   在此之前只做覆盖/质量核查，不计算或展示 Final OOS 策略绩效。
+4. 每个 prediction date 仍调用原滚动训练：从该 horizon 的 label_cutoff 回溯 6 个月，
+   不是整段 Development 拟合一次。用于 Development/Validation 研究的标签终点不得越入 OOS。
+5. 先保留 Baseline 的 Development/Validation 结果，再按单变量分阶段研究；
+   保留失败与非最优实验，不使用 OOS 指标或曲线选参数。
+6. 最多 Baseline + 两个候选，冻结参数、候选名单及其锁定 commit 后设 OOS_LOCKED=true。
+   此字段不能仅靠手动布尔值替代实际 commit/快照/候选一致性校验。
+7. 冻结规则下 OOS walk-forward 可以使用当时已经实现的历史标签更新模型系数，
+   但不能据 OOS 表现更改超参数、模型定义、映射、成本、频率或候选名单。
+8. Final OOS 只做一次最终评价；结果差则报告失败，不回调参数后重新使用同一 OOS。
+   跨分区持仓延续/独立账户、估值与全区间拼接口径需预先定义，不能简单相乘独立区间收益冒充连续账户。
