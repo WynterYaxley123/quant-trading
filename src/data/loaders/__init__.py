@@ -12,5 +12,13 @@ from .panel_loader import (
     LoadResult,
     load_panel,
 )
+from .shenwan_sector_loader import (
+    load_sector_catalog,
+    load_sector_ohlcva,
+    load_sector_panel,
+)
 
-__all__ = ["MarketDataRequest", "LoadResult", "load_panel"]
+__all__ = [
+    "MarketDataRequest", "LoadResult", "load_panel",
+    "load_sector_catalog", "load_sector_ohlcva", "load_sector_panel",
+]
