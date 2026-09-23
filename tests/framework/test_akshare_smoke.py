@@ -14,6 +14,7 @@ import socket
 
 import pytest
 
+
 # 顶层 import：若失败则为包级故障
 akshare = pytest.importorskip("akshare", reason="akshare not importable")
 
@@ -33,6 +34,8 @@ def test_akshare_key_functions_exist():
         assert hasattr(akshare, name), f"missing akshare API: {name}"
 
 
+@pytest.mark.integration
+@pytest.mark.network
 def test_dns_resolution():
     """DNS 解析可用（纯网络层检查，与 akshare 无关）。
 
@@ -50,6 +53,8 @@ def test_dns_resolution():
     assert len(resolved) > 0
 
 
+@pytest.mark.integration
+@pytest.mark.network
 def test_light_public_endpoint():
     """轻量公开数据接口可达性测试。
 
@@ -67,6 +72,8 @@ def test_light_public_endpoint():
         pytest.skip(f"NETWORK_UNAVAILABLE: 轻量接口当前不可达（{type(exc).__name__}）")
 
 
+@pytest.mark.integration
+@pytest.mark.network
 def test_akshare_call_returns_data():
     """AKShare 实际调用测试（只做一次，取少量结果）。
 
