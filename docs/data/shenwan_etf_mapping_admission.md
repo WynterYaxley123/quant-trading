@@ -2,6 +2,9 @@
 
 Status: **ETF_MAPPING_NOT_ADMISSIBLE**. This is an offline data/evidence audit, not
 a strategy run, backtest, performance result, or permission to start LEVEL B.
+Subsequent derived-proxy and temporal analysis is documented separately in
+[`shenwan_etf_proxy_mapping_policy.md`](shenwan_etf_proxy_mapping_policy.md);
+it does not change this direct-mapping result.
 
 ## Reconciled provenance
 

@@ -23,7 +23,13 @@ def test_frozen_local_etf_metadata_does_not_claim_listing_date():
 
 
 @pytest.mark.integration
-def test_offline_etf_admission_reports_evidence_gap(tmp_path):
+def test_offline_etf_admission_reports_evidence_gap(tmp_path, monkeypatch):
+    import socket
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("admission must not access the network")
+
+    monkeypatch.setattr(socket.socket, "connect", forbidden)
     report = build(
         sector_dir=Path("data/processed/shenwan"),
         hikyuu_dir=Path("data/hikyuu"),
@@ -47,6 +53,31 @@ def test_offline_etf_admission_reports_evidence_gap(tmp_path):
     assert report["partial_candidate_notice"] == "CANDIDATE ONLY; NOT ADMITTED FOR BACKTEST"
     assert report["level2_sector_count"] == 124
     assert report["mapped_sector_count"] == 0
+    assert report["official_evidence_status_counts"]["VALIDATED"] == 0
+    assert report["proxy_mapping_admission"] == "PROXY_MAPPING_CURRENT_ONLY"
+    assert report["proxy_current_strong_count"] == 4
+    assert report["proxy_current_mixed_count"] == 1
+    assert report["proxy_current_insufficient_count"] == 1
+    assert report["proxy_currently_admissible_count"] == 0
+    assert report["proxy_historical_admissible_count"] == 0
+    assert report["proxy_current_only_count"] == 4
+    assert report["proxy_candidate_diagnostic_count"] == 6
+    assert report["formal_executable_universe_count"] == 0
+    proxy = {r["etf_code"]: r for r in report["proxy_evaluations"]}
+    assert set(proxy) == {"512480", "512880", "515790", "159840", "159852", "159883"}
+    assert proxy["515790"]["current_status"] == "PROXY_CURRENT_MIXED"
+    assert proxy["159840"]["composition_source_type"] == "NO_CONSTITUENT_EVIDENCE"
+    assert all(not r["proxy_historical_backtest_admissible"] for r in proxy.values())
+    assert all(not r["proxy_currently_admissible"] for r in proxy.values())
+    assert all(r["relationship_effective_from"] is None for r in proxy.values())
+    assert all(r["temporal_status"] == "PROXY_HISTORICALLY_INSUFFICIENT" for r in proxy.values())
+    assert all(r["sw_classification_status"] == "FIXED_CLASSIFICATION_RESEARCH" for r in proxy.values())
+    assert all(r["composition_as_of_date"] == "2026-09-23"
+               for code, r in proxy.items() if code != "159840")
+    assert all(r["composition_available_at"] == "2026-09-23"
+               for code, r in proxy.items() if code != "159840")
+    assert proxy["515790"]["evidence_acquisition_priority"] == "EXCLUDE_SINGLE_SECTOR_PROXY"
+    assert proxy["159840"]["evidence_acquisition_priority"] == "DEFER_CURRENT_AND_HISTORICAL_RESEARCH"
     assert report["strict_validated_coverage_ratio"] == 0
     assert report["latest_executable_sector_count"] == 0
     assert report["historical_executable_max"] == 0
