@@ -1,136 +1,96 @@
-# Shenwan Level-2 ETF mapping and tradability admission
+# Shenwan Level-2 ETF mapping: second admission
 
-Status: **ETF_DATA_GAP / ETF_MAPPING_NOT_ADMISSIBLE**. This is a data-access
-and execution-capacity audit, **not** a strategy run or performance result.
-No LEVEL B, Baseline, parameter search or OOS lock was performed.
+Status: **ETF_MAPPING_NOT_ADMISSIBLE**. This is an offline data/evidence audit, not
+a strategy run, backtest, performance result, or permission to start LEVEL B.
 
-## Provenance and existing mapping audit
+## Reconciled provenance
 
-The verified sector universe is the 124-row official Level-2 canonical catalog,
-snapshot `872bcbc2b1e59f70530f692de71fdd9c6225c37eab00483861264ed00454e500`.
-The strategy's existing `sector_etf_mapping.py` contains ranking-to-ETF matching
-and duplicate-ETF handling, but **no validated product table**. Its YAML
-example contains 25 static sector-name relationships to 17 ETF codes. It is
-marked `LEGACY REFERENCE ONLY / REQUIRES REVALIDATION`, has no effective
-dates, tracking-index IDs, source evidence or listing-date proof, and is
-excluded from canonical admission. Four example ETF codes recur across three
-sectors each: 512660, 159997, 159852 and 512400. The separate legacy document
-has 48 older rows and even identifies an invalid airport→software proxy.
-Neither file establishes a historical primary ETF. There are no evidenced
-multiple-candidate sectors; this means **unknown**, not that alternatives do
-not exist. The example calls 159745 an 易方达 product, while local Hikyuu
-metadata calls it 国泰; this conflict is not silently reconciled.
+The existing `scripts/data/verify_etf_evidence.py` gate reports **INTEGRITY:
+PASS**: 29 PDFs on disk, 29 manifest entries, 22 catalog ETFs, 22/22 catalog
+primary-document, SHA256 and URL matches, no duplicates or orphans. The
+admission entrypoint additionally reads `evidence_sources.csv`, verifies all
+29 field-level document links against the registered manifest, and checks the
+21 independent raw ETF CSVs against their SHA256, size, row count, columns and
+date range. Those raw files contain 40,445 rows. The evidence inputs are
+read-only and remain under `data/raw/etf_evidence/`, `data/raw/etf/` and
+`data/processed/shenwan_etf_mapping/` (gitignored).
 
-The new evidence schema is `sector_code/name`, `etf_code/name`, `market`,
-`tracking_index_code/name`, `mapping_status`, `mapping_effective_from/to`,
-`etf_listing_date`, `source_provider/url/file/retrieved_at/sha256`,
-`evidence_type`, `is_primary`, and `notes`. A validated row needs an
-explicit primary designation, a dated relationship, a listing date, a
-tracking index and auditable source. A local source file's SHA256 is checked.
-Two primaries for one sector are rejected; unresolved alternatives must be
-`MULTIPLE_CANDIDATES`. A shared ETF may map to several sectors and remains
-one ETF in the unchanged portfolio deduplication helper. ETF listing is **not**
-used to invent `mapping_effective_from`; today's relationship is never
-backfilled. The generated 124 rows are explicitly `UNKNOWN`, not fake
-negative findings of `NO_SUITABLE_ETF`.
+The official catalog contains 22 unique ETFs. Official fund identity, listing
+date, establishment date and tracking-index name are complete for 22/22;
+tracking-index code is present for 11/22. Supporting official documents may
+prove individual fields: not every field must come from the same primary PDF.
+These documents prove **Layer 1** (ETF → currently disclosed tracking index).
+They do not prove **Layer 2** (tracking index → one specific Shenwan Level-2
+sector). A matching product or index name is insufficient. Historical
+`mapping_effective_from` and `mapping_effective_to` are both 0/22. An official
+listing date is not a mapping start date; a `CURRENT_RELATIONSHIP_ONLY`
+disclosure is not backfilled.
 
-## Local ETF inventory and evidence gap
+| Official evidence status | ETFs | Formal execution mapping |
+|---|---:|---|
+| VALIDATED | 0 | none |
+| PARTIAL_EVIDENCE | 6 | candidate only; not admitted for backtest |
+| NOT_DIRECT_MAPPING | 15 | excluded |
+| CONFLICT | 1 | excluded |
+| UNVERIFIED | 0 | excluded |
 
-Frozen `stock.db` contains eight type-5 ETF records, matched by eight
-existing HDF5 daily-bar tables. `stock.startDate` equals the first locally
-observed bar in this snapshot, but neither proves an **official listing date**.
-All eight `listing_date` values therefore remain null. All local series end
-on 2026-09-18:
+The six partial candidates are evidence-acquisition leads, **not** validated
+primary mappings:
 
-| ETF | Hikyuu start / local first bar | Bars |
-|---|---|---:|
-| sh510300 | 2012-05-28 | 3,481 |
-| sh510500 | 2013-03-15 | 3,285 |
-| sh512400 | 2017-09-01 | 2,197 |
-| sh512660 | 2016-08-08 | 2,458 |
-| sh588000 | 2020-11-16 | 1,420 |
-| sz159745 | 2021-06-18 | 1,277 |
-| sz159915 | 2011-12-09 | 3,589 |
-| sz159934 | 2013-12-16 | 3,105 |
+| ETF | Official tracking index | Candidate Shenwan Level-2 | Official listing | Missing evidence |
+|---|---|---|---|---|
+| 512480 国联安半导体ETF | 中证全指半导体产品与设备指数 | 801081 半导体 | 2019-06-12 | Layer 2; historical effective-from |
+| 512880 国泰中证全指证券公司ETF | 399975 中证全指证券公司指数 | 801193 证券Ⅱ | 2016-08-08 | Layer 2; historical effective-from |
+| 515790 光伏ETF | 931151 中证光伏产业指数 | 801735 光伏设备 | 2020-12-18 | Layer 2; historical effective-from |
+| 159840 锂电池ETF工银 | 国证新能源车电池指数 | 801737 电池 | 2021-08-20 | Layer 2; historical effective-from |
+| 159852 嘉实中证软件服务ETF | 中证软件服务指数 | 801104 软件开发 | 2021-02-09 | Layer 2; historical effective-from |
+| 159883 永赢中证全指医疗器械ETF | 中证全指医疗器械指数 | 801153 医疗器械 | 2021-04-30 | Layer 2; historical effective-from |
 
-Of the 17 codes in the **unverified** example, only 159745, 512400 and
-512660 have local bars. The other 14 example codes are 159616, 159840,
-159852, 159883, 159997, 512200, 512480, 512690, 512800, 512880,
-515030, 515050, 515220 and 515790. These are *candidate evidence/data
-gaps*, **not** approved primary selections or an automatic download list.
-In particular, 801193 证券Ⅱ has no validated primary; example 512880 has
-no local bars. Official fund issuer fact sheets, tracking-index disclosures
-and exchange product/listing records are candidate sources. Collecting fresh
-records or history would require separate authorization; none was requested
-or fetched here.
+The 25 concluded legacy mapping reviews remain separate: 6 partial, 18 not
+direct and 1 conflict. In particular, 计算机设备→159852 and IT服务Ⅱ→159852 remain
+`NOT_DIRECT_MAPPING` despite that ETF's partial candidate for 软件开发. 159616
+is an ETF-identity conflict (official 农牧, not legacy 智能电网); 159745 retains
+the manager-name conflict and spans multiple Level-2 sectors; 512800's
+legacy “银行” is not one canonical Level-2 sector. The 48 legacy reference
+records are clues only, excluded from official coverage and execution; 21
+remain `UNVERIFIED_OUTSIDE_INVESTIGATED_UNIVERSE`. No new investigation was
+performed on them.
 
-## Daily semantics and coverage
+ETF 159915 has official identity/listing/tracking evidence and 3,589 local
+Hikyuu bars starting 2011-12-09. It has **no independent raw refresh**. Its
+official listing date comes from official evidence, not from its first local
+bar. This broad-market ETF is `NOT_DIRECT_MAPPING` and cannot become a
+Shenwan Level-2 primary merely because local market data exists.
 
-For each sector signal session, the audit separately records sector factor
-bar validity and ETF mapping activity, official listing, next-session local
-bar presence, positive valid OHLC/open and execution capacity. No missing
-bar is filled. The signal-date bar cannot stand in for the next session's
-execution bar. When no next local session exists (including 2026-09-18),
-new execution is unproven. A valid ETF bar cannot repair an invalid or
-missing sector-index bar. Local OHLC alone does **not** distinguish a
-suspension, price-limit queue or other microstructure constraint; this is a
-conservative daily data-availability approximation, not proof of fills.
+## Strict admission versus candidate diagnostics
 
-| Measure | Result |
-|---|---:|
-| Mapped / 124 Level-2 sectors | 0 / 124 (0%) |
-| Unmapped sectors | 124; explicit list in generated admission JSON |
-| Validated primary relationships / unique ETFs | 0 / 0 |
-| Canonical duplicate ETFs across sectors / unresolved multi-candidate sectors | 0 / 0 |
-| Official listing-date completeness | 0 / 8 local ETFs |
-| Primary mapping effective-from and source completeness | 0 / 0; no primary rows exist |
-| Latest common-date executable sectors / 124 | 0 / 124 |
-| Sector-only candidate sessions | 239 |
-| Candidate-period executable sectors, min / median / mean / max | 0 / 0 / 0 / 0 |
-| Candidate-period executable coverage ratio, min / median / mean / max | 0% / 0% / 0% / 0% |
-| Sessions with executable sectors ≥5 / <5 | 0 / 239 |
+The unchanged mapping evaluator admits only `VALIDATED` primary rows with
+auditable historical timing. The formal mapping remains 124 explicit
+`UNKNOWN` sector rows: **0/124 validated sectors (0%)**, zero strict
+executable sectors on the latest common date, and zero historical executable
+sectors throughout the 239 candidate sessions. Candidate diagnostic coverage
+is **6/124 (4.84%)**, separately labeled **CANDIDATE ONLY; NOT ADMITTED FOR
+BACKTEST**. None of those six enters active mapping, Top-5 execution coverage,
+or the formal executable universe.
 
-These zeros describe **verified mapping capacity in this snapshot**, not the
-number of ETFs or industry products existing in the market. The 801193 sector
-index is missing 336 of the 1,158 common sessions, but no candidate-period
-session; its ETF's presence must never fill its index gap.
+Sector-only research eligibility remains **2025-04-02..2026-03-27**;
+`sector_plus_etf_candidate_start/end` remain **null** because no validated
+execution universe exists. The sector source retains
+`FIXED_CLASSIFICATION_RESEARCH`, `strict_pit=false`:
+**NOT A STRICT HISTORICAL CLASSIFICATION PIT BACKTEST.** Daily local bars and
+positive OHLC alone also cannot prove absence of suspension, price-limit
+queues or other execution constraints. No Development/Validation/OOS dates
+were locked.
 
-The sector-only candidate interval remains **2025-04-02..2026-03-27**.
-The existing calculation starts from the 2021-12-13..2026-09-18 common
-calendar, requires 120 preceding sessions of valid sector features, six
-calendar months of training and a 120-session label/purge boundary, then
-reserves 120 future sessions for the largest forward label. Thus the
-2026-09-18 sector data endpoint does not become the candidate endpoint.
-The next-session execution bar is checked separately here; the prior
-sector-only date algorithm did **not** reserve an additional execution
-session beyond its 120-session label allowance. This potential conservatism
-or boundary interaction should be reviewed before a split is designed,
-not silently changed now. The sector-plus-ETF candidate start/end are both
-**null**, because no date has five verified executable sector mappings.
-No Development/Validation/OOS dates are locked.
+To reproduce, run the integrity gate first, then
+`scripts/data/admit_shenwan_etf_mapping.py` inside the existing
+`quant-research` container. The entrypoint writes only generated, gitignored
+admission outputs (`etf_mapping_admission.json`, mapping evidence, ETF local
+metadata, daily availability and coverage CSVs) to
+`data/processed/shenwan_etf_mapping/`. It does not download, import Hikyuu
+data, change a strategy, or run a backtest.
 
-## Admission and reproducibility
-
-ETF mapping admission is **ETF_MAPPING_NOT_ADMISSIBLE**: no local record
-proves a primary tracking relationship, historical mapping effective date
-or official ETF listing date. Even partial admission would require actual
-validated rows, not the example. Sector admission remains
-`FIXED_CLASSIFICATION_RESEARCH`, `strict_pit=false`.
-**NOT A STRICT HISTORICAL CLASSIFICATION PIT BACKTEST.**
-The 20 source-invalid sector OHLC rows are unchanged and independently
-guarded by the existing sector loader.
-
-Generated, gitignored files are in `data/processed/shenwan_etf_mapping/`:
-`etf_mapping_evidence.csv`, `etf_local_metadata.csv`,
-`etf_daily_availability.csv`, `etf_daily_coverage.csv`, and
-`etf_mapping_admission.json`. Inputs are the existing SHA256-verified
-Shenwan canonical files and read-only Hikyuu `stock.db`/HDF5 files.
-Rebuild with `docker compose exec quant-research python
-scripts/data/admit_shenwan_etf_mapping.py`. No network, data initialization,
-image build, dependency change or strategy run is performed.
-
-Next prerequisite: acquire and audit official, historically timed
-tracking/listing documents and—only after explicit authorization—any
-missing ETF daily histories; resolve the 159745 identity conflict and
-deterministically designate primary ETFs. This moves the admission tooling
-closer to LEVEL B, but **does not authorize LEVEL B**.
+Next blocker: official second-layer index-methodology/constituent evidence
+for **only the six candidates above**, plus separate historical evidence for
+`mapping_effective_from`. These are prerequisites to another admission,
+not authorization to proceed to LEVEL B.
