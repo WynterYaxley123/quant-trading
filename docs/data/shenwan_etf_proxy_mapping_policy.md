@@ -1,8 +1,13 @@
 # ETF proxy mapping and temporal admission policy
 
-Status: **current-only diagnostics; no historical proxy is admitted**. This
+Status: **historical point-snapshot diagnostics; no historical proxy is admitted**. This
 policy does not change the strategy, direct mapping evaluator, or the formal
 ETF execution universe. It does not authorize LEVEL B or a backtest.
+
+The 2025–2026 re-admission and publication-time audit is in
+[`shenwan_historical_proxy_readmission.md`](shenwan_historical_proxy_readmission.md).
+The earlier current-only candidate table below is retained as its acquisition
+baseline, not as a statement that no historical report has since been found.
 
 ## Two independent mapping paths
 
@@ -78,14 +83,15 @@ resolver is deliberately disabled in this phase. The present sector data
 admission remains `FIXED_CLASSIFICATION_RESEARCH`, `strict_pit=false`; proxy
 evidence cannot upgrade it to strict PIT.
 
-## Re-evaluation of the six local candidates
+## Pre-acquisition current-only evaluation of the six local candidates
 
-All composition dates below are 2026-09-23 where a source exists; the source
-was first retrieved that day. All six have only
+At this pre-acquisition baseline, all composition dates below are 2026-09-23
+where a source exists; the source was first retrieved that day. All six had only
 `EARLIEST_RELATIONSHIP_CONFIRMED_CONTINUITY_INCOMPLETE`. Their candidate
 listing/tradable dates are kept separate from formal proxy effective dates,
 which remain null. No historical composition snapshot in the sector-only
-research interval (2025-04-02..2026-03-27) is present.
+research interval (2025-04-02..2026-03-27) was then present. The later
+periodic-report snapshots are audited separately above.
 
 | ETF → candidate L2 | Evidence coverage | Observed concentration | Current status | Historical status |
 |---|---|---|---|---|
@@ -103,6 +109,10 @@ universe** only. In particular, the 2026-09-23 observations cannot be used
 for any date from 2025-04-02 through 2026-03-27.
 
 ## Minimum next-round evidence request, not an instruction to download now
+
+This is the original pre-acquisition request. The later periodic reports fill
+some observation-date gaps but do not replace archived full-index interval or
+publication-time evidence; see the re-admission audit linked at the top.
 
 The official CSI basic-info files for H30184, 399975, 930601 and H30217
 describe **semiannual** index adjustment. They do not specify the historical
