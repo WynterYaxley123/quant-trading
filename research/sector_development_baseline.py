@@ -78,7 +78,10 @@ class DevelopmentOutput:
 
 def _git(repo_dir: Path, *args: str) -> str:
     result = subprocess.run(
-        ["git", *args], cwd=repo_dir, text=True, capture_output=True, check=True,
+        # Docker bind mount has different UID ownership. This per-command trust
+        # applies only to this exact workspace; no global Git config is changed.
+        ["git", "-c", f"safe.directory={repo_dir.resolve()}", *args],
+        cwd=repo_dir, text=True, capture_output=True, check=True,
     )
     return result.stdout.strip()
 

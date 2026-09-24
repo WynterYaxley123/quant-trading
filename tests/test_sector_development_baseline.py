@@ -151,6 +151,22 @@ def test_gate_rejects_wrong_image_before_data_access(monkeypatch, tmp_path):
         baseline.pre_run_gate(tmp_path, tmp_path, "wrong")
 
 
+def test_git_gate_uses_nonpersistent_exact_workspace_trust(monkeypatch, tmp_path):
+    seen = {}
+
+    def fake_run(argv, **kwargs):
+        seen["argv"] = argv
+        seen["cwd"] = kwargs["cwd"]
+        return type("Result", (), {"stdout": "branch\n"})()
+
+    monkeypatch.setattr(baseline.subprocess, "run", fake_run)
+    assert baseline._git(tmp_path, "branch", "--show-current") == "branch"
+    assert seen["argv"] == [
+        "git", "-c", f"safe.directory={tmp_path.resolve()}", "branch", "--show-current",
+    ]
+    assert seen["cwd"] == tmp_path
+
+
 def test_gate_rejects_dirty_worktree(monkeypatch, tmp_path):
     monkeypatch.setattr(baseline, "_git", lambda repo, *args: (
         baseline.EXPECTED_BRANCH if args[0] == "branch" else
