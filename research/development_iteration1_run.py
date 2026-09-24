@@ -32,7 +32,7 @@ from strategies.sw_sector_rotation.src.strategy import SWSectorRotationConfig, S
 
 STARTING_HEAD = "dc5626ac33da6953ae908eb0d1a0c01769474a7f"
 BASELINE_RUN_ID = "20260924_145948_233618_utc"
-BASELINE_AGGREGATE_SHA256 = "6948a3933ce88d85fe9ca106f40849cdad4082c43bef3ab0254a07fd6c"
+BASELINE_AGGREGATE_SHA256 = "6948a3933ce88d85fe9ca106f40849cdad40801e4082c43bef3ab0254a07fd6c"
 ARTIFACT_NAMES = (
     "predictions.csv", "per_date_metrics.csv", "aggregate_metrics.json",
     "training_diagnostics.csv", "data_quality_diagnostics.json",
