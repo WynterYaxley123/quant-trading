@@ -10,6 +10,8 @@
 
 # 回测产物（每次运行生成，体积大且不可复现，不进 Git）
 /reports/backtests/
+# 非执行研究运行产物（可由冻结输入重新生成）
+/reports/research/
 
 # 环境变量
 .env
