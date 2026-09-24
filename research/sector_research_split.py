@@ -30,6 +30,11 @@ HOLDING_FIELDS = (
     "portfolio_formation", "entry_convention", "holding_convention",
     "overlap_policy", "return_measurement", "turnover_semantics",
 )
+SPLIT_FIELDS = (
+    "policy_version", "development_signals", "validation_signals",
+    "final_oos_signals", "boundary_purge_sessions", "oos_start", "oos_end",
+)
+UNIVERSE_FIELDS = ("mode", "sector_codes", "admission_mode")
 EPHEMERAL_HASH_FIELDS = frozenset({"timestamp", "locked_at", "uuid", "run_id", "generated_at"})
 
 
@@ -141,6 +146,8 @@ def strategy_config_payload(
     *,
     rebalance_policy: Mapping[str, object] | None = None,
     holding_policy: Mapping[str, object] | None = None,
+    split_policy: Mapping[str, object] | None = None,
+    universe_policy: Mapping[str, object] | None = None,
 ) -> dict:
     """Canonical hash input; missing portfolio semantics are explicit nulls."""
     if not data_snapshot_id:
@@ -161,20 +168,35 @@ def strategy_config_payload(
         "macro_enabled": False,
         "flow_enabled": False,
         "risk_state": "record_only",
+        "prediction_metric_spec_version": "sector-index-prediction-metrics-v1",
         "rebalance_policy": dict(rebalance_policy) if rebalance_policy is not None else None,
         "holding_policy": dict(holding_policy) if holding_policy is not None else None,
+        "split_policy": dict(split_policy) if split_policy is not None else None,
+        "universe_policy": dict(universe_policy) if universe_policy is not None else None,
     }
 
 
 def strategy_config_hash(payload: Mapping[str, object]) -> str | None:
     """Return a deterministic hash only when all OOS-lock semantics exist."""
     for name, required in (("rebalance_policy", REBALANCE_FIELDS),
-                           ("holding_policy", HOLDING_FIELDS)):
+                           ("holding_policy", HOLDING_FIELDS),
+                           ("split_policy", SPLIT_FIELDS),
+                           ("universe_policy", UNIVERSE_FIELDS)):
         policy = payload.get(name)
         if not isinstance(policy, Mapping) or any(
             policy.get(field) is None or policy.get(field) == "" for field in required
         ):
             return None
+    split = payload["split_policy"]
+    universe = payload["universe_policy"]
+    if (split["boundary_purge_sessions"] != max(FORWARD_WINDOWS.values())
+            or any(isinstance(split[field], bool) or not isinstance(split[field], int)
+                   or split[field] < 1 for field in (
+                       "development_signals", "validation_signals", "final_oos_signals"))
+            or split["oos_start"] > split["oos_end"]
+            or not isinstance(universe["sector_codes"], (list, tuple))
+            or not universe["sector_codes"]):
+        return None
 
     def _without_ephemeral(value):
         if isinstance(value, Mapping):
@@ -258,7 +280,9 @@ def audit_split(processed_dir: Path) -> dict:
         "rebalance_semantics": "REBALANCE_SEMANTICS_NOT_FROZEN",
         "holding_semantics": "HOLDING_SEMANTICS_NOT_FROZEN",
         "strategy_config_hash": strategy_config_hash(payload),
-        "missing_for_config_hash": ["rebalance_policy", "holding_policy"],
+        "missing_for_config_hash": [
+            "rebalance_policy", "holding_policy", "split_policy", "universe_policy",
+        ],
         "performance_metrics_viewed": False,
         "executable": False,
         "level_b": False,

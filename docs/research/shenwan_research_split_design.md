@@ -109,9 +109,10 @@ separate decision.
 The proposed SHA-256 fingerprint uses canonical sorted JSON of the 19
 factors, model/alpha, horizons, fusion, Top5, training window and minimum,
 target, risk/RSRS/macro/flow flags, data admission mode and snapshot ID, plus
-approved rebalance and holding policies. Timestamps, UUIDs and run IDs are
-excluded. Hashing returns null while either portfolio policy is missing;
-no timestamp or arbitrary generated ID can manufacture a lockable hash.
+approved rebalance, holding, split and universe policies. Timestamps, UUIDs
+and run IDs are excluded. Hashing returns null while any of these four
+policies is missing; no timestamp or arbitrary generated ID can manufacture
+a lockable hash.
 
 The existing `sw_sector_rotation_level_b_research.yaml` contains
 `rebalance_sessions: 10` under an **execution research plan**, but its

@@ -39,6 +39,16 @@ def _complete_policies():
             "return_measurement": "sector_close_to_close",
             "turnover_semantics": "target_weight_difference",
         },
+        {
+            "policy_version": "synthetic-test-only", "development_signals": 60,
+            "validation_signals": 40, "final_oos_signals": 40,
+            "boundary_purge_sessions": 120,
+            "oos_start": "2026-01-01", "oos_end": "2026-03-01",
+        },
+        {
+            "mode": "synthetic-test-only", "sector_codes": ["801081", "801193"],
+            "admission_mode": "FIXED_CLASSIFICATION_RESEARCH",
+        },
     )
 
 
@@ -148,8 +158,10 @@ def test_split_dates_do_not_depend_on_returns():
 
 
 def test_config_hash_deterministic_and_ephemeral_fields_ignored():
-    rebalance, holding = _complete_policies()
-    payload = strategy_config_payload("snapshot-a", rebalance_policy=rebalance, holding_policy=holding)
+    rebalance, holding, split, universe = _complete_policies()
+    payload = strategy_config_payload("snapshot-a", rebalance_policy=rebalance,
+                                      holding_policy=holding, split_policy=split,
+                                      universe_policy=universe)
     first = strategy_config_hash(payload)
     assert first is not None and len(first) == 64
     assert strategy_config_hash(payload) == first
@@ -157,9 +169,11 @@ def test_config_hash_deterministic_and_ephemeral_fields_ignored():
 
 
 def test_data_snapshot_is_included_in_config_hash():
-    rebalance, holding = _complete_policies()
-    a = strategy_config_payload("snapshot-a", rebalance_policy=rebalance, holding_policy=holding)
-    b = strategy_config_payload("snapshot-b", rebalance_policy=rebalance, holding_policy=holding)
+    rebalance, holding, split, universe = _complete_policies()
+    policies = dict(rebalance_policy=rebalance, holding_policy=holding,
+                    split_policy=split, universe_policy=universe)
+    a = strategy_config_payload("snapshot-a", **policies)
+    b = strategy_config_payload("snapshot-b", **policies)
     assert a["data_snapshot_id"] == "snapshot-a"
     assert strategy_config_hash(a) != strategy_config_hash(b)
 
@@ -178,12 +192,32 @@ def test_payload_preserves_frozen_signal_definition():
 
 
 def test_missing_rebalance_or_holding_blocks_config_hash(actual):
-    rebalance, holding = _complete_policies()
+    rebalance, holding, split, universe = _complete_policies()
     snapshot = actual["data_snapshot_id"]
     assert strategy_config_hash(strategy_config_payload(snapshot)) is None
     assert strategy_config_hash(strategy_config_payload(snapshot, rebalance_policy=rebalance)) is None
     assert strategy_config_hash(strategy_config_payload(snapshot, holding_policy=holding)) is None
+    assert strategy_config_hash(strategy_config_payload(
+        snapshot, rebalance_policy=rebalance, holding_policy=holding)) is None
+    assert strategy_config_hash(strategy_config_payload(
+        snapshot, rebalance_policy=rebalance, holding_policy=holding,
+        split_policy=split)) is None
+    assert strategy_config_hash(strategy_config_payload(
+        snapshot, rebalance_policy=rebalance, holding_policy=holding,
+        universe_policy=universe)) is None
     assert actual["strategy_config_hash"] is None
+
+
+def test_incomplete_universe_or_non_strict_split_cannot_hash():
+    rebalance, holding, split, universe = _complete_policies()
+    policies = dict(rebalance_policy=rebalance, holding_policy=holding,
+                    split_policy=split, universe_policy=universe)
+    assert strategy_config_hash(strategy_config_payload("snapshot-a", **policies)) is not None
+    assert strategy_config_hash(strategy_config_payload(
+        "snapshot-a", **{**policies, "universe_policy": {**universe, "sector_codes": []}})) is None
+    assert strategy_config_hash(strategy_config_payload(
+        "snapshot-a", **{**policies, "split_policy": {
+            **split, "boundary_purge_sessions": 10}})) is None
 
 
 def test_actual_training_cutoffs_all_verified(actual):
