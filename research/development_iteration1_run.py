@@ -115,7 +115,7 @@ def long_to_wide(long: pd.DataFrame) -> pd.DataFrame:
     if len(result) != 100 * 124 or not result.groupby("ordinal")["top5"].sum().eq(5).all():
         raise ValueError("RESEARCH_PROTOCOL_VIOLATION: single fused Top5 failed")
     for _, day in result.groupby("ordinal", sort=True):
-        actual = day.loc[day["top5"], "sector_code"].tolist()
+        actual = day.loc[day["top5"]].sort_values("fused_rank")["sector_code"].tolist()
         expected = day.sort_values(["fused_score", "sector_code"],
                                    ascending=[False, True]).head(5)["sector_code"].tolist()
         if actual != expected:

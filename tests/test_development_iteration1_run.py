@@ -88,8 +88,8 @@ def test_wide_output_rejects_horizon_specific_top5_and_keeps_full_grid():
                 records.append({
                     "ordinal": ordinal, "signal_date": "2025-04-02",
                     "sector_code": code, "horizon": h,
-                    "prediction_score": float(i), "fused_score": float(123 - i),
-                    "fused_rank": i + 1, "top5": i < 5,
+                    "prediction_score": float(i), "fused_score": float(i),
+                    "fused_rank": 124 - i, "top5": i >= 119,
                     "realized_forward_return": float(i) / 1000,
                     "label_end": "2025-04-20", "training_observations": 3720,
                     "training_valid_days": 30,
@@ -101,7 +101,7 @@ def test_wide_output_rejects_horizon_specific_top5_and_keeps_full_grid():
     assert wide.groupby("ordinal")["top5"].sum().eq(5).all()
     assert wide.loc[0, "pred_10"] == wide.loc[0, "pred_120"]
     changed = long.copy()
-    changed.loc[changed["horizon"].eq(120) & changed["sector_code"].eq("C000"), "top5"] = False
+    changed.loc[changed["horizon"].eq(120) & changed["sector_code"].eq("C123"), "top5"] = False
     with pytest.raises(ValueError, match="Top5 differs by horizon"):
         runner.long_to_wide(changed)
 
