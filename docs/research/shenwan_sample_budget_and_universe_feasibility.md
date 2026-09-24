@@ -1,6 +1,13 @@
 # Shenwan research sample budget and universe continuity
 
-Status: **SAMPLE BUDGET DECISION REQUIRED**. This is a read-only date,
+Historical audit status: **SAMPLE BUDGET DECISION REQUIRED**. The later
+decision adopts fixed U0 and Policy C; see
+[`shenwan_development_prediction_protocol.md`](shenwan_development_prediction_protocol.md).
+Its ordinal layout is frozen, while Validation and Final OOS remain sealed.
+The historical `UNLOCKED_UNOPENED` statement below reflects the state of
+this earlier audit, not the current ordinal-policy status.
+
+This is a read-only date,
 availability and research-definition audit. U0 remains the only formal
 research universe. U1/U2 are counterfactual diagnostics, **not adopted**.
 No Baseline, Ridge prediction, IC, RankIC, return, Top5 performance,

@@ -1,6 +1,13 @@
 # Shenwan sector-index research split feasibility
 
-Status: **STRICT_3WAY_SPLIT_NOT_FEASIBLE**. This is a date, session-count,
+Historical feasibility-audit status: **STRICT_3WAY_SPLIT_NOT_FEASIBLE** on
+the 239-session snapshot. The subsequently approved, superseding Policy C
+ordinal protocol is documented in
+[`shenwan_development_prediction_protocol.md`](shenwan_development_prediction_protocol.md).
+It freezes the future 460-slot layout while keeping Validation and Final OOS
+sealed; it does not claim the full split is currently data-feasible.
+
+This is a date, session-count,
 label-availability and configuration audit only. No baseline, Ridge fit,
 prediction ranking, IC, return, equity curve, ETF execution or LEVEL B run was
 performed. The fixed-classification sector-index study remains
@@ -172,7 +179,11 @@ with **NO ETF COSTS** and cannot be interpreted as tradable ETF performance.
   data or a separately approved methodological change; it cannot quietly
   reuse OOS prices for selection.
 
-**Recommended next decision:** preserve the frozen joint design and choose
-whether to wait for a materially longer, re-admitted continuous data window
-(A), or explicitly commission a separate methodological redesign. Do not
-run the baseline, open OOS, tune parameters, or start LEVEL B meanwhile.
+**Historical recommendation, superseded by the later Policy C decision:**
+preserve the joint 10/40/120 design and choose a sample budget. Policy C and
+fixed U0 have now been explicitly approved, as recorded in the linked
+protocol. The older null full-strategy/OOS-lock statements above refer to
+this prior feasibility audit; they do not negate the new prediction-only
+configuration hash. Full synthetic-portfolio semantics and Final OOS dates
+remain unavailable. Do not open Validation/OOS, run a baseline in this
+freeze-only phase, tune parameters, or start LEVEL B.
