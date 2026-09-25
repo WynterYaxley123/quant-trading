@@ -1,24 +1,33 @@
-"""Synthetic/state-only gates for the Factor Set V2 preregistration.
+"""Factor Set V2 protocol and lifecycle-aware historical integrity gates.
 
-No Factor Set V2 run, prediction, or metric may be produced here. The only
-data touch allowed is a read-only control comparison against the EXISTING
-Iteration-1 D2 artifact, and a filesystem scan proving no V2 result exists.
+The preregistration result-leak rule is tested on temporary directories;
+existing formal results are validated through Git lineage and provenance.
 """
 
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
+import subprocess
 
 import pytest
 
 from research import factor_set_v2_protocol as protocol
+from research.factor_set_v2_preregistration_guard import assert_no_v2_formal_results
 
 FROZEN_ORDER = (
     "d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120",
     "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi",
 )
 REPO = Path(__file__).resolve().parents[1]
+PREREG_COMMIT = "b836f27e33987ea3d987b8683a38acc442cb2cdd"
+RESULT_COMMIT = "8803f618e4a7a5ea5c65d550ecf71063182782e6"
+FROZEN_PATHS = (
+    "docs/research/shenwan_factor_set_v2_preregistration.md",
+    "research/configs/factor_set_v2_candidates.json",
+    "research/factor_set_v2_protocol.py",
+)
 D2_SUMMARY = (REPO / "reports/research/shenwan_sector_index"
               / "iteration1_20260924_163607_787266_utc/candidate_summary.json")
 
@@ -263,14 +272,63 @@ def test_config_validation_rejects_budget_settings_and_order_drift():
         protocol._validate_config(_tampered(lambda c: c["control"].update({"sourceCandidate": "D0"})))
 
 
-def test_no_v2_formal_result_artifacts_exist_before_preregistration():
-    base = REPO / "reports/research/shenwan_sector_index"
-    if not base.exists():
-        pytest.skip("generated reports directory not present")
-    leaked = [entry.name for entry in base.iterdir()
-              if entry.is_dir() and entry.name.startswith(
-                  ("factor_set_v2", "iteration2", "v2_candidate"))]
-    assert leaked == [], f"PREREGISTRATION_RESULT_LEAK_BLOCKER: {leaked}"
+def test_preregistration_result_leak_guard_lifecycle(tmp_path):
+    root = tmp_path / "reports"
+    assert_no_v2_formal_results(root)  # A fresh checkout is legal.
+    root.mkdir()
+    (root / "iteration1_older_formal_run").mkdir()
+    assert_no_v2_formal_results(root)  # Earlier, unrelated results are legal.
+    for name in (
+        "factor_set_v2_20990101_000000_utc",
+        "iteration2_synthetic_result",
+        "v2_candidate_synthetic_result",
+    ):
+        entry = root / name
+        entry.mkdir()
+        with pytest.raises(ValueError, match="PREREGISTRATION_RESULT_LEAK_BLOCKER"):
+            assert_no_v2_formal_results(root)
+        entry.rmdir()
+
+
+def _git(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-c", f"safe.directory={REPO}", *args], cwd=REPO,
+        text=True, capture_output=True, check=False,
+    )
+
+
+def test_v2_historical_preregistration_precedes_result_and_protocol_is_immutable():
+    lineage = _git("merge-base", "--is-ancestor", PREREG_COMMIT, RESULT_COMMIT)
+    assert lineage.returncode == 0, f"V2_PREREGISTRATION_LINEAGE_BLOCKER: {lineage.stderr}"
+    changed = _git("diff", "--name-only", PREREG_COMMIT, RESULT_COMMIT,
+                   "--", *FROZEN_PATHS)
+    assert changed.returncode == 0 and not changed.stdout.strip(), (
+        f"V2_PROTOCOL_IMMUTABILITY_BLOCKER: {changed.stdout} {changed.stderr}"
+    )
+
+
+def test_existing_v2_results_have_frozen_provenance_read_only():
+    root = REPO / "reports/research/shenwan_sector_index"
+    if not root.exists():
+        pytest.skip("generated V2 reports not present on disk")
+    runs = sorted(p for p in root.iterdir() if p.is_dir() and p.name.startswith("factor_set_v2_"))
+    assert runs, "V2_RESULT_PROVENANCE_BLOCKER: no formal V2 run found"
+    expected_factors = {"C0": list(FROZEN_ORDER), "V2_A": ["v20"],
+                        "V2_B": ["v5", "v20"],
+                        "V2_D": ["d20", "p60", "align", "v20", "rev5", "dd20"]}
+    for run in runs:
+        metadata = json.loads((run / "metadata.json").read_text(encoding="utf-8"))
+        assert metadata["run_id"] == run.name
+        assert metadata["preregistrationCommit"] == PREREG_COMMIT
+        assert metadata["protocolHash"] == protocol.FROZEN_FACTOR_SET_V2_PROTOCOL_HASH
+        assert metadata["candidateIds"] == list(expected_factors)
+        assert metadata["candidateFactorLists"] == expected_factors
+        assert "V2_C" not in metadata["candidateIds"]
+        assert not (run / "V2_C").exists()
+        for relative, expected_hash in metadata["content_sha256"].items():
+            assert hashlib.sha256((run / relative).read_bytes()).hexdigest() == expected_hash, (
+                f"V2_RESULT_PROVENANCE_BLOCKER: {run.name}/{relative}"
+            )
 
 
 def test_payload_is_result_free_and_hypotheses_are_labeled():
