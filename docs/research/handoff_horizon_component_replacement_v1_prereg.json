@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "researchType": "HORIZON_COMPONENT_REPLACEMENT_V1",
+  "phase": "PREREGISTERED",
+  "branch": "experiment/sw-sector-index-research-baseline",
+  "head": "95e54ee6461b315b51f5ca7cc17cd985caa96a1d",
+  "handoffCommitNote": "This file is added by the docs commit immediately after the preregistration commit; re-read git log to confirm real HEAD.",
+  "preregistrationCommit": "95e54ee6461b315b51f5ca7cc17cd985caa96a1d",
+  "protocolPath": "docs/research/shenwan_horizon_component_replacement_v1.md",
+  "protocolHash": "4267d73f38fc8353002459b24640148cc49c4e5777b364eb14ca84404aef9fa7",
+  "configPath": "research/configs/horizon_component_replacement_v1.json",
+  "sourceManifestPath": "research/configs/horizon_component_replacement_v1_sources.json",
+  "selectionTracePath": "docs/research/shenwan_horizon_component_replacement_v1_selection_trace.md",
+  "preregReportPath": "docs/research/shenwan_horizon_component_replacement_v1_preregistration_report.md",
+  "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+  "sourceHandoffCommit": "98dfe5c9c256fe31339a2c3ca63ea1753180a7cc",
+  "candidates": {
+    "F0_CONTROL": {
+      "role": "CONTROL",
+      "componentMapping": {"h10": "C0_H10", "h40": "C0_H40", "h120": "C0_H120"},
+      "factorLists": {"C0_H10": 19, "C0_H40": 19, "C0_H120": 19}
+    },
+    "F1_H10_REPLACEMENT": {
+      "role": "NEW_HYPOTHESIS",
+      "componentMapping": {"h10": "H10_C", "h40": "C0_H40", "h120": "C0_H120"},
+      "factorLists": {"H10_C": ["d10", "p5", "align", "vc", "dd20"]}
+    },
+    "F2_H10_H40_REPLACEMENT": {
+      "role": "NEW_HYPOTHESIS",
+      "componentMapping": {"h10": "H10_C", "h40": "H40_S", "h120": "C0_H120"},
+      "factorLists": {"H10_C": ["d10", "p5", "align", "vc", "dd20"], "H40_S": ["vc"]}
+    }
+  },
+  "fusionWeights": {
+    "h10": 0.25,
+    "h40": 0.5,
+    "h120": 0.25
+  },
+  "fusionSemantics": "PER_DATE_CROSS_SECTIONAL_Z_SCORE_THEN_WEIGHTED_AVERAGE_FUSED_TOP5",
+  "validationSealed": true,
+  "finalOosSealed": true,
+  "environmentChanged": false,
+  "formalResultsGenerated": false,
+  "targetedTests": {"passed": 24, "failed": 0, "skipped": 0},
+  "fullTests": {"passed": 623, "failed": 0, "skipped": 2, "deselected": 17},
+  "warnings": [
+    "FUSION_SEMANTICS_FINDING_FORMAL_FUSION_Z_SCORES_COMPONENTS_CODE_AUTHORITY_OVER_RAW_SHORTHAND",
+    "COMPONENT_SCALE_DIFFERS_UP_TO_40X_BUT_FUSION_AFFINE_INVARIANT_NO_RAW_SCALE_WARNING",
+    "H40_NO_STRONG_STABILITY_EVIDENCE=true",
+    "NEUTRALITY_INDUCED_LOW_FLIP_CAVEAT=true",
+    "DEVELOPMENT_REUSE_WARNING=true NOT_INDEPENDENT_VALIDATION NOT_OOS",
+    "REPORTS_RESEARCH_UNTRACKED_PROVENANCE_VIA_HASHES_AND_COMMITS",
+    "CSV_RECOMPUTE_OF_TIE_SENSITIVE_RANK_METRICS_NEEDS_FLOAT_PRECISION_ROUND_TRIP"
+  ],
+  "nextAuthorizedAction": "RUN HORIZON COMPONENT REPLACEMENT V1 UNDER FROZEN PROTOCOL AFTER HUMAN REVIEW"
+}
