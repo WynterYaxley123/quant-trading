@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "researchType": "HORIZON_COMPONENT_REPLACEMENT_V1",
+  "phase": "PREREGISTERED",
+  "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+  "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+  "sourceHandoffCommit": "98dfe5c9c256fe31339a2c3ca63ea1753180a7cc",
+  "developmentIds": "E001-E100",
+  "universe": "U0_FIXED_124",
+  "candidateBudget": {
+    "controls": 1,
+    "newHypotheses": 2,
+    "totalSchemes": 3,
+    "backfill": false,
+    "noH40OnlyCandidate": true,
+    "noH120Replacement": true
+  },
+  "candidateIds": ["F0_CONTROL", "F1_H10_REPLACEMENT", "F2_H10_H40_REPLACEMENT"],
+  "componentMappings": {
+    "F0_CONTROL": {"h10": "C0_H10", "h40": "C0_H40", "h120": "C0_H120"},
+    "F1_H10_REPLACEMENT": {"h10": "H10_C", "h40": "C0_H40", "h120": "C0_H120"},
+    "F2_H10_H40_REPLACEMENT": {"h10": "H10_C", "h40": "H40_S", "h120": "C0_H120"}
+  },
+  "factorLists": {
+    "C0_H10": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+    "C0_H40": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+    "C0_H120": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+    "H10_C": ["d10", "p5", "align", "vc", "dd20"],
+    "H40_S": ["vc"]
+  },
+  "fusionWeights": {"h10": 0.25, "h40": 0.5, "h120": 0.25},
+  "fusionSemantics": {
+    "formula": "fusedScore(s) = 0.25*z10(s) + 0.50*z40(s) + 0.25*z120(s)",
+    "zScore": "PER_DATE_CROSS_SECTIONAL_POPULATION_STD_DDOF_0_OVER_COMMON_UNIVERSE",
+    "zScoreDetail": "per horizon: scale by m=max(1,maxAbsScore), then z=(v-mean)/std; if std<=1e-12/m then z=0 for that horizon",
+    "weightNormalization": "divide_by_total_weight_sum",
+    "universeRule": "INTERSECTION_OF_HORIZON_SCORED_SECTORS_EXPECTED_U0_124",
+    "rankingRule": "FUSED_SCORE_DESCENDING_SECTOR_CODE_ASCENDING_TIE_BREAK",
+    "top5Rule": "FIRST_FIVE_OF_FUSED_RANKING",
+    "authority": "FORMAL_IMPLEMENTATION_strategies/sw_sector_rotation/src/model/model.py::fuse_periods",
+    "promptRawLinearCombinationSuperseded": true,
+    "scaleInvariance": "FUSION_INVARIANT_TO_PER_COMPONENT_PER_DATE_AFFINE_TRANSFORMS"
+  },
+  "topK": 5,
+  "evaluationContract": {
+    "authority": "research/sector_development_baseline.py::evaluate_date + development_iteration1_protocol.py::COMPARISON_WEIGHTS",
+    "metricCount": 15,
+    "perHorizonMetrics": ["IC_h", "RankIC_h", "Top5_forward_return_h", "Universe_forward_return_h", "Top5_minus_universe_h"],
+    "icDefinition": "Pearson on raw per-horizon component scores vs absolute forward return",
+    "rankIcDefinition": "Spearman average-tie ranks on raw per-horizon component scores vs absolute forward return",
+    "top5ReturnDefinition": "mean absolute forward return over FUSED Top5",
+    "universeReturnDefinition": "mean absolute forward return over fixed U0",
+    "spreadDefinition": "Top5_forward_return_h minus Universe_forward_return_h",
+    "evaluationLabel": "ABSOLUTE_FORWARD_RETURN_COMMON_CALENDAR_T_PLUS_H",
+    "weightedRankIc": "0.25*meanRankIc10 + 0.50*meanRankIc40 + 0.25*meanRankIc120",
+    "weightedSpread": "0.25*meanTop5MinusUniverse10 + 0.50*meanTop5MinusUniverse40 + 0.25*meanTop5MinusUniverse120",
+    "missingPredictionPolicy": "complete_case_124_required_else_null_metrics_with_reason",
+    "missingComponentPolicy": "no_outer_join_no_fill_no_forward_fill_no_nearest_date",
+    "validDates": 100,
+    "tieBreak": "SECTOR_CODE_ASCENDING",
+    "aggregateSchema": "mean_median_population_std_min_max_validDates_nullDates"
+  },
+  "level1Rule": "WEIGHTED_RANKIC_GT_0_AND_WEIGHTED_SPREAD_GT_0",
+  "relativeRules": {
+    "F1_VS_F0": "PARETO_STRICT_IMPROVEMENT_IN_AT_LEAST_ONE_PRIMARY_AND_NONDECREASE_IN_OTHER",
+    "F2_VS_F0": "PARETO_STRICT_IMPROVEMENT_IN_AT_LEAST_ONE_PRIMARY_AND_NONDECREASE_IN_OTHER",
+    "F2_VS_F1": "PARETO_STRICT_IMPROVEMENT_IN_AT_LEAST_ONE_PRIMARY_AND_NONDECREASE_IN_OTHER",
+    "F2_ALL_REQUIRED": ["LEVEL1", "VS_F0", "VS_F1"],
+    "allSchemesAlwaysComputed": true
+  },
+  "horizonRedFlag": {
+    "threshold": -0.02,
+    "appliesTo": ["RankIC10", "RankIC40", "RankIC120"],
+    "effect": "BLOCKS_FUSION_ADVANCED_FOR_FURTHER_REVIEW",
+    "frozenBeforeResults": true
+  },
+  "blocks": [
+    {"id": "B1", "first": 1, "last": 25},
+    {"id": "B2", "first": 26, "last": 50},
+    {"id": "B3", "first": 51, "last": 75},
+    {"id": "B4", "first": 76, "last": 100}
+  ],
+  "blockMetrics": {
+    "weightedRankIc": "0.25*blockMeanRankIc10 + 0.50*blockMeanRankIc40 + 0.25*blockMeanRankIc120",
+    "weightedSpread": "0.25*blockMeanSpread10 + 0.50*blockMeanSpread40 + 0.25*blockMeanSpread120",
+    "spreadBlocksReportedNotGated": true
+  },
+  "temporalGate": {
+    "positiveWeightedRankIcBlocksAtLeast": 3,
+    "weightedRankIcStrictlyBelowMinus002BlocksAtMost": 1,
+    "appliesTo": ["F1_H10_REPLACEMENT", "F2_H10_H40_REPLACEMENT"],
+    "failureLabel": "FUSION_TEMPORAL_STABILITY_GATE_FAIL",
+    "designDisciplineNotStatisticalTruth": true
+  },
+  "minimalReplacementPreference": {
+    "whenBothPassAllGates": true,
+    "absoluteWeightedRankIcDeltaLt": 0.01,
+    "absoluteWeightedSpreadDeltaLt": 0.01,
+    "prefer": "F1_H10_REPLACEMENT",
+    "label": "MINIMAL_REPLACEMENT_PREFERENCE",
+    "statisticalSignificanceClaim": false
+  },
+  "advancementStatusLabels": ["CONTROL_NOT_A_CANDIDATE", "FUSION_ADVANCED_FOR_FURTHER_REVIEW", "FUSION_NOT_ADVANCED"],
+  "gateSubstatusLabels": ["LEVEL1_PASS", "LEVEL1_FAIL", "VS_F0_PASS", "VS_F0_FAIL", "VS_F1_PASS", "VS_F1_FAIL", "TEMPORAL_PASS", "TEMPORAL_FAIL", "HORIZON_RED_FLAG", "MINIMAL_REPLACEMENT_PREFERENCE"],
+  "forbiddenResultLabels": ["WINNER", "BEST", "VALIDATED", "PRODUCTION", "TRADABLE", "LIVE_READY"],
+  "nextResearchGateAllowedValues": [
+    "COMPONENT_REPLACEMENT_SUPPORTED_FOR_FURTHER_REVIEW",
+    "H10_REPLACEMENT_ONLY_SUPPORTED",
+    "H10_H40_REPLACEMENT_SUPPORTED",
+    "COMPONENT_REPLACEMENT_NOT_SUPPORTED",
+    "MIXED_COMPONENT_REPLACEMENT_EVIDENCE",
+    "DIAGNOSTIC_INCONCLUSIVE"
+  ],
+  "sourceManifestPath": "research/configs/horizon_component_replacement_v1_sources.json",
+  "componentSourcePolicy": {
+    "preferArtifactReuse": true,
+    "retrainingForbidden": true,
+    "replayRequiresIdentityCheck": true,
+    "replayIdentityTolerance": 1e-12,
+    "reason": "COMPONENT_REPLACEMENT_FUSION_QUESTION_NOT_HORIZON_MODEL_RETRAINING"
+  },
+  "f0ReproducibilityDesign": {
+    "reference": "iteration1_20260924_163607_787266_utc/D2",
+    "identityLevel": "FUSED_SCORE_FLOAT_TOLERANCE_1E-12_BIT_EXACT_EXPECTED",
+    "fusedRank": "EXACT",
+    "top5": "EXACT",
+    "primaryMetrics": "IDENTITY_WITHIN_1E-12",
+    "gatesBeforeF1F2Evaluation": true
+  },
+  "validationSealed": true,
+  "finalOosSealed": true,
+  "developmentReuseWarning": true,
+  "h40WeakEvidenceWarning": true,
+  "neutralityCaveat": true,
+  "h40WarningImmutable": "H40_NO_STRONG_STABILITY_EVIDENCE=true",
+  "neutralityCaveatImmutable": "NEUTRALITY_INDUCED_LOW_FLIP_CAVEAT=true",
+  "noWeightSearch": true,
+  "noDynamicFusion": true,
+  "noDropHorizon": true,
+  "noRetraining": true,
+  "noParameterSearch": true,
+  "noNewFactor": true,
+  "noSignFlip": true,
+  "noComponentSearch": true,
+  "noModelSearch": true,
+  "noFormalResultsInPreregistration": true
+}

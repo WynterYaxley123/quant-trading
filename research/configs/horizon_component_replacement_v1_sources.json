@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "manifestType": "HORIZON_COMPONENT_REPLACEMENT_V1_SOURCES",
+  "generatedBy": "preregistration-only provenance capture; no formal result produced",
+  "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+  "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+  "sourceHandoffCommit": "98dfe5c9c256fe31339a2c3ca63ea1753180a7cc",
+  "sourceProtocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+  "sourceRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+  "sourceRerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+  "reportsTrackedInGit": false,
+  "provenanceMechanism": "run_path_plus_content_sha256_plus_result_commit_plus_protocol_hash",
+  "components": {
+    "C0_H10": {
+      "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+      "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+      "sourceProtocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+      "sourceRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+      "sourceRerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+      "candidateId": "C0_H10",
+      "horizon": 10,
+      "factorList": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+      "predictionsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/C0_H10/predictions.csv",
+      "predictionsSha256": "3922081c9ca15bf49102d38c0098b33b198e464e55fa978cf11ffe42ef580781",
+      "metricsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/C0_H10/aggregate_metrics.json",
+      "metricsSha256": "36568fb873f97135fa427989874eb53c5feda23615ebd78fff6ce6130ab3f07e",
+      "firstRerunIdentical": true,
+      "sourceCurrentExistenceVerified": true,
+      "d2EquivalentBitExact": true
+    },
+    "C0_H40": {
+      "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+      "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+      "sourceProtocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+      "sourceRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+      "sourceRerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+      "candidateId": "C0_H40",
+      "horizon": 40,
+      "factorList": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+      "predictionsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/C0_H40/predictions.csv",
+      "predictionsSha256": "737ba02766c2afea9848c432e9aa13910dd8119cb02f317846be5e19e0d5960a",
+      "metricsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/C0_H40/aggregate_metrics.json",
+      "metricsSha256": "8e9dc07117f5f83b2c4556ee1bb5f9b1ee5315415c1f7a9228447e2cc1e23bbc",
+      "firstRerunIdentical": true,
+      "sourceCurrentExistenceVerified": true,
+      "d2EquivalentBitExact": true
+    },
+    "C0_H120": {
+      "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+      "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+      "sourceProtocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+      "sourceRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+      "sourceRerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+      "candidateId": "C0_H120",
+      "horizon": 120,
+      "factorList": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+      "predictionsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/C0_H120/predictions.csv",
+      "predictionsSha256": "e41df4f8214520a56eb8f5e585eda5fc641f70cb2bda6d6cc76ac24cb721c5d6",
+      "metricsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/C0_H120/aggregate_metrics.json",
+      "metricsSha256": "ccc6dcb2b9e995cc44c935c803882e0636a088bf2328ef958d9921d7d872a91b",
+      "firstRerunIdentical": true,
+      "sourceCurrentExistenceVerified": true,
+      "d2EquivalentBitExact": true
+    },
+    "H10_C": {
+      "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+      "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+      "sourceProtocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+      "sourceRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+      "sourceRerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+      "candidateId": "H10_C",
+      "horizon": 10,
+      "factorList": ["d10", "p5", "align", "vc", "dd20"],
+      "predictionsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/H10_C/predictions.csv",
+      "predictionsSha256": "e50c405b8178f4b1afa2ec2e8bca1e8e1b68e0e9afc57f2f700d07c22120ab59",
+      "metricsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/H10_C/aggregate_metrics.json",
+      "metricsSha256": "1777f47b498dd5f622c1a0aa2338f95ac94f66c7e294bb8afd12a1e59761e010",
+      "firstRerunIdentical": true,
+      "sourceCurrentExistenceVerified": true,
+      "d2EquivalentBitExact": null
+    },
+    "H40_S": {
+      "sourceResearchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+      "sourceResultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+      "sourceProtocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+      "sourceRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+      "sourceRerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+      "candidateId": "H40_S",
+      "horizon": 40,
+      "factorList": ["vc"],
+      "predictionsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/H40_S/predictions.csv",
+      "predictionsSha256": "dd9b8277bd02bbf3b510e8d6cad297a6982a001255800e33dd697183c19aae07",
+      "metricsArtifact": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc/H40_S/aggregate_metrics.json",
+      "metricsSha256": "09307319def853cb58d9013ee6164a22fbcbc0e1c2fdef44d6c73137f156ca9f",
+      "firstRerunIdentical": true,
+      "sourceCurrentExistenceVerified": true,
+      "d2EquivalentBitExact": null
+    }
+  },
+  "f0ReferenceArtifacts": {
+    "runId": "iteration1_20260924_163607_787266_utc",
+    "perDatePredictions": {
+      "path": "reports/research/shenwan_sector_index/iteration1_20260924_163607_787266_utc/D2/per_date_predictions.csv",
+      "sha256": "e39d8368f189de962a0fef1bdba98c1a4b24b91d7eb3b0e77c169e9e106a00e1",
+      "role": "F0_FUSED_SCORE_RANK_TOP5_REPRODUCTION_TARGET"
+    },
+    "predictions": {
+      "path": "reports/research/shenwan_sector_index/iteration1_20260924_163607_787266_utc/D2/predictions.csv",
+      "sha256": "b2191cdcf907d3217a14b494eac36325f473f285392784e118e17cadd13dbb17",
+      "role": "PER_HORIZON_AND_FUSED_CROSS_REFERENCE"
+    },
+    "aggregateMetrics": {
+      "path": "reports/research/shenwan_sector_index/iteration1_20260924_163607_787266_utc/D2/aggregate_metrics.json",
+      "sha256": "cc7f9b5712c0f072ea74d1d9634bb990e3f29e2819e6e6cddff27933b17c86b4",
+      "role": "F0_PRIMARY_METRICS_REPRODUCTION_TARGET"
+    },
+    "perDateMetrics": {
+      "path": "reports/research/shenwan_sector_index/iteration1_20260924_163607_787266_utc/D2/per_date_metrics.csv",
+      "sha256": "4ee1f100607fe879e2ab97558072d204a84bf1bde8fab338a9b93f8184030a42",
+      "role": "F0_DAILY_METRIC_REPRODUCTION_TARGET"
+    }
+  },
+  "contractImplementation": {
+    "fusion": {
+      "path": "strategies/sw_sector_rotation/src/model/model.py",
+      "sha256": "61fed9e609f23d579f7f01dceae79d132021fc72c5019bdcf0b9a011a86785ba",
+      "entrypoint": "CrossSectionalRidgeModel.fuse_periods"
+    },
+    "evaluation": {
+      "path": "research/sector_development_baseline.py",
+      "sha256": "50f929838c06feceb085ecd01e1a2feb651a630fc61ae3e97969f10a16dbb108",
+      "entrypoint": "evaluate_date"
+    },
+    "weightedMetrics": {
+      "path": "research/development_iteration1_protocol.py",
+      "sha256": "556de462395a4dbbacf788de40763cdbe64396058dfd4ac947a617bb0b45c9f8",
+      "entrypoint": "weighted_rankic/weighted_spread/COMPARISON_WEIGHTS"
+    }
+  },
+  "componentScaleAudit": {
+    "type": "DESCRIPTIVE_ONLY_NO_FUSED_OUTPUTS",
+    "unitsNote": "raw component prediction_score distributions over 12400 rows (100 dates x 124 sectors)",
+    "C0_H10": {"mean": -0.0002938143, "std": 0.0076033, "median": 0.00003569868, "min": -0.08759465, "max": 0.02954952},
+    "C0_H40": {"mean": 0.0006479756, "std": 0.02306637, "median": -0.0001317866, "min": -0.2264186, "max": 0.1288218},
+    "C0_H120": {"mean": -0.00511685, "std": 0.04157667, "median": -0.0007954789, "min": -0.1682597, "max": 0.2149592},
+    "H10_C": {"mean": -0.0004618391, "std": 0.002411317, "median": -0.0004090349, "min": -0.01407468, "max": 0.009210523},
+    "H40_S": {"mean": -0.00005777668, "std": 0.001002601, "median": 0.00000751425, "min": -0.004782256, "max": 0.00378184},
+    "scaleFinding": "component stds differ up to ~40x (H40_S vs C0_H120); ranges differ ~2 orders of magnitude",
+    "fusionImpact": "NONE_FUSION_IS_PER_DATE_CROSS_SECTIONAL_Z_SCORED_AFFINE_INVARIANT",
+    "rawComponentScaleDependenceWarning": false
+  },
+  "alignment": {
+    "grid": "ordinal_1_to_100_by_signal_date_by_124_sector_codes",
+    "allComponentsSameGrid": true,
+    "policy": "HARD_KEY_ALIGNMENT_NO_OUTER_JOIN_NO_FILL_NO_FORWARD_FILL_NO_NEAREST_DATE"
+  }
+}
