@@ -20,24 +20,24 @@ export interface NavGroup {
 
 export const NAV_GROUPS: NavGroup[] = [
   {
-    label: 'Overview',
-    items: [{ to: '/', label: 'Overview' }],
+    label: '概览',
+    items: [{ to: '/', label: '概览' }],
   },
   {
-    label: 'Research',
+    label: '研究',
     items: [
-      { to: '/candidates', label: 'Candidate Comparison', capability: 'candidateComparison' },
-      { to: '/development', label: 'Development Explorer', capability: 'developmentExplorer' },
-      { to: '/sectors', label: 'Sector Explorer', capability: 'sectorExplorer' },
+      { to: '/candidates', label: '候选方案对比', capability: 'candidateComparison' },
+      { to: '/development', label: 'Development 探索', capability: 'developmentExplorer' },
+      { to: '/sectors', label: '行业探索', capability: 'sectorExplorer' },
     ],
   },
   {
-    label: 'Diagnostics',
-    items: [{ to: '/diagnostics', label: 'Diagnostics', capability: 'diagnostics' }],
+    label: '诊断',
+    items: [{ to: '/diagnostics', label: '诊断', capability: 'diagnostics' }],
   },
   {
-    label: 'Research Integrity',
-    items: [{ to: '/integrity', label: 'Research Integrity' }],
+    label: '研究完整性',
+    items: [{ to: '/integrity', label: '研究完整性' }],
   },
 ];
 

@@ -18,7 +18,7 @@ export const SCHEMA_VERSION = '1.0.0';
 /* ------------------------------------------------------------------ */
 
 export const apiErrorEnvelopeSchema = z.object({
-  schemaVersion: z.string(),
+  schemaVersion: z.literal('1.0.0'),
   error: z.object({
     code: z.string(),
     message: z.string(),
@@ -92,6 +92,7 @@ export const researchStatusSchema = z.object({
   executable: z.boolean(),
   tradable: z.boolean(),
   strictPit: z.boolean(),
+  classification: z.string(),
   classificationAdmission: z.string(),
   etf: z.string(),
   syntheticPortfolio: z.string(),
@@ -123,7 +124,7 @@ export const runDetailSchema = runSummarySchema.extend({
   splitPolicyHash: z.string(),
   predictionConfigHash: z.string(),
   developmentIteration1ProtocolHash: z.string(),
-  syntheticPortfolioConfigHash: z.string(),
+  syntheticPortfolioConfigHash: z.string().nullable(),
   validation: z.string(),
   finalOos: z.string(),
 });
@@ -148,19 +149,17 @@ export type PromotionStatus = z.infer<typeof promotionStatusSchema>;
 export const xPreprocessingSchema = z.union([
   z.literal('NONE'),
   z.literal('TRAIN_ONLY_STANDARDIZATION'),
-  z.string(),
 ]);
 export type XPreprocessing = z.infer<typeof xPreprocessingSchema>;
 
 export const trainingTargetSchema = z.union([
   z.literal('ABSOLUTE_FORWARD_RETURN'),
   z.literal('CROSS_SECTIONAL_EXCESS_FORWARD_RETURN'),
-  z.string(),
 ]);
 export type TrainingTarget = z.infer<typeof trainingTargetSchema>;
 
 export const candidateSummarySchema = z.object({
-  candidateId: z.string().min(1),
+  candidateId: z.enum(['D0', 'D1', 'D2', 'D3']),
   xPreprocessing: xPreprocessingSchema,
   trainingTarget: trainingTargetSchema,
   weightedRankIc: nullableNumber,
@@ -234,13 +233,13 @@ export type DailyMetricList = z.infer<typeof dailyMetricListSchema>;
 export const predictionSchema = z.object({
   ordinal: ordinalSchema,
   signalDate: isoDateSchema,
-  sectorCode: z.string().min(1),
+  sectorCode: z.string().regex(/^\d{6}$/),
   sectorName: z.string().nullable(),
   pred10: nullableNumber,
   pred40: nullableNumber,
   pred120: nullableNumber,
   fusedScore: nullableNumber,
-  fusedRank: nullableNumber,
+  fusedRank: z.number().int().positive().nullable(),
   top5: z.boolean(),
   realizedForwardReturn10: nullableNumber,
   realizedForwardReturn40: nullableNumber,
@@ -254,7 +253,7 @@ export type Prediction = z.infer<typeof predictionSchema>;
 export const predictionPageSchema = z.object({
   items: z.array(predictionSchema),
   total: z.number().int().nonnegative(),
-  limit: z.number().int().nonnegative(),
+  limit: z.number().int().min(1).max(500),
   offset: z.number().int().nonnegative(),
 });
 export type PredictionPage = z.infer<typeof predictionPageSchema>;
@@ -271,28 +270,33 @@ export interface PredictionsQuery {
 /* ------------------------------------------------------------------ */
 
 export const nullableInt = z.number().int().nonnegative().nullable();
+export const diagnosticRangeSchema = z.object({
+  min: nullableNumber,
+  median: nullableNumber,
+  max: nullableNumber,
+});
 
 export const horizonDiagnosticsSchema = z.object({
   horizon: horizonSchema,
-  trainingObservations: nullableInt,
-  validTrainingDates: nullableInt,
-  validSectorCounts: nullableInt,
-  missingFactorExclusions: nullableInt,
-  missingLabelExclusions: nullableInt,
-  numericalFailures: nullableInt,
-  insufficientTrainingCases: nullableInt,
-  zeroStdFeatureOccurrences: nullableInt,
-  scalerDiagnosticHash: z.string().nullable(),
-  demeanResidualMaxAbsMean: nullableNumber,
-  targetDiagnosticHash: z.string().nullable(),
+  trainingObservations: diagnosticRangeSchema,
+  validTrainingDates: diagnosticRangeSchema,
+  validSectorCounts: diagnosticRangeSchema,
+  missingFactorExclusions: z.number().int().nonnegative(),
+  missingLabelExclusions: z.number().int().nonnegative(),
+  numericalFailures: z.number().int().nonnegative(),
+  insufficientTrainingCases: z.number().int().nonnegative(),
 });
 export type HorizonDiagnostics = z.infer<typeof horizonDiagnosticsSchema>;
 
 export const diagnosticsSchema = z.object({
-  attemptedDates: nullableInt,
-  successfulDates: nullableInt,
-  skippedDates: nullableInt,
+  attemptedDates: z.number().int().nonnegative(),
+  successfulDates: z.number().int().nonnegative(),
+  skippedDates: z.number().int().nonnegative(),
   horizons: z.array(horizonDiagnosticsSchema),
+  zeroStdFeatureOccurrences: nullableInt,
+  scalerDiagnosticHash: z.string().nullable(),
+  demeanResidualMaxAbsMean: nullableNumber,
+  targetDiagnosticHash: z.string().nullable(),
 });
 export type Diagnostics = z.infer<typeof diagnosticsSchema>;
 
@@ -305,6 +309,12 @@ export const integritySchema = z.object({
   phase: z.string(),
   validation: z.string(),
   finalOos: z.string(),
+  environmentChanged: z.boolean().nullable(),
+  gitCommit: z.string(),
+  protocolHash: z.string(),
+  classification: z.string(),
+  classificationAdmission: z.string(),
+  tradable: z.boolean(),
   universe: z.string(),
   sectorCount: z.number().int().nonnegative(),
   featureCount: z.number().int().nonnegative(),
@@ -315,6 +325,7 @@ export const integritySchema = z.object({
   splitPolicyHash: z.string(),
   predictionConfigHash: z.string(),
   developmentIteration1ProtocolHash: z.string(),
+  syntheticPortfolioConfigHash: z.string().nullable(),
   sectorSnapshotId: z.string(),
   executable: z.boolean(),
   strictPit: z.boolean(),

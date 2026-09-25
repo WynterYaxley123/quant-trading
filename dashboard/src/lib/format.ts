@@ -25,7 +25,7 @@ export function formatMetric(value: number | null | undefined, kind: MetricKind)
     case 'return':
       return `${(value * 100).toFixed(2)}%`;
     case 'count':
-      return new Intl.NumberFormat('en-US').format(Math.trunc(value));
+      return new Intl.NumberFormat('zh-CN').format(Math.trunc(value));
     case 'factor':
       return value.toFixed(2);
   }
@@ -54,9 +54,9 @@ export function formatFactor(value: number | null | undefined): string {
 export const METRIC_LABELS: Record<string, string> = {
   ic: 'IC',
   rankIc: 'RankIC',
-  top5ForwardReturn: 'Top5 Forward Return',
-  universeForwardReturn: 'Universe Forward Return',
-  top5MinusUniverse: 'Top5 Minus Universe',
+  top5ForwardReturn: 'Top5 未来收益',
+  universeForwardReturn: '行业整体未来收益',
+  top5MinusUniverse: 'Top5 相对行业整体超额',
 };
 
 /** Which formatter a metric key requires (unit discipline). */
@@ -76,6 +76,6 @@ export function formatByKind(key: string, value: number | null | undefined): str
 
 export function metricUnitDescription(key: string): string {
   return (METRIC_KINDS[key] ?? 'unitless') === 'return'
-    ? 'Return metric. API stores decimals; UI displays percentages (0.0181 → 1.81%).'
-    : 'Unitless correlation-style metric. Displayed as a plain decimal (not a percentage).';
+    ? '收益率：API 保留小数，界面显示百分比（0.0181 → 1.81%）。'
+    : '无量纲相关性指标：显示小数，不转换为百分比。';
 }

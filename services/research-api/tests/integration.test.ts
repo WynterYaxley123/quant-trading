@@ -44,7 +44,8 @@ describe.skipIf(!reportRoot)('current formal Iteration-1 artifacts, read-only', 
     const status = await get('/api/v1/research/status')
     expect(status.body.data).toMatchObject({ researchLabel: 'SECTOR_INDEX_RESEARCH_ONLY',
       phase: 'DEVELOPMENT', validation: 'SEALED', finalOos: 'SEALED',
-      executable: false, tradable: false, strictPit: false, etf: 'DISABLED',
+      executable: false, tradable: false, strictPit: false,
+      classification: 'FIXED_CLASSIFICATION_RESEARCH', etf: 'DISABLED',
       syntheticPortfolio: 'DISABLED', levelB: 'DISABLED' })
     const capabilities = await get('/api/v1/capabilities')
     expect(capabilities.body.data).toMatchObject({ readOnly: true, mutations: false,
@@ -57,7 +58,11 @@ describe.skipIf(!reportRoot)('current formal Iteration-1 artifacts, read-only', 
     const integrity = await get(`/api/v1/runs/${runId}/integrity`)
     expect(integrity.body.data).toMatchObject({ universe: 'U0_FIXED_124', sectorCount: 124,
       featureCount: 19, alpha: 0.01, horizons: [10, 40, 120],
-      fusion: [0.25, 0.5, 0.25], topK: 5, executable: false, strictPit: false })
+      fusion: [0.25, 0.5, 0.25], topK: 5, executable: false, tradable: false,
+      strictPit: false, classification: 'FIXED_CLASSIFICATION_RESEARCH',
+      gitCommit: '9c16c787eb3d638ee8683f2644ad01c0cfa21e39',
+      protocolHash: 'f2080f56a3f4a77ff983d5b9cc14c0f1427f4d2c84fb1d9fc89b9a2a3cb12125',
+      syntheticPortfolioConfigHash: null })
   })
 
   it('reads D0-D3 definitions and copies exact official aggregate/comparison numbers', async () => {
@@ -115,6 +120,54 @@ describe.skipIf(!reportRoot)('current formal Iteration-1 artifacts, read-only', 
         expect(item.fusedRank).toBe(Number(source.fused_rank))
         expect(item.sectorName).toBe(source.sector_name)
         expect(item.top5).toBe(true)
+      }
+    }
+  })
+
+  it('preserves sampled Development daily values and ten sector rows across dates and candidates', async () => {
+    const metricNames = {
+      ic: 'IC', rankIc: 'RankIC', top5ForwardReturn: 'Top5_forward_return',
+      universeForwardReturn: 'Universe_forward_return',
+      top5MinusUniverse: 'Top5_minus_universe',
+    } as const
+    for (const candidate of ['D0', 'D3'] as const) {
+      const dailyCsv = parse(await readFile(join(runDir, candidate, 'per_date_metrics.csv'), 'utf8'),
+        { columns: true }) as Record<string, string>[]
+      const predictionCsv = parse(await readFile(join(runDir, candidate, 'predictions.csv'), 'utf8'),
+        { columns: true }) as Record<string, string>[]
+      for (const ordinal of ['1', '50', '100']) {
+        const date = predictionCsv.find((row) => row.ordinal === ordinal)!.signal_date
+        for (const horizon of [10, 120] as const) {
+          const result = await get(`/api/v1/runs/${runId}/candidates/${candidate}/daily-metrics?horizon=${horizon}`)
+          expect(result.status).toBe(200)
+          const item = result.body.data.items.find((row: { ordinal: string }) =>
+            row.ordinal === `E${ordinal.padStart(3, '0')}`)
+          expect(item.signalDate).toBe(date)
+          for (const [field, sourceName] of Object.entries(metricNames)) {
+            const source = dailyCsv.find((row) => row.ordinal === ordinal
+              && row.metric === `${sourceName}_${horizon}`)!
+            expect(item[field]).toBe(source.value === '' ? null : Number(source.value))
+          }
+        }
+        const result = await get(`/api/v1/runs/${runId}/candidates/${candidate}/predictions?date=${date}`)
+        expect(result.status).toBe(200)
+        expect(result.body.data.total).toBe(124)
+        for (const item of result.body.data.items.slice(0, 10)) {
+          for (const horizon of [10, 40, 120] as const) {
+            const source = predictionCsv.find((row) => row.ordinal === ordinal
+              && row.sector_code === item.sectorCode && row.horizon === String(horizon))!
+            expect(source).toBeDefined()
+            expect(item[`pred${horizon}`]).toBe(source.prediction_score === ''
+              ? null : Number(source.prediction_score))
+            expect(item[`realizedForwardReturn${horizon}`]).toBe(source.realized_forward_return === ''
+              ? null : Number(source.realized_forward_return))
+            expect(item[`labelEnd${horizon}`]).toBe(source.label_end || null)
+            expect(item.sectorName).toBe(source.sector_name || null)
+            expect(item.fusedScore).toBe(source.fused_score === '' ? null : Number(source.fused_score))
+            expect(item.fusedRank).toBe(source.fused_rank === '' ? null : Number(source.fused_rank))
+            expect(item.top5).toBe(source.top5 === 'True')
+          }
+        }
       }
     }
   })

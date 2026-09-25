@@ -80,11 +80,11 @@ export function CandidateComparisonPage() {
 
   const columns = useMemo<ColumnDef<ComparisonRow>[]>(
     () => [
-      { accessorKey: 'candidateId', header: 'Candidate', enableSorting: false },
+      { accessorKey: 'candidateId', header: '候选方案', enableSorting: false },
       {
         id: 'weightedRankIc',
         accessorFn: (row) => row.weightedRankIc ?? undefined,
-        header: () => <UnitHint metricKey="weightedRankIc">Weighted RankIC</UnitHint>,
+        header: () => <UnitHint metricKey="weightedRankIc">加权 RankIC</UnitHint>,
         cell: ({ row }) => formatUnitless(row.original.weightedRankIc),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -93,7 +93,7 @@ export function CandidateComparisonPage() {
       {
         id: 'weightedSpread',
         accessorFn: (row) => row.weightedSpread ?? undefined,
-        header: () => <UnitHint metricKey="weightedSpread">Weighted Spread</UnitHint>,
+        header: () => <UnitHint metricKey="weightedSpread">加权超额收益差</UnitHint>,
         cell: ({ row }) => formatReturn(row.original.weightedSpread),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -102,7 +102,7 @@ export function CandidateComparisonPage() {
       {
         id: 'rankIc10',
         accessorFn: (row) => row.rankIc10 ?? undefined,
-        header: 'RankIC 10',
+        header: 'RankIC 10日',
         cell: ({ row }) => formatUnitless(row.original.rankIc10),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -111,7 +111,7 @@ export function CandidateComparisonPage() {
       {
         id: 'rankIc40',
         accessorFn: (row) => row.rankIc40 ?? undefined,
-        header: 'RankIC 40',
+        header: 'RankIC 40日',
         cell: ({ row }) => formatUnitless(row.original.rankIc40),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -120,7 +120,7 @@ export function CandidateComparisonPage() {
       {
         id: 'rankIc120',
         accessorFn: (row) => row.rankIc120 ?? undefined,
-        header: 'RankIC 120',
+        header: 'RankIC 120日',
         cell: ({ row }) => formatUnitless(row.original.rankIc120),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -129,7 +129,7 @@ export function CandidateComparisonPage() {
       {
         id: 'spread10',
         accessorFn: (row) => row.spread10 ?? undefined,
-        header: 'Spread 10',
+        header: '超额收益差 10日',
         cell: ({ row }) => formatReturn(row.original.spread10),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -138,7 +138,7 @@ export function CandidateComparisonPage() {
       {
         id: 'spread40',
         accessorFn: (row) => row.spread40 ?? undefined,
-        header: 'Spread 40',
+        header: '超额收益差 40日',
         cell: ({ row }) => formatReturn(row.original.spread40),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -147,7 +147,7 @@ export function CandidateComparisonPage() {
       {
         id: 'spread120',
         accessorFn: (row) => row.spread120 ?? undefined,
-        header: 'Spread 120',
+        header: '超额收益差 120日',
         cell: ({ row }) => formatReturn(row.original.spread120),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -155,7 +155,7 @@ export function CandidateComparisonPage() {
       },
       {
         accessorKey: 'promotionStatus',
-        header: 'Promotion',
+        header: '晋级状态',
         enableSorting: false,
         cell: ({ row }) => <PromotionBadge status={row.original.promotionStatus} />,
       },
@@ -168,8 +168,8 @@ export function CandidateComparisonPage() {
   if (capabilities && !capabilities.candidateComparison) {
     return (
       <EmptyState
-        title="Candidate comparison unavailable"
-        description="The Research API capabilities report that candidate comparison data is not available."
+        title="候选方案对比不可用"
+        description="研究数据接口当前未提供候选方案对比。"
       />
     );
   }
@@ -179,8 +179,8 @@ export function CandidateComparisonPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Candidate comparison"
-        description="Compares development candidates D0–D3 on weighted RankIC (unitless) and weighted spread (return). Promotion status is displayed exactly as reported by the official results — the dashboard never re-derives promotion."
+        title="候选方案对比"
+        description="对比 Development（开发集）D0–D3 的加权 RankIC（无量纲）与加权超额收益差（收益率）。晋级状态直接来自正式结果，不由界面重新判断。"
       />
 
       <FilterBar>
@@ -192,21 +192,21 @@ export function CandidateComparisonPage() {
       </FilterBar>
 
       {comparison.loading ? (
-        <LoadingState label="Loading candidate comparison" />
+        <LoadingState label="正在加载候选方案对比" />
       ) : comparison.error ? (
         <ErrorState error={comparison.error} onRetry={comparison.retry} />
       ) : rows.length === 0 ? (
-        <EmptyState description="No candidates found for the selected run." />
+        <EmptyState description="所选研究运行没有候选方案。" />
       ) : (
         <>
-          <section aria-label="Weighted metrics" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <section aria-label="加权指标" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             <GroupedBarChart
-              title="Weighted RankIC (unitless)"
-              description="Unitless correlation-style metric, 4-decimal display."
-              summary={`Bar chart of weighted RankIC by candidate: ${rows
+              title="加权 RankIC（无量纲）"
+              description="无量纲相关性指标，按小数显示。"
+              summary={`各候选方案的加权 RankIC：${rows
                 .map((row) => `${row.candidateId} ${formatUnitless(row.weightedRankIc)}`)
-                .join(', ')}.`}
-              series={[{ key: 'weightedRankIc', label: 'Weighted RankIC' }]}
+                .join('，')}。`}
+              series={[{ key: 'weightedRankIc', label: '加权 RankIC' }]}
               data={rows.map((row) => ({
                 category: row.candidateId,
                 weightedRankIc: row.weightedRankIc,
@@ -214,12 +214,12 @@ export function CandidateComparisonPage() {
               valueKind="unitless"
             />
             <GroupedBarChart
-              title="Weighted Spread (return)"
-              description="Return metric — API decimals displayed as percentages (0.0181 → 1.81%)."
-              summary={`Bar chart of weighted spread by candidate: ${rows
+              title="加权超额收益差"
+              description="API 保留小数，界面显示百分比（0.0181 → 1.81%）。"
+              summary={`各候选方案的加权超额收益差：${rows
                 .map((row) => `${row.candidateId} ${formatReturn(row.weightedSpread)}`)
-                .join(', ')}.`}
-              series={[{ key: 'weightedSpread', label: 'Weighted Spread' }]}
+                .join('，')}。`}
+              series={[{ key: 'weightedSpread', label: '加权超额收益差' }]}
               data={rows.map((row) => ({
                 category: row.candidateId,
                 weightedSpread: row.weightedSpread,
@@ -228,15 +228,15 @@ export function CandidateComparisonPage() {
             />
           </section>
 
-          <section aria-label="Horizon detail" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <section aria-label="预测周期明细" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             <GroupedBarChart
-              title="RankIC by horizon (mean)"
-              description="Mean RankIC per horizon 10 / 40 / 120. Unitless."
-              summary={`Bar chart of mean RankIC at horizons 10, 40 and 120 for candidates ${categories.join(', ')}.`}
+              title="各周期平均 RankIC"
+              description="10日、40日、120日平均 RankIC；无量纲。"
+              summary={`候选方案 ${categories.join('、')} 在 10日、40日、120日的平均 RankIC。`}
               series={[
-                { key: 'rankIc10', label: 'RankIC 10' },
-                { key: 'rankIc40', label: 'RankIC 40' },
-                { key: 'rankIc120', label: 'RankIC 120' },
+                { key: 'rankIc10', label: 'RankIC 10日' },
+                { key: 'rankIc40', label: 'RankIC 40日' },
+                { key: 'rankIc120', label: 'RankIC 120日' },
               ]}
               data={rows.map((row) => ({
                 category: row.candidateId,
@@ -247,13 +247,13 @@ export function CandidateComparisonPage() {
               valueKind="unitless"
             />
             <GroupedBarChart
-              title="Spread by horizon (mean)"
-              description="Mean top5-minus-universe return per horizon 10 / 40 / 120."
-              summary={`Bar chart of mean spread at horizons 10, 40 and 120 for candidates ${categories.join(', ')}.`}
+              title="各周期平均超额收益差"
+              description="10日、40日、120日 Top5 相对行业整体的平均超额。"
+              summary={`候选方案 ${categories.join('、')} 在 10日、40日、120日的平均超额收益差。`}
               series={[
-                { key: 'spread10', label: 'Spread 10' },
-                { key: 'spread40', label: 'Spread 40' },
-                { key: 'spread120', label: 'Spread 120' },
+                { key: 'spread10', label: '超额收益差 10日' },
+                { key: 'spread40', label: '超额收益差 40日' },
+                { key: 'spread120', label: '超额收益差 120日' },
               ]}
               data={rows.map((row) => ({
                 category: row.candidateId,
@@ -265,18 +265,18 @@ export function CandidateComparisonPage() {
             />
           </section>
 
-          <section aria-label="Comparison table" className="min-w-0">
+          <section aria-label="候选方案对比表" className="min-w-0">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Horizon detail table
+              预测周期明细表
               <span className="ml-2 font-normal normal-case tracking-normal text-muted-foreground">
-                (RankIC columns are unitless; Spread columns are returns. “—” means unavailable.)
+                （RankIC 无量纲；超额收益差按百分比显示；“—”表示暂无数据。）
               </span>
             </h3>
             <DataTable
               columns={columns}
               data={rows}
               initialSorting={initialSorting}
-              caption="Candidate comparison metrics with promotion status"
+              caption="候选方案指标与晋级状态对比"
             />
           </section>
         </>

@@ -26,7 +26,7 @@ export function HashText({
     <button
       type="button"
       onClick={() => setExpanded((v) => !v)}
-      title={expandable ? (expanded ? 'Hide full value' : 'Show full value') : undefined}
+      title={expandable ? (expanded ? '收起完整值' : '查看完整值') : undefined}
       aria-expanded={expandable ? expanded : undefined}
       className={cn(
         'max-w-full break-all rounded px-1 font-mono text-xs text-muted-foreground transition-colors',

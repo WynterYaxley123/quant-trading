@@ -256,7 +256,7 @@ components:
     ResearchStatus:
       type: object
       required: [researchLabel, phase, validation, finalOos, executable, tradable,
-        strictPit, classificationAdmission, etf, syntheticPortfolio, levelB, sourceOfTruth]
+        strictPit, classification, classificationAdmission, etf, syntheticPortfolio, levelB, sourceOfTruth]
       properties:
         researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
         phase: { type: string, const: DEVELOPMENT }
@@ -265,6 +265,7 @@ components:
         executable: { type: boolean, const: false }
         tradable: { type: boolean, const: false }
         strictPit: { type: boolean, const: false }
+        classification: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
         classificationAdmission: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
         etf: { type: string, const: DISABLED }
         syntheticPortfolio: { type: string, const: DISABLED }
@@ -483,15 +484,22 @@ components:
         data:
           type: object
           required: [researchLabel, phase, validation, finalOos, environmentChanged,
+            gitCommit, protocolHash, classification, classificationAdmission, tradable,
             universe, sectorCount, featureCount, alpha, horizons, fusion, topK,
             splitPolicyHash, predictionConfigHash, developmentIteration1ProtocolHash,
-            sectorSnapshotId, executable, strictPit, etf, syntheticPortfolio, levelB]
+            syntheticPortfolioConfigHash, sectorSnapshotId, executable, strictPit,
+            etf, syntheticPortfolio, levelB]
           properties:
             researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
             phase: { type: string, const: DEVELOPMENT }
             validation: { type: string, const: SEALED }
             finalOos: { type: string, const: SEALED }
             environmentChanged: { type: [boolean, 'null'] }
+            gitCommit: { type: string, description: Formal metadata git_head. }
+            protocolHash: { type: string, description: Formal Iteration-1 protocol SHA256. }
+            classification: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
+            classificationAdmission: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
+            tradable: { type: boolean, const: false }
             universe: { type: string, const: U0_FIXED_124 }
             sectorCount: { type: integer, const: 124 }
             featureCount: { type: integer, const: 19 }
@@ -502,6 +510,7 @@ components:
             splitPolicyHash: { type: string }
             predictionConfigHash: { type: string }
             developmentIteration1ProtocolHash: { type: string }
+            syntheticPortfolioConfigHash: { type: 'null', description: Not configured for Development. }
             sectorSnapshotId: { type: string }
             executable: { type: boolean, const: false }
             strictPit: { type: boolean, const: false }

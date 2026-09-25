@@ -18,10 +18,10 @@ export function RunFilter({
 }) {
   return (
     <Select
-      label="Run"
+      label="研究运行"
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      options={runs.map((run) => ({ value: run.runId, label: `${run.runId} (iteration ${run.iteration})` }))}
+      options={runs.map((run) => ({ value: run.runId, label: `${run.runId}（第 ${run.iteration} 轮）` }))}
     />
   );
 }
@@ -37,7 +37,7 @@ export function CandidateFilter({
 }) {
   return (
     <Select
-      label="Candidate"
+      label="候选方案"
       value={value}
       onChange={(event) => onChange(event.target.value)}
       options={candidateIds.map((id) => ({ value: id, label: id }))}
@@ -56,7 +56,7 @@ export function DateFilter({
 }) {
   return (
     <Select
-      label="Date"
+      label="日期"
       value={value}
       onChange={(event) => onChange(event.target.value)}
       options={dates.map((date) => ({ value: date, label: date }))}
@@ -73,7 +73,7 @@ export function MetricFilter({
 }) {
   return (
     <Select
-      label="Metric"
+      label="指标"
       value={value}
       onChange={(event) => onChange(event.target.value)}
       options={Object.entries(METRIC_LABELS).map(([key, label]) => ({ value: key, label }))}
@@ -90,13 +90,13 @@ export function HorizonFilter({
 }) {
   return (
     <Select
-      label="Horizon"
+      label="预测周期"
       value={value}
       onChange={(event) => onChange(event.target.value)}
       options={[
-        { value: '10', label: '10' },
-        { value: '40', label: '40' },
-        { value: '120', label: '120' },
+        { value: '10', label: '10日' },
+        { value: '40', label: '40日' },
+        { value: '120', label: '120日' },
       ]}
     />
   );

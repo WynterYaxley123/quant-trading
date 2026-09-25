@@ -1,7 +1,7 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ChevronDown, ChevronRight, TriangleAlert } from 'lucide-react';
 import { getResearchApi } from '@/api';
-import type { HorizonDiagnostics } from '@/api/contracts';
+import type { Diagnostics, HorizonDiagnostics } from '@/api/contracts';
 import { useAppData } from '@/app/AppDataProvider';
 import {
   CandidateFilter,
@@ -40,7 +40,7 @@ function IssueRow({
         <p className="flex items-center gap-1.5 text-sm">
           {flagged ? <TriangleAlert aria-hidden="true" className="h-4 w-4 text-warning" /> : null}
           <span>{label}</span>
-          {flagged ? <Badge variant="warning">{formatCount(value)} affected</Badge> : null}
+          {flagged ? <Badge variant="warning">影响 {formatCount(value)} 项</Badge> : null}
         </p>
         {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
       </div>
@@ -49,91 +49,95 @@ function IssueRow({
   );
 }
 
-function HorizonSection({ entry }: { entry: HorizonDiagnostics }) {
-  const zeroStdNote =
-    entry.horizon === 10 || entry.horizon === 40
-      ? 'Relevant for D1/D3 (train-only standardization): occurrences of zero-std features in the scaler window.'
-      : 'Zero-std feature occurrences in the scaler window (relevant for D1/D3).';
-  const demeanNote =
-    'Relevant for D2/D3 (cross-sectional excess target): max |mean| of demeaned residuals.';
+function formatRange(value: HorizonDiagnostics['trainingObservations']): string {
+  if (value.min === null && value.median === null && value.max === null) return NULL_PLACEHOLDER;
+  return `${formatCount(value.min)} / ${formatCount(value.median)} / ${formatCount(value.max)}`;
+}
 
+function HorizonSection({ entry }: { entry: HorizonDiagnostics }) {
   return (
     <Collapsible defaultOpen={false}>
       <Card>
         <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-sm">Horizon {entry.horizon}</CardTitle>
+          <CardTitle className="text-sm">{entry.horizon}日预测周期</CardTitle>
           <CollapsibleTrigger className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground">
-            Details
+            查看明细
             <ChevronDown aria-hidden="true" className="h-4 w-4" />
           </CollapsibleTrigger>
         </CardHeader>
         <CardContent className="flex flex-col divide-y divide-border">
+          <p className="mb-2 text-xs text-muted-foreground">以下范围依次为最小值 / 中位数 / 最大值，来自正式训练诊断记录。</p>
           <dl className="grid grid-cols-1 gap-1 text-sm sm:grid-cols-3">
             <div className="flex justify-between gap-2 sm:flex-col sm:gap-0">
-              <dt className="text-muted-foreground">Training observations</dt>
-              <dd className="font-mono">{formatCount(entry.trainingObservations)}</dd>
+              <dt className="text-muted-foreground">训练样本数</dt>
+              <dd className="font-mono">{formatRange(entry.trainingObservations)}</dd>
             </div>
             <div className="flex justify-between gap-2 sm:flex-col sm:gap-0">
-              <dt className="text-muted-foreground">Valid training dates</dt>
-              <dd className="font-mono">{formatCount(entry.validTrainingDates)}</dd>
+              <dt className="text-muted-foreground">有效训练日期数</dt>
+              <dd className="font-mono">{formatRange(entry.validTrainingDates)}</dd>
             </div>
             <div className="flex justify-between gap-2 sm:flex-col sm:gap-0">
-              <dt className="text-muted-foreground">Valid sector count</dt>
-              <dd className="font-mono">{formatCount(entry.validSectorCounts)}</dd>
+              <dt className="text-muted-foreground">有效行业数</dt>
+              <dd className="font-mono">{formatRange(entry.validSectorCounts)}</dd>
             </div>
           </dl>
 
           <CollapsibleContent className="pt-2">
             <div className="flex flex-col divide-y divide-border">
               <IssueRow
-                label="Missing factor exclusions"
+                label="缺失因子剔除数"
                 value={entry.missingFactorExclusions}
-                hint="Rows excluded because factor inputs were missing."
+                hint="因子输入缺失而剔除的记录。"
               />
               <IssueRow
-                label="Missing label exclusions"
+                label="缺失标签剔除数"
                 value={entry.missingLabelExclusions}
-                hint="Rows excluded because the forward-return label was missing for this horizon."
+                hint="该预测周期的未来收益标签缺失而剔除的记录。"
               />
               <IssueRow
-                label="Numerical failures"
+                label="数值计算失败数"
                 value={entry.numericalFailures}
-                hint="Training/solve attempts that failed numerically."
+                hint="训练或求解过程中出现的数值失败。"
               />
               <IssueRow
-                label="Insufficient training cases"
+                label="训练样本不足次数"
                 value={entry.insufficientTrainingCases}
-                hint="Attempts skipped because too little training data was available."
+                hint="因训练数据不足而跳过的尝试。"
               />
-              <IssueRow
-                label="Zero-std feature occurrences"
-                value={entry.zeroStdFeatureOccurrences}
-                hint={zeroStdNote}
-              />
-              <div className="flex items-start justify-between gap-3 py-1.5">
-                <div>
-                  <p className="text-sm">Scaler diagnostic hash</p>
-                  <p className="text-xs text-muted-foreground">{demeanNote}</p>
-                </div>
-                <HashText value={entry.scalerDiagnosticHash} />
-              </div>
-              <div className="flex items-center justify-between gap-3 py-1.5">
-                <span className="text-sm">Demean residual max |mean|</span>
-                <span className="font-mono text-sm">
-                  {entry.demeanResidualMaxAbsMean === null
-                    ? NULL_PLACEHOLDER
-                    : formatUnitless(entry.demeanResidualMaxAbsMean)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between gap-3 py-1.5">
-                <span className="text-sm">Target diagnostic hash</span>
-                <HashText value={entry.targetDiagnosticHash} />
-              </div>
             </div>
           </CollapsibleContent>
         </CardContent>
       </Card>
     </Collapsible>
+  );
+}
+
+function TransformationSection({ data }: { data: Diagnostics }) {
+  return (
+    <section aria-label="特征与目标变换诊断">
+      <Card>
+        <CardHeader><CardTitle className="text-sm">特征与目标变换诊断</CardTitle></CardHeader>
+        <CardContent className="flex flex-col divide-y divide-border">
+          <IssueRow
+            label="零标准差特征次数"
+            value={data.zeroStdFeatureOccurrences}
+            hint="仅训练集标准化的候选方案适用；未建模时显示“—”。"
+          />
+          <div className="flex items-center justify-between gap-3 py-1.5 text-sm">
+            <span>标准化器诊断 Hash</span>
+            <HashText value={data.scalerDiagnosticHash} />
+          </div>
+          <div className="flex items-center justify-between gap-3 py-1.5 text-sm">
+            <span>去均值残差最大绝对均值</span>
+            <span className="font-mono">{formatUnitless(data.demeanResidualMaxAbsMean)}</span>
+          </div>
+          <div className="flex items-center justify-between gap-3 py-1.5 text-sm">
+            <span>训练目标诊断 Hash</span>
+            <HashText value={data.targetDiagnosticHash} />
+          </div>
+        </CardContent>
+      </Card>
+    </section>
   );
 }
 
@@ -160,29 +164,18 @@ export function DiagnosticsPage() {
   if (capabilities && !capabilities.diagnostics) {
     return (
       <EmptyState
-        title="Diagnostics unavailable"
-        description="The Research API capabilities report that diagnostics data is not available."
+        title="诊断数据不可用"
+        description="研究数据接口当前未提供诊断信息。"
       />
     );
   }
 
   const data = diagnostics.data;
-  const issueTotal = (data?.horizons ?? []).reduce(
-    (sum, entry) =>
-      sum +
-      (entry.missingFactorExclusions ?? 0) +
-      (entry.missingLabelExclusions ?? 0) +
-      (entry.numericalFailures ?? 0) +
-      (entry.insufficientTrainingCases ?? 0) +
-      (entry.zeroStdFeatureOccurrences ?? 0),
-    0,
-  );
-
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Diagnostics"
-        description="Training and label pipeline health for the selected candidate. Everything here is informational research diagnostics — no values are hidden, and every count above zero is surfaced."
+        title="诊断"
+        description="所选候选方案的训练与标签流程诊断。数值直接来自正式研究产物；不存在的字段保留为“—”，不解释为零。"
       />
 
       <FilterBar>
@@ -195,43 +188,44 @@ export function DiagnosticsPage() {
       </FilterBar>
 
       {diagnostics.loading ? (
-        <LoadingState label="Loading diagnostics" />
+        <LoadingState label="正在加载诊断信息" />
       ) : diagnostics.error ? (
         <ErrorState error={diagnostics.error} onRetry={diagnostics.retry} />
       ) : !data ? (
-        <EmptyState description="No diagnostics for the current selection." />
+        <EmptyState description="当前筛选条件下没有诊断信息。" />
       ) : (
         <>
-          <section aria-label="Attempt summary">
+          <section aria-label="尝试次数摘要">
             <StatusCardGrid>
-              <StatusCard label="Attempted dates" value={formatCount(data.attemptedDates)} />
-              <StatusCard label="Successful dates" value={formatCount(data.successfulDates)} />
-              <StatusCard label="Skipped dates" value={formatCount(data.skippedDates)} />
+              <StatusCard label="尝试日期数" value={formatCount(data.attemptedDates)} />
+              <StatusCard label="成功日期数" value={formatCount(data.successfulDates)} />
+              <StatusCard label="跳过日期数" value={formatCount(data.skippedDates)} />
               <StatusCard
-                label="Issue summary"
-                value={issueTotal > 0 ? `${formatCount(issueTotal)} flagged` : 'No issues flagged'}
-                hint="Aggregate exclusions / failures / zero-std occurrences across horizons"
-                valueClassName={issueTotal > 0 ? 'text-warning' : undefined}
+                label="零标准差特征次数"
+                value={formatCount(data.zeroStdFeatureOccurrences)}
+                hint="仅在正式产物记录该诊断时显示数值"
+                valueClassName={data.zeroStdFeatureOccurrences !== null && data.zeroStdFeatureOccurrences > 0 ? 'text-warning' : undefined}
               />
               <StatusCard
-                label="Horizons covered"
-                value={data.horizons.map((entry) => entry.horizon).join(' / ') || NULL_PLACEHOLDER}
+                label="覆盖预测周期"
+                value={data.horizons.map((entry) => `${entry.horizon}日`).join(' / ') || NULL_PLACEHOLDER}
               />
             </StatusCardGrid>
           </section>
 
-          <section aria-label="Per-horizon diagnostics" className="flex flex-col gap-3">
+          <section aria-label="各预测周期诊断" className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Per-horizon details
+              各预测周期明细
               <span className="ml-2 inline-flex items-center gap-1 font-normal normal-case tracking-normal">
                 <ChevronRight aria-hidden="true" className="inline h-3.5 w-3.5" />
-                open a horizon to see full issue counts
+                展开预测周期查看剔除及失败数
               </span>
             </h3>
             {data.horizons.map((entry) => (
               <HorizonSection key={entry.horizon} entry={entry} />
             ))}
           </section>
+          <TransformationSection data={data} />
         </>
       )}
     </div>

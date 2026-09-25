@@ -13,7 +13,7 @@ export const overviewRoute = createRoute({
   path: '/',
   validateSearch: parseExplorerSearch,
   component: () => (
-    <Suspense fallback={<LoadingState label="Loading page" />}>
+    <Suspense fallback={<LoadingState label="正在加载页面" />}>
       <OverviewPage />
     </Suspense>
   ),

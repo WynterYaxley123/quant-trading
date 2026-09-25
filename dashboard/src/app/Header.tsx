@@ -17,7 +17,7 @@ export function Header({ title }: { title: string }) {
         size="icon"
         className="lg:hidden"
         onClick={() => setMenuOpen(true)}
-        aria-label="Open navigation menu"
+        aria-label="打开导航菜单"
       >
         <Menu aria-hidden="true" />
       </Button>
@@ -28,24 +28,24 @@ export function Header({ title }: { title: string }) {
         {dataMode === 'mock' ? (
           <span
             className="rounded-full border border-warning/50 bg-warning/10 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-warning-foreground dark:text-warning"
-            title="Running on synthetic mock fixtures"
+            title="当前使用合成测试数据"
           >
-            Mock data
+            模拟数据
           </span>
         ) : (
           <span
             className="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
-            title="Connected to the read-only Research Data API"
+            title="当前使用只读研究数据接口"
           >
-            API mode
+            正式数据接口
           </span>
         )}
         <ThemeToggle />
       </div>
 
       <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
-        <DialogContent side="right" aria-label="Navigation">
-          <DialogTitle className="sr-only">Navigation</DialogTitle>
+        <DialogContent side="right" aria-label="导航">
+          <DialogTitle className="sr-only">导航</DialogTitle>
           <div className="flex h-full items-start justify-between">
             <div className="flex-1 overflow-y-auto">
               <SidebarContent onNavigate={() => setMenuOpen(false)} />
@@ -55,7 +55,7 @@ export function Header({ title }: { title: string }) {
               size="icon"
               className="mt-4 mr-2"
               onClick={() => setMenuOpen(false)}
-              aria-label="Close navigation menu"
+              aria-label="关闭导航菜单"
             >
               <X aria-hidden="true" />
             </Button>

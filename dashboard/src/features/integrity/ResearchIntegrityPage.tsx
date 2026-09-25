@@ -10,6 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ui/states';
 import { useResource } from '@/hooks/useResource';
 import { formatCount, formatFactor, NULL_PLACEHOLDER } from '@/lib/format';
+import {
+  classificationLabel, enabledLabel, horizonLabel, phaseLabel,
+  researchLabel, sourceLabel, yesNo,
+} from '@/lib/labels';
 
 /**
  * Research Integrity — the audit page: identity, protocol constants, hashes
@@ -49,8 +53,8 @@ export function ResearchIntegrityPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Research integrity"
-        description="Immutable identity of the research run: label, phase, protocol constants and artifact hashes as reported by the official research artifacts. Hashes are abbreviated — click one to reveal its full value."
+        title="研究完整性"
+        description="展示正式研究产物记录的运行身份、阶段、协议常量和 Hash。Hash 默认缩写，点击可查看完整值。"
       />
 
       <FilterBar>
@@ -62,88 +66,90 @@ export function ResearchIntegrityPage() {
       </FilterBar>
 
       {detail.loading ? (
-        <LoadingState label="Loading integrity record" />
+        <LoadingState label="正在加载研究完整性记录" />
       ) : detail.error ? (
         <ErrorState error={detail.error} onRetry={detail.retry} />
       ) : !detail.data ? (
-        <EmptyState description="No integrity record for the selected run." />
+        <EmptyState description="所选运行没有研究完整性记录。" />
       ) : (
         <>
-          <section aria-label="Status flags">
+          <section aria-label="研究状态标记">
             <StatusCardGrid>
               <StatusCard
-                label="Development"
-                value={detail.data.integrity.phase === 'DEVELOPMENT' ? 'ACTIVE' : detail.data.integrity.phase}
+                label="研究阶段"
+                value={phaseLabel(detail.data.integrity.phase)}
               />
-              <StatusCard label="Validation" value={<SealedBadge label={detail.data.integrity.validation} />} />
-              <StatusCard label="Final OOS" value={<SealedBadge label={detail.data.integrity.finalOos} />} />
-              <StatusCard label="Executable" value={detail.data.integrity.executable ? 'YES' : 'NO'} />
-              <StatusCard label="Strict PIT" value={detail.data.integrity.strictPit ? 'YES' : 'NO'} />
+              <StatusCard label="Validation（验证集）" value={<SealedBadge label={detail.data.integrity.validation} />} />
+              <StatusCard label="Final OOS（最终样本外）" value={<SealedBadge label={detail.data.integrity.finalOos} />} />
+              <StatusCard label="可执行" value={yesNo(detail.data.integrity.executable)} />
+              <StatusCard label="可交易" value={yesNo(detail.data.integrity.tradable)} />
+              <StatusCard label="严格 PIT" value={yesNo(detail.data.integrity.strictPit)} />
             </StatusCardGrid>
             <StatusCardGrid className="mt-3">
-              <StatusCard label="ETF" value={detail.data.integrity.etf} />
-              <StatusCard label="Synthetic portfolio" value={detail.data.integrity.syntheticPortfolio} />
-              <StatusCard label="LEVEL B" value={detail.data.integrity.levelB} />
+              <StatusCard label="ETF 执行" value={enabledLabel(detail.data.integrity.etf)} />
+              <StatusCard label="合成组合" value={enabledLabel(detail.data.integrity.syntheticPortfolio)} />
+              <StatusCard label="LEVEL B" value={enabledLabel(detail.data.integrity.levelB)} />
             </StatusCardGrid>
           </section>
 
-          <section aria-label="Research definition" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <section aria-label="研究定义与 Hash" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Research definition</CardTitle>
+                <CardTitle>研究定义</CardTitle>
               </CardHeader>
               <CardContent className="divide-y divide-border">
-                <KeyValue label="Research label">
-                  {detail.data.integrity.researchLabel}
+                <KeyValue label="研究标签">
+                  {researchLabel(detail.data.integrity.researchLabel)}
                 </KeyValue>
-                <KeyValue label="Phase">{detail.data.integrity.phase}</KeyValue>
-                <KeyValue label="Classification admission">
-                  {detail.data.run.classificationAdmission}
+                <KeyValue label="研究阶段">{phaseLabel(detail.data.integrity.phase)}</KeyValue>
+                <KeyValue label="分类方式">
+                  {classificationLabel(detail.data.integrity.classification)}
                 </KeyValue>
-                <KeyValue label="Universe">
+                <KeyValue label="研究范围">
                   {detail.data.integrity.universe} ({formatCount(detail.data.integrity.sectorCount)}{' '}
-                  sectors)
+                  个行业)
                 </KeyValue>
-                <KeyValue label="Feature count">
+                <KeyValue label="因子数">
                   {formatCount(detail.data.integrity.featureCount)}
                 </KeyValue>
                 <KeyValue label="Alpha">{formatFactor(detail.data.integrity.alpha)}</KeyValue>
-                <KeyValue label="Horizons">
-                  {detail.data.integrity.horizons.join(' / ') || NULL_PLACEHOLDER}
+                <KeyValue label="预测周期">
+                  {detail.data.integrity.horizons.map(horizonLabel).join(' / ') || NULL_PLACEHOLDER}
                 </KeyValue>
-                <KeyValue label="Fusion weights">
+                <KeyValue label="融合权重">
                   {detail.data.integrity.fusion.map((weight) => formatFactor(weight)).join(' / ') ||
                     NULL_PLACEHOLDER}
                 </KeyValue>
                 <KeyValue label="TopK">{formatCount(detail.data.integrity.topK)}</KeyValue>
+                <KeyValue label="运行 ID">{detail.data.run.runId}</KeyValue>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Artifact hashes</CardTitle>
+                <CardTitle>研究产物 Hash</CardTitle>
               </CardHeader>
               <CardContent className="divide-y divide-border">
-                <KeyValue label="Split policy hash">
+                <KeyValue label="样本划分策略 Hash">
                   <HashText value={detail.data.integrity.splitPolicyHash} />
                 </KeyValue>
-                <KeyValue label="Prediction config hash">
+                <KeyValue label="预测配置 Hash">
                   <HashText value={detail.data.integrity.predictionConfigHash} />
                 </KeyValue>
-                <KeyValue label="Development iteration-1 protocol hash">
+                <KeyValue label="研究协议 Hash">
                   <HashText value={detail.data.integrity.developmentIteration1ProtocolHash} />
                 </KeyValue>
-                <KeyValue label="Sector snapshot ID">
+                <KeyValue label="行业数据快照 ID">
                   <HashText value={detail.data.integrity.sectorSnapshotId} />
                 </KeyValue>
-                <KeyValue label="Synthetic portfolio config hash">
-                  <HashText value={detail.data.run.syntheticPortfolioConfigHash} />
+                <KeyValue label="合成组合配置 Hash">
+                  <HashText value={detail.data.integrity.syntheticPortfolioConfigHash} />
                 </KeyValue>
-                <KeyValue label="Git commit">
-                  <HashText value={detail.data.run.gitCommit} />
+                <KeyValue label="Git Commit">
+                  <HashText value={detail.data.integrity.gitCommit} />
                 </KeyValue>
-                <KeyValue label="Source of truth">
-                  {status?.sourceOfTruth ?? 'RESEARCH_ARTIFACTS'}
+                <KeyValue label="数据事实来源">
+                  {status ? sourceLabel(status.sourceOfTruth) : NULL_PLACEHOLDER}
                 </KeyValue>
               </CardContent>
             </Card>

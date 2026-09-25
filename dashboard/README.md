@@ -1,4 +1,4 @@
-# Shenwan Research Dashboard
+# 申万研究仪表盘（Shenwan Research Dashboard）
 
 **Sector Index Research** — a read-only, modern React research dashboard for the Shenwan
 sector-index rotation research programme.
@@ -89,13 +89,13 @@ Copy `.env.example` to `.env.local`:
 ### API mode (normal default)
 
 With `VITE_DATA_MODE=api` the dashboard talks to the read-only Research Data API. If the API
-is not running, pages show a clear **“API disconnected”** state with a retry button. The
+is not running, pages show **“研究数据接口未连接”** with a retry button. The
 dashboard **never silently falls back to mock data**.
 
 ### Mock mode (development only)
 
 `VITE_DATA_MODE=mock` serves small **synthetic** fixtures (invented numbers — not real
-research results). A global **MOCK DATA** banner is shown on every page in this mode.
+research results). A global **模拟数据 / MOCK DATA** banner is shown on every page in this mode.
 
 ## Research safety statement
 
@@ -116,5 +116,6 @@ research results). A global **MOCK DATA** banner is shown on every page in this 
 |------|---------|
 | `docs/architecture.md` | Architecture, data flow, future extensions |
 | `docs/api-integration.md` | API v1 contract usage, adapters, env switching |
+| `docs/integration-audit.md` | API ↔ Dashboard contract audit and real Development E2E record |
 | `docs/reference-review.md` | GitHub reference-project study and decisions |
 | `THIRD_PARTY_NOTICES.md` | Licenses and adapted upstream code |

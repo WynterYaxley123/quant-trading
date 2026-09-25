@@ -4,6 +4,7 @@ import { visibleNavGroups } from './nav';
 import { useAppData } from './AppDataProvider';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/cn';
+import { phaseLabel } from '@/lib/labels';
 
 /**
  * Sidebar content (research navigation). Shared between the desktop fixed
@@ -20,12 +21,12 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex items-start gap-2 px-2">
         <Activity aria-hidden="true" className="mt-0.5 h-5 w-5 text-primary" />
         <div>
-          <p className="text-sm font-semibold leading-tight">Shenwan Research Dashboard</p>
-          <p className="text-xs text-muted-foreground">Sector Index Research</p>
+          <p className="text-sm font-semibold leading-tight">申万研究仪表盘</p>
+          <p className="text-xs text-muted-foreground">行业指数研究</p>
         </div>
       </div>
 
-      <nav aria-label="Research sections" className="flex flex-1 flex-col gap-5">
+      <nav aria-label="研究页面导航" className="flex flex-1 flex-col gap-5">
         {groups.map((group) => (
           <div key={group.label} className="flex flex-col gap-1">
             <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -60,10 +61,10 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex flex-col gap-1 px-2 text-xs text-muted-foreground">
         {status ? (
           <Badge variant="warning" className="w-fit">
-            {status.phase}
+            {phaseLabel(status.phase)}
           </Badge>
         ) : null}
-        <p>Read-only research dashboard. Not a trading terminal.</p>
+        <p>只读研究界面，不提供交易功能。</p>
       </div>
     </div>
   );

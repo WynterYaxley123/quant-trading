@@ -8,17 +8,17 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { DisconnectedState, ErrorState } from '@/components/ui/states';
 
 const TITLES: Array<{ prefix: string; title: string }> = [
-  { prefix: '/candidates', title: 'Candidate Comparison' },
-  { prefix: '/development', title: 'Development Explorer' },
-  { prefix: '/sectors', title: 'Sector Explorer' },
-  { prefix: '/diagnostics', title: 'Diagnostics' },
-  { prefix: '/integrity', title: 'Research Integrity' },
+  { prefix: '/candidates', title: '候选方案对比' },
+  { prefix: '/development', title: 'Development 探索' },
+  { prefix: '/sectors', title: '行业探索' },
+  { prefix: '/diagnostics', title: '诊断' },
+  { prefix: '/integrity', title: '研究完整性' },
 ];
 
 function titleForPath(pathname: string): string {
-  if (pathname === '/') return 'Overview';
+  if (pathname === '/') return '概览';
   const match = TITLES.find((entry) => pathname.startsWith(entry.prefix));
-  return match?.title ?? 'Overview';
+  return match?.title ?? '概览';
 }
 
 function Shell() {
@@ -50,8 +50,7 @@ function Shell() {
         </main>
 
         <footer className="border-t border-border px-4 py-3 text-center text-xs text-muted-foreground md:px-6">
-          Shenwan Research Dashboard — read-only research view. Research artifacts are the source of
-          truth. This dashboard does not control research execution and cannot trade.
+          申万研究仪表盘 · 只读行业指数研究。正式研究产物是数据事实来源；本界面不能发起研究执行或交易。
         </footer>
       </div>
     </div>

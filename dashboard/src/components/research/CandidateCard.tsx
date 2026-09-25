@@ -3,6 +3,7 @@ import { PromotionBadge } from './StatusBadges';
 import { UnitHint } from './UnitHint';
 import type { CandidateSummary } from '@/api/contracts';
 import { formatReturn, formatUnitless, NULL_PLACEHOLDER } from '@/lib/format';
+import { preprocessingLabel, targetLabel } from '@/lib/labels';
 
 /**
  * Candidate summary card. Values come straight from the API — the dashboard
@@ -19,27 +20,27 @@ export function CandidateCard({ candidate }: { candidate: CandidateSummary }) {
       <CardContent className="flex flex-col gap-3">
         <div>
           <UnitHint metricKey="weightedRankIc">
-            <span className="text-xs text-muted-foreground">Weighted RankIC (unitless)</span>
+            <span className="text-xs text-muted-foreground">加权 RankIC（无量纲）</span>
           </UnitHint>
           <p className="font-mono text-lg">{formatUnitless(candidate.weightedRankIc)}</p>
         </div>
         <div>
           <UnitHint metricKey="weightedSpread">
-            <span className="text-xs text-muted-foreground">Weighted Spread (return)</span>
+            <span className="text-xs text-muted-foreground">加权超额收益差</span>
           </UnitHint>
           <p className="font-mono text-lg">{formatReturn(candidate.weightedSpread)}</p>
         </div>
         <dl className="grid grid-cols-1 gap-1 text-xs text-muted-foreground">
           <div className="flex items-start justify-between gap-2">
-            <dt className="shrink-0">X preprocessing</dt>
+            <dt className="shrink-0">X 预处理</dt>
             <dd className="min-w-0 break-words text-right">
-              {candidate.xPreprocessing ?? NULL_PLACEHOLDER}
+              {candidate.xPreprocessing ? preprocessingLabel(candidate.xPreprocessing) : NULL_PLACEHOLDER}
             </dd>
           </div>
           <div className="flex items-start justify-between gap-2">
-            <dt className="shrink-0">Training target</dt>
+            <dt className="shrink-0">训练目标</dt>
             <dd className="min-w-0 break-words text-right">
-              {candidate.trainingTarget ?? NULL_PLACEHOLDER}
+              {candidate.trainingTarget ? targetLabel(candidate.trainingTarget) : NULL_PLACEHOLDER}
             </dd>
           </div>
         </dl>

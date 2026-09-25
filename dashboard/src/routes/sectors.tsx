@@ -13,7 +13,7 @@ export const sectorsRoute = createRoute({
   path: '/sectors',
   validateSearch: parseExplorerSearch,
   component: () => (
-    <Suspense fallback={<LoadingState label="Loading page" />}>
+    <Suspense fallback={<LoadingState label="正在加载页面" />}>
       <SectorExplorerPage />
     </Suspense>
   ),

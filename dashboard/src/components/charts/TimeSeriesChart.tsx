@@ -92,13 +92,13 @@ export function TimeSeriesChart({
               y={0}
               stroke="var(--muted-foreground)"
               strokeDasharray="4 4"
-              label={{ value: 'zero', position: 'insideBottomRight', fill: 'var(--muted-foreground)', fontSize: 11 }}
+              label={{ value: '零线', position: 'insideBottomRight', fill: 'var(--muted-foreground)', fontSize: 11 }}
             />
           ) : null}
           <Line
             type="monotone"
             dataKey="value"
-            name="value"
+            name="指标值"
             stroke="var(--chart-1)"
             strokeWidth={2}
             dot={{ r: 3, fill: 'var(--chart-1)' }}

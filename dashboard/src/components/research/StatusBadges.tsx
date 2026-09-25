@@ -1,10 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { PromotionStatus } from '@/api/contracts';
+import { sealLabel } from '@/lib/labels';
 
 /** Sealed phase marker. Deliberately not interactive — sealed data has no unlock. */
 export function SealedBadge({ label = 'SEALED' }: { label?: string }) {
-  return <Badge variant="sealed">{label}</Badge>;
+  return <Badge variant="sealed" title={label}>{sealLabel(label)}</Badge>;
 }
 
 /**
@@ -18,13 +19,11 @@ export function PromotionBadge({ status }: { status: PromotionStatus }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <span tabIndex={0}>
-            <Badge variant="success">Further review</Badge>
+            <Badge variant="success">进入进一步研究</Badge>
           </span>
         </TooltipTrigger>
         <TooltipContent>
-          API promotionStatus = DEVELOPMENT_CANDIDATE_FOR_FURTHER_REVIEW. This is not an approval or
-          a claim of profitability — it only means the candidate moves on for further research
-          review.
+          正式状态为 DEVELOPMENT_CANDIDATE_FOR_FURTHER_REVIEW，仅表示进入进一步研究；不代表获批、可交易或盈利。
         </TooltipContent>
       </Tooltip>
     );
@@ -34,10 +33,10 @@ export function PromotionBadge({ status }: { status: PromotionStatus }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <span tabIndex={0}>
-            <Badge variant="muted">Not promoted</Badge>
+            <Badge variant="muted">未晋级</Badge>
           </span>
         </TooltipTrigger>
-        <TooltipContent>API promotionStatus = NOT_PROMOTED.</TooltipContent>
+        <TooltipContent>正式状态为 NOT_PROMOTED。</TooltipContent>
       </Tooltip>
     );
   }

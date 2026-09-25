@@ -4,7 +4,7 @@ import { Skeleton } from './skeleton';
 import type { ResearchApiError } from '@/api/errors';
 
 /** Loading skeleton with a polite live announcement (accessibility). */
-export function LoadingState({ label = 'Loading research data' }: { label?: string }) {
+export function LoadingState({ label = '正在加载研究数据' }: { label?: string }) {
   return (
     <div className="relative flex flex-col gap-3" role="status" aria-live="polite">
       <span className="sr-only">{label}…</span>
@@ -16,8 +16,8 @@ export function LoadingState({ label = 'Loading research data' }: { label?: stri
 }
 
 export function EmptyState({
-  title = 'No data available',
-  description = 'There is nothing to display for the current selection.',
+  title = '暂无数据',
+  description = '当前筛选条件下没有可显示的数据。',
 }: {
   title?: string;
   description?: string;
@@ -39,15 +39,15 @@ export function DisconnectedState({ onRetry }: { onRetry?: () => void }) {
       role="alert"
     >
       <PlugZap aria-hidden="true" className="h-6 w-6 text-muted-foreground" />
-      <p className="text-base font-semibold">API disconnected</p>
+      <p className="text-base font-semibold">研究数据接口未连接</p>
       <p className="max-w-md text-sm text-muted-foreground">
-        The read-only Research Data API at the configured base URL is not responding. Research data
-        cannot be displayed until the API is running.
+        无法连接到本地 Research API。请确认 API 服务正在运行，然后重试。
       </p>
+      <p className="text-xs text-muted-foreground">API DISCONNECTED</p>
       {onRetry ? (
         <Button variant="outline" size="sm" onClick={onRetry}>
           <RotateCw aria-hidden="true" />
-          Retry connection
+          重试连接
         </Button>
       ) : null}
     </div>
@@ -66,13 +66,16 @@ export function ErrorState({
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-destructive/40 p-10 text-center" role="alert">
       <AlertTriangle aria-hidden="true" className="h-6 w-6 text-destructive" />
-      <p className="text-base font-semibold">Could not load research data</p>
+      <p className="text-base font-semibold">无法加载研究数据</p>
       <p className="max-w-md text-sm text-muted-foreground">{error.userMessage}</p>
-      <p className="text-xs text-muted-foreground">Error code: {error.code}</p>
+      {error.code === 'BAD_QUERY' && error.status !== null && error.message !== error.userMessage ? (
+        <p className="max-w-md text-xs text-muted-foreground">接口说明：{error.message}</p>
+      ) : null}
+      <p className="text-xs text-muted-foreground">错误代码：{error.code}</p>
       {onRetry ? (
         <Button variant="outline" size="sm" onClick={onRetry}>
           <RotateCw aria-hidden="true" />
-          Retry
+          重试
         </Button>
       ) : null}
     </div>

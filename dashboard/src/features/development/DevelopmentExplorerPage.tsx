@@ -23,6 +23,7 @@ import {
   metricUnitDescription,
   NULL_PLACEHOLDER,
 } from '@/lib/format';
+import { horizonLabel } from '@/lib/labels';
 
 /**
  * Development Explorer — E001…E100 development time series per candidate,
@@ -88,8 +89,8 @@ export function DevelopmentExplorerPage() {
 
   const columns = useMemo<ColumnDef<DailyMetric>[]>(
     () => [
-      { accessorKey: 'ordinal', header: 'Ordinal', enableSorting: false },
-      { accessorKey: 'signalDate', header: 'Signal date' },
+      { accessorKey: 'ordinal', header: '序号', enableSorting: false },
+      { accessorKey: 'signalDate', header: '信号日期' },
       {
         id: 'value',
         header: METRIC_LABELS[metric] ?? metric,
@@ -103,8 +104,8 @@ export function DevelopmentExplorerPage() {
   if (capabilities && !capabilities.developmentExplorer) {
     return (
       <EmptyState
-        title="Development explorer unavailable"
-        description="The Research API capabilities report that development explorer data is not available."
+        title="Development 探索不可用"
+        description="研究数据接口当前未提供 Development 指标序列。"
       />
     );
   }
@@ -115,8 +116,8 @@ export function DevelopmentExplorerPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Development explorer"
-        description="Development (E001–E100) metric series by signal date. Filter state is stored in the URL so refresh, back, forward and bookmarks restore the same view."
+        title="Development 探索"
+        description="按信号日期查看 Development（开发集）E001–E100 的指标序列。筛选条件保存在 URL 中，可通过刷新或书签恢复。"
       />
 
       <FilterBar>
@@ -131,25 +132,25 @@ export function DevelopmentExplorerPage() {
       </FilterBar>
 
       {series.loading ? (
-        <LoadingState label="Loading development series" />
+        <LoadingState label="正在加载 Development 指标序列" />
       ) : series.error ? (
         <ErrorState error={series.error} onRetry={series.retry} />
       ) : rows.length === 0 ? (
-        <EmptyState description="No development metrics for the current selection." />
+        <EmptyState description="当前筛选条件下没有 Development 指标。" />
       ) : (
         <>
           <TimeSeriesChart
-            title={`${metricLabel} — horizon ${horizon} (${kind === 'return' ? 'return' : 'unitless'})`}
+            title={`${metricLabel} · ${horizonLabel(horizon)}（${kind === 'return' ? '收益率' : '无量纲'}）`}
             description={metricUnitDescription(metric)}
-            summary={`Line chart of ${metricLabel} at horizon ${horizon} for candidate ${candidateId} across ${points.length} signal dates from ${points[0]?.signalDate} to ${points[points.length - 1]?.signalDate}.`}
+            summary={`候选方案 ${candidateId} 的 ${horizonLabel(horizon)} ${metricLabel}，共 ${points.length} 个信号日期：${points[0]?.signalDate} 至 ${points[points.length - 1]?.signalDate}。`}
             points={points}
             valueKind={kind}
             showZeroLine
           />
 
-          <section aria-label="Series values" className="min-w-0">
+          <section aria-label="指标序列数值" className="min-w-0">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Series values
+              指标序列数值
               <span className="ml-2 font-normal normal-case tracking-normal">
                 {metricUnitDescription(metric)}
               </span>
@@ -157,14 +158,13 @@ export function DevelopmentExplorerPage() {
             <DataTable
               columns={columns}
               data={rows}
-              caption={`Development series values for ${metricLabel} at horizon ${horizon}`}
+              caption={`Development ${horizonLabel(horizon)} ${metricLabel} 指标序列`}
             />
           </section>
         </>
       )}
       <p className="text-xs text-muted-foreground">
-        Missing values render as {NULL_PLACEHOLDER}. Top5 Forward Return is a research label metric —
-        it is not a strategy return.
+        缺失值显示为 {NULL_PLACEHOLDER}。Top5 未来收益是研究标签指标，不是策略或组合收益。
       </p>
     </div>
   );

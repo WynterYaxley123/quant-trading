@@ -15,7 +15,7 @@ export const candidatesRoute = createRoute({
   path: '/candidates',
   validateSearch: parseExplorerSearch,
   component: () => (
-    <Suspense fallback={<LoadingState label="Loading page" />}>
+    <Suspense fallback={<LoadingState label="正在加载页面" />}>
       <CandidateComparisonPage />
     </Suspense>
   ),

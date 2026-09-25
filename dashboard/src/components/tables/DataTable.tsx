@@ -90,10 +90,10 @@ export function DataTable<TData, TValue>({
                         )}
                         <span className="sr-only">
                           {sorted === 'asc'
-                            ? 'sorted ascending'
+                            ? '升序排列'
                             : sorted === 'desc'
-                              ? 'sorted descending'
-                              : 'not sorted'}
+                              ? '降序排列'
+                              : '未排序'}
                         </span>
                       </button>
                     ) : (
@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="px-3 py-8 text-center text-sm text-muted-foreground">
-                No rows for the current selection.
+                当前筛选条件下暂无数据。
               </td>
             </tr>
           ) : (

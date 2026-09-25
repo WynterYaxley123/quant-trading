@@ -19,12 +19,12 @@ export function StatusCard({
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <CardTitle className="text-xs font-semibold tracking-wide text-muted-foreground">
           {label}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className={`text-lg font-semibold leading-none ${valueClassName ?? ''}`}>{value}</p>
+        <p className={`text-lg font-semibold leading-snug ${valueClassName ?? ''}`}>{value}</p>
         {hint ? <p className="mt-2 text-xs text-muted-foreground">{hint}</p> : null}
       </CardContent>
     </Card>

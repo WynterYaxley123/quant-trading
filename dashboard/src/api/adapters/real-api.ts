@@ -29,8 +29,8 @@ import { ResearchApiClient, type QueryValue } from '../client';
 
 /**
  * REAL API adapter — talks to the READ-ONLY Research Data API v1 over HTTP.
- * When Codex's API branch merges, switching `VITE_DATA_MODE=api` and
- * `VITE_RESEARCH_API_BASE_URL` is all that is required; no UI changes.
+ * The integrated dashboard defaults to this adapter. Mock data requires
+ * explicit `VITE_DATA_MODE=mock`; network failure never changes adapters.
  */
 export function createRealApiAdapter(options: {
   baseUrl: string;

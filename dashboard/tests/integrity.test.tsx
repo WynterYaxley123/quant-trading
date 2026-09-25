@@ -6,28 +6,28 @@ import { renderApp } from './test-utils';
 describe('Research Integrity page', () => {
   it('shows the research definition and protocol constants', async () => {
     await renderApp('/integrity');
-    expect(await screen.findByText('Research definition')).toBeInTheDocument();
-    expect(screen.getByText('MOCK_SYNTHETIC_RESEARCH_LABEL')).toBeInTheDocument();
-    expect(screen.getByText('Classification admission')).toBeInTheDocument();
-    expect(screen.getByText('MOCK_FIXED_CLASSIFICATION')).toBeInTheDocument();
-    expect(screen.getByText('Feature count')).toBeInTheDocument();
+    expect(await screen.findByText('研究定义')).toBeInTheDocument();
+    expect(screen.getByText('模拟研究标签')).toBeInTheDocument();
+    expect(screen.getByText('分类方式')).toBeInTheDocument();
+    expect(screen.getByText('模拟固定分类研究')).toBeInTheDocument();
+    expect(screen.getByText('因子数')).toBeInTheDocument();
     expect(screen.getByText('Alpha')).toBeInTheDocument();
     expect(screen.getByText('0.05')).toBeInTheDocument();
-    expect(screen.getByText('Fusion weights')).toBeInTheDocument();
+    expect(screen.getByText('融合权重')).toBeInTheDocument();
     expect(screen.getByText('0.30 / 0.40 / 0.30')).toBeInTheDocument();
   });
 
   it('shows status flags: development active, validation and OOS sealed, disabled execution', async () => {
     await renderApp('/integrity');
-    expect(await screen.findByText('ACTIVE')).toBeInTheDocument();
-    expect(screen.getAllByText('SEALED').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getByText('Strict PIT')).toBeInTheDocument();
-    expect(screen.getAllByText('DISABLED').length).toBeGreaterThanOrEqual(3);
+    expect((await screen.findAllByText('Development（开发集）')).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('已封存').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText('严格 PIT')).toBeInTheDocument();
+    expect(screen.getAllByText('未启用').length).toBeGreaterThanOrEqual(3);
   });
 
   it('abbreviates hashes and expands the full value on click', async () => {
     await renderApp('/integrity');
-    expect(await screen.findByText('Artifact hashes')).toBeInTheDocument();
+    expect(await screen.findByText('研究产物 Hash')).toBeInTheDocument();
 
     const abbreviated = await screen.findAllByText('mock-split…');
     expect(abbreviated.length).toBeGreaterThanOrEqual(1);

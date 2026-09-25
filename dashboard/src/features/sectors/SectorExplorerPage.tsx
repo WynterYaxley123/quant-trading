@@ -74,7 +74,7 @@ export function SectorExplorerPage() {
       {
         id: 'fusedRank',
         accessorFn: (row) => row.fusedRank ?? undefined,
-        header: 'Rank',
+        header: '融合排名',
         cell: ({ row }) => row.original.fusedRank ?? NULL_PLACEHOLDER,
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -83,20 +83,20 @@ export function SectorExplorerPage() {
       {
         id: 'sectorName',
         accessorFn: (row) => row.sectorName ?? row.sectorCode,
-        header: 'Sector',
-        cell: ({ row }) => row.original.sectorName ?? row.original.sectorCode,
+        header: '行业',
+        cell: ({ row }) => <span className="whitespace-nowrap">{row.original.sectorName ?? row.original.sectorCode}</span>,
         sortingFn: 'alphanumeric',
         sortDescFirst: false,
       },
       {
         accessorKey: 'sectorCode',
-        header: 'Sector Code',
+        header: '行业代码',
         cell: ({ row }) => <span className="font-mono text-xs">{row.original.sectorCode}</span>,
       },
       {
         id: 'fusedScore',
         accessorFn: (row) => row.fusedScore ?? undefined,
-        header: 'Fused Score',
+        header: '融合得分',
         cell: ({ row }) => formatUnitless(row.original.fusedScore),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -116,8 +116,8 @@ export function SectorExplorerPage() {
       {
         id: 'pred10',
         accessorFn: (row) => row.pred10 ?? undefined,
-        header: 'Pred 10',
-        cell: ({ row }) => formatReturn(row.original.pred10),
+        header: '10日预测值',
+        cell: ({ row }) => formatUnitless(row.original.pred10),
         sortingFn: 'basic',
         sortUndefined: 'last',
         sortDescFirst: true,
@@ -125,8 +125,8 @@ export function SectorExplorerPage() {
       {
         id: 'pred40',
         accessorFn: (row) => row.pred40 ?? undefined,
-        header: 'Pred 40',
-        cell: ({ row }) => formatReturn(row.original.pred40),
+        header: '40日预测值',
+        cell: ({ row }) => formatUnitless(row.original.pred40),
         sortingFn: 'basic',
         sortUndefined: 'last',
         sortDescFirst: true,
@@ -134,8 +134,8 @@ export function SectorExplorerPage() {
       {
         id: 'pred120',
         accessorFn: (row) => row.pred120 ?? undefined,
-        header: 'Pred 120',
-        cell: ({ row }) => formatReturn(row.original.pred120),
+        header: '120日预测值',
+        cell: ({ row }) => formatUnitless(row.original.pred120),
         sortingFn: 'basic',
         sortUndefined: 'last',
         sortDescFirst: true,
@@ -143,7 +143,7 @@ export function SectorExplorerPage() {
       {
         id: 'realizedForwardReturn10',
         accessorFn: (row) => row.realizedForwardReturn10 ?? undefined,
-        header: 'Realized 10',
+        header: '10日真实未来收益',
         cell: ({ row }) => formatReturn(row.original.realizedForwardReturn10),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -152,7 +152,7 @@ export function SectorExplorerPage() {
       {
         id: 'realizedForwardReturn40',
         accessorFn: (row) => row.realizedForwardReturn40 ?? undefined,
-        header: 'Realized 40',
+        header: '40日真实未来收益',
         cell: ({ row }) => formatReturn(row.original.realizedForwardReturn40),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -161,7 +161,7 @@ export function SectorExplorerPage() {
       {
         id: 'realizedForwardReturn120',
         accessorFn: (row) => row.realizedForwardReturn120 ?? undefined,
-        header: 'Realized 120',
+        header: '120日真实未来收益',
         cell: ({ row }) => formatReturn(row.original.realizedForwardReturn120),
         sortingFn: 'basic',
         sortUndefined: 'last',
@@ -174,8 +174,8 @@ export function SectorExplorerPage() {
   if (capabilities && !capabilities.sectorExplorer) {
     return (
       <EmptyState
-        title="Sector explorer unavailable"
-        description="The Research API capabilities report that sector prediction data is not available."
+        title="行业探索不可用"
+        description="研究数据接口当前未提供行业预测数据。"
       />
     );
   }
@@ -183,8 +183,8 @@ export function SectorExplorerPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Sector explorer"
-        description="Cross-sectional predictions for one signal date — one row per sector. Predictions are model outputs and are not realized returns, not trade signals (no buy/sell semantics)."
+        title="行业探索"
+        description="查看单个信号日期的行业横截面预测；每行对应一个行业。预测值是模型输出，不是真实收益，也不构成交易信号。"
       />
 
       <FilterBar>
@@ -198,18 +198,18 @@ export function SectorExplorerPage() {
       </FilterBar>
 
       {dates.loading || predictions.loading ? (
-        <LoadingState label="Loading sector predictions" />
+        <LoadingState label="正在加载行业预测" />
       ) : predictions.error ? (
         <ErrorState error={predictions.error} onRetry={predictions.retry} />
       ) : rows.length === 0 ? (
-        <EmptyState description="No sector predictions for the selected date." />
+        <EmptyState description="所选日期没有行业预测数据。" />
       ) : (
-        <section aria-label="Sector predictions" className="min-w-0">
+        <section aria-label="行业预测表" className="min-w-0">
           <DataTable
             columns={columns}
             data={rows}
             initialSorting={initialSorting}
-            caption={`Sector predictions for ${date} — ${rows.length} rows`}
+            caption={`${date} 行业预测，共 ${rows.length} 行`}
             onRowClick={(row) => setSelected(row)}
             rowClassName={(row) => (row.original.top5 ? 'bg-primary/5' : undefined)}
           />
@@ -217,21 +217,21 @@ export function SectorExplorerPage() {
       )}
 
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent side="right" aria-label="Sector prediction detail">
+        <DialogContent side="right" aria-label="行业预测详情">
           {selected ? (
             <>
               <DialogHeader>
                 <DialogTitle>{selected.sectorName ?? selected.sectorCode}</DialogTitle>
                 <DialogDescription>
-                  {selected.sectorName ? `Sector code ${selected.sectorCode} · ` : ''}
-                  signal date {selected.signalDate} · ordinal {selected.ordinal}
+                  {selected.sectorName ? `行业代码 ${selected.sectorCode} · ` : ''}
+                  信号日期 {selected.signalDate} · 序号 {selected.ordinal}
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-col gap-4 overflow-y-auto px-6 pb-6 text-sm">
                 <dl className="grid grid-cols-2 gap-2">
-                  <dt className="text-muted-foreground">Fused score</dt>
+                  <dt className="text-muted-foreground">融合得分</dt>
                   <dd className="text-right font-mono">{formatUnitless(selected.fusedScore)}</dd>
-                  <dt className="text-muted-foreground">Fused rank</dt>
+                  <dt className="text-muted-foreground">融合排名</dt>
                   <dd className="text-right font-mono">{selected.fusedRank ?? NULL_PLACEHOLDER}</dd>
                   <dt className="text-muted-foreground">Top5</dt>
                   <dd className="text-right">
@@ -241,37 +241,37 @@ export function SectorExplorerPage() {
 
                 <section>
                   <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Predictions (model output)
+                    预测值（模型输出）
                   </h4>
                   <dl className="grid grid-cols-2 gap-2">
-                    <dt className="text-muted-foreground">Pred 10</dt>
-                    <dd className="text-right font-mono">{formatReturn(selected.pred10)}</dd>
-                    <dt className="text-muted-foreground">Pred 40</dt>
-                    <dd className="text-right font-mono">{formatReturn(selected.pred40)}</dd>
-                    <dt className="text-muted-foreground">Pred 120</dt>
-                    <dd className="text-right font-mono">{formatReturn(selected.pred120)}</dd>
+                    <dt className="text-muted-foreground">10日预测值</dt>
+                    <dd className="text-right font-mono">{formatUnitless(selected.pred10)}</dd>
+                    <dt className="text-muted-foreground">40日预测值</dt>
+                    <dd className="text-right font-mono">{formatUnitless(selected.pred40)}</dd>
+                    <dt className="text-muted-foreground">120日预测值</dt>
+                    <dd className="text-right font-mono">{formatUnitless(selected.pred120)}</dd>
                   </dl>
                 </section>
 
                 <section>
                   <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Realized forward returns
+                    真实未来收益（研究标签）
                   </h4>
                   <dl className="grid grid-cols-2 gap-2">
                     <dt className="text-muted-foreground">
-                      Realized 10 {selected.labelEnd10 ? `(to ${selected.labelEnd10})` : ''}
+                      10日收益 {selected.labelEnd10 ? `（标签结束 ${selected.labelEnd10}）` : ''}
                     </dt>
                     <dd className="text-right font-mono">
                       {formatReturn(selected.realizedForwardReturn10)}
                     </dd>
                     <dt className="text-muted-foreground">
-                      Realized 40 {selected.labelEnd40 ? `(to ${selected.labelEnd40})` : ''}
+                      40日收益 {selected.labelEnd40 ? `（标签结束 ${selected.labelEnd40}）` : ''}
                     </dt>
                     <dd className="text-right font-mono">
                       {formatReturn(selected.realizedForwardReturn40)}
                     </dd>
                     <dt className="text-muted-foreground">
-                      Realized 120 {selected.labelEnd120 ? `(to ${selected.labelEnd120})` : ''}
+                      120日收益 {selected.labelEnd120 ? `（标签结束 ${selected.labelEnd120}）` : ''}
                     </dt>
                     <dd className="text-right font-mono">
                       {formatReturn(selected.realizedForwardReturn120)}
@@ -280,9 +280,7 @@ export function SectorExplorerPage() {
                 </section>
 
                 <p className="rounded-md border border-border bg-muted/50 p-3 text-xs text-muted-foreground">
-                  Prediction ≠ realized return. Prediction values are model outputs at the signal
-                  date; realized values are measured labels ending at the dates listed above. This
-                  dashboard assigns no buy/sell meaning to any value.
+                  预测值不等于真实收益。预测值是信号日的模型输出；真实未来收益是截至所列日期的研究标签。本界面不赋予任何数值买卖含义。
                 </p>
               </div>
             </>

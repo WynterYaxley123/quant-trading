@@ -19,8 +19,8 @@ export function UnitHint({
     metricKey.includes('top5') ||
     metricKey.includes('universe');
   const explanation = isReturn
-    ? 'Return metric. The API stores decimals; the UI displays percentages (API 0.0181 → UI 1.81%).'
-    : 'Unitless metric (correlation-style). Shown as a plain decimal, not a percentage.';
+    ? '收益率指标：API 保留小数，界面显示百分比（0.0181 → 1.81%）。'
+    : '无量纲相关性指标：显示小数，不转换为百分比。';
 
   return (
     <Tooltip>

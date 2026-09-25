@@ -163,7 +163,7 @@ describe('real-api adapter (mocked HTTP)', () => {
     expect(error).toBeInstanceOf(ResearchApiError);
     expect((error as ResearchApiError).code).toBe('NETWORK_UNREACHABLE');
     expect((error as ResearchApiError).isDisconnected).toBe(true);
-    expect((error as ResearchApiError).userMessage).toBe('API disconnected');
+    expect((error as ResearchApiError).userMessage).toBe('研究数据接口未连接。');
   });
 
   it('rejects responses that do not match the v1 contract shape', async () => {

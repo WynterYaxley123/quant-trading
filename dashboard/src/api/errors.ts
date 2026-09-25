@@ -29,23 +29,18 @@ export type ClientErrorCode = (typeof CLIENT_ERROR_CODES)[number];
 export type ApiErrorCode = ServerErrorCode | ClientErrorCode | (string & {});
 
 const USER_MESSAGES: Record<string, string> = {
-  BAD_QUERY:
-    'The request parameters were not valid. Adjust the selected run / candidate / date and try again.',
-  RUN_NOT_FOUND: 'The requested research run does not exist.',
-  CANDIDATE_NOT_FOUND: 'The requested candidate does not exist in this run.',
-  SEALED_PHASE:
-    'This data belongs to a sealed phase (Validation / Final OOS) and is not accessible in development.',
-  ARTIFACT_SCHEMA_ERROR:
-    'A research artifact did not match the expected schema. The research artifacts may be incomplete.',
-  ARTIFACT_IO_ERROR:
-    'A research artifact could not be read. Check that the Research API process is running.',
-  PATH_TRAVERSAL_BLOCKED: 'The request was rejected by the API safety checks.',
-  METHOD_NOT_ALLOWED: 'That operation is not allowed on the read-only Research API.',
-  NETWORK_UNREACHABLE: 'API disconnected',
-  TIMEOUT: 'The Research API did not respond in time.',
-  INVALID_RESPONSE:
-    'The Research API returned a response that did not match the API v1 contract.',
-  UNKNOWN: 'An unexpected error occurred while loading research data.',
+  BAD_QUERY: '查询参数无效，请检查运行记录、候选方案和日期。',
+  RUN_NOT_FOUND: '未找到研究运行记录。',
+  CANDIDATE_NOT_FOUND: '未找到候选方案。',
+  SEALED_PHASE: '该研究阶段仍处于封存状态，不可访问。',
+  ARTIFACT_SCHEMA_ERROR: '研究产物结构校验失败。',
+  ARTIFACT_IO_ERROR: '无法读取研究产物。',
+  PATH_TRAVERSAL_BLOCKED: '非法路径访问已被阻止。',
+  METHOD_NOT_ALLOWED: '当前接口仅允许只读访问。',
+  NETWORK_UNREACHABLE: '研究数据接口未连接。',
+  TIMEOUT: '研究数据接口响应超时。',
+  INVALID_RESPONSE: '研究数据接口返回内容与 V1 契约不符。',
+  UNKNOWN: '加载研究数据时发生未知错误。',
 };
 
 export class ResearchApiError extends Error {
@@ -53,7 +48,7 @@ export class ResearchApiError extends Error {
   readonly status: number | null;
 
   constructor(code: ApiErrorCode, message?: string, status: number | null = null) {
-    super(message ?? USER_MESSAGES[code] ?? USER_MESSAGES.UNKNOWN ?? 'Unknown error');
+    super(message ?? USER_MESSAGES[code] ?? USER_MESSAGES.UNKNOWN ?? '未知错误');
     this.name = 'ResearchApiError';
     this.code = code;
     this.status = status;
@@ -61,7 +56,7 @@ export class ResearchApiError extends Error {
 
   /** Human-readable text safe to render in the UI (never a stack trace). */
   get userMessage(): string {
-    return USER_MESSAGES[this.code] ?? USER_MESSAGES.UNKNOWN ?? 'An unexpected error occurred.';
+    return USER_MESSAGES[this.code] ?? USER_MESSAGES.UNKNOWN ?? '发生未知错误。';
   }
 
   /** True when the API cannot be reached at all (show "API disconnected"). */

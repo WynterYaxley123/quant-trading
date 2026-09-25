@@ -31,6 +31,7 @@ export function researchStatus(meta: RunMetadata) {
     researchLabel: meta.research_label, phase: meta.phase,
     validation: meta.validation_access, finalOos: meta.final_oos_access,
     executable: meta.executable, tradable: false, strictPit: meta.strict_pit,
+    classification: meta.classification_admission,
     classificationAdmission: meta.classification_admission,
     etf: meta.etf_execution, syntheticPortfolio: meta.synthetic_portfolio,
     levelB: meta.level_b, sourceOfTruth: 'RESEARCH_ARTIFACTS' as const,
@@ -42,6 +43,11 @@ export function integrity(meta: RunMetadata) {
     researchLabel: meta.research_label, phase: meta.phase,
     validation: meta.validation_access, finalOos: meta.final_oos_access,
     environmentChanged: meta.environment_changed,
+    gitCommit: meta.git_head,
+    protocolHash: meta.development_iteration1_protocol_hash,
+    classification: meta.classification_admission,
+    classificationAdmission: meta.classification_admission,
+    tradable: false,
     // The following values are a pinned representation of the committed
     // development_iteration1_protocol.py, gated by its SHA in metadataSchema.
     universe: 'U0_FIXED_124' as const, sectorCount: 124, featureCount: 19,
@@ -49,6 +55,7 @@ export function integrity(meta: RunMetadata) {
     splitPolicyHash: meta.split_policy_hash,
     predictionConfigHash: meta.prediction_config_hash,
     developmentIteration1ProtocolHash: meta.development_iteration1_protocol_hash,
+    syntheticPortfolioConfigHash: meta.synthetic_portfolio_config_hash,
     sectorSnapshotId: meta.sector_snapshot_id,
     executable: meta.executable, strictPit: meta.strict_pit,
     etf: meta.etf_execution, syntheticPortfolio: meta.synthetic_portfolio,

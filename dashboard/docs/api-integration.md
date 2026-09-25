@@ -12,12 +12,15 @@ VITE_RESEARCH_API_BASE_URL=http://127.0.0.1:8787/api/v1
 
 | `VITE_DATA_MODE` | Behaviour |
 |------------------|-----------|
-| `api` (default) | `real-api.ts` adapter calls the Research Data API. If unreachable → **“API disconnected”** state with retry. **No silent fallback to mock.** |
-| `mock` (explicit) | `mock-api.ts` adapter serves synthetic fixtures; a global **MOCK DATA** banner marks every page. |
+| `api` (default) | `real-api.ts` calls the Research Data API. If unreachable → **“研究数据接口未连接”** with retry. **No silent fallback to mock.** |
+| `mock` (explicit) | `mock-api.ts` serves synthetic fixtures; a global **模拟数据 / MOCK DATA** banner marks every page. |
 
-When Codex's API branch merges, **no component changes are required**: set the two env vars
-above and the dashboard connects. The real-api adapter is fully implemented and tested today
-against contract-shaped HTTP fixtures (`tests/real-api.test.ts`).
+The API and dashboard are integrated on `integration/research-dashboard-v1`.
+For isolated-worktree verification, point `RESEARCH_REPORT_ROOT` on the API process to
+the original project's read-only `reports/research` directory. `tests/real-api.test.ts`
+checks contract-shaped HTTP fixtures; `tests/real-artifacts-integration.test.ts` runs
+against the live API when `RESEARCH_DASHBOARD_REAL_API_BASE_URL` and
+`RESEARCH_REPORT_ROOT` are set.
 
 ## 2. Envelope
 
@@ -74,14 +77,15 @@ These points follow the frozen v1 contract; where the contract text groups field
 this dashboard's `contracts.ts` encodes the interpretation below so both sides can align:
 
 1. **`Diagnostics` shape** — `attemptedDates` / `successfulDates` / `skippedDates` are
-   top-level; the training-observation, valid-date/sector counts **and** the exclusion /
-   failure / zero-std / scaler / demean-residual fields are grouped **per horizon**
-   (`horizons: [{ horizon, ... }]`), because labels and scalers are horizon-specific. All
-   numerics are `number | null` ("nullable where unavailable").
+   top-level. Training-observation, valid-date and valid-sector counts are per-horizon
+   `{min, median, max}` ranges. Exclusion and failure counts are per-horizon. The
+   artifact's zero-std, scaler hash, demean residual and target hash diagnostics are
+   top-level and nullable when not modeled. The UI never converts unavailable to zero.
 2. **Horizon literals** — only `10 | 40 | 120` are accepted (zod literal union).
-3. **Return units** — `weightedSpread`, `top5ForwardReturn`, `universeForwardReturn`,
-   `top5MinusUniverse`, `pred*`, `realizedForwardReturn*` are decimal returns; the UI shows
-   percentages (0.0181 → 1.81%) and documents the conversion in tooltips.
+3. **Units** — `weightedSpread`, `top5ForwardReturn`, `universeForwardReturn`,
+   `top5MinusUniverse` and `realizedForwardReturn*` are decimal returns; the UI shows
+   percentages (0.0181 → 1.81%). `pred*` and `fusedScore` are model scores, displayed
+   as decimals, not labeled or formatted as realized returns. IC / RankIC remain decimals.
 4. **Ordinals / dates** — ordinals match `E###`, dates are ISO `YYYY-MM-DD`.
 5. **Date selection in Sector Explorer** — available dates come from the candidate's
    `daily-metrics` signal dates; the dashboard never invents dates.
@@ -102,3 +106,6 @@ this dashboard's `contracts.ts` encodes the interpretation below so both sides c
   query encoding. This is the "real API readiness" suite.
 - `tests/mock-adapter.test.ts` — validates mock fixtures against the same zod schemas
   (contract regression + synthetic-data guard).
+- `tests/real-artifacts-integration.test.ts` — optional live API test using only existing
+  Development artifacts; checks D0–D3 comparison/integrity and 3 dates × 2 candidates
+  × 3 horizons through the dashboard adapter. Run with the two env vars noted above.
