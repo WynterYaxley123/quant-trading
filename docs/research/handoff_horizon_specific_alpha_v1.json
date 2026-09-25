@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "researchType": "HORIZON_SPECIFIC_ALPHA_HYPOTHESIS_V1",
+  "branch": "experiment/sw-sector-index-research-baseline",
+  "head": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+  "handoffCommitNote": "This file is added by the docs commit immediately after the result commit; re-read git log to confirm real HEAD.",
+  "preregistrationCommit": "4d0ee982a0cd4ff1efe76c9fee4c2de807643ac2",
+  "resultCommit": "de8b77a8da3aeac99fa5ac1fd52d6431cedf2d62",
+  "protocolPath": "docs/research/shenwan_horizon_specific_alpha_hypothesis_v1.md",
+  "protocolHash": "d598efd34fe2a6c03832e3faaeadd738cc63a604e5da4c8f1a3740c33e69b8d4",
+  "configPath": "research/configs/horizon_specific_alpha_hypothesis_v1.json",
+  "selectionTracePath": "docs/research/shenwan_horizon_specific_alpha_hypothesis_v1_selection_trace.md",
+  "runReportPath": "docs/research/shenwan_horizon_specific_alpha_hypothesis_v1_run_report.md",
+  "environmentChanged": false,
+  "environmentImageId": "sha256:57858238189364c652cf673d64917d365afd5508ee464ed9c142d5d4e1b002e5",
+  "validationSealed": true,
+  "finalOosSealed": true,
+  "noFusion": true,
+  "developmentReuseWarning": true,
+  "firstRunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_130230_272283_utc",
+  "rerunPath": "reports/research/shenwan_sector_index/horizon_specific_alpha_v1_20260925_131549_730952_utc",
+  "candidates": {
+    "C0_H10": {"horizon": 10, "archetype": "CONTROL", "factorList": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"]},
+    "C0_H40": {"horizon": 40, "archetype": "CONTROL", "factorList": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"]},
+    "C0_H120": {"horizon": 120, "archetype": "CONTROL", "factorList": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"]},
+    "H10_S": {"horizon": 10, "archetype": "SINGLE_STABLE", "factorList": ["p5"]},
+    "H10_C": {"horizon": 10, "archetype": "COMPACT_STABLE", "factorList": ["d10", "p5", "align", "vc", "dd20"]},
+    "H40_S": {"horizon": 40, "archetype": "SINGLE_STABLE", "factorList": ["vc"]},
+    "H40_C": {"horizon": 40, "archetype": "COMPACT_STABLE", "factorList": ["d120", "p60", "align", "vc", "rev5", "dd20"]},
+    "H120_S": {"horizon": 120, "archetype": "SINGLE_STABLE", "factorList": ["vc"]},
+    "H120_C": {"horizon": 120, "archetype": "COMPACT_STABLE", "factorList": ["d5", "p20", "vc", "rev10", "dd60", "rsi"]}
+  },
+  "primaryMetrics": {
+    "C0_H10": {"meanIC": -0.017436, "meanRankIC": 0.025446, "medianRankIC": -0.002143, "meanSpread": -0.000047, "medianSpread": -0.001602, "validDates": 100},
+    "H10_S": {"meanIC": 0.002697, "meanRankIC": 0.004797, "medianRankIC": -0.010334, "meanSpread": 0.000133, "medianSpread": 0.000086, "validDates": 100},
+    "H10_C": {"meanIC": 0.035714, "meanRankIC": 0.046993, "medianRankIC": 0.03375, "meanSpread": 0.002836, "medianSpread": -0.000564, "validDates": 100},
+    "C0_H40": {"meanIC": 0.021682, "meanRankIC": 0.049692, "medianRankIC": 0.05741, "meanSpread": 0.003865, "medianSpread": 0.005963, "validDates": 100},
+    "H40_S": {"meanIC": 0.055242, "meanRankIC": 0.052441, "medianRankIC": 0.059868, "meanSpread": 0.00779, "medianSpread": -0.001454, "validDates": 100},
+    "H40_C": {"meanIC": -0.016143, "meanRankIC": 0.005299, "medianRankIC": 0.026581, "meanSpread": -0.012996, "medianSpread": -0.024324, "validDates": 100},
+    "C0_H120": {"meanIC": 0.239157, "meanRankIC": 0.227595, "medianRankIC": 0.246279, "meanSpread": 0.161804, "medianSpread": 0.088274, "validDates": 100},
+    "H120_S": {"meanIC": -0.015065, "meanRankIC": -0.00013, "medianRankIC": 0.02012, "meanSpread": -0.032598, "medianSpread": -0.048934, "validDates": 100},
+    "H120_C": {"meanIC": 0.263193, "meanRankIC": 0.242679, "medianRankIC": 0.260261, "meanSpread": 0.128892, "medianSpread": 0.139604, "validDates": 100}
+  },
+  "statuses": {
+    "H10_S": "HORIZON_NOT_ADVANCED",
+    "H10_C": "HORIZON_ADVANCED_FOR_FURTHER_REVIEW",
+    "H40_S": "HORIZON_ADVANCED_FOR_FURTHER_REVIEW",
+    "H40_C": "HORIZON_NOT_ADVANCED",
+    "H120_S": "HORIZON_NOT_ADVANCED",
+    "H120_C": "HORIZON_NOT_ADVANCED"
+  },
+  "gateComponents": {
+    "H10_S": {"level1": "LEVEL1_PASS", "level2": "LEVEL2_FAIL", "temporalStability": "TEMPORAL_STABILITY_PASS", "simplicityPreference": "NOT_TRIGGERED"},
+    "H10_C": {"level1": "LEVEL1_PASS", "level2": "LEVEL2_PASS", "temporalStability": "TEMPORAL_STABILITY_PASS", "simplicityPreference": "NOT_TRIGGERED"},
+    "H40_S": {"level1": "LEVEL1_PASS", "level2": "LEVEL2_PASS", "temporalStability": "TEMPORAL_STABILITY_PASS", "simplicityPreference": "NOT_TRIGGERED"},
+    "H40_C": {"level1": "LEVEL1_FAIL", "level2": "LEVEL2_FAIL", "temporalStability": "TEMPORAL_STABILITY_FAIL", "simplicityPreference": "NOT_TRIGGERED"},
+    "H120_S": {"level1": "LEVEL1_FAIL", "level2": "LEVEL2_FAIL", "temporalStability": "TEMPORAL_STABILITY_PASS", "simplicityPreference": "NOT_TRIGGERED"},
+    "H120_C": {"level1": "LEVEL1_PASS", "level2": "LEVEL2_FAIL", "temporalStability": "TEMPORAL_STABILITY_PASS", "simplicityPreference": "NOT_TRIGGERED"}
+  },
+  "nextResearchGate": "MIXED_HORIZON_EVIDENCE",
+  "targetedTests": {"passed": 29, "failed": 0, "skipped": 0},
+  "fullTests": {"passed": 599, "failed": 0, "skipped": 2, "deselected": 17},
+  "integrity": {
+    "factorIdentity": {"status": "PASS", "sampleCount": 570, "maxAbsDiff": 1.6e-14},
+    "targetIdentity": {"status": "PASS", "sampleCount": 90, "maxAbsDiffDirectArithmetic": 0.0, "maxAbsDiffD2ControlArtifact": 1.11e-16},
+    "trainingWindowIdentity": {"status": "PASS", "sampleCount": 405, "coverage": "15/15 ordinal-horizon combos"},
+    "c0Reproduction": {"status": "PASS", "maxAbsDiff": 1.01e-16, "predictionsBitExactWithRoundTripParsing": true},
+    "top5Identity": {"status": "PASS", "sampleCount": 54},
+    "metricRecompute": {"status": "PASS", "maxAbsDiff": 2.22e-16},
+    "advancementLogic": {"status": "PASS", "checkedCandidates": 6},
+    "determinism": {"status": "PASS", "nonMetadataArtifacts": 57, "identical": "57/57"}
+  },
+  "warnings": [
+    "NEUTRALITY_INDUCED_LOW_FLIP_RATE_CAVEAT_FOR_H40_S_H120_S_VC_AND_H10_S_P5",
+    "H40 NO_STRONG_STABILITY_EVIDENCE RETAINED",
+    "DEVELOPMENT_REUSE_WARNING=true POST-AUDIT DEVELOPMENT HYPOTHESIS REFINEMENT NOT INDEPENDENT VALIDATION NOT OOS",
+    "TWO_PRE_ARTIFACT_IMPLEMENTATION_BUGS_FIXED_AND_DISCLOSED_SEE_REPORT_35",
+    "CSV_READ_PRECISION_USE_FLOAT_PRECISION_ROUND_TRIP_FOR_TIE_SENSITIVE_RECOMPUTE",
+    "REPORTS_RESEARCH_UNTRACKED_PROVENANCE_VIA_HASHES_AND_COMMITS"
+  ],
+  "nextAuthorizedAction": "HUMAN REVIEW REQUIRED BEFORE NEXT RESEARCH DESIGN"
+}
