@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "auditType": "ALPHA_STABILITY_REGIME_AUDIT_V1",
+  "phase": "DEVELOPMENT",
+  "developmentIds": "E001-E100",
+  "universe": "U0_FIXED_124",
+  "sectorCount": 124,
+  "factorOrder": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+  "horizons": [10, 40, 120],
+  "schemes": {
+    "C0": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+    "V2_A": ["v20"],
+    "V2_B": ["v5", "v20"],
+    "V2_D": ["d20", "p60", "align", "v20", "rev5", "dd20"]
+  },
+  "minSectorPairs": 30,
+  "directionThreshold": 0.02,
+  "directionClasses": ["POSITIVE", "NEUTRAL", "NEGATIVE"],
+  "hardFlipDefinition": "POSITIVE_TO_NEGATIVE_OR_NEGATIVE_TO_POSITIVE",
+  "autocorrelationLags": [1, 5, 10, 20],
+  "blocks": [
+    {"id": "B1", "first": 1, "last": 25},
+    {"id": "B2", "first": 26, "last": 50},
+    {"id": "B3", "first": 51, "last": 75},
+    {"id": "B4", "first": 76, "last": 100}
+  ],
+  "cancellationEps": 1e-12,
+  "ridgeAlpha": 0.01,
+  "trainWindowCalendarMonths": 6,
+  "minimumValidTrainingDays": 30,
+  "target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+  "preprocessing": "NONE_RAW",
+  "validationSealed": true,
+  "finalOosSealed": true,
+  "diagnosticOnly": true,
+  "noFactorSelection": true,
+  "noParameterSearch": true,
+  "noNewCandidate": true
+}
