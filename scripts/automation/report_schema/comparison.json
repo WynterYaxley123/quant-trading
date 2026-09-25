@@ -1,0 +1,14 @@
+{
+  "_comment": "comparison.json 模板（双框架交叉验证）。null 表示尚未产生结果。validation 取值 PASS / FAIL / REVIEW。",
+  "strategy": "",
+  "version": "",
+  "hikyuu_run": "",
+  "rqalpha_run": "",
+  "metrics": {
+    "annual_return": {"hikyuu": null, "rqalpha": null, "diff": null},
+    "max_drawdown": {"hikyuu": null, "rqalpha": null, "diff": null},
+    "sharpe": {"hikyuu": null, "rqalpha": null, "diff": null}
+  },
+  "validation": "",
+  "notes": []
+}

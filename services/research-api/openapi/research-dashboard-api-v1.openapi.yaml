@@ -1,0 +1,510 @@
+openapi: 3.1.0
+info:
+  title: Research Dashboard Data API
+  version: 1.0.0
+  description: >-
+    Read-only Development sector-index research artifact adapter. GET routes also
+    accept HEAD; OPTIONS is for CORS preflight. No research, portfolio, ETF,
+    execution, or sealed-phase endpoint exists. All returns are descriptive
+    prediction research, not tradable strategy performance.
+servers:
+  - url: http://127.0.0.1:8787
+paths:
+  /api/v1/health:
+    get:
+      operationId: health
+      responses:
+        '200':
+          description: Process health; does not read research artifacts.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HealthEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/capabilities:
+    get:
+      operationId: capabilities
+      responses:
+        '200':
+          description: Capabilities backed by an admitted Development run.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CapabilitiesEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/research/status:
+    get:
+      operationId: researchStatus
+      responses:
+        '200':
+          description: Current formal Development research status from metadata.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StatusEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs:
+    get:
+      operationId: listRuns
+      description: Newest admitted Iteration-1 Development run first. Legacy runs are excluded.
+      responses:
+        '200':
+          description: Formal run catalog.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RunListEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+    get:
+      operationId: getRun
+      responses:
+        '200':
+          description: Formal run metadata.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RunDetailEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}/candidates:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+    get:
+      operationId: listCandidates
+      responses:
+        '200':
+          description: Frozen D0-D3 definitions and official comparison outcomes.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CandidateListEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}/candidates/{candidateId}/metrics:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+      - $ref: '#/components/parameters/CandidateId'
+    get:
+      operationId: candidateMetrics
+      description: >-
+        Copies official 15 aggregate metric statistics and preregistered weighted
+        comparison values; never recalculates them. IC, RankIC and Weighted_RankIC
+        are unitless. Forward returns and spreads are decimal returns (0.0123 = 1.23%).
+      responses:
+        '200':
+          description: Official aggregate prediction metrics.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MetricsEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}/candidates/{candidateId}/daily-metrics:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+      - $ref: '#/components/parameters/CandidateId'
+    get:
+      operationId: dailyMetrics
+      parameters:
+        - name: horizon
+          in: query
+          required: false
+          schema: { type: integer, enum: [10, 40, 120] }
+          description: Optional single prediction horizon in trading sessions.
+      responses:
+        '200':
+          description: Existing per-date prediction metrics, earliest signal date first.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DailyMetricsEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}/candidates/{candidateId}/predictions:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+      - $ref: '#/components/parameters/CandidateId'
+    get:
+      operationId: predictions
+      description: >-
+        Structural pivot of the official date x sector x horizon prediction rows.
+        One record per date x sector, sorted by fused rank then sector code.
+        Fused score, Top5 and realized forward labels are copied, not recalculated.
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+          description: Required Development signal date, YYYY-MM-DD.
+        - name: top5
+          in: query
+          required: false
+          schema: { type: boolean }
+          description: Filter to true or false; omit for all sectors.
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 500, default: 200 }
+        - name: offset
+          in: query
+          required: false
+          schema: { type: integer, minimum: 0, default: 0 }
+      responses:
+        '200':
+          description: Paginated sector predictions for one Development date.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PredictionsEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}/candidates/{candidateId}/diagnostics:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+      - $ref: '#/components/parameters/CandidateId'
+    get:
+      operationId: diagnostics
+      description: >-
+        Existing quality and transformation diagnostics; min/median/max of training
+        row counts are descriptive summaries of the formal diagnostics CSV, not
+        new research performance metrics.
+      responses:
+        '200':
+          description: Development training and transformation diagnostics.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DiagnosticsEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+  /api/v1/runs/{runId}/integrity:
+    parameters:
+      - $ref: '#/components/parameters/RunId'
+    get:
+      operationId: integrity
+      responses:
+        '200':
+          description: Metadata plus hash-gated frozen protocol identity; no performance data.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IntegrityEnvelope' }
+        default: { $ref: '#/components/responses/ApiError' }
+components:
+  parameters:
+    RunId:
+      name: runId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^iteration1_\d{8}_\d{6}_\d{6}_utc$'
+      description: Formal Development Iteration-1 run ID only; sealed phases are forbidden.
+    CandidateId:
+      name: candidateId
+      in: path
+      required: true
+      schema: { type: string, enum: [D0, D1, D2, D3] }
+  responses:
+    ApiError:
+      description: Stable error envelope. Mutation methods return 405, sealed phase 403.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+  schemas:
+    ErrorEnvelope:
+      type: object
+      required: [schemaVersion, error]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [BAD_QUERY, RUN_NOT_FOUND, CANDIDATE_NOT_FOUND, SEALED_PHASE,
+                ARTIFACT_SCHEMA_ERROR, ARTIFACT_IO_ERROR, PATH_TRAVERSAL_BLOCKED,
+                METHOD_NOT_ALLOWED, ROUTE_NOT_FOUND]
+            message: { type: string }
+    HealthEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [status, readOnly, sourceOfTruth]
+          properties:
+            status: { type: string, const: ok }
+            readOnly: { type: boolean, const: true }
+            sourceOfTruth: { type: string, const: RESEARCH_ARTIFACTS }
+    CapabilitiesEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [readOnly, mutations, candidateComparison, developmentExplorer,
+            sectorExplorer, diagnostics, portfolio, execution, etf,
+            validationAvailable, finalOosAvailable]
+          properties:
+            readOnly: { type: boolean, const: true }
+            mutations: { type: boolean, const: false }
+            candidateComparison: { type: boolean, const: true }
+            developmentExplorer: { type: boolean, const: true }
+            sectorExplorer: { type: boolean, const: true }
+            diagnostics: { type: boolean, const: true }
+            portfolio: { type: boolean, const: false }
+            execution: { type: boolean, const: false }
+            etf: { type: boolean, const: false }
+            validationAvailable: { type: boolean, const: false }
+            finalOosAvailable: { type: boolean, const: false }
+    StatusEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data: { $ref: '#/components/schemas/ResearchStatus' }
+    ResearchStatus:
+      type: object
+      required: [researchLabel, phase, validation, finalOos, executable, tradable,
+        strictPit, classificationAdmission, etf, syntheticPortfolio, levelB, sourceOfTruth]
+      properties:
+        researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
+        phase: { type: string, const: DEVELOPMENT }
+        validation: { type: string, const: SEALED }
+        finalOos: { type: string, const: SEALED }
+        executable: { type: boolean, const: false }
+        tradable: { type: boolean, const: false }
+        strictPit: { type: boolean, const: false }
+        classificationAdmission: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
+        etf: { type: string, const: DISABLED }
+        syntheticPortfolio: { type: string, const: DISABLED }
+        levelB: { type: string, const: DISABLED }
+        sourceOfTruth: { type: string, const: RESEARCH_ARTIFACTS }
+    RunListEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/RunItem' } }
+    RunItem:
+      type: object
+      required: [runId, phase, iteration, candidateIds, researchLabel, gitCommit,
+        protocolHash, sectorSnapshotId]
+      properties:
+        runId: { type: string }
+        phase: { type: string, const: DEVELOPMENT }
+        iteration: { type: integer, const: 1 }
+        candidateIds: { type: array, items: { type: string, enum: [D0, D1, D2, D3] } }
+        researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
+        gitCommit: { type: string }
+        protocolHash: { type: string }
+        sectorSnapshotId: { type: string }
+    RunDetailEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          allOf:
+            - { $ref: '#/components/schemas/RunItem' }
+            - type: object
+              required: [executable, strictPit, classificationAdmission,
+                splitPolicyHash, predictionConfigHash, developmentIteration1ProtocolHash,
+                syntheticPortfolioConfigHash, validation, finalOos]
+              properties:
+                executable: { type: boolean, const: false }
+                strictPit: { type: boolean, const: false }
+                classificationAdmission: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
+                splitPolicyHash: { type: string }
+                predictionConfigHash: { type: string }
+                developmentIteration1ProtocolHash: { type: string }
+                syntheticPortfolioConfigHash: { type: 'null' }
+                validation: { type: string, const: SEALED }
+                finalOos: { type: string, const: SEALED }
+    CandidateListEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/Candidate' } }
+    Candidate:
+      type: object
+      required: [candidateId, xPreprocessing, trainingTarget, weightedRankIc,
+        weightedSpread, promotionStatus]
+      properties:
+        candidateId: { type: string, enum: [D0, D1, D2, D3] }
+        xPreprocessing: { type: string, enum: [NONE, TRAIN_ONLY_STANDARDIZATION] }
+        trainingTarget:
+          type: string
+          enum: [ABSOLUTE_FORWARD_RETURN, CROSS_SECTIONAL_EXCESS_FORWARD_RETURN]
+        weightedRankIc: { type: [number, 'null'], description: Unitless weighted RankIC copied from official comparison. }
+        weightedSpread: { type: [number, 'null'], description: Decimal-return weighted spread copied from official comparison. }
+        promotionStatus:
+          type: [string, 'null']
+          enum: [DEVELOPMENT_CANDIDATE_FOR_FURTHER_REVIEW, NOT_PROMOTED, null]
+    MetricStats:
+      type: object
+      required: [validDates, mean, median, std, min, max]
+      properties:
+        validDates: { type: integer, minimum: 0, maximum: 100 }
+        mean: { type: [number, 'null'] }
+        median: { type: [number, 'null'] }
+        std: { type: [number, 'null'], description: Population standard deviation from official artifact. }
+        min: { type: [number, 'null'] }
+        max: { type: [number, 'null'] }
+    MetricsEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [candidateId, weightedRankIc, weightedSpread, horizons]
+          properties:
+            candidateId: { type: string, enum: [D0, D1, D2, D3] }
+            weightedRankIc: { type: [number, 'null'], description: Unitless; official comparison artifact. }
+            weightedSpread: { type: [number, 'null'], description: Decimal return; official comparison artifact. }
+            horizons:
+              type: array
+              minItems: 3
+              maxItems: 3
+              items: { $ref: '#/components/schemas/HorizonMetrics' }
+    HorizonMetrics:
+      type: object
+      required: [horizon, ic, rankIc, top5ForwardReturn, universeForwardReturn, top5MinusUniverse]
+      properties:
+        horizon: { type: integer, enum: [10, 40, 120] }
+        ic: { $ref: '#/components/schemas/MetricStats', description: Unitless Pearson cross-sectional IC. }
+        rankIc: { $ref: '#/components/schemas/MetricStats', description: Unitless Spearman cross-sectional RankIC. }
+        top5ForwardReturn: { $ref: '#/components/schemas/MetricStats', description: Decimal forward sector-index label mean; NOT portfolio return. }
+        universeForwardReturn: { $ref: '#/components/schemas/MetricStats', description: Decimal forward sector-index label mean. }
+        top5MinusUniverse: { $ref: '#/components/schemas/MetricStats', description: Decimal-return spread; NOT strategy PnL. }
+    DailyMetricsEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [items]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/DailyMetric' } }
+    DailyMetric:
+      type: object
+      required: [ordinal, signalDate, horizon, ic, rankIc, top5ForwardReturn,
+        universeForwardReturn, top5MinusUniverse]
+      properties:
+        ordinal: { type: string, pattern: '^E\d{3}$' }
+        signalDate: { type: string, format: date }
+        horizon: { type: integer, enum: [10, 40, 120] }
+        ic: { type: [number, 'null'], description: Unitless IC. }
+        rankIc: { type: [number, 'null'], description: Unitless RankIC. }
+        top5ForwardReturn: { type: [number, 'null'], description: Decimal sector-index forward return, not portfolio return. }
+        universeForwardReturn: { type: [number, 'null'], description: Decimal sector-index forward return. }
+        top5MinusUniverse: { type: [number, 'null'], description: Decimal spread, not strategy PnL. }
+    PredictionsEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [items, total, limit, offset]
+          properties:
+            items: { type: array, items: { $ref: '#/components/schemas/Prediction' } }
+            total: { type: integer, minimum: 0 }
+            limit: { type: integer, minimum: 1, maximum: 500 }
+            offset: { type: integer, minimum: 0 }
+    Prediction:
+      type: object
+      required: [ordinal, signalDate, sectorCode, sectorName, pred10, pred40, pred120,
+        fusedScore, fusedRank, top5, realizedForwardReturn10, realizedForwardReturn40,
+        realizedForwardReturn120, labelEnd10, labelEnd40, labelEnd120]
+      properties:
+        ordinal: { type: string, pattern: '^E\d{3}$' }
+        signalDate: { type: string, format: date }
+        sectorCode: { type: string, pattern: '^\d{6}$' }
+        sectorName: { type: [string, 'null'], description: Official predictions.csv sector_name only. }
+        pred10: { type: [number, 'null'], description: Frozen 10-session model score. }
+        pred40: { type: [number, 'null'], description: Frozen 40-session model score. }
+        pred120: { type: [number, 'null'], description: Frozen 120-session model score. }
+        fusedScore: { type: [number, 'null'], description: Official fused score, never recomputed. }
+        fusedRank: { type: [integer, 'null'] }
+        top5: { type: boolean, description: Official single fused Top5 flag. }
+        realizedForwardReturn10: { type: [number, 'null'], description: Decimal sector-index forward label. }
+        realizedForwardReturn40: { type: [number, 'null'], description: Decimal sector-index forward label. }
+        realizedForwardReturn120: { type: [number, 'null'], description: Decimal sector-index forward label. }
+        labelEnd10: { type: [string, 'null'], format: date }
+        labelEnd40: { type: [string, 'null'], format: date }
+        labelEnd120: { type: [string, 'null'], format: date }
+    DiagnosticsEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [attemptedDates, successfulDates, skippedDates, horizons,
+            zeroStdFeatureOccurrences, scalerDiagnosticHash, demeanResidualMaxAbsMean,
+            targetDiagnosticHash]
+          properties:
+            attemptedDates: { type: integer, minimum: 0 }
+            successfulDates: { type: integer, minimum: 0 }
+            skippedDates: { type: integer, minimum: 0 }
+            horizons: { type: array, items: { $ref: '#/components/schemas/HorizonDiagnostics' } }
+            zeroStdFeatureOccurrences: { type: [integer, 'null'] }
+            scalerDiagnosticHash: { type: [string, 'null'] }
+            demeanResidualMaxAbsMean: { type: [number, 'null'] }
+            targetDiagnosticHash: { type: [string, 'null'] }
+    HorizonDiagnostics:
+      type: object
+      required: [horizon, trainingObservations, validTrainingDates, validSectorCounts,
+        missingFactorExclusions, missingLabelExclusions, numericalFailures,
+        insufficientTrainingCases]
+      properties:
+        horizon: { type: integer, enum: [10, 40, 120] }
+        trainingObservations: { $ref: '#/components/schemas/DiagnosticRange' }
+        validTrainingDates: { $ref: '#/components/schemas/DiagnosticRange' }
+        validSectorCounts: { $ref: '#/components/schemas/DiagnosticRange' }
+        missingFactorExclusions: { type: integer, minimum: 0 }
+        missingLabelExclusions: { type: integer, minimum: 0 }
+        numericalFailures: { type: integer, minimum: 0 }
+        insufficientTrainingCases: { type: integer, minimum: 0 }
+    DiagnosticRange:
+      type: object
+      required: [min, median, max]
+      properties:
+        min: { type: [number, 'null'] }
+        median: { type: [number, 'null'] }
+        max: { type: [number, 'null'] }
+    IntegrityEnvelope:
+      type: object
+      required: [schemaVersion, data]
+      properties:
+        schemaVersion: { type: string, const: '1.0.0' }
+        data:
+          type: object
+          required: [researchLabel, phase, validation, finalOos, environmentChanged,
+            universe, sectorCount, featureCount, alpha, horizons, fusion, topK,
+            splitPolicyHash, predictionConfigHash, developmentIteration1ProtocolHash,
+            sectorSnapshotId, executable, strictPit, etf, syntheticPortfolio, levelB]
+          properties:
+            researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
+            phase: { type: string, const: DEVELOPMENT }
+            validation: { type: string, const: SEALED }
+            finalOos: { type: string, const: SEALED }
+            environmentChanged: { type: [boolean, 'null'] }
+            universe: { type: string, const: U0_FIXED_124 }
+            sectorCount: { type: integer, const: 124 }
+            featureCount: { type: integer, const: 19 }
+            alpha: { type: number, const: 0.01 }
+            horizons: { type: array, prefixItems: [{ const: 10 }, { const: 40 }, { const: 120 }] }
+            fusion: { type: array, prefixItems: [{ const: 0.25 }, { const: 0.50 }, { const: 0.25 }] }
+            topK: { type: integer, const: 5 }
+            splitPolicyHash: { type: string }
+            predictionConfigHash: { type: string }
+            developmentIteration1ProtocolHash: { type: string }
+            sectorSnapshotId: { type: string }
+            executable: { type: boolean, const: false }
+            strictPit: { type: boolean, const: false }
+            etf: { type: string, const: DISABLED }
+            syntheticPortfolio: { type: string, const: DISABLED }
+            levelB: { type: string, const: DISABLED }

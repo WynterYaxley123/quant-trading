@@ -1,5 +1,5 @@
 {
-    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.defaultInterpreterPath": "/opt/conda/bin/python",
     "python.terminal.activateEnvironment": false,
     "python.analysis.typeCheckingMode": "basic",
     "python.testing.pytestEnabled": true,

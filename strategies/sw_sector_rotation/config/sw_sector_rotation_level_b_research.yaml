@@ -1,0 +1,106 @@
+# Research specification only; NOT loaded by the existing core/LEVEL A runner.
+# No strategy execution is authorized by this file while the data gate is blocked.
+spec_version: v1-research-plan.1
+strategy: sw_sector_rotation
+intended_run_type: strategy_backtest
+status: BLOCKED_DATA_NOT_READY
+approved_model:
+  feature_set: TRAIN_FEATURES_PRICE
+  feature_count: 19
+  scaling: none
+  target: absolute_close_to_close_forward_return
+  sample_weighting: per_observation_equal
+  model: NumPyRidge
+  alpha: 0.01
+  train_months: 6
+  minimum_valid_training_days: 30
+  horizons: {short: 10, medium: 40, long: 120}
+  fusion: {short: 0.25, medium: 0.50, long: 0.25}
+  top_n: 5
+  rsrs_in_training: false
+  macro_enabled: false
+  flow_enabled: false
+  fundamental_enabled: false
+approved_execution:
+  signal: after_close
+  price_reference: next_session_open
+  rebalance_sessions: 10
+  rebalance_rule: target_portfolio_difference
+  mapping: validated_primary_etf
+  weighting: equal_weight_after_etf_deduplication
+  risk: record_only
+  unfilled_orders: cancel_at_session_end
+  terminal_policy: mark_to_market_without_forced_liquidation
+cost_assumptions:
+  status: approved_research_assumptions_not_production_fees
+  version: research-cost-v1
+  commission_rate: 0.00025
+  minimum_commission_cny: 5.0
+  stamp_duty_rate: 0.0
+  slippage_rate: 0.001
+  minimum_fee_aggregation: null # 订单/分笔成交口径需在执行规格中明确
+data_gate:
+  passed: false
+  classification_version: null
+  data_snapshot: null
+  etf_mapping_version: null
+  qualified_sector_count: 0
+  validated_mapping_coverage: null # 分母/历史有效行业池尚未确定，不能报为 0%
+  eligible_start: null
+  eligible_end: null
+  missing:
+    - historical_shenwan_level2_ohlcva
+    - classification_effective_and_available_dates
+    - validated_historical_primary_etf_mapping
+    - etf_tradability_and_corporate_action_evidence
+    - validated_common_calendar
+partition_plan:
+  mode: chronological_development_validation_final_oos
+  ratio_guidance: [0.60, 0.20, 0.20]
+  dates_locked: false
+  lock_commit: null
+  development: {start: null, end: null}
+  validation: {start: null, end: null}
+  final_oos: {start: null, end: null}
+  rebalance_anchor: null
+  regime_coverage_verified: false
+  rule: establish_from_qualified_coverage_before_any_oos_performance
+  insufficient_regime_coverage: stop_for_review_do_not_claim_complete_cycles
+oos_control:
+  OOS_LOCKED: false
+  final_candidates: []
+  candidate_lock_commit: null
+  performance_evaluated: false
+  used_for_parameter_selection: false
+  rule: freeze_candidates_and_commit_before_one_time_evaluation
+  frozen_walk_forward_refit: true
+benchmark:
+  selected: null
+  candidates: [csi300_price_index, csi500_price_index]
+  rationale: broad_equity_market_beta_comparisons_not_selected_by_returns
+execution_details_pending:
+  initial_cash: null
+  cash_and_rounding_policy: null
+  market_order_constraints: null
+  missing_signal_or_mapping_policy: null
+  annualization_and_risk_free_rate: null
+research_protocol:
+  status: NOT_STARTED
+  baseline_first: true
+  selection_data: [development, validation]
+  maximum_final_candidates_including_baseline: 3
+  stage_order: [scaling, target, sample_weighting, alpha, train_months, fusion, top_n, rebalance]
+  one_core_variable_per_experiment: true
+  keep_all_experiments: true
+  alpha_candidates: [0.0, 0.001, 0.01, 0.1, 1.0]
+  train_months_candidates: [3, 6, 9, 12]
+  fusion_candidates:
+    - [0.25, 0.50, 0.25]
+    - [0.33, 0.34, 0.33]
+    - [0.40, 0.40, 0.20]
+    - [0.20, 0.50, 0.30]
+  top_n_candidates: [3, 5, 8]
+  rebalance_candidates: [5, 10, 20]
+  selection_priority: [validation_sharpe, validation_drawdown, validation_cagr, turnover_cost, development_validation_stability]
+  reject: [validation_collapse, excessive_turnover, materially_worse_drawdown, concentrated_profit_years, insufficient_trades]
+  rejection_thresholds_locked: false # 必须在实验前定义，不能看结果后移动门槛

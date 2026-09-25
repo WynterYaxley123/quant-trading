@@ -1,0 +1,13 @@
+{
+  "_comment": "metrics.json 模板。null 表示尚未产生结果，禁止用 0 或估计值替代。",
+  "annual_return": null,
+  "total_return": null,
+  "max_drawdown": null,
+  "sharpe": null,
+  "sortino": null,
+  "calmar": null,
+  "volatility": null,
+  "win_rate": null,
+  "turnover": null,
+  "trade_count": null
+}
