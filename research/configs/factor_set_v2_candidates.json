@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "protocolName": "SHENWAN_FACTOR_SET_V2_PREREGISTRATION",
+  "auditType": "FACTOR_SET_V2_PREREGISTRATION",
+  "researchFlags": {
+    "POST_AUDIT_DEVELOPMENT_RESEARCH": true,
+    "POST_AUDIT_DEVELOPMENT_HYPOTHESIS": true,
+    "DIAGNOSTIC_HYPOTHESIS_DESIGN_ONLY": true,
+    "NOT_INDEPENDENT_VALIDATION": true,
+    "NOT_OOS_EVIDENCE": true,
+    "NO_V2_FORMAL_RESULTS_THIS_ROUND": true
+  },
+  "frozenFactorOrder": [
+    "d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120",
+    "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"
+  ],
+  "familyMapping": [
+    {
+      "family": "TREND_MOMENTUM",
+      "members": ["d5", "d10", "d20", "d60", "d120"],
+      "canonicalPreference": ["d20", "d60", "d120", "d10", "d5"],
+      "definitionSummary": "(close - MA_n) / MA_n; trend-strength deviation from n-session moving average"
+    },
+    {
+      "family": "RANGE_POSITION",
+      "members": ["p5", "p10", "p20", "p60", "p120"],
+      "canonicalPreference": ["p20", "p60", "p120", "p10", "p5"],
+      "definitionSummary": "(close - min_n) / (max_n - min_n) clipped to [0,1]; position in n-session range"
+    },
+    {
+      "family": "OSCILLATOR_ALIGNMENT",
+      "members": ["align", "rsi"],
+      "canonicalPreference": ["rsi", "align"],
+      "definitionSummary": "bounded discrete oscillators of trend state: RSI14 and MA-ordering score /6"
+    },
+    {
+      "family": "VOLATILITY",
+      "members": ["v5", "v20", "vc"],
+      "canonicalPreference": ["v20", "v5", "vc"],
+      "definitionSummary": "v5/v20 rolling std of daily returns; vc = v5/(v20+eps) volatility-shape ratio"
+    },
+    {
+      "family": "REVERSAL",
+      "members": ["rev5", "rev10"],
+      "canonicalPreference": ["rev10", "rev5"],
+      "definitionSummary": "negative rolling mean of daily returns over n sessions"
+    },
+    {
+      "family": "DRAWDOWN",
+      "members": ["dd20", "dd60"],
+      "canonicalPreference": ["dd20", "dd60"],
+      "definitionSummary": "close / rolling n-session high - 1; drawdown from rolling peak"
+    }
+  ],
+  "familyProcessingOrder": [
+    "TREND_MOMENTUM", "RANGE_POSITION", "OSCILLATOR_ALIGNMENT",
+    "VOLATILITY", "REVERSAL", "DRAWDOWN"
+  ],
+  "frozenSettings": {
+    "model": "NumPyRidge",
+    "alpha": 0.01,
+    "target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+    "targetDefinition": "raw_y(t,s,h) - mean_admissible_raw_y(t,h) within same training feature date and horizon",
+    "preprocessing": "NONE_RAW",
+    "trainWindowCalendarMonths": 6,
+    "trainWindowAnchor": "per_horizon_label_cutoff",
+    "minimumValidTrainingDays": 30,
+    "horizons": [10, 40, 120],
+    "fusion": [0.25, 0.5, 0.25],
+    "fusionDefinition": "0.25*pred10 + 0.50*pred40 + 0.25*pred120",
+    "topK": 5,
+    "topKSelection": "FUSED_SCORE_TOP5",
+    "predictionOrder": "higher_score_first_sector_code_ascending_tie_break",
+    "universe": "U0_FIXED_124",
+    "sectorCount": 124,
+    "developmentIds": "E001-E100",
+    "sharedFactorSetAcrossHorizons": true
+  },
+  "candidateBudget": {
+    "maxNewCandidates": 4,
+    "totalWithControl": 5,
+    "adaptiveSearch": "FORBIDDEN",
+    "greedyForwardSelection": "FORBIDDEN",
+    "backwardElimination": "FORBIDDEN",
+    "exhaustiveSubsetSearch": "FORBIDDEN",
+    "randomSubsetSearch": "FORBIDDEN",
+    "closedAfterPreregistration": true
+  },
+  "control": {
+    "candidateId": "C0",
+    "isControl": true,
+    "countsAgainstNewBudget": false,
+    "description": "Exact D2 control: 19 frozen factors, raw X, cross-sectional excess target, Ridge alpha 0.01",
+    "sourceCandidate": "D2",
+    "sourceRunId": "iteration1_20260924_163607_787266_utc",
+    "factorList": [
+      "d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120",
+      "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"
+    ],
+    "factorCount": 19,
+    "target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+    "preprocessing": "NONE_RAW",
+    "model": "NumPyRidge",
+    "alpha": 0.01,
+    "trainWindow": "6 calendar months",
+    "horizons": [10, 40, 120],
+    "fusion": [0.25, 0.5, 0.25],
+    "topK": 5,
+    "frozenMetrics": {
+      "weightedRankIc": 0.08810651455546813,
+      "weightedSpread": 0.037216498377093545,
+      "rankIcByHorizon": {"10": 0.025446168371361138, "40": 0.049692399685287166, "120": 0.22759509047993703},
+      "spreadByHorizon": {"10": 0.005297457266283392, "40": 0.01278764643554297, "120": 0.11799324337100485}
+    }
+  },
+  "candidates": [
+    {
+      "candidateId": "V2_A",
+      "description": "V20 ONLY: simplest volatility-only benchmark on canonical 20-session realized volatility",
+      "hypothesisTags": ["POST-AUDIT DEVELOPMENT HYPOTHESIS", "Q2"],
+      "selectionRule": "TASK_FIXED_V2_A_CANONICAL_VOLATILITY_LEVEL",
+      "factorList": ["v20"],
+      "factorCount": 1,
+      "familyRepOf": {"v20": "VOLATILITY"},
+      "target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+      "preprocessing": "NONE_RAW",
+      "model": "NumPyRidge",
+      "alpha": 0.01,
+      "trainWindow": "6 calendar months",
+      "horizons": [10, 40, 120],
+      "fusion": [0.25, 0.5, 0.25],
+      "topK": 5,
+      "regimeUnstableFactors": []
+    },
+    {
+      "candidateId": "V2_B",
+      "description": "V5 + V20: short-window and medium-window volatility complementarity",
+      "hypothesisTags": ["POST-AUDIT DEVELOPMENT HYPOTHESIS", "Q1", "Q3"],
+      "selectionRule": "TASK_FIXED_V2_B_VOLATILITY_COMPLEMENTARITY",
+      "factorList": ["v5", "v20"],
+      "factorCount": 2,
+      "familyRepOf": {"v5": "VOLATILITY", "v20": "VOLATILITY"},
+      "premise": {
+        "v5_v20_mean_daily_spearman": 0.6298417623918176,
+        "redundancyThreshold": 0.8,
+        "belowThreshold": true,
+        "source": "factor_alpha_audit_20260925_071934_967164_utc/factor_correlation_spearman.csv"
+      },
+      "target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+      "preprocessing": "NONE_RAW",
+      "model": "NumPyRidge",
+      "alpha": 0.01,
+      "trainWindow": "6 calendar months",
+      "horizons": [10, 40, 120],
+      "fusion": [0.25, 0.5, 0.25],
+      "topK": 5,
+      "regimeUnstableFactors": []
+    },
+    {
+      "candidateId": "V2_D",
+      "description": "Family representative compact set: exactly one representative per factor family, selected by canonical-window preference with a redundancy cascade (no performance metric used)",
+      "hypothesisTags": ["POST-AUDIT DEVELOPMENT RESEARCH", "Q1", "Q4", "Q5"],
+      "selectionRule": "FAMILY_CANONICAL_PREFERENCE_WITH_REDUNDANCY_CASCADE",
+      "factorList": ["d20", "p60", "align", "v20", "rev5", "dd20"],
+      "factorCount": 6,
+      "familyRepOf": {
+        "d20": "TREND_MOMENTUM",
+        "p60": "RANGE_POSITION",
+        "align": "OSCILLATOR_ALIGNMENT",
+        "v20": "VOLATILITY",
+        "rev5": "REVERSAL",
+        "dd20": "DRAWDOWN"
+      },
+      "selectionTrace": [
+        {"family": "TREND_MOMENTUM", "tried": "d20", "decision": "SELECTED", "reason": "canonical monthly deviation; no prior selections"},
+        {"family": "RANGE_POSITION", "tried": "p20", "decision": "SKIPPED_HIGH_REDUNDANCY", "reason": "mean daily spearman with d20 = 0.84134157545946198 >= 0.80"},
+        {"family": "RANGE_POSITION", "tried": "p60", "decision": "SELECTED", "reason": "next canonical preference; max |spearman| with selected = 0.6861 < 0.80"},
+        {"family": "OSCILLATOR_ALIGNMENT", "tried": "rsi", "decision": "SKIPPED_HIGH_REDUNDANCY", "reason": "mean daily spearman with d20 = 0.8646634146341462 >= 0.80"},
+        {"family": "OSCILLATOR_ALIGNMENT", "tried": "align", "decision": "SELECTED", "reason": "next canonical preference; max |spearman| with selected = 0.6551 < 0.80"},
+        {"family": "VOLATILITY", "tried": "v20", "decision": "SELECTED", "reason": "canonical medium-window volatility level; max |spearman| with selected = 0.1405 < 0.80"},
+        {"family": "REVERSAL", "tried": "rev10", "decision": "SKIPPED_HIGH_REDUNDANCY", "reason": "mean daily spearman with d20 = -0.89370152635719935, |.| >= 0.80"},
+        {"family": "REVERSAL", "tried": "rev5", "decision": "SELECTED", "reason": "next canonical preference; max |spearman| with selected = 0.6995 < 0.80"},
+        {"family": "DRAWDOWN", "tried": "dd20", "decision": "SELECTED", "reason": "canonical monthly drawdown; max |spearman| with selected = 0.7045 < 0.80"}
+      ],
+      "target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+      "preprocessing": "NONE_RAW",
+      "model": "NumPyRidge",
+      "alpha": 0.01,
+      "trainWindow": "6 calendar months",
+      "horizons": [10, 40, 120],
+      "fusion": [0.25, 0.5, 0.25],
+      "topK": 5,
+      "regimeUnstableFactors": ["d20", "p60", "align", "rev5", "dd20"],
+      "regimeUnstableJustification": "Retained solely as canonical dimension representatives of their price-information families under the frozen family-mapping and redundancy-cascade rules, which use zero return-performance metrics. Their Audit V1 block signs are regime-dependent (2/4 or 3/4 with flips) and are disclosed via REGIME_UNSTABLE labels; Ridge learns coefficients on raw signed factors and no direction is fixed or flipped by design. The V2-D hypothesis is structural (de-redundified cross-family input improves extraction), not per-factor alpha."
+    }
+  ],
+  "excludedCandidates": [
+    {
+      "candidateId": "V2_C",
+      "status": "NOT_ADMISSIBLE",
+      "design": "[v5, v20, X] with X from a non-volatility family",
+      "reason": "No X satisfies admission criterion 5 (information must not rely on direction flip) or the regime-instability rule: every non-volatility factor has a Development block sign flip (sameSign 2/4 or 3/4-with-flip at 40/120). See protocol exclusion table. NOT ADMISSIBLE rather than hard-fitted."
+    }
+  ],
+  "redundancyRule": {
+    "threshold": 0.8,
+    "metric": "mean_daily_cross_sectional_spearman",
+    "source": "factor_alpha_audit_20260925_071934_967164_utc/factor_correlation_spearman.csv",
+    "v2dInternalPairsAllBelowThreshold": true,
+    "highRedundancyPairs": [
+      {"factorA": "d5", "factorB": "d10", "meanSpearman": 0.81061922895357996},
+      {"factorA": "d5", "factorB": "p5", "meanSpearman": 0.86661702245582306},
+      {"factorA": "d10", "factorB": "d20", "meanSpearman": 0.8282715342250192},
+      {"factorA": "d10", "factorB": "p10", "meanSpearman": 0.8565248011150518},
+      {"factorA": "d10", "factorB": "rev5", "meanSpearman": -0.89118300550747453},
+      {"factorA": "d10", "factorB": "rev10", "meanSpearman": -0.80091172305271441},
+      {"factorA": "d20", "factorB": "p20", "meanSpearman": 0.84134157545946198},
+      {"factorA": "d20", "factorB": "rev10", "meanSpearman": -0.89370152635719935},
+      {"factorA": "d20", "factorB": "rsi", "meanSpearman": 0.8646634146341462},
+      {"factorA": "d60", "factorB": "d120", "meanSpearman": 0.84447112509834743},
+      {"factorA": "d60", "factorB": "p60", "meanSpearman": 0.82280389108637497},
+      {"factorA": "d120", "factorB": "p120", "meanSpearman": 0.84425807519747564},
+      {"factorA": "p5", "factorB": "p10", "meanSpearman": 0.82156748214870345},
+      {"factorA": "p10", "factorB": "p20", "meanSpearman": 0.80801828605279713},
+      {"factorA": "p20", "factorB": "dd20", "meanSpearman": 0.8828444948312163},
+      {"factorA": "p60", "factorB": "dd60", "meanSpearman": 0.90458650209327429}
+    ]
+  },
+  "regimeRule": {
+    "blocks": [[1, 1, 25], [2, 26, 50], [3, 51, 75], [4, 76, 100]],
+    "rule": "Factors with only 2/4 same-sign blocks and an obvious block sign flip cannot be core additions to V2-C/V2-D unless a strong non-result-driven theoretical reason exists; if retained they must be labeled REGIME_UNSTABLE with justification",
+    "label": "REGIME_UNSTABLE"
+  },
+  "metrics": {
+    "weightedRankIc": "0.25*meanRankIc10 + 0.50*meanRankIc40 + 0.25*meanRankIc120",
+    "weightedSpread": "0.25*meanSpread10 + 0.50*meanSpread40 + 0.25*meanSpread120",
+    "comparisonSet": [
+      "weightedRankIc", "weightedSpread",
+      "meanRankIc10", "meanRankIc40", "meanRankIc120",
+      "meanSpread10", "meanSpread40", "meanSpread120",
+      "medianRankIc10", "medianRankIc40", "medianRankIc120",
+      "stabilityAcrossDevelopmentBlocks",
+      "extremeDateSensitivity",
+      "candidateSimplicityFactorCount"
+    ],
+    "winnerSelectionByMaxValue": "FORBIDDEN"
+  },
+  "advancementRule": {
+    "level1Basic": "weightedRankIc > 0 AND weightedSpread > 0",
+    "level2RelativeToC0": {
+      "optionA": "weightedRankIc > C0 AND weightedSpread >= C0",
+      "optionB": "weightedSpread > C0 AND weightedRankIc >= C0",
+      "requireAtLeastOne": true
+    },
+    "horizonRedFlag": {
+      "threshold": -0.02,
+      "definition": "any horizon meanRankIc < -0.02 blocks advancement regardless of level1/level2",
+      "frozenBeforeResults": true
+    },
+    "advancedStatus": "V2_ADVANCED_FOR_FURTHER_REVIEW",
+    "otherwiseStatus": "V2_NOT_ADVANCED",
+    "validationAdmission": false
+  },
+  "simplicityRule": {
+    "SIMPLICITY_PREFERENCE": true,
+    "rankIcTieBand": 0.01,
+    "spreadTieBand": 0.01,
+    "rule": "if abs(delta weightedRankIc) < 0.01 AND abs(delta weightedSpread) < 0.01 between advanced candidates, prefer fewer factors; if equal factor count, lower candidateId order (V2_A, V2_B, V2_D)",
+    "descriptiveGuardNotStatisticalTruth": true
+  },
+  "extremeDateSensitivity": {
+    "definition": "recompute weightedRankIc/weightedSpread excluding the 5 lowest and 5 highest Development dates by U0 mean realized 120-session forward return (ties by ordinal ascending); sensitivity = full minus extreme-excluded",
+    "extremeDatesEachTail": 5,
+    "descriptiveOnly": true
+  },
+  "prohibitions": [
+    "brute_force_19_choose_k",
+    "topN_by_rankIc",
+    "topN_by_weighted_rankIc",
+    "sort_by_q5_minus_q1_selection",
+    "t_stat_ranking_selection",
+    "sign_flip_or_inversion",
+    "sign_normalization",
+    "per_horizon_factor_sets",
+    "dynamic_block_based_selection",
+    "regime_switch_model",
+    "factor_timing",
+    "factor_weighting",
+    "target_weighting",
+    "alpha_tuning",
+    "model_tuning",
+    "train_window_tuning",
+    "fusion_weight_tuning",
+    "topK_tuning",
+    "adaptive_candidate_addition",
+    "preview_formal_results",
+    "validation_access",
+    "final_oos_access"
+  ],
+  "seals": {
+    "developmentOnly": true,
+    "validationSealed": true,
+    "finalOosSealed": true,
+    "noParameterSearch": true,
+    "noSignFlip": true
+  }
+}
