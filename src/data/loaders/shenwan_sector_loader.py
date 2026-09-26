@@ -15,6 +15,13 @@ from ..providers.shenwan_sector import CATALOG_COLUMNS, OHLCVA_COLUMNS
 DEFAULT_PROCESSED_DIR = Path("data/processed/shenwan")
 
 
+def _root(processed_dir: Path | str | None) -> Path:
+    if processed_dir is not None:
+        return Path(processed_dir)  # Explicit legacy/golden paths never change meaning.
+    from ..providers.shenwan_official_update import read_parent
+    return read_parent(Path.cwd())["processed"]
+
+
 def _metadata(root: Path) -> dict:
     path = root / "sector_admission.json"
     if not path.is_file():
@@ -30,8 +37,8 @@ def _verified_csv(root: Path, name: str, metadata: dict) -> Path:
     return path
 
 
-def load_sector_catalog(processed_dir: Path | str = DEFAULT_PROCESSED_DIR) -> pd.DataFrame:
-    root = Path(processed_dir)
+def load_sector_catalog(processed_dir: Path | str | None = None) -> pd.DataFrame:
+    root = _root(processed_dir)
     metadata = _metadata(root)
     frame = pd.read_csv(_verified_csv(root, "sector_catalog.csv", metadata), dtype={"sector_code": "string"})
     if not set(CATALOG_COLUMNS).issubset(frame.columns) or frame["sector_code"].duplicated().any():
@@ -76,12 +83,12 @@ def load_sector_ohlcva(
     start: object | None = None,
     end: object | None = None,
     *,
-    processed_dir: Path | str = DEFAULT_PROCESSED_DIR,
+    processed_dir: Path | str | None = None,
     allow_invalid_for_audit: bool = False,
 ) -> pd.DataFrame:
     """返回单行业真实 bar；异常默认抛错，审计时可显式读取原值。"""
 
-    frame = _market(Path(processed_dir))
+    frame = _market(_root(processed_dir))
     out = frame.loc[frame["sector_code"] == str(sector_code)]
     if start is not None:
         out = out.loc[out["date"] >= pd.Timestamp(start)]
@@ -100,7 +107,7 @@ def load_sector_panel(
     start: object,
     end: object,
     *,
-    processed_dir: Path | str = DEFAULT_PROCESSED_DIR,
+    processed_dir: Path | str | None = None,
     allow_invalid_for_audit: bool = False,
 ) -> pd.DataFrame:
     """长表 panel（date, sector_code），不填补缺失 bar。"""
@@ -109,7 +116,7 @@ def load_sector_panel(
         raise ValueError("sector_codes 必须非空且唯一")
     if pd.Timestamp(end) < pd.Timestamp(start):
         raise ValueError("end 早于 start")
-    market = _market(Path(processed_dir))
+    market = _market(_root(processed_dir))
     requested = {str(code) for code in sector_codes}
     available = set(market["sector_code"])
     if missing := requested - available:

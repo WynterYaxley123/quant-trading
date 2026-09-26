@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "sha256": "2182efcbf5b27c34ba8901fae4715a6c6bdc54d9e186adc7b43523ce2e9176c1",
+  "subject": "C=US, O=DigiCert, Inc., CN=GeoTrust G2 TLS CN RSA4096 SHA256 2022 CA1",
+  "issuer": "C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Global Root G2",
+  "serial": "0F06BB09306148267FCA1B71C1DB807D",
+  "notBefore": "2022-12-15T00:00:00Z",
+  "notAfter": "2032-12-14T23:59:59Z",
+  "sourceAiaUrl": "http://cacerts.digicert.cn/GeoTrustG2TLSCNRSA4096SHA2562022CA1.crt",
+  "retrievedAt": "2026-09-27",
+  "retrievedAtPrecision": "DATE_ONLY; exact acquisition clock was not captured",
+  "verification": "openssl verify -CAfile <unchanged certifi> <intermediate>; openssl verify -CAfile <unchanged certifi> -untrusted <intermediate> -verify_hostname www.swsresearch.com -purpose sslserver <leaf>",
+  "notes": "Public intermediate, NOT a new root. DER acquired from live leaf AIA; signature chain and hostname verified against existing roots before use. Reverified each probe. No global trust-store changes."
+}
