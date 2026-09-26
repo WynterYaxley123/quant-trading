@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "researchType": "F1_INDEPENDENT_VALIDATION_V1",
+  "candidateCount": 1,
+  "controlCount": 1,
+  "candidate": {
+    "id": "V1_F1_CANDIDATE",
+    "sourceCandidateId": "F1_H10_REPLACEMENT",
+    "components": {"h10": "H10_C", "h40": "C0_H40", "h120": "C0_H120"},
+    "factors": {
+      "h10": ["d10", "p5", "align", "vc", "dd20"],
+      "h40": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+      "h120": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"]
+    }
+  },
+  "control": {
+    "id": "V0_CONTROL",
+    "sourceCandidateId": "F0_CONTROL",
+    "components": {"h10": "C0_H10", "h40": "C0_H40", "h120": "C0_H120"},
+    "factors": {
+      "h10": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+      "h40": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"],
+      "h120": ["d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi"]
+    }
+  },
+  "common": {
+    "universe": "U0_FIXED_124",
+    "model": "NumPyRidge",
+    "alpha": 0.01,
+    "xPreprocessing": "NONE_RAW_X_NO_TRAIN_STANDARDIZATION",
+    "trainingWindowCalendarMonths": 6,
+    "trainingWindowAnchor": "PER_HORIZON_LABEL_CUTOFF",
+    "minimumValidTrainingDates": 30,
+    "horizonsSessions": [10, 40, 120],
+    "trainingTarget": "SAME_TRAINING_DATE_CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+    "trainingTargetFormula": "raw_y(t,s,h)-mean_admissible_raw_y(t,h)",
+    "baseLabel": "close[t+h]/close[t]-1",
+    "evaluationLabel": "ABSOLUTE_FORWARD_RETURN",
+    "informationCutoff": "SIGNAL_DATE_AFTER_CLOSE",
+    "labelMaturity": "LABEL_END_LE_SIGNAL_DATE_USING_EXISTING_COMMON_TRADING_CALENDAR",
+    "fusion": "PER_DATE_PER_HORIZON_CROSS_SECTIONAL_ZSCORE_POPULATION_STD_DDOF_0",
+    "fusionImplementation": "CrossSectionalRidgeModel.fuse_periods",
+    "fusionNumericalRule": "m=max(1,maxAbsScore); z=(score/m-mean(score/m))/std(score/m); std<=1e-12/m yields zero; divide weighted sum by sum(weights)",
+    "fusionWeights": {"h10": 0.25, "h40": 0.5, "h120": 0.25},
+    "fusionUniverse": "INTERSECTION_REQUIRED_TO_EQUAL_FIXED_U0_124",
+    "ranking": "FUSED_SCORE_DESCENDING",
+    "tieBreak": "SECTOR_CODE_ASCENDING",
+    "topK": 5,
+    "top5": "FIRST_FIVE_OF_FUSED_RANKING",
+    "missingness": "FIXED_UNIVERSE_COMPLETE_CASE_NO_FILL_NO_REPLACEMENT_NULL_METRIC_WITH_REASON",
+    "validationExecutionMode": "FROZEN_ALGORITHM_WALK_FORWARD",
+    "rsrsInTraining": false,
+    "macroEnabled": false,
+    "flowEnabled": false,
+    "riskState": "RECORD_ONLY",
+    "strictPit": false,
+    "classification": "FIXED_CLASSIFICATION_RESEARCH",
+    "researchLabel": "SECTOR_INDEX_RESEARCH_ONLY",
+    "executable": false,
+    "tradable": false
+  },
+  "forbiddenCandidates": ["F2_H10_H40_REPLACEMENT", "H40_S", "H120_S", "H120_C", "NEW_OR_BACKUP_CANDIDATE"],
+  "sourceResultCommit": "91b89a97a9a2b54e133d2979c695d7c3da22626e"
+}

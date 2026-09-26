@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "phaseIdentity": "POLICY_C_FIXED124_STRICT120_VALIDATION_E221_E280",
+  "splitPolicyHash": "3b6b2d754211169039439c8b377fd9eb26d5cb5db0f80d62cffc1d19c81a7038",
+  "splitPolicyAuthority": "research/sector_development_protocol.py::split_policy_payload",
+  "phases": [
+    {"phase": "development", "start": 1, "end": 100},
+    {"phase": "purge_1", "start": 101, "end": 220},
+    {"phase": "validation", "start": 221, "end": 280},
+    {"phase": "purge_2", "start": 281, "end": 400},
+    {"phase": "final_oos", "start": 401, "end": 460}
+  ],
+  "validationOrdinalIds": [221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280],
+  "knownDateByOrdinal": {
+    "221": "2026-03-03", "222": "2026-03-04", "223": "2026-03-05", "224": "2026-03-06", "225": "2026-03-09", "226": "2026-03-10", "227": "2026-03-11", "228": "2026-03-12", "229": "2026-03-13", "230": "2026-03-16", "231": "2026-03-17", "232": "2026-03-18", "233": "2026-03-19", "234": "2026-03-20", "235": "2026-03-23", "236": "2026-03-24", "237": "2026-03-25", "238": "2026-03-26", "239": "2026-03-27"
+  },
+  "unknownDates": {"ordinalStart": 240, "ordinalEnd": 280, "date": null, "policy": "DO_NOT_ESTIMATE; resolve only from append-verified formal eligible calendar before a separately authorized run"},
+  "frozenPrefixCount": 239,
+  "frozenPrefixSha256": "bcefa227f86a805677733defea63ed3954915548a6a140b0f654510c4267790b",
+  "validationAvailableCountAtPreregistration": 19,
+  "validationRequiredCountForFutureFormalRun": 60,
+  "blocks": [
+    {"id": "VB1", "first": 221, "last": 240},
+    {"id": "VB2", "first": 241, "last": 260},
+    {"id": "VB3", "first": 261, "last": 280}
+  ],
+  "purge1": {
+    "evaluationEligible": false,
+    "trainingSourceEligible": true,
+    "requiresMatureLabel": true,
+    "requiresAsOfCutoff": true,
+    "requiresRollingWindow": true,
+    "requiresMinimumTrainingData": true,
+    "requiresValidFeaturesAndTarget": true,
+    "futureInformationAllowed": false
+  },
+  "earlierValidationObservations": {
+    "futureTrainingEligible": true,
+    "requiresMatureLabel": true,
+    "requiresStrictChronology": true,
+    "requiresAsOfCutoff": true,
+    "requiresRollingWindow": true,
+    "researchAdaptationAllowed": false
+  },
+  "purge2": {"evaluationEligible": false, "futureFinalOosTrainingEligibility": "UNDECIDED_REQUIRES_SEPARATE_FINAL_OOS_PREREGISTRATION"},
+  "finalOos": "SEALED",
+  "phaseAdmissionAuthority": "HUMAN_REVIEW_DECISION_RESOLVING_VALIDATION_PURGE_TRAINING_SEMANTICS_BLOCKER",
+  "labelWindowAuthority": "strategies/sw_sector_rotation/src/common/temporal_integrity.py::temporal_boundaries + training_window; SWSectorRotationCore.run_period",
+  "labelMaturityInequality": "label_end <= current_signal_date",
+  "strictTrainingOriginChronology": "observation_signal_date < current_signal_date"
+}
