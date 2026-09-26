@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "task": "SHENWAN_OFFICIAL_MARKET_DATA_PIPELINE_V1",
+  "finalStatus": "SHENWAN_OFFICIAL_UPDATER_V1_IMPLEMENTED",
+  "updateStatus": "OFFICIAL_ENDPOINT_BLOCKED",
+  "readinessStatus": "VALIDATION_NOT_READY",
+  "scope": "OFFICIAL_DATA_INFRASTRUCTURE_ONLY",
+  "branch": "experiment/sw-sector-index-research-baseline",
+  "initialHead": "23d77ba5816bea85f31c4c5626564bbac3ee3e4c",
+  "headAtAuthoring": "d257c18be4dd3fb8681282eb5263173875fcff14",
+  "liveExecutionCommit": "d257c18be4dd3fb8681282eb5263173875fcff14",
+  "implementationCommit": "c9f95c4771c9f0b81e8a538cd5990109a7e96112",
+  "runtimeFixCommit": "d257c18be4dd3fb8681282eb5263173875fcff14",
+  "resultAndHandoffCommit": {
+    "sameCommit": true,
+    "resolutionCommand": "git log --diff-filter=A -1 --format=%H -- docs/research/handoff_shenwan_official_updater_v1.json",
+    "note": "Resolve the docs-only creation commit from Git; embedding its own SHA would be a self-reference. Final full SHA is also reported in chat."
+  },
+  "docker": {
+    "research": "running",
+    "jupyter": "running",
+    "frozenImage": "sha256:57858238189364c652cf673d64917d365afd5508ee464ed9c142d5d4e1b002e5",
+    "researchEnvironmentChanged": false,
+    "hostPortPublicationChanged": true,
+    "hostPortExceptionPreviouslyApproved": true,
+    "changesThisTask": false,
+    "dependenciesChanged": false,
+    "imageRebuilt": false,
+    "imagePulled": false,
+    "containerRecreated": false,
+    "hostPorts": {
+      "127.0.0.1:19200": 9200,
+      "127.0.0.1:19201": 9201
+    },
+    "composeFiles": [
+      "D:\\quant-trading\\docker-compose.yml",
+      "D:\\QuantForge\\temp\\quant-trading-host-port.override.yml"
+    ],
+    "versions": {
+      "python": "3.12.11",
+      "hikyuu": "2.8.2",
+      "rqalpha": "6.4.0",
+      "akshare": "1.18.88",
+      "numpy": "2.3.5",
+      "pandas": "2.3.3",
+      "scipy": "1.16.3"
+    }
+  },
+  "identities": {
+    "candidateDefinitionHash": "6c2b16555b6dfd5d848ea451b09e7b75f53da67747fc76fd052d93afd3ea156b",
+    "protocolHash": "2344cc685201476de957109b9fccc2681923e2c4591b5ed91740a56baf128410",
+    "splitPolicyHash": "3b6b2d754211169039439c8b377fd9eb26d5cb5db0f80d62cffc1d19c81a7038",
+    "validationPhaseDefinitionHash": "28d3980e28b41b37d2a327aad6081e8312cf66d66762c13e33cc8ba814c8fa7f"
+  },
+  "provider": "shenwan_research_official",
+  "catalogEndpoint": "https://www.swsresearch.com/institute-sw/api/index_publish/current/?page=1&page_size=50&indextype=%E4%BA%8C%E7%BA%A7%E8%A1%8C%E4%B8%9A",
+  "trendEndpoint": "https://www.swsresearch.com/institute-sw/api/index_publish/trend/?swindexcode=801012&period=DAY",
+  "tls": {
+    "status": "STRICT_VERIFICATION_PASS",
+    "mode": "PROJECT_LOCAL_STRICT_CHAIN_COMPLETION",
+    "serverChainComplete": false,
+    "serverCertificateCount": 1,
+    "intermediatePinned": true,
+    "intermediateSha256": "2182efcbf5b27c34ba8901fae4715a6c6bdc54d9e186adc7b43523ce2e9176c1",
+    "intermediate": {
+      "issuer": "C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Global Root G2",
+      "notAfter": "Dec 14 23:59:59 2032 GMT",
+      "notBefore": "Dec 15 00:00:00 2022 GMT",
+      "serial": "0F06BB09306148267FCA1B71C1DB807D",
+      "subject": "C=US, O=DigiCert, Inc., CN=GeoTrust G2 TLS CN RSA4096 SHA256 2022 CA1"
+    },
+    "sourceAiaUrl": "http://cacerts.digicert.cn/GeoTrustG2TLSCNRSA4096SHA2562022CA1.crt",
+    "retrievedAt": "2026-09-27",
+    "retrievedAtPrecision": "DATE_ONLY",
+    "leaf": {
+      "issuer": "C=US, O=DigiCert, Inc., CN=GeoTrust G2 TLS CN RSA4096 SHA256 2022 CA1",
+      "notAfter": "Nov 26 23:59:59 2026 GMT",
+      "notBefore": "May 12 00:00:00 2026 GMT",
+      "serial": "0A93E8B6F9263473C9401874508C5370",
+      "subject": "C=CN, ST=上海市, O=上海申银万国证券研究所有限公司, CN=*.swsresearch.com"
+    },
+    "originalRoots": "/opt/conda/lib/python3.12/site-packages/certifi/cacert.pem",
+    "originalRootsSha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f",
+    "systemCaSha256": "9481fcd95f41b221f02f14d896535fe500bec539bc563c4cdca1acee483a8bdd",
+    "globalTrustStoreChanged": false,
+    "unknownCaImported": false,
+    "proxyEnvironmentKeysObserved": [],
+    "verificationCommand": [
+      "openssl",
+      "verify",
+      "-CAfile",
+      "/opt/conda/lib/python3.12/site-packages/certifi/cacert.pem",
+      "-untrusted",
+      "/workspace/src/data/certs/geotrust_g2_tls_cn_2022.pem",
+      "-verify_hostname",
+      "www.swsresearch.com",
+      "-purpose",
+      "sslserver",
+      "/tmp/shenwan_strict_tls_2x41h5dm/leaf.pem"
+    ],
+    "verificationOutput": "/tmp/shenwan_strict_tls_2x41h5dm/leaf.pem: OK",
+    "verifyFalseUsed": false
+  },
+  "sourceIdentity": "PASS_EXACT_AUTHORIZED_URLS_AND_VERIFIED_HOST",
+  "sourceSchemaStatus": "NOT_RUN",
+  "schemaCompatible": null,
+  "currentOfficialCatalogCount": null,
+  "frozenU0Count": 124,
+  "frozenU0Hash": "f24e61c51f48e1b4ca8ded83eaf24bdd71be35711f3eb0ed88d7627f332d026a",
+  "frozenSectorCoverage": null,
+  "parentSnapshotId": "872bcbc2b1e59f70530f692de71fdd9c6225c37eab00483861264ed00454e500",
+  "currentSnapshotId": "872bcbc2b1e59f70530f692de71fdd9c6225c37eab00483861264ed00454e500",
+  "parentCutoff": "2026-09-18",
+  "currentCutoff": "2026-09-18",
+  "parentRows": 419346,
+  "currentRows": 419346,
+  "probeRunId": "official_probe_20260927_v1_retry",
+  "cycleRunId": "official_cycle_20260927_v1_dryrun",
+  "probeStatus": "OFFICIAL_ENDPOINT_BLOCKED",
+  "dryRunStatus": "OFFICIAL_ENDPOINT_BLOCKED",
+  "catalogHttpStatus": 508,
+  "trendHttpStatus": 508,
+  "http508Cause": null,
+  "fetchStatus": "NOT_RUN",
+  "sectorsFetched": 0,
+  "sectorsRequired": 124,
+  "stagingPath": null,
+  "overlapStatus": "NOT_RUN",
+  "historicalOverlapRowsChecked": null,
+  "historicalRevisionCount": null,
+  "missingHistoricalRowsDetected": null,
+  "historicalGapFillsDetected": null,
+  "appendCandidateRows": null,
+  "appendDateRange": null,
+  "updateAttempted": false,
+  "updateApplied": false,
+  "newSnapshotId": null,
+  "newCutoff": null,
+  "newRowCount": null,
+  "appendedRows": 0,
+  "historicalPrefixIdentity": "PASS_UNCHANGED_GOLDEN_BYTES",
+  "canonicalMarketSha256": "884c7dbaaacf6aa5652b63cde5153265ca383fe5bec18fa0a40c410a76b5a887",
+  "knownAnomalies": {
+    "invalidOhlcRows": 20,
+    "invalidRowKeysSha256": "202043fbc25582502bfaa63d3f359fefb11ea75a82ebfce4973fd064f7d87755",
+    "invalidSidecarSha256": "ddd5a362b5c68274ce6e3ea5c145fd65e03065b94fda0fe3cebb4a8378dde23d",
+    "last801193MissingSession": "2023-09-26",
+    "missing801193DatesSha256": "00c586669468962b70f1a01e31e8bd9378e17ef16d06d3f6fe9bc568e8aa1674",
+    "sector801193MissingCommonSessions": 336
+  },
+  "knownInvalidOhlcPreserved": true,
+  "sector801193HistoricalMissingnessPreserved": true,
+  "snapshotLineage": {
+    "implementation": "PASS_SYNTHETIC_TESTS",
+    "livePublication": "NOT_RUN",
+    "currentPointerExists": false,
+    "goldenBaseSnapshotRegression": "PASS",
+    "snapshotManifestPath": null,
+    "appendManifestPath": null
+  },
+  "classificationVersion": null,
+  "strictPit": false,
+  "publicationTimingEvidence": false,
+  "volumeAmountUnits": null,
+  "historicalIndexRecalculationPolicy": null,
+  "readinessBefore": 19,
+  "readinessAfter": 19,
+  "readinessDelta": 0,
+  "notReady": 41,
+  "total": 60,
+  "fullValidationReadiness": false,
+  "readinessDeterminism": true,
+  "readinessSha256": "f4e252fbb2a5781a0847c80f3865195ac1332908a81f1820087ebd0828aecdc0",
+  "validationState": "SEALED_UNSEEN",
+  "finalOosState": "SEALED",
+  "finalOosRead": false,
+  "validationOpened": false,
+  "validationPerformanceRead": false,
+  "validationResultsGenerated": false,
+  "tests": {
+    "baselineTargeted": {
+      "passed": 186
+    },
+    "baselineFull": {
+      "passed": 788,
+      "skipped": 2,
+      "deselected": 17,
+      "warnings": 2
+    },
+    "implementationTargeted": {
+      "passed": 245,
+      "deselected": 1
+    },
+    "implementationFull": {
+      "passed": 847,
+      "skipped": 2,
+      "deselected": 18,
+      "warnings": 2
+    },
+    "postCycleTargeted": {
+      "passed": 245,
+      "deselected": 1
+    },
+    "postCycleFull": {
+      "passed": 847,
+      "skipped": 2,
+      "deselected": 18,
+      "warnings": 2
+    },
+    "goldenSnapshotIntegration": {
+      "passed": 1,
+      "deselected": 59
+    },
+    "failed": 0,
+    "newOfflineSafetyContracts": 59,
+    "liveIdempotency": "NOT_RUN_ENDPOINT_BLOCKED",
+    "syntheticIdempotency": "PASS",
+    "imports": "PASS"
+  },
+  "sourceHealthArtifact": "data/manifests/shenwan_official_source_status.json",
+  "sourceHealthSha256": "66ec69cce7012f7f752b2a9773ee19d93a689995c98e14a20149281f20c05d21",
+  "cycleResultArtifact": "data/manifests/shenwan_official_runs/official_cycle_20260927_v1_dryrun/result.json",
+  "cycleResultSha256": "06c4b0199304d799d57b62a1952c3b29499c439e5c4ebdf1923b90673f260112",
+  "reportPath": "docs/research/shenwan_official_append_only_updater_v1_report.md",
+  "handoffMdPath": "docs/research/handoff_shenwan_official_updater_v1.md",
+  "handoffJsonPath": "docs/research/handoff_shenwan_official_updater_v1.json",
+  "commands": {
+    "probe": "& 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe' compose -f 'D:\\quant-trading\\docker-compose.yml' -f 'D:\\QuantForge\\temp\\quant-trading-host-port.override.yml' exec -T quant-research python scripts/data/update_shenwan_official.py probe",
+    "dryRun": "& 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe' compose -f 'D:\\quant-trading\\docker-compose.yml' -f 'D:\\QuantForge\\temp\\quant-trading-host-port.override.yml' exec -T quant-research python scripts/data/update_shenwan_official.py cycle --dry-run",
+    "update": "& 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe' compose -f 'D:\\quant-trading\\docker-compose.yml' -f 'D:\\QuantForge\\temp\\quant-trading-host-port.override.yml' exec -T quant-research python scripts/data/update_shenwan_official.py cycle",
+    "readiness": "& 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe' compose -f 'D:\\quant-trading\\docker-compose.yml' -f 'D:\\QuantForge\\temp\\quant-trading-host-port.override.yml' exec -T quant-research python scripts/data/update_shenwan_official.py readiness"
+  },
+  "blockers": [
+    "OFFICIAL_CURRENT_HTTP_508",
+    "OFFICIAL_TREND_HTTP_508"
+  ],
+  "warnings": [
+    "HTTP 508 cause unknown; no site restriction bypass attempted.",
+    "No live schema/catalog/full-overlap/append evidence was obtained.",
+    "Classification version, publication timing, units and recalculation policy remain unknown.",
+    "20 SOURCE_INVALID rows and 336 historical missing sessions remain unchanged.",
+    "The legacy directory is immutable golden data; active future generations use the atomic current pointer.",
+    "First CLI probe stopped before network on Docker Git ownership; fixed by invocation-only safe.directory, not global configuration."
+  ],
+  "strategyCoreChanged": false,
+  "frozenResearchChanged": false,
+  "thirdPartyMarketSourceUsed": false,
+  "push": false,
+  "merge": false,
+  "schedulerCreated": false,
+  "nextSafeAction": "WAIT_FOR_MORE_LEGALLY_AVAILABLE_SHENWAN_OFFICIAL_DATA; retry probe/dry-run after official endpoint availability recovers. No automatic Validation."
+}
