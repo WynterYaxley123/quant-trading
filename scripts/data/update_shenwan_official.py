@@ -20,8 +20,11 @@ from src.data.providers import shenwan_official_update as update  # noqa: E402
 
 
 def git_state(require_clean: bool) -> tuple[str, str]:
-    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
-    status = subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True)
+    # Windows bind mount ownership differs from mambauser. Trust only this user-
+    # authorized repository for this invocation, never change global Git config.
+    git = ["git", "-c", "safe.directory=" + str(ROOT)]
+    head = subprocess.check_output([*git, "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    status = subprocess.check_output([*git, "status", "--porcelain"], cwd=ROOT, text=True)
     if require_clean and status:
         raise ValueError("SHENWAN_UPDATER_DIRTY_WORKTREE_BLOCKER")
     return head, status

@@ -468,3 +468,15 @@ def test_corrupt_orphan_base_manifest_never_becomes_parent(api, synthetic_store)
         api.apply_stage(root, folder, "synthetic-git")
     assert not (root / api.LINEAGE / "current.json").exists()
     assert api.read_parent(root)["snapshotId"] == parent["snapshotId"]
+
+
+def test_cli_git_trust_is_scoped_to_one_known_repository(monkeypatch):
+    from scripts.data import update_shenwan_official as cli
+    calls = []
+    def output(args, **kwargs):
+        calls.append(args)
+        return "a" * 40 + "\n" if "rev-parse" in args else ""
+    monkeypatch.setattr(cli.subprocess, "check_output", output)
+    assert cli.git_state(True)[0] == "a" * 40
+    assert all(args[:3] == ["git", "-c", "safe.directory=" + str(cli.ROOT)] for args in calls)
+    assert not any("--global" in args for args in calls)
