@@ -329,6 +329,12 @@ class OfficialClient:
     def __init__(self):
         self.verify, self.tls = prepare_tls()
         self.session = requests.Session()
+        # Public frontend request semantics: the edge (Tengine) rejects
+        # non-browser User-Agents with an empty-body HTTP 508. Only this
+        # browser-compatible UA is added; no cookies, auth, or bypass.
+        self.session.headers["User-Agent"] = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36")
         self.requests = []
 
     def fetch(self, kind: str, *, code: str = "801012", page: int = 1) -> tuple[bytes, dict]:

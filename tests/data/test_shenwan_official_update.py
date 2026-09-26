@@ -386,6 +386,7 @@ def test_request_uses_verified_bundle_no_redirect_implicit(api, monkeypatch):
         content = payload([bar()])
         headers = {}
     class Session:
+        def __init__(self): self.headers = {}
         def get(self, url, **kwargs):
             calls.append(kwargs)
             return Response()
@@ -402,12 +403,53 @@ def test_untrusted_redirect_recorded_then_rejected(api, monkeypatch):
         status_code = 302
         headers = {"Location": "https://other.example/data"}
     class Session:
+        def __init__(self): self.headers = {}
         def get(self, url, **kwargs): return Response()
     monkeypatch.setattr(api, "prepare_tls", lambda: ("verified-test-bundle", {}))
     monkeypatch.setattr(api.requests, "Session", Session)
     client = api.OfficialClient()
     with pytest.raises(ValueError, match="SOURCE_IDENTITY"): client.fetch("trend")
     assert client.requests[0]["location"] == "https://other.example/data"
+
+
+@pytest.mark.parametrize("kind", ["current", "trend"])
+def test_public_browser_ua_is_only_header_change_and_is_sent(api, monkeypatch, kind):
+    """Inspect the real Requests prepared GET, without contacting the network."""
+    original_headers = dict(api.requests.Session().headers)
+    calls = []
+    def send(session, request, **kwargs):
+        calls.append((request, kwargs))
+        response = api.requests.Response()
+        response.status_code = 200
+        response._content = b'{}'
+        response.request = request
+        return response
+    monkeypatch.setattr(api, "prepare_tls", lambda: ("verified-test-bundle", {"verified": True}))
+    monkeypatch.setattr(api.requests.Session, "send", send)
+    client = api.OfficialClient()
+    expected_ua = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36")
+    assert dict(client.session.headers) == {**original_headers, "User-Agent": expected_ua}
+    assert not client.session.cookies and client.session.auth is None
+    client.fetch(kind, code="801012")
+    request, options = calls[0]
+    assert request.method == "GET" and request.url == api.source_url(kind, code="801012")
+    assert request.headers["User-Agent"] == expected_ua
+    assert set(request.headers) == set(original_headers)
+    for header in ("Cookie", "Referer", "Origin", "Authorization", "Sec-Fetch-Site"):
+        assert header not in request.headers
+    assert options["verify"] == "verified-test-bundle"
+    assert options["allow_redirects"] is False and options["timeout"] == (15, 60)
+    assert client.tls["verified"] is True
+
+
+def test_browser_ua_cannot_override_tls_failure(api, monkeypatch):
+    def invalid_tls(): raise ValueError("STRICT_TLS_VERIFICATION_BLOCKER")
+    def session_not_allowed(): raise AssertionError("TLS must pass before creating the client")
+    monkeypatch.setattr(api, "prepare_tls", invalid_tls)
+    monkeypatch.setattr(api.requests, "Session", session_not_allowed)
+    with pytest.raises(ValueError, match="STRICT_TLS"):
+        api.OfficialClient()
 
 
 def test_dynamic_second_parent_cutoff(api, synthetic_store):
