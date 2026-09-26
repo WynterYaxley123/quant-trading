@@ -10,11 +10,14 @@ Branch: `experiment/sw-sector-index-research-baseline`.
 Initial HEAD: `519f0a80a612a483573d286d91d8f787e74381f1`.
 Implementation: `62dc6c4fbb6d591f5629ce4b499972cbdd1a5282`.
 Result/report: `65668f541a5761e8a88ceb6f068e1ecf699ca9e4`.
+Handoff creation: `bc97fb93462017691893471db055ab558218ea08`.
 No snapshot commit: actual data update was NOT_RUN.
 This handoff follows the result commit in a separate docs-only commit.
 At authoring HEAD/result is clean. Resolve final handoff HEAD from Git:
-`git log -1 --format=%H -- docs/research/handoff_f1_validation_readiness_v1.json`.
-Its parent must equal the result SHA above. The file cannot embed its own SHA.
+`git log --diff-filter=A -1 --format=%H -- docs/research/handoff_f1_validation_readiness_v1.json`.
+That creation commit's parent equals the result SHA above. Final HEAD includes
+a following docs-only EOF/provenance cleanup; resolve it with `git rev-parse HEAD`.
+The cleanup commit cannot embed its own SHA.
 All commit SHAs and final clean state are also supplied in the final response.
 No push, merge, pull, rebase, amend, squash or history rewrite.
 
@@ -124,4 +127,3 @@ FINAL OOS REMAINS SEALED
 APPEND-ONLY DATA EXTENSION DID NOT ALTER THE FROZEN HISTORICAL PREFIX
 
 No actual extension was performed; the frozen prefix is byte-identical.
-

@@ -11,8 +11,8 @@
   "implementationCommit": "62dc6c4fbb6d591f5629ce4b499972cbdd1a5282",
   "resultCommit": "65668f541a5761e8a88ceb6f068e1ecf699ca9e4",
   "snapshotCommit": null,
-  "handoffCommit": null,
-  "handoffCommitNote": "Resolve with git log -1 --format=%H -- docs/research/handoff_f1_validation_readiness_v1.json; its parent must equal resultCommit. A file cannot contain its own commit SHA.",
+  "handoffCommit": "bc97fb93462017691893471db055ab558218ea08",
+  "handoffCommitNote": "Handoff creation commit, parent equals resultCommit. Resolve with git log --diff-filter=A -1 --format=%H -- docs/research/handoff_f1_validation_readiness_v1.json. Final HEAD follows in a docs-only EOF/provenance cleanup commit; re-read Git for its SHA (no self-reference).",
   "docker": {
     "research": "running",
     "jupyter": "running",
@@ -207,4 +207,3 @@
   "nextSafeAction": "WAIT_FOR_MORE_LEGALLY_AVAILABLE_APPEND_ONLY_DATA; SEPARATELY_REVIEW_SAME_PROVIDER_UPDATER_AND_LINEAGE_PATH",
   "future60Rule": "HUMAN_REVIEW_REQUIRED_BEFORE_FORMAL_VALIDATION_OPEN"
 }
-
