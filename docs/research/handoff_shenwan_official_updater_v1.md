@@ -1,7 +1,9 @@
 # Handoff — Shenwan official updater v1
 
-SHENWAN_OFFICIAL_UPDATER_V1_IMPLEMENTED  
-OFFICIAL_ENDPOINT_BLOCKED  
+SHENWAN_OFFICIAL_UPDATER_V1_IMPLEMENTED
+
+OFFICIAL_ENDPOINT_BLOCKED
+
 VALIDATION_NOT_READY: 19/60 READY, 41/60 NOT READY.
 
 TLS completion passed; official catalog/trend still returned HTTP 508.
@@ -14,7 +16,8 @@ Do not reinterpret null live checks as zero revisions or 124/124 success.
 - Initial HEAD: 23d77ba5816bea85f31c4c5626564bbac3ee3e4c
 - Implementation: c9f95c4771c9f0b81e8a538cd5990109a7e96112
 - Runtime ownership fix / clean live execution: d257c18be4dd3fb8681282eb5263173875fcff14
-- Result and handoff: one final docs-only creation commit, resolved below.
+- Result and handoff creation: c37c3141ba9e207a94e88688cfa826882df16c83, independently resolved below.
+- Subsequent docs-only cleanup: remove Markdown trailing-space hard breaks and record the known creation SHA; no code/data/tests/environment changes.
 - No push, merge, amend, rebase, scheduler, image/environment/dependency changes.
 
 ```text
@@ -22,7 +25,8 @@ git log --diff-filter=A -1 --format=%H -- docs/research/handoff_shenwan_official
 ```
 
 This avoids pretending that a commit can contain its own SHA. Chat reports final
-HEAD; JSON records headAtAuthoring and the precise creation-commit resolver.
+HEAD after cleanup; JSON records the live headAtAuthoring, known creation SHA and
+the precise creation-commit resolver. No amend or rebase was performed.
 
 ## Current data / safety
 

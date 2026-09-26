@@ -14,7 +14,8 @@
   "resultAndHandoffCommit": {
     "sameCommit": true,
     "resolutionCommand": "git log --diff-filter=A -1 --format=%H -- docs/research/handoff_shenwan_official_updater_v1.json",
-    "note": "Resolve the docs-only creation commit from Git; embedding its own SHA would be a self-reference. Final full SHA is also reported in chat."
+    "note": "Result and handoff creation SHA recorded by a subsequent docs-only formatting cleanup. Final HEAD is reported in chat and resolved by git rev-parse HEAD; no self-reference or amend.",
+    "commit": "c37c3141ba9e207a94e88688cfa826882df16c83"
   },
   "docker": {
     "research": "running",
@@ -248,5 +249,9 @@
   "push": false,
   "merge": false,
   "schedulerCreated": false,
-  "nextSafeAction": "WAIT_FOR_MORE_LEGALLY_AVAILABLE_SHENWAN_OFFICIAL_DATA; retry probe/dry-run after official endpoint availability recovers. No automatic Validation."
+  "nextSafeAction": "WAIT_FOR_MORE_LEGALLY_AVAILABLE_SHENWAN_OFFICIAL_DATA; retry probe/dry-run after official endpoint availability recovers. No automatic Validation.",
+  "documentationCleanup": {
+    "scope": "Markdown trailing-space hard breaks converted to blank-line paragraphs; record known creation SHA.",
+    "codeDataTestsEnvironmentChanged": false
+  }
 }
