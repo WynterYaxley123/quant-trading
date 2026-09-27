@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "registry_identity": "VERIFIED_MAPPING_REGISTRY_V1",
+  "scope": "CURRENT_FORWARD_ONLY",
+  "entries": [],
+  "notes": "No verified official fund evidence has been admitted. Empty registry is intentional; never infer ETF mappings from names."
+}
