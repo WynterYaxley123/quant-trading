@@ -1,0 +1,12 @@
+# Copy outside the repository; no credentials and no implicit full-market init.
+[paths]
+external_root = ""
+export_root = ""
+lake_root = ""
+
+[export]
+start = "2020-01-01"
+cutoff = ""
+calendar_end = "" # Announced future calendar only; never future prices.
+etf_symbols = [] # Explicit verified registry codes, never universe="all_a" for ETFs.
+classification_version = "SWCLASS2021"

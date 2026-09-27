@@ -49,9 +49,26 @@ def compute_price_factors(frame: pd.DataFrame) -> pd.DataFrame:
     values = frame.loc[:, list(CANONICAL_COLUMNS)].to_numpy(dtype=float)
     if not np.isfinite(values).all() or (values[:, :4] <= 0).any() or (values[:, 4:] < 0).any():
         raise ValueError("finite positive prices / nonnegative volume and amount required")
-    c = frame["close"]
+    return compute_close_factors(frame["close"])
+
+
+def compute_close_factors(c: pd.Series) -> pd.DataFrame:
+    """Genuine close-only input for internal series; never synthesize OHLCVA.
+
+    Explicit NaN gaps remain NaN. No forward fill, interpolation or gap removal;
+    rolling warmup restarts naturally after a missing close.
+    """
+    if not isinstance(c, pd.Series) or not isinstance(c.index, pd.DatetimeIndex):
+        raise ValueError("dated close Series required")
+    if (c.index.has_duplicates or c.index.hasnans or not c.index.is_monotonic_increasing
+            or c.index.tz is not None or not c.index.equals(c.index.normalize())):
+        raise ValueError("unique sorted daily dates required")
+    values = c.to_numpy(dtype=float)
+    known = values[~np.isnan(values)]
+    if not np.isfinite(known).all() or (known <= 0).any():
+        raise ValueError("positive finite observed closes required")
     r = c.pct_change(fill_method=None)
-    out = pd.DataFrame(index=frame.index)
+    out = pd.DataFrame(index=c.index)
     mas = {n: c.rolling(n).mean() for n in (5, 10, 20, 60, 120)}
     for n, ma in mas.items(): out[f"d{n}"] = (c - ma) / ma
     for n in (5, 10, 20, 60, 120):

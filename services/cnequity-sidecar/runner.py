@@ -1,0 +1,173 @@
+"""Pinned, isolated lake reader/exporter; never a model or trading runner."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+from datetime import date, datetime, timezone
+from importlib.metadata import version
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+import tomllib
+
+from bootstrap import PIN, REPO
+
+# File boundary utilities only. Quant models execute exclusively in Docker.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from strategies.etf_quant.runtime.exports import SCHEMAS, export_snapshot
+from strategies.etf_quant.runtime.storage import GateError, atomic_bytes, external_root, json_bytes
+
+IDENTITY = {"provider": "CNEQUITY_PINNED_SIDECAR", "source_repo": REPO, "source_commit": PIN,
+    "source_version": "0.11.0", "cnequity_version": "0.11.0", "source_identity": "CNEQUITY_LOCAL_LAKE_V1",
+    "classification_version": "SWCLASS2021"}
+DATASETS = {"trading_calendar": "trading_calendar", "stock_bars": "daily_bars",
+    "industry_membership": "industry_members", "etf_bars": "daily_bars", "instruments": "instruments",
+    "trading_status": "trading_status", "benchmark_csi300": "index_bars"}
+
+
+def lake_fingerprint(lake):
+    """Detect concurrent source mutation; no filesystem timestamp-only shortcut."""
+    records = []
+    for path in sorted(lake.rglob("*.parquet")):
+        if any(part in ("curated", "derived") for part in path.relative_to(lake).parts):
+            checksum = hashlib.sha256()
+            with path.open("rb") as handle:
+                for block in iter(lambda: handle.read(1024 * 1024), b""):
+                    checksum.update(block)
+            records.append((path.relative_to(lake).as_posix(), checksum.hexdigest()))
+    return hashlib.sha256(json_bytes(records)).hexdigest()
+
+
+def verify_install(root):
+    root = root.resolve(strict=True)
+    if Path(sys.prefix).resolve() != (root / "venv").resolve() or sys.prefix == sys.base_prefix:
+        raise GateError("ISOLATED_SIDECAR_REQUIRED")
+    source = root / "source"
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
+    dirty = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"], cwd=source, text=True)
+    if commit != PIN or dirty or version("cnequity") != "0.11.0":
+        raise GateError("PINNED_SOURCE_BLOCKER")
+
+
+def export_lake(config, load, *, observed_at=None):
+    """No downloads: query the existing lake, preserve original row provenance.
+
+    No as_of is passed to non-PIT datasets. No derived industry_index is read.
+    Explicit symbols avoid upstream's stock-only ETF universe filtering.
+    """
+    started = datetime.now(timezone.utc) if observed_at is None else observed_at
+    settings = config["export"]
+    if settings.get("classification_version") != IDENTITY["classification_version"]:
+        raise GateError("CLASSIFICATION_VERSION_BLOCKER")
+    start, cutoff = date.fromisoformat(settings["start"]), date.fromisoformat(settings["cutoff"])
+    calendar_end = date.fromisoformat(settings["calendar_end"])
+    if start > cutoff or calendar_end < cutoff:
+        raise GateError("EXPORT_DATE_RANGE_BLOCKER")
+    etfs = settings["etf_symbols"]
+    if not isinstance(etfs, list) or len(set(etfs)) != len(etfs) or any(not re.fullmatch(r"\d{6}\.(SH|SZ)", s) for s in etfs):
+        raise GateError("EXPLICIT_ETF_SCOPE_BLOCKER")
+    lake = external_root(Path(config["paths"]["lake_root"]))
+    before = lake_fingerprint(lake)
+    queries, tables = {}, {}
+    # Membership must be complete, not narrowed to stocks with available prices.
+    query = {"start": start.isoformat(), "end": cutoff.isoformat(), "data_root": lake}
+    membership = load("industry_members", **query)
+    rows = [r for r in membership.to_dicts() if r["source"] == "sw" and r["classification_system"] == "sw"]
+    symbols = sorted({r["symbol"] for r in rows})
+    if not symbols:
+        raise GateError("SHENWAN_MEMBERSHIP_UNAVAILABLE")
+    tables["industry_membership"] = rows
+    queries["industry_membership"] = {"dataset": "industry_members", "start": str(start), "end": str(cutoff),
+        "source_filter": "sw", "classification_system": "sw", "as_of": None,
+        "availability_evidence": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN"}
+    for target, dataset in DATASETS.items():
+        if target == "industry_membership":
+            continue
+        args = {"start": str(start), "end": str(calendar_end if target == "trading_calendar" else cutoff), "data_root": lake}
+        if target == "stock_bars":
+            args.update(symbols=symbols, adjust="hfq", strict_adj=True)
+        elif target == "etf_bars":
+            if not etfs:
+                tables[target] = []
+                queries[target] = {"dataset": dataset, "symbols": [], "adjust": None, "status": "NO_VERIFIED_ETF_SCOPE"}
+                continue
+            args.update(symbols=etfs, adjust=None)
+        elif target == "instruments":
+            args.pop("start")
+            args.pop("end")
+        elif target == "trading_status":
+            if not etfs:
+                tables[target] = []
+                queries[target] = {"dataset": dataset, "symbols": [], "status": "NO_VERIFIED_ETF_SCOPE"}
+                continue
+            args.update(symbols=etfs)
+        elif target == "benchmark_csi300":
+            args.update(symbols=["000300.SH"])
+        frame = load(dataset, **args)
+        result = frame.to_dicts()
+        if target == "benchmark_csi300":
+            result = [r for r in result if r.get("frequency") == "1d"]
+        tables[target] = result
+        queries[target] = {"dataset": dataset, **{k: str(v) if isinstance(v, Path) else v for k, v in args.items() if k != "data_root"},
+                           "as_of": None}
+    completed = datetime.now(timezone.utc) if observed_at is None else observed_at
+    if lake_fingerprint(lake) != before:
+        raise GateError("SOURCE_LAKE_CHANGED_DURING_EXPORT_BLOCKER")
+    return export_snapshot(Path(config["paths"]["export_root"]), tables, identity={**IDENTITY, "lake_fingerprint_sha256": before},
+        created_at=completed, fetch_started_at=started, fetch_completed_at=completed, cutoff=cutoff, queries=queries,
+        warnings=["NOT_EX_ANTE_AVAILABILITY_PROOF", "ETF_MAPPING_EXTERNAL_EVIDENCE_REQUIRED",
+                  "CALENDAR_FUTURE_SESSIONS_ARE_NOT_FUTURE_PRICES", "NO_THIRD_PARTY_DATA_REDISTRIBUTION"])
+
+
+def smoke_metadata(root):
+    """One public classification request, strict upstream SSLContext; no market init."""
+    from cnequity.adapters.sw.industry_history import fetch_sw_industry_intervals
+    started = datetime.now(timezone.utc)
+    try:
+        rows = fetch_sw_industry_intervals()
+        report = {"status": "NETWORK_METADATA_SMOKE_PASS", "rows": rows.height,
+            "columns": rows.columns, "source_commit": PIN, "source_version": version("cnequity"),
+            "classification_version": "SWCLASS2021", "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT",
+            "available_at": None, "source_published_at": None, "pit_evidence": False,
+            "market_data_initialization": False, "source_data_distributed": False}
+    except Exception as error:
+        report = {"status": "NETWORK_METADATA_SMOKE_BLOCKED", "exception_class": type(error).__name__,
+            "source_commit": PIN, "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT", "pit_evidence": False,
+            "market_data_initialization": False}
+    report.update(started_at=started.isoformat(), completed_at=datetime.now(timezone.utc).isoformat())
+    logs = external_root(root / "logs")
+    atomic_bytes(logs / ("metadata_smoke_" + started.strftime("%Y%m%dT%H%M%S") + ".json"), json_bytes(report))
+    return report
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command", choices=["export", "smoke", "verify"])
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--config", type=Path)
+    args = parser.parse_args()
+    verify_install(args.root)
+    if args.command == "smoke":
+        result = smoke_metadata(args.root)
+    elif args.command == "verify":
+        result = {"status": "PINNED_SOURCE_PASS", **IDENTITY}
+    else:
+        if args.config is None:
+            raise GateError("EXTERNAL_CONFIG_REQUIRED")
+        config_path = args.config.resolve(strict=True)
+        if any((p / ".git").exists() for p in config_path.parents):
+            raise GateError("EXTERNAL_CONFIG_REQUIRED")
+        from cnequity.query import load
+        result = export_lake(tomllib.loads(config_path.read_text(encoding="utf-8")), load)
+    print(json.dumps(result))
+    return 0 if "BLOCKED" not in result.get("status", "") else 2
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except GateError as error:
+        print(json.dumps({"status": error.code}))
+        raise SystemExit(2)

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ETF Quant immutable CSV export manifest V1",
+  "type": "object",
+  "required": ["schema_version", "run_id", "snapshot_id", "source_repo", "source_commit", "source_version", "cnequity_version", "source_identity", "created_at", "fetch_started_at", "fetch_completed_at", "data_cutoff", "datasets", "files", "quality_flags", "available_at", "source_published_at"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "snapshot_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "run_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_commit": {"const": "1650e384a3fd1f67a70144a489acc91432f1df27"},
+    "source_version": {"const": "0.11.0"},
+    "cnequity_version": {"const": "0.11.0"},
+    "available_at": {"type": "null"},
+    "source_published_at": {"type": "null"},
+    "datasets": {
+      "type": "object",
+      "required": ["trading_calendar", "stock_bars", "industry_membership", "etf_bars", "instruments", "trading_status", "benchmark_csi300"],
+      "additionalProperties": {"$ref": "#/$defs/dataset"}
+    },
+    "files": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+  },
+  "$defs": {
+    "dataset": {
+      "type": "object",
+      "required": ["file", "row_count", "columns", "file_sha256", "date_start", "date_end", "query"],
+      "properties": {
+        "file": {"type": "string", "pattern": "^[a-z_]+[.]csv$"},
+        "row_count": {"type": "integer", "minimum": 0},
+        "columns": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "file_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "date_start": {"type": ["string", "null"]},
+        "date_end": {"type": ["string", "null"]},
+        "query": {"type": "object"}
+      }
+    }
+  }
+}
