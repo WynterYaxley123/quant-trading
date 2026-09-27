@@ -18,6 +18,47 @@ PIN = "1650e384a3fd1f67a70144a489acc91432f1df27"
 REPO = "https://github.com/rootSunc/CNEquity"
 BUILD_TOOLS = {"setuptools": "80.9.0", "wheel": "0.45.1"}
 
+# Data files the pinned release needs at runtime but whose glob is absent from
+# `[tool.setuptools.package-data]`, so a wheel/sdist install silently omits them
+# while a source checkout still has them on disk. The omission is invisible until
+# the exact code path that reads the file runs.
+#
+#   adapters/eastmoney/seeds/bse_code_mapping.json
+#     Read by `adapters/eastmoney/corporate_actions_migration._code_mapping` and by
+#     `steps/delisted.renamed_symbols`. Its absence makes `cne delisted backfill`
+#     and `cne delisted status` fail with FileNotFoundError. Those commands publish
+#     the delisted-recovery receipts that `delisted_recovery_covers` requires
+#     before the daily_bars ownership batch can settle, so the omission blocks
+#     compaction of the whole dataset, not just one command.
+#
+# The missing files are restored from the pinned source checkout (never patched or
+# synthesised), and each restore is verified against the source file's SHA-256 so a
+# partial or tampered copy cannot pass. Upstream is left untouched.
+OMITTED_PACKAGE_DATA = (
+    "adapters/eastmoney/seeds/bse_code_mapping.json",
+)
+
+
+def restore_omitted_package_data(source: Path, site_packages: Path) -> list[dict]:
+    """Copy package data the pinned build omits, verifying each file's digest."""
+    restored = []
+    for relative in OMITTED_PACKAGE_DATA:
+        origin = source / "src" / "cnequity" / relative
+        destination = site_packages / "cnequity" / relative
+        if not origin.is_file():
+            raise ValueError("OMITTED_PACKAGE_DATA_MISSING_FROM_SOURCE:" + relative)
+        payload = origin.read_bytes()
+        digest = hashlib.sha256(payload).hexdigest()
+        if destination.is_file() and hashlib.sha256(destination.read_bytes()).hexdigest() == digest:
+            restored.append({"path": relative, "sha256": digest, "action": "already_present"})
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(payload)
+        if hashlib.sha256(destination.read_bytes()).hexdigest() != digest:
+            raise ValueError("OMITTED_PACKAGE_DATA_RESTORE_BLOCKER:" + relative)
+        restored.append({"path": relative, "sha256": digest, "action": "restored"})
+    return restored
+
 
 def locked_runtime(lock, environment):
     from pip._vendor.packaging.markers import Marker
@@ -95,9 +136,12 @@ def main():
     from importlib.metadata import version
     if version("cnequity") != "0.11.0":
         raise ValueError("INSTALLED_VERSION_BLOCKER")
+    import cnequity as installed
+    payload_files = restore_omitted_package_data(source, Path(installed.__file__).resolve().parent.parent)
     print(json.dumps({"status": "ISOLATED_SIDECAR_INSTALLED", "source_commit": PIN,
                       "version": "0.11.0", "upstream_lock_sha256": hashlib.sha256(lock_bytes).hexdigest(),
-                      "runtime_dependencies": len(packages), "build_tools": BUILD_TOOLS}))
+                      "runtime_dependencies": len(packages), "build_tools": BUILD_TOOLS,
+                      "restored_package_data": payload_files}))
 
 
 if __name__ == "__main__":
