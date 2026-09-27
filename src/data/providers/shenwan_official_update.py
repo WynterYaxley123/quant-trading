@@ -76,7 +76,11 @@ def _transient_network_failure(error: requests.RequestException) -> str | None:
            (isinstance(node, transport_errors.ConnectTimeoutError)
             and not isinstance(node, transport_errors.NewConnectionError)) for node in nodes):
         return "connect_timeout"
-    if any(isinstance(node, OSError) and node.errno in
+    # RemoteDisconnected is a typed ConnectionResetError with errno=None.
+    # Built-in reset/abort/pipe types remain explicit transport evidence; do
+    # not require an errno or infer eligibility from a ProtocolError message.
+    if any(isinstance(node, (ConnectionResetError, ConnectionAbortedError, BrokenPipeError)) or
+           isinstance(node, OSError) and node.errno in
            {errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE, errno.ETIMEDOUT} for node in nodes):
         return "connection_reset_or_transport_timeout"
     return None

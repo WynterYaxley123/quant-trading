@@ -2,6 +2,7 @@
 from copy import deepcopy
 from decimal import Decimal
 import errno
+import http.client
 import json
 from pathlib import Path
 import subprocess
@@ -293,6 +294,11 @@ def transient_error(api, kind):
     if kind == "read": return api.requests.ReadTimeout("synthetic read timeout")
     if kind == "wrapped-read":
         return api.requests.ConnectionError(api.transport_errors.ReadTimeoutError(None, "/trend/", "synthetic read timeout"))
+    if kind in {"remote-disconnected", "reset-without-errno"}:
+        cause = (http.client.RemoteDisconnected("synthetic remote closed before response")
+                 if kind == "remote-disconnected" else ConnectionResetError("synthetic typed reset"))
+        assert cause.errno is None
+        return api.requests.ConnectionError(api.transport_errors.ProtocolError("synthetic connection aborted", cause))
     reset = ConnectionResetError(errno.ECONNRESET, "synthetic reset")
     protocol = api.transport_errors.ProtocolError("synthetic connection aborted", reset)
     if kind == "reset": return api.requests.ConnectionError(protocol)
@@ -303,7 +309,8 @@ def transient_error(api, kind):
     raise AssertionError(kind)
 
 
-@pytest.mark.parametrize("kind", ["connect", "read", "wrapped-read", "reset", "body-reset", "wrapped-connect"])
+@pytest.mark.parametrize("kind", ["connect", "read", "wrapped-read", "reset", "body-reset", "wrapped-connect",
+                                  "remote-disconnected", "reset-without-errno"])
 def test_network_first_transient_then_success_durable_audit(api, monkeypatch, tmp_path, kind):
     calls, sleeps = [], []
     error = transient_error(api, kind)
@@ -333,7 +340,7 @@ def test_network_first_transient_then_success_durable_audit(api, monkeypatch, tm
     assert client.tls["verified"] and not client.session.cookies and client.session.auth is None
 
 
-@pytest.mark.parametrize("kind", ["connect", "read", "wrapped-read"])
+@pytest.mark.parametrize("kind", ["connect", "read", "wrapped-read", "remote-disconnected", "reset-without-errno"])
 def test_network_repeated_timeout_finite_blocker(api, monkeypatch, tmp_path, kind):
     calls, sleeps = [], []
     def get(url, **options):
@@ -382,6 +389,22 @@ def test_network_nested_tls_failure_overrides_timeout(api):
     assert api._transient_network_failure(error) == "read_timeout"
 
 
+@pytest.mark.parametrize("veto", ["tls", "proxy"])
+def test_network_remote_disconnect_cannot_override_tls_or_proxy(api, veto):
+    error = transient_error(api, "remote-disconnected")
+    error.__context__ = (api.requests.exceptions.SSLError("synthetic certificate failure")
+                         if veto == "tls" else api.requests.exceptions.ProxyError("synthetic proxy failure"))
+    assert api._transient_network_failure(error) is None
+
+
+@pytest.mark.parametrize("cause_type", [ConnectionAbortedError, BrokenPipeError])
+def test_network_typed_abort_pipe_without_errno(api, cause_type):
+    cause = cause_type("synthetic typed transport failure")
+    assert cause.errno is None
+    error = api.requests.ConnectionError(api.transport_errors.ProtocolError("synthetic aborted", cause))
+    assert api._transient_network_failure(error) == "connection_reset_or_transport_timeout"
+
+
 def test_network_retry_requires_persisted_audit(api, monkeypatch, tmp_path):
     calls = []
     def get(url, **options):
@@ -399,13 +422,14 @@ def test_network_retry_requires_persisted_audit(api, monkeypatch, tmp_path):
     assert len(calls) == 1 and len(client.network_retry_events) == 1
 
 
-def test_network_retry_cannot_duplicate_staged_rows(api, synthetic_store, monkeypatch):
+@pytest.mark.parametrize("kind", ["wrapped-read", "remote-disconnected"])
+def test_network_retry_cannot_duplicate_staged_rows(api, synthetic_store, monkeypatch, kind):
     root, parent, _ = synthetic_store
     calls = []
     def get(url, **options):
         code = api.parse_qs(api.urlparse(url).query)["swindexcode"][0]
         calls.append(code)
-        if calls == ["801012"]: raise transient_error(api, "wrapped-read")
+        if calls == ["801012"]: raise transient_error(api, kind)
         return network_response(api, payload([bar(code=code), bar("2026-09-21", code=code)]))
     client = network_client(api, monkeypatch, get)
     client.retry_audit_path = root / "data/manifests/shenwan_official_runs/no-duplicates/network_retry_audit.jsonl"
@@ -418,7 +442,8 @@ def test_network_retry_cannot_duplicate_staged_rows(api, synthetic_store, monkey
 
 
 @pytest.mark.parametrize("failed_code", ["801012", "801013"])
-def test_network_sector_exhaustion_blocks_apply_and_preserves_canonical(api, synthetic_store, monkeypatch, failed_code):
+@pytest.mark.parametrize("kind", ["wrapped-read", "remote-disconnected"])
+def test_network_sector_exhaustion_blocks_apply_and_preserves_canonical(api, synthetic_store, monkeypatch, failed_code, kind):
     from scripts.data import update_shenwan_official as cli
     root, parent, _ = synthetic_store
     before = {str(p.relative_to(root)): api.sha(p) for base in (root / "data/raw", root / "data/processed")
@@ -427,7 +452,7 @@ def test_network_sector_exhaustion_blocks_apply_and_preserves_canonical(api, syn
     def get(url, **options):
         code = api.parse_qs(api.urlparse(url).query)["swindexcode"][0]
         calls.append(code)
-        if code == failed_code: raise transient_error(api, "wrapped-read")
+        if code == failed_code: raise transient_error(api, kind)
         return network_response(api, payload([bar(code=code), bar("2026-09-21", code=code)]))
     client = network_client(api, monkeypatch, get)
     monkeypatch.setattr(cli, "ROOT", root)

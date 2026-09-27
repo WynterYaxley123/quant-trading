@@ -148,3 +148,11 @@ attempts cannot duplicate raw/staged rows. Exhaustion raises NetworkFetchBlocker
 and prevents complete STAGED status, overlap, transaction preview and apply.
 Every frozen U0 sector must still succeed; partial stages are never canonical.
 Progress stays inside Docker; do not read active staging payloads from Windows.
+
+The post-apply dry-run exposed RemoteDisconnected: Python defines it as a
+ConnectionResetError with errno=None, so errno-only detection missed this typed
+equivalent transport reset and stopped safely. Typed built-in reset/abort/pipe
+causes now qualify even without errno; arbitrary ProtocolError text still does
+not. TLS/proxy veto and the same four-attempt audit/budget remain unchanged.
+This follow-up was tested offline only. No second real cycle or additional
+network dry-run was authorized or executed after the failed idempotency run.
