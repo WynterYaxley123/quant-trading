@@ -13,6 +13,7 @@ import sys
 import tomllib
 
 from bootstrap import PIN, REPO
+from proxy_policy import POLICY_DIRECT, POLICIES, ProxyPolicyError, proxy_policy
 
 # File boundary utilities only. Quant models execute exclusively in Docker.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -124,27 +125,53 @@ def export_lake(config, load, *, observed_at=None):
                   "CALENDAR_FUTURE_SESSIONS_ARE_NOT_FUTURE_PRICES", "NO_THIRD_PARTY_DATA_REDISTRIBUTION"])
 
 
-def smoke_metadata(root):
-    """One public classification request, strict upstream SSLContext; no market init."""
+def exception_chain(error, limit=6):
+    """Class+message per link, so a transport fault is never reduced to a bare class name."""
+    chain, current = [], error
+    while current is not None and len(chain) < limit:
+        chain.append({"class": type(current).__module__ + "." + type(current).__name__,
+                      "message": str(current)[:300]})
+        current = current.__cause__ or current.__context__
+    return chain
+
+
+def smoke_metadata(root, policy=POLICY_DIRECT):
+    """One public classification request, strict upstream SSLContext; no market init.
+
+    The pinned client enables httpx ``trust_env``, so it would otherwise inherit
+    ambient proxy state; ``proxy_policy`` scopes that to an explicit decision.
+    TLS is untouched: the upstream SSLContext still verifies the chain and hostname.
+    """
     from cnequity.adapters.sw.industry_history import fetch_sw_industry_intervals, sw_client
     started = datetime.now(timezone.utc)
+    base = {"source_commit": PIN, "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT",
+            "proxy_policy": policy, "pit_evidence": False, "market_data_initialization": False,
+            "source_data_distributed": False, "retries": 0}
     try:
         # Caller-configured timeout using the pinned public interface. TLS and
         # upstream headers are unchanged; no retries or source patching.
-        with sw_client(timeout=30.) as client:
-            rows = fetch_sw_industry_intervals(client=client)
-        report = {"status": "NETWORK_METADATA_SMOKE_PASS", "rows": rows.height,
-            "columns": rows.columns, "source_commit": PIN, "source_version": version("cnequity"),
-            "classification_version": "SWCLASS2021", "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT",
-            "available_at": None, "source_published_at": None, "pit_evidence": False,
-            "market_data_initialization": False, "source_data_distributed": False}
+        with proxy_policy(policy):
+            with sw_client(timeout=30.) as client:
+                rows = fetch_sw_industry_intervals(client=client)
+        report = {**base, "status": "NETWORK_METADATA_SMOKE_PASS", "rows": rows.height,
+                  "columns": rows.columns, "source_version": version("cnequity"),
+                  "classification_version": "SWCLASS2021",
+                  "available_at": None, "source_published_at": None}
+    except ProxyPolicyError as error:
+        report = {**base, "status": "NETWORK_METADATA_SMOKE_BLOCKED",
+                  "exception_class": type(error).__name__, "exception_chain": exception_chain(error),
+                  "blocker": error.code}
     except Exception as error:
-        report = {"status": "NETWORK_METADATA_SMOKE_BLOCKED", "exception_class": type(error).__name__,
-            "source_commit": PIN, "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT", "pit_evidence": False,
-            "market_data_initialization": False}
+        report = {**base, "status": "NETWORK_METADATA_SMOKE_BLOCKED",
+                  "exception_class": type(error).__name__, "exception_chain": exception_chain(error)}
     report.update(started_at=started.isoformat(), completed_at=datetime.now(timezone.utc).isoformat())
-    logs = external_root(root / "logs")
-    atomic_bytes(logs / ("metadata_smoke_" + started.strftime("%Y%m%dT%H%M%S") + ".json"), json_bytes(report))
+    # The diagnostic record must survive even if the artifact write fails, so a
+    # storage fault can never be mistaken for a verified smoke outcome.
+    try:
+        logs = external_root(root / "logs")
+        atomic_bytes(logs / ("metadata_smoke_" + started.strftime("%Y%m%dT%H%M%S") + ".json"), json_bytes(report))
+    except Exception as error:
+        report["evidence_write_warning"] = type(error).__name__
     return report
 
 
@@ -153,10 +180,13 @@ def main():
     parser.add_argument("command", choices=["export", "smoke", "verify"])
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--config", type=Path)
+    parser.add_argument("--proxy-policy", choices=list(POLICIES), default=POLICY_DIRECT,
+                        help="direct (default) scopes away ambient proxy state; "
+                             "inherit_environment is an explicit operator opt-in")
     args = parser.parse_args()
     verify_install(args.root)
     if args.command == "smoke":
-        result = smoke_metadata(args.root)
+        result = smoke_metadata(args.root, args.proxy_policy)
     elif args.command == "verify":
         result = {"status": "PINNED_SOURCE_PASS", **IDENTITY}
     else:
