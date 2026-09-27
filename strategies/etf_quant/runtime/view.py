@@ -33,6 +33,8 @@ def empty_view(*, status="NOT_STARTED", reason="NO_SUCCESSFUL_RUNTIME_RUN", conf
         "strategy": public_strategy(config), "models": [], "rankings": {"10d": [], "40d": [], "120d": [], "fusion": []},
         "portfolio_summary": {"status": "NOT_STARTED", "cash": None, "market_value": None, "total_equity": None,
             "initial_cash": "10000", "realized_pnl": None, "unrealized_pnl": None, "total_return": None,
+            "total_pnl": None, "daily_return": None, "turnover": None,
+            "turnover_definition": "CUMULATIVE_ABSOLUTE_SLIPPED_NOTIONAL_DIVIDED_BY_INITIAL_CASH",
             "max_drawdown": None, "sharpe": None, "rebalance_count": None, "last_rebalance_at": None},
         "holdings": [], "nav": [], "trades": [],
         "mappings": {"status": "MAPPING_ADMISSION_BLOCKED", "reason": "NO_VERIFIED_EVIDENCE", "entries": [], "diagnostics": []},

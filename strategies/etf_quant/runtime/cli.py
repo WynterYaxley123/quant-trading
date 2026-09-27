@@ -58,3 +58,7 @@ if __name__ == "__main__":
     except GateError as error:
         print(json_bytes({"status": "BLOCKED", "blocker": error.code, "details": error.details}).decode())
         raise SystemExit(2)
+    except Exception as error:
+        print(json_bytes({"status": "BLOCKED", "blocker": "RUNTIME_INPUT_BLOCKER",
+                          "exception_class": type(error).__name__}).decode())
+        raise SystemExit(2)

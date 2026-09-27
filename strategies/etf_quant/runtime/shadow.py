@@ -11,7 +11,7 @@ from uuid import uuid4
 
 import numpy as np
 
-from ..domain import PortfolioState, Position, StrategyConfig, TargetPosition, TradingCalendar
+from ..domain import PortfolioState, Position, StrategyConfig, TargetPosition, TradingCalendar, decimal_math
 from ..mapping.registry import active, eligible_bar, select_mappings
 from ..portfolio import RebalanceStatus, rebalance_decision, size_targets
 from ..schemas import to_primitive
@@ -99,10 +99,16 @@ def portfolio_view(state, ledger):
     summary = {"status": "RUNNING", "cash": value["cash"], "market_value": str(state.market_value),
         "total_equity": str(equity), "initial_cash": "10000", "realized_pnl": value["realized_pnl"],
         "unrealized_pnl": str(state.unrealized_pnl), "total_return": float(equity / state.initial_cash - 1),
-        "max_drawdown": drawdown, "sharpe": sharpe, "rebalance_count": ledger["rebalance_count"], "last_rebalance_at": last}
+        "max_drawdown": drawdown, "sharpe": sharpe, "rebalance_count": ledger["rebalance_count"], "last_rebalance_at": last,
+        "total_pnl": str(equity - state.initial_cash),
+        "daily_return": float(rets[-1]) if len(rets) else None,
+        "turnover": float(Decimal(ledger["turnover_notional"]) / state.initial_cash),
+        "turnover_definition": "CUMULATIVE_ABSOLUTE_SLIPPED_NOTIONAL_DIVIDED_BY_INITIAL_CASH"}
     holdings = [{**p, "market_value": str(Decimal(p["quantity"]) * Decimal(p["mark_price"])),
         "weight": float(Decimal(p["quantity"]) * Decimal(p["mark_price"]) / equity),
-        "unrealized_pnl": str((Decimal(p["mark_price"]) - Decimal(p["average_cost"])) * Decimal(p["quantity"]))}
+        "unrealized_pnl": str((Decimal(p["mark_price"]) - Decimal(p["average_cost"])) * Decimal(p["quantity"])),
+        "unrealized_return": float(Decimal(p["mark_price"]) / Decimal(p["average_cost"]) - 1),
+        **ledger["holding_metadata"][p["asset_id"]]}
                 for p in value["positions"]]
     return summary, holdings
 
@@ -124,8 +130,9 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
     run_id = now.strftime("%Y%m%dT%H%M%S") + "_" + uuid4().hex[:12]
     with runtime_lock(root):
         try:
-            return _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
-                          min_constituents, coverage_threshold, classification_version)
+            with decimal_math():
+                return _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
+                              min_constituents, coverage_threshold, classification_version)
         except Exception as error:
             code = error.code if isinstance(error, GateError) else "RUNTIME_CYCLE_BLOCKER"
             failure = {"schema_version": "1.0.0", "run_id": run_id, "status": "FAILED", "blocker": code,
@@ -167,7 +174,8 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         portfolio = _portfolio(ledger["portfolio"])
     if ledger is None:
         ledger = {"portfolio": None, "epoch": None, "members": [], "pending": None, "nav": [], "trades": [],
-                  "benchmark": [], "benchmark_base": None, "rebalance_count": 0, "last_rebalance_at": None}
+                  "benchmark": [], "benchmark_base": None, "rebalance_count": 0, "last_rebalance_at": None,
+                  "holding_metadata": {}, "turnover_notional": "0"}
     view = empty_view(config=config)
     view["strategy"] = strategy
     # Build current series/model FIRST, but an earlier committed intent's
@@ -206,7 +214,14 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         market_open = datetime.combine(provider.cutoff, time(9, 30), SHANGHAI).isoformat()
         ledger["trades"].extend({**to_primitive(f), "processed_at": now.isoformat(), "market_execution_at": market_open,
             "execution_price_source": "FINALIZED_T1_RAW_OPEN", "accounting_mode": "AUTHORIZED_DELAYED_EOD",
-            "intent_persisted_at": pending["persisted_at"], "provider_snapshot_id": provider.manifest["snapshot_id"]} for f in fills)
+            "intent_persisted_at": pending["persisted_at"], "provider_snapshot_id": provider.manifest["snapshot_id"],
+            "total_cash_impact": str((-1 if f.intent.side.value == "BUY" else 1) * f.price * f.intent.quantity
+                                      - f.commission - f.stamp_duty),
+            "rebalance_reason": "INITIAL_BUILD" if not ledger["members"] else "EXECUTABLE_ETF_SET_CHANGED"} for f in fills)
+        ledger["turnover_notional"] = str(Decimal(ledger["turnover_notional"]) +
+            sum((f.price * f.intent.quantity for f in fills), Decimal(0)))
+        ledger["holding_metadata"].update({r["etf_code"]: {k: r[k] for k in ("etf_name", "industry_code", "industry_name")}
+                                         for r in pending["mapping_entries"]})
         ledger["members"] = pending["members"]
         ledger["rebalance_count"] += 1
         ledger["last_rebalance_at"] = now.isoformat()

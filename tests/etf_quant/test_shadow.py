@@ -110,6 +110,11 @@ def test_forward_intent_delayed_t1_epoch_no_preepoch_nav_and_idempotency(tmp_pat
     assert all(t["processed_at"] == epoch["started_at"] and t["market_execution_at"] < t["processed_at"] for t in view["trades"])
     assert all(Decimal(p["quantity"]) % 100 == 0 for p in view["holdings"])
     assert Decimal(view["portfolio_summary"]["cash"]) >= 0
+    assert view["portfolio_summary"]["daily_return"] is None
+    assert Decimal(view["portfolio_summary"]["total_pnl"]) == Decimal(view["portfolio_summary"]["total_equity"]) - 10000
+    assert view["portfolio_summary"]["turnover"] > 0
+    assert all(p["etf_name"] and p["industry_name"] and "unrealized_return" in p for p in view["holdings"])
+    assert all(Decimal(t["total_cash_impact"]) < 0 and t["rebalance_reason"] == "INITIAL_BUILD" for t in view["trades"])
     pointer_before = (root / "latest.json").read_bytes()
     assert run(q, reg, root)["status"] == "IDEMPOTENT_NO_CHANGE"
     assert (root / "latest.json").read_bytes() == pointer_before

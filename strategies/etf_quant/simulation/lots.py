@@ -10,6 +10,8 @@ from ..runtime.storage import GateError
 def affordable_units(budget, reference_open, costs, lot_size=100):
     if type(lot_size) is not int or lot_size <= 0:
         raise ValueError("positive integer lot size required")
+    if not reference_open.is_finite() or reference_open <= 0 or not budget.is_finite() or budget < 0:
+        raise ValueError("finite nonnegative budget and positive raw open required")
     with decimal_math():
         price = reference_open * (1 + costs.slippage_bps / 10000)
         if budget <= costs.minimum_commission:
@@ -28,7 +30,9 @@ def rebalance_at_open(state, targets, opens, *, signal_day, execution_day, proce
     integer lots constrain cash. Zero-sized targets retain cash, not fake units.
     """
     config = StrategyConfig() if config is None else config
-    if (set(opens) != {t.asset_id for t in targets} | {p.asset_id for p in state.positions}
+    if (type(lot_size) is not int or lot_size <= 0
+            or set(opens) != {t.asset_id for t in targets} | {p.asset_id for p in state.positions}
+            or any(not v.is_finite() or v <= 0 for v in opens.values())
             or processed_at.date() != execution_day or state.as_of > processed_at
             or any(p.quantity % lot_size for p in state.positions)):
         raise GateError("SHADOW_EXECUTION_INPUT_BLOCKER")

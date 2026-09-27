@@ -59,6 +59,9 @@ def export_lake(config, load, *, observed_at=None):
     """
     started = datetime.now(timezone.utc) if observed_at is None else observed_at
     settings = config["export"]
+    if any(not isinstance(config["paths"].get(k), str) or not config["paths"][k].strip()
+           or not Path(config["paths"][k]).is_absolute() for k in ("lake_root", "export_root")):
+        raise GateError("EXPLICIT_EXTERNAL_PATHS_REQUIRED")
     if settings.get("classification_version") != IDENTITY["classification_version"]:
         raise GateError("CLASSIFICATION_VERSION_BLOCKER")
     start, cutoff = date.fromisoformat(settings["start"]), date.fromisoformat(settings["cutoff"])
@@ -123,10 +126,13 @@ def export_lake(config, load, *, observed_at=None):
 
 def smoke_metadata(root):
     """One public classification request, strict upstream SSLContext; no market init."""
-    from cnequity.adapters.sw.industry_history import fetch_sw_industry_intervals
+    from cnequity.adapters.sw.industry_history import fetch_sw_industry_intervals, sw_client
     started = datetime.now(timezone.utc)
     try:
-        rows = fetch_sw_industry_intervals()
+        # Caller-configured timeout using the pinned public interface. TLS and
+        # upstream headers are unchanged; no retries or source patching.
+        with sw_client(timeout=30.) as client:
+            rows = fetch_sw_industry_intervals(client=client)
         report = {"status": "NETWORK_METADATA_SMOKE_PASS", "rows": rows.height,
             "columns": rows.columns, "source_commit": PIN, "source_version": version("cnequity"),
             "classification_version": "SWCLASS2021", "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT",
@@ -170,4 +176,7 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except GateError as error:
         print(json.dumps({"status": error.code}))
+        raise SystemExit(2)
+    except Exception as error:
+        print(json.dumps({"status": "SIDECAR_INPUT_OR_QUERY_BLOCKED", "exception_class": type(error).__name__}))
         raise SystemExit(2)
