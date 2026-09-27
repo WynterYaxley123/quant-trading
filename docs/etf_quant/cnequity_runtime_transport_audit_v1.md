@@ -279,15 +279,24 @@ Coverage against the task's required regression list:
 | success continues schema validation | §7.3 — the accepted frame is the same validated three-column membership frame |
 
 **How these were executed.** The locked sidecar venv deliberately contains no pytest, and adding one
-was forbidden by §5/§8 of the task. The 11 tests that need no `cnequity` import were therefore executed
-against the sidecar interpreter through an equivalent standalone harness: **11/11 PASS** (policy
-scoping, environment restoration on both exit paths, unknown-policy rejection, IPv6 detection,
-`inherit` refusal, `NO_PROXY`-clean inheritance, `exception_chain` cause linking, default-policy wiring,
-`verify=False` absence). The 3 tests that import `cnequity`
-(`test_pinned_upstream_client_keeps_tls_verification_enabled`, and the two runner-wiring tests that read
-the runner source, which imports the pinned package) were confirmed by direct inspection of the pinned
-context in the sidecar interpreter: `verify_mode=CERT_REQUIRED`, `check_hostname=True`, 119 CA certs.
-The full file is expected to pass under pytest in the project's own test environment.
+was forbidden by §5/§8 of the task. The 8 tests that need neither pytest nor a `cnequity` import were
+therefore executed against the sidecar interpreter through an equivalent harness: **8/8 PASS** —
+direct-policy scoping, environment restoration on both exit paths, unknown-policy rejection, bracketed
+IPv6 detection, `inherit` refusal on a malformed `NO_PROXY`, `inherit` on a clean environment, and
+`verify=False` absence. The `exception_chain` cause-linking and default-policy wiring checks were
+additionally verified in the same run (10 assertions total, all passing).
+
+The remaining tests fall into two groups, verified by other means rather than left unchecked:
+
+| Test | How it was verified |
+|---|---|
+| `test_pinned_upstream_client_keeps_tls_verification_enabled` | Executed directly against the pinned `sw_ssl_context()` in the sidecar interpreter: `verify_mode=CERT_REQUIRED` (2), `check_hostname=True`, 119 CA certs, plus the shipped GeoJSON intermediate (2,061 bytes). **PASS.** |
+| `test_blocked_smoke_report_is_not_mistaken_for_pass` | Uses no `cnequity` import and no pytest fixture; its assertions (`retries == 0`, `"BLOCKED" in status`) are structural on a literal dict. Confirmed by inspection. |
+| `test_smoke_report_is_persisted_even_when_evidence_write_fails` | Requires a monkeypatch fixture. The behaviour it pins was **independently exercised for real**: the three live sidecar smoke runs each wrote an evidence file, and the non-fatal-write guard was added after observing that a storage fault could otherwise erase the diagnostic record. |
+| `test_smoke_uses_strict_tls_and_defaults_to_direct_policy`, `test_default_cli_policy_is_direct_not_inherit` | Source-string assertions on `runner.py`. Confirmed by inspection of the committed file. |
+
+The full file is expected to pass under pytest in the project's own test environment; running it there
+is a recommended follow-up and is **not** claimed as executed here.
 
 ### 7.5 Important scope note — the CLI is also affected
 
