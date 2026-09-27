@@ -1,6 +1,7 @@
 """Synthetic infrastructure contracts; no model, returns or live network."""
 from copy import deepcopy
 from decimal import Decimal
+import errno
 import json
 from pathlib import Path
 import subprocess
@@ -522,3 +523,226 @@ def test_cli_git_trust_is_scoped_to_one_known_repository(monkeypatch):
     assert cli.git_state(True)[0] == "a" * 40
     assert all(args[:3] == ["git", "-c", "safe.directory=" + str(cli.ROOT)] for args in calls)
     assert not any("--global" in args for args in calls)
+
+
+def staging_metadata_path(tmp_path, name="stage.json"):
+    path = tmp_path / "data/staging/shenwan_official/io-test" / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+@pytest.mark.parametrize("winerror", [None, 32, 33])
+def test_staging_first_permission_then_success_closed_durable_writer(api, tmp_path, monkeypatch, winerror):
+    path = staging_metadata_path(tmp_path)
+    api.atomic_json(path, {"status": "FETCHING", "files": {}})
+    old = path.read_bytes()
+    writers, logs, synced, calls, sleeps = [], [], [], [], []
+    original_open, original_fsync, original_replace = Path.open, api.os.fsync, api.os.replace
+    def tracked_open(p, mode="r", *args, **kwargs):
+        stream = original_open(p, mode, *args, **kwargs)
+        if mode == "xb" and p.name.startswith("stage.json."):
+            writers.append((stream, stream.fileno()))
+        if mode == "a" and p.name == "io_replace_audit.jsonl":
+            logs.append((stream, stream.fileno()))
+        return stream
+    def fsync(fd):
+        synced.append(fd)
+        original_fsync(fd)
+    def replace(source, target):
+        assert writers and all(stream.closed and fd in synced for stream, fd in writers)
+        assert all(stream.closed and fd in synced for stream, fd in logs)
+        assert source.read_bytes() == api.encoded({"status": "STAGED", "files": {"801012": "synthetic"}})
+        calls.append(source)
+        if len(calls) == 1:
+            assert path.read_bytes() == old
+            error = PermissionError(errno.EACCES, "synthetic sharing denial", str(source), None, str(target))
+            if winerror is not None: error.winerror = winerror
+            raise error
+        assert logs
+        assert path.read_bytes() == old  # No partial publication on first denial.
+        original_replace(source, target)
+    monkeypatch.setattr(Path, "open", tracked_open)
+    monkeypatch.setattr(api.os, "fsync", fsync)
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", sleeps.append)
+    api.atomic_staging_json(path, {"status": "STAGED", "files": {"801012": "synthetic"}})
+    assert len(calls) == 2 and calls[0] == calls[1]
+    assert sleeps == [api.STAGING_REPLACE_BACKOFF[0]] and not calls[0].exists()
+    assert api.read_json(path)["status"] == "STAGED"
+    events = [json.loads(line) for line in (path.parent / "io_replace_audit.jsonl").read_text().splitlines()]
+    assert len(events) == 1 and events[0]["event"] == "replace_retry_scheduled"
+    assert events[0]["attempt"] == 1 and events[0]["errno"] == errno.EACCES
+    assert events[0]["winerror"] == winerror
+    assert events[0]["source"] == str(calls[0]) and events[0]["retryEligible"]
+
+
+def test_staging_repeated_permission_stops_with_old_target_and_temp(api, tmp_path, monkeypatch):
+    path = staging_metadata_path(tmp_path)
+    api.atomic_json(path, {"status": "FETCHING"})
+    old, calls, sleeps = path.read_bytes(), [], []
+    def replace(source, target):
+        calls.append(source)
+        assert path.read_bytes() == old
+        raise PermissionError(errno.EACCES, "synthetic persistent denial")
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", sleeps.append)
+    with pytest.raises(api.StagingIOBlocker, match="STAGING_ATOMIC_REPLACE_BLOCKER") as captured:
+        api.atomic_staging_json(path, {"status": "STAGED"})
+    assert isinstance(captured.value.__cause__, PermissionError)
+    assert len(calls) == len(api.STAGING_REPLACE_BACKOFF) + 1
+    assert len(set(calls)) == 1 and calls[0].exists() and path.read_bytes() == old
+    assert sleeps == list(api.STAGING_REPLACE_BACKOFF)
+    events = [json.loads(line) for line in (path.parent / "io_replace_audit.jsonl").read_text().splitlines()]
+    assert len(events) == len(calls) and events[-1]["event"] == "replace_blocked"
+    assert [e["attempt"] for e in events] == list(range(1, len(calls) + 1))
+
+
+@pytest.mark.parametrize("defect", ["eperm", "win_access_denied", "not_writable", "other_oserror"])
+def test_staging_does_not_retry_unconfirmed_or_other_errors(api, tmp_path, monkeypatch, defect):
+    path = staging_metadata_path(tmp_path)
+    api.atomic_json(path, {"status": "FETCHING"})
+    old, calls, sleeps = path.read_bytes(), [], []
+    error = PermissionError(errno.EPERM if defect == "eperm" else errno.EACCES, "synthetic denial")
+    if defect == "win_access_denied": error.winerror = 5
+    if defect == "other_oserror": error = OSError(errno.EIO, "synthetic disk failure")
+    def replace(source, target):
+        calls.append(source)
+        raise error
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", sleeps.append)
+    if defect == "not_writable": monkeypatch.setattr(api.os, "access", lambda *args: False)
+    expected = OSError if defect == "other_oserror" else api.StagingIOBlocker
+    with pytest.raises(expected): api.atomic_staging_json(path, {"status": "STAGED"})
+    assert len(calls) == 1 and sleeps == [] and path.read_bytes() == old
+
+
+def test_staging_retry_requires_a_durable_audit_record(api, tmp_path, monkeypatch):
+    path = staging_metadata_path(tmp_path)
+    api.atomic_json(path, {"status": "FETCHING"})
+    old, calls, sleeps = path.read_bytes(), [], []
+    original_open = Path.open
+    def opened(p, *args, **kwargs):
+        if p.name == "io_replace_audit.jsonl": raise PermissionError(errno.EACCES, "synthetic audit denial")
+        return original_open(p, *args, **kwargs)
+    def replace(source, target):
+        calls.append(source)
+        raise PermissionError(errno.EACCES, "synthetic replace denial")
+    monkeypatch.setattr(Path, "open", opened)
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", sleeps.append)
+    with pytest.raises(api.StagingIOBlocker, match="STAGING_IO_AUDIT_BLOCKER"):
+        api.atomic_staging_json(path, {"status": "STAGED"})
+    assert len(calls) == 1 and sleeps == [] and path.read_bytes() == old
+
+
+def test_staging_unique_temps_per_write_and_pointer_has_no_retry(api, tmp_path, monkeypatch):
+    path = staging_metadata_path(tmp_path)
+    calls, sleeps = [], []
+    original_replace = api.os.replace
+    def replace(source, target):
+        calls.append(source)
+        original_replace(source, target)
+    monkeypatch.setattr(api.os, "replace", replace)
+    api.atomic_staging_json(path, {"sequence": 1})
+    api.atomic_staging_json(path, {"sequence": 2})
+    assert len(set(calls)) == 2 and api.read_json(path)["sequence"] == 2
+    pointer = tmp_path / "data/manifests/shenwan_sector_snapshots/current.json"
+    api.atomic_json(pointer, {"snapshotId": "old"})
+    def denied(source, target):
+        calls.append(source)
+        raise PermissionError(errno.EACCES, "synthetic pointer denial")
+    monkeypatch.setattr(api.os, "replace", denied)
+    monkeypatch.setattr(api.time, "sleep", sleeps.append)
+    count = len(calls)
+    with pytest.raises(PermissionError): api.atomic_json(pointer, {"snapshotId": "new"})
+    assert len(calls) == count + 1 and sleeps == []
+    assert api.read_json(pointer) == {"snapshotId": "old"}
+    with pytest.raises(api.StagingIOBlocker, match="PATH"): api.atomic_staging_json(pointer, {})
+
+
+def synthetic_client(api, calls):
+    class Client:
+        def fetch(self, kind, *, code):
+            calls.append(code)
+            raw = payload([bar(code=code), bar("2026-09-21", code=code)])
+            return raw, {"sourceUrl": api.source_url(kind, code=code), "fetchedAt": api.now(),
+                         "responseHash": __import__("hashlib").sha256(raw).hexdigest(), "redirectChain": []}
+    return Client()
+
+
+def test_staging_retry_does_not_duplicate_fetch_or_raw_rows(api, synthetic_store, monkeypatch):
+    root, parent, _ = synthetic_store
+    original_replace, attempted, calls, events = api.os.replace, [], [], []
+    def replace(source, target):
+        attempted.append(source)
+        if len(attempted) == 1: raise PermissionError(errno.EACCES, "synthetic first denial")
+        original_replace(source, target)
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", lambda delay: None)
+    folder = api.stage(root, parent, synthetic_client(api, calls), {"status": "PASS"}, "retry-once", progress=events.append)
+    assert calls == sorted(parent["names"])
+    assert [e["sectorsFetched"] for e in events] == [1, 2]
+    assert attempted[0] == attempted[1]
+    assert api.read_json(folder / "stage.json")["status"] == "STAGED"
+    assert len(list(folder.glob("801*.json"))) == 2
+    for code in calls:
+        assert len(api.parse_trend((folder / (code + ".json")).read_bytes(), code, api.now()[:10])) == 2
+    assert api.read_parent(root)["snapshotId"] == parent["snapshotId"]
+
+
+@pytest.mark.parametrize("failed_write", ["first", "second", "final"])
+def test_staging_failure_cannot_publish_partial_or_modify_canonical(api, synthetic_store, monkeypatch, failed_write):
+    root, parent, _ = synthetic_store
+    before = {str(p.relative_to(root)): api.sha(p) for p in (root / "data/processed").rglob("*") if p.is_file()}
+    original_replace, attempts, calls = api.os.replace, [], []
+    def replace(source, target):
+        info = api.read_json(source)
+        fail = (failed_write == "first" or (failed_write == "second" and len(info["files"]) == 2)
+                or (failed_write == "final" and info["status"] == "STAGED"))
+        if target.name == "stage.json" and fail:
+            attempts.append(source)
+            raise PermissionError(errno.EACCES, "synthetic persistent sharing denial")
+        original_replace(source, target)
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", lambda delay: None)
+    with pytest.raises(api.StagingIOBlocker):
+        api.stage(root, parent, synthetic_client(api, calls), {"status": "PASS"}, "retry-exhausted")
+    folder = root / "data/staging/shenwan_official/retry-exhausted"
+    assert calls == sorted(parent["names"])[:1 if failed_write == "first" else 2]
+    assert len(attempts) == len(api.STAGING_REPLACE_BACKOFF) + 1  # No second retry budget.
+    if failed_write == "first":
+        assert not (folder / "stage.json").exists()
+    else:
+        record = api.read_json(folder / "stage.json")
+        assert record["status"] == "FETCHING"
+        assert len(record["files"]) == (1 if failed_write == "second" else 2)
+    if failed_write != "final":
+        assert api.read_json(folder / "failure.json")["status"] == "BLOCKED"
+    assert list(folder.glob("stage.json.*.tmp"))
+    with pytest.raises((ValueError, FileNotFoundError)): api.apply_stage(root, folder, "synthetic-git")
+    assert before == {str(p.relative_to(root)): api.sha(p) for p in (root / "data/processed").rglob("*") if p.is_file()}
+    assert not (root / api.LINEAGE / "current.json").exists()
+    assert not (root / "data/raw/shenwan/sector_history_append").exists()
+
+
+def test_cli_staging_io_failure_is_not_reported_as_http_block(api, synthetic_store, monkeypatch):
+    from scripts.data import update_shenwan_official as cli
+    root, parent, _ = synthetic_store
+    calls = []
+    monkeypatch.setattr(cli, "ROOT", root)
+    monkeypatch.setattr(cli, "git_state", lambda clean: ("synthetic-git", ""))
+    readiness = {"ready": 19, "snapshotId": parent["snapshotId"], "cutoff": parent["cutoff"]}
+    monkeypatch.setattr(api, "current_readiness", lambda root: ({"knownAnomalies": {}}, readiness))
+    monkeypatch.setattr(api, "OfficialClient", lambda: synthetic_client(api, calls))
+    monkeypatch.setattr(api, "probe", lambda client, parent: {"status": "PASS"})
+    original_replace = api.os.replace
+    def replace(source, target):
+        if target.name == "stage.json": raise PermissionError(errno.EACCES, "synthetic sharing denial")
+        original_replace(source, target)
+    monkeypatch.setattr(api.os, "replace", replace)
+    monkeypatch.setattr(api.time, "sleep", lambda delay: None)
+    result = cli.execute("cycle", "cli-staging-denied", False)
+    assert result["status"] == "STAGING_IO_BLOCKER" and result["sourceHealth"]["status"] == "PASS"
+    assert result["fetchStatus"] == "FAIL" and result["sectorsFetched"] == 1
+    assert not result["updateAttempted"] and not result["updateApplied"] and not result["publicationOccurred"]
+    assert api.read_parent(root)["snapshotId"] == parent["snapshotId"]

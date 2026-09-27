@@ -78,3 +78,41 @@ Download success does not establish strict PIT admission. Classification version
 publication timing, units, recalculation policy and ETF mapping remain unresolved
 where the frozen admission says null/unknown. This updater neither upgrades them
 nor reads predictions, label values, returns, research performance or OOS.
+
+## Staging I/O hardening V1
+
+The previous failed run (`ua_live_append_20260927_v1`) reached
+`stage -> atomic_json -> os.replace` and got PermissionError errno 13 for
+`stage.json.1e413fd5f83040c481f3c07518908fb8.tmp -> stage.json`.
+The existing temp writer already used exclusive unique creation, flush/fsync,
+context-manager close and directory sync BEFORE replace. No code-level leaked
+writer was found. The old failed process has exited; present-day `/proc` checks
+cannot prove past handles. Windows handle tooling was absent; `openfiles /query`
+reported disabled local-object tracking and access denial. No tracking/settings
+were enabled. The precise external locking process remains UNKNOWN.
+
+Only run-level staging `stage.json` and `audit.json` opt into replacement retries.
+The canonical current-pointer replacement, raw files, directory moves, locks and
+all source/schema/overlap/history/publication gates are unchanged.
+
+- Same unique, fully closed/fsynced temp is reused; no refetch or duplicate writes.
+- At most five attempts; backoff 0.1, 0.25, 0.5, 1.0 seconds (1.85 seconds total).
+- Only PermissionError/EACCES, with no explicit Windows denial (winerror must be
+  absent or sharing/lock codes 32/33), same directory, regular non-symlink files
+  and confirmed file/directory write access is eligible. Bare EACCES can be how
+  Docker exposes a Windows sharing conflict; it does NOT establish a process's
+  responsibility. Persistent eligible failures still stop at the finite limit.
+- EPERM, winerror=5, absent write permissions and other I/O errors are not retried.
+- Every retry is preceded by a flushed/fsynced `io_replace_audit.jsonl` record
+  containing timestamp, paths, attempt/budget, errno/winerror/message and delay.
+  Failure to record the audit stops immediately; there is no unaudited retry.
+- Exhaustion raises `StagingIOBlocker`; the temp and old target remain intact.
+  An in-loop staging failure writes immutable `failure.json`, not another retry
+  budget against the blocked target. A final STAGED replacement failure leaves
+  the old FETCHING record, never an accepted partial stage.
+- CLI reports STAGING_IO_BLOCKER, not a false HTTP verdict, and reads immutable
+  failure metadata where present. All errors still prohibit apply/publication.
+
+Progress is count-only writer output to stderr from INSIDE Docker. Stdout retains
+the final result JSON. Do not poll/read active staging files from Windows; do not
+kill processes, change ACLs, delete evidence or bypass gates to release a handle.

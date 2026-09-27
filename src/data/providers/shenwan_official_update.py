@@ -10,6 +10,7 @@ from contextlib import contextmanager
 import csv
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
+import errno
 import hashlib
 import io
 import json
@@ -17,6 +18,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
+import time
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse
 from uuid import uuid4
 from zoneinfo import ZoneInfo
@@ -34,6 +36,11 @@ LINEAGE = "data/manifests/shenwan_sector_snapshots"
 FIELDS = ("openindex", "maxindex", "minindex", "closeindex", "bargainamount", "bargainsum")
 BAR_FIELDS = {"swindexcode", "bargaindate", *FIELDS, "hike", "markup"}
 UPDATER_VERSION = "shenwan-official-append-only-v1"
+STAGING_REPLACE_BACKOFF = (0.1, 0.25, 0.5, 1.0)
+
+
+class StagingIOBlocker(ValueError):
+    """A staging metadata write failed closed; never an HTTP/source verdict."""
 
 
 def now() -> str:
@@ -206,13 +213,64 @@ def durable_bytes(path: Path, content: bytes) -> None:
     sync_dir(path.parent)
 
 
-def atomic_json(path: Path, value: dict, *, before_replace=None) -> None:
+def atomic_json(path: Path, value: dict, *, before_replace=None, replace=None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name(path.name + "." + uuid4().hex + ".tmp")
     durable_bytes(temp, encoded(value))
     if before_replace: before_replace()
-    os.replace(temp, path)
+    (replace or os.replace)(temp, path)
     sync_dir(path.parent)
+
+
+def _staging_permission_retryable(error: PermissionError, temp: Path, path: Path) -> bool:
+    # Windows sharing/lock errors may cross the Docker bind mount as bare EACCES.
+    # Never retry explicit access denial (winerror=5), EPERM, or missing write
+    # permissions; a persistent eligible denial still exhausts the finite budget.
+    return (error.errno == errno.EACCES and getattr(error, "winerror", None) in {None, 32, 33}
+            and temp.parent.resolve() == path.parent.resolve()
+            and temp.is_file() and not temp.is_symlink() and not path.is_symlink()
+            and os.access(temp, os.W_OK) and os.access(path.parent, os.W_OK | os.X_OK)
+            and (not path.exists() or (path.is_file() and os.access(path, os.W_OK))))
+
+
+def _replace_staging_metadata(temp: Path, path: Path) -> None:
+    attempts = len(STAGING_REPLACE_BACKOFF) + 1
+    for attempt in range(1, attempts + 1):
+        try:
+            os.replace(temp, path)  # Same CLOSED, durable temp; no refetch/rewrite.
+            return
+        except PermissionError as error:
+            eligible = _staging_permission_retryable(error, temp, path)
+            retry = eligible and attempt < attempts
+            delay = STAGING_REPLACE_BACKOFF[attempt - 1] if retry else None
+            event = {"at": now(), "event": "replace_retry_scheduled" if retry else "replace_blocked",
+                     "source": str(temp), "target": str(path), "attempt": attempt,
+                     "maxAttempts": attempts, "errno": error.errno,
+                     "winerror": getattr(error, "winerror", None), "message": str(error),
+                     "retryEligible": eligible, "backoffSeconds": delay}
+            # Audit MUST be durable before any retry. Never retry its failure.
+            try:
+                with (path.parent / "io_replace_audit.jsonl").open("a", encoding="utf-8") as log:
+                    log.write(json.dumps(event, sort_keys=True) + "\n")
+                    log.flush()
+                    os.fsync(log.fileno())
+                sync_dir(path.parent)
+            except OSError as audit_error:
+                raise StagingIOBlocker("STAGING_IO_AUDIT_BLOCKER: " + str(audit_error)) from error
+            if not retry:
+                raise StagingIOBlocker("STAGING_ATOMIC_REPLACE_BLOCKER: " + str(error)) from error
+            time.sleep(delay)
+
+
+def atomic_staging_json(path: Path, value: dict) -> None:
+    # Scope the hardening to run metadata only. The canonical current pointer,
+    # immutable raw files and all publication/lineage operations stay unchanged.
+    resolved = path.resolve()
+    if (path.name not in {"stage.json", "audit.json"}
+        or resolved.parts[-5:-2] != ("data", "staging", "shenwan_official")
+        or path.is_symlink()):
+        raise StagingIOBlocker("STAGING_METADATA_PATH_BLOCKER")
+    atomic_json(path, value, replace=_replace_staging_metadata)
 
 
 def safe_path(root: Path, relative: str) -> Path:
@@ -410,7 +468,7 @@ def probe(client: OfficialClient, parent: dict) -> dict:
     return health
 
 
-def stage(root: Path, parent: dict, client: OfficialClient, health: dict, run_id: str) -> Path:
+def stage(root: Path, parent: dict, client: OfficialClient, health: dict, run_id: str, *, progress=None) -> Path:
     if health["status"] != "PASS":
         raise ValueError("OFFICIAL_ENDPOINT_BLOCKED: health gate")
     if not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", run_id):
@@ -427,15 +485,24 @@ def stage(root: Path, parent: dict, client: OfficialClient, health: dict, run_id
             durable_bytes(path, raw)
             # Save bytes and provenance even if schema is malformed.
             info["files"][code] = evidence
-            atomic_json(folder / "stage.json", info)
+            atomic_staging_json(folder / "stage.json", info)
             parse_trend(raw, code, info["today"])
+            if progress is not None:
+                progress({"event": "STAGING_PROGRESS", "runId": run_id,
+                          "sectorsFetched": len(info["files"]), "sectorCount": len(parent["names"]),
+                          "lastSector": code})
         require_full_coverage(sorted(parent["names"]), info["files"])
         info["status"] = "STAGED"
     except Exception as error:
         info.update(status="BLOCKED", blocker=str(error))
-        atomic_json(folder / "stage.json", info)
+        if isinstance(error, StagingIOBlocker):
+            # Do not start a second replacement retry budget after exhaustion.
+            # Immutable failure evidence also prevents this run passing audit.
+            durable_bytes(folder / "failure.json", encoded(info))
+        else:
+            atomic_staging_json(folder / "stage.json", info)
         raise
-    atomic_json(folder / "stage.json", info)
+    atomic_staging_json(folder / "stage.json", info)
     return folder
 
 
@@ -509,7 +576,7 @@ def audit_stage(root: Path, parent: dict, folder: Path) -> tuple[dict, dict]:
                  "PASS" if count else "NO_NEW_CANONICAL_DATA",
              "fetchedAt": info["fetchedAt"], "endpoint": BASE_URL + "trend/",
              "sourceHealth": info["sourceHealth"]}
-    atomic_json(folder / "audit.json", audit)
+    atomic_staging_json(folder / "audit.json", audit)
     return audit, deltas
 
 

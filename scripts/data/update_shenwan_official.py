@@ -53,7 +53,9 @@ def execute(mode: str, run_id: str, dry_run: bool) -> dict:
             elif mode == "probe":
                 result["status"] = "SOURCE_HEALTH_PASS"
             else:
-                folder = update.stage(ROOT, parent, client, health, run_id)
+                # Writer emits counts only; no Windows-side staging reader.
+                folder = update.stage(ROOT, parent, client, health, run_id,
+                    progress=lambda event: print(json.dumps(event), file=sys.stderr, flush=True))
                 result.update(stagingPath=str(folder.relative_to(ROOT)), fetchStatus="PASS", sectorsFetched=len(parent["names"]))
                 if mode == "stage":
                     result["status"] = "STAGED"
@@ -77,12 +79,15 @@ def execute(mode: str, run_id: str, dry_run: bool) -> dict:
         else:
             raise ValueError("CLI_MODE_BLOCKER")
     except Exception as error:
-        result.update(status="OFFICIAL_ENDPOINT_BLOCKED" if mode in {"probe", "stage", "cycle"}
+        result.update(status="STAGING_IO_BLOCKER" if isinstance(error, update.StagingIOBlocker) else
+                      "OFFICIAL_ENDPOINT_BLOCKED" if mode in {"probe", "stage", "cycle"}
                       and not result["updateAttempted"] and result["fetchStatus"] == "NOT_RUN" else "BLOCKED",
                       blocker=type(error).__name__ + ": " + str(error))
         folder = ROOT / "data/staging/shenwan_official" / run_id
-        if (folder / "stage.json").exists():
-            info = update.read_json(folder / "stage.json")
+        failure = folder / "failure.json"
+        metadata = failure if failure.exists() else folder / "stage.json"
+        if metadata.exists():
+            info = update.read_json(metadata)
             result.update(stagingPath=str(folder.relative_to(ROOT)), sectorsFetched=len(info["files"]), fetchStatus="FAIL")
         # If failure happened after pointer commit, do not misrepresent it as a
         # rejected/no-write update. Re-audit accepted state and preserve evidence.
