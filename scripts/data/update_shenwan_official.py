@@ -46,6 +46,11 @@ def execute(mode: str, run_id: str, dry_run: bool) -> dict:
     try:
         if mode in {"probe", "stage", "cycle"}:
             client = update.OfficialClient()
+            client.retry_audit_path = ROOT / "data/manifests/shenwan_official_runs" / run_id / "network_retry_audit.jsonl"
+            result["networkRetryAuditPath"] = str(client.retry_audit_path.relative_to(ROOT))
+            result["networkRetryPolicy"] = {"maxAttempts": len(update.NETWORK_FETCH_BACKOFF) + 1,
+                "backoffSeconds": list(update.NETWORK_FETCH_BACKOFF), "timeout": list(update.OFFICIAL_REQUEST_TIMEOUT)}
+            result["networkRetryEvents"] = getattr(client, "network_retry_events", [])
             health = update.probe(client, parent)
             result["sourceHealth"] = health
             if health["status"] != "PASS":
@@ -80,6 +85,7 @@ def execute(mode: str, run_id: str, dry_run: bool) -> dict:
             raise ValueError("CLI_MODE_BLOCKER")
     except Exception as error:
         result.update(status="STAGING_IO_BLOCKER" if isinstance(error, update.StagingIOBlocker) else
+                      "NETWORK_FETCH_BLOCKER" if isinstance(error, update.NetworkFetchBlocker) else
                       "OFFICIAL_ENDPOINT_BLOCKED" if mode in {"probe", "stage", "cycle"}
                       and not result["updateAttempted"] and result["fetchStatus"] == "NOT_RUN" else "BLOCKED",
                       blocker=type(error).__name__ + ": " + str(error))

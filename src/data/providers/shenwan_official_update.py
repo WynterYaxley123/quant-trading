@@ -17,6 +17,7 @@ import json
 import os
 from pathlib import Path
 import re
+import ssl
 import tempfile
 import time
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse
@@ -25,6 +26,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 import requests
+from urllib3 import exceptions as transport_errors
 
 from .shenwan_sector import (OHLCVA_COLUMNS, PARSER_VERSION, SCHEMA_VERSION,
     TRANSFORM_VERSION, _violations, audit_coverage, snapshot_id)
@@ -37,10 +39,47 @@ FIELDS = ("openindex", "maxindex", "minindex", "closeindex", "bargainamount", "b
 BAR_FIELDS = {"swindexcode", "bargaindate", *FIELDS, "hike", "markup"}
 UPDATER_VERSION = "shenwan-official-append-only-v1"
 STAGING_REPLACE_BACKOFF = (0.1, 0.25, 0.5, 1.0)
+NETWORK_FETCH_BACKOFF = (1.0, 2.0, 4.0)
+OFFICIAL_REQUEST_TIMEOUT = (15, 60)
 
 
 class StagingIOBlocker(ValueError):
     """A staging metadata write failed closed; never an HTTP/source verdict."""
+
+
+class NetworkFetchBlocker(ValueError):
+    """A finite transport retry budget/audit failed; partial data cannot apply."""
+
+
+def _transient_network_failure(error: requests.RequestException) -> str | None:
+    # Requests wraps read timeouts during non-streaming body consumption as
+    # ConnectionError(ReadTimeoutError). Inspect typed causes, NOT message text.
+    if not isinstance(error, (requests.ConnectTimeout, requests.ReadTimeout,
+                              requests.ConnectionError, requests.exceptions.ChunkedEncodingError)):
+        return None
+    pending, nodes, seen = [error], [], set()
+    while pending:
+        node = pending.pop()
+        if id(node) in seen: continue
+        seen.add(id(node))
+        nodes.append(node)
+        pending.extend(item for item in (*node.args, node.__cause__, node.__context__,
+                                        getattr(node, "reason", None)) if isinstance(item, BaseException))
+    # Never hide TLS/proxy failures, even if a nested context also has a timeout.
+    if any(isinstance(node, (requests.exceptions.SSLError, transport_errors.SSLError,
+                             ssl.SSLError, requests.exceptions.ProxyError,
+                             transport_errors.ProxyError)) for node in nodes):
+        return None
+    if any(isinstance(node, (requests.ReadTimeout, transport_errors.ReadTimeoutError)) for node in nodes):
+        return "read_timeout"
+    if any(isinstance(node, requests.ConnectTimeout) or
+           (isinstance(node, transport_errors.ConnectTimeoutError)
+            and not isinstance(node, transport_errors.NewConnectionError)) for node in nodes):
+        return "connect_timeout"
+    if any(isinstance(node, OSError) and node.errno in
+           {errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE, errno.ETIMEDOUT} for node in nodes):
+        return "connection_reset_or_transport_timeout"
+    return None
 
 
 def now() -> str:
@@ -394,13 +433,55 @@ class OfficialClient:
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36")
         self.requests = []
+        self.network_retry_events = []
+        self.retry_audit_path = None  # CLI sets an independent ignored run log.
+
+    def _get_with_retry(self, url: str, kind: str, code: str, page: int):
+        attempts, started = len(NETWORK_FETCH_BACKOFF) + 1, time.monotonic()
+        for attempt in range(1, attempts + 1):
+            attempt_started = time.monotonic()
+            try:
+                # Non-streaming GET consumes the complete body before return.
+                # Keep strict TLS, timeout, UA, redirect and source semantics.
+                return self.session.get(url, verify=self.verify,
+                    timeout=OFFICIAL_REQUEST_TIMEOUT, allow_redirects=False)
+            except requests.RequestException as error:
+                reason = _transient_network_failure(error)
+                if reason is None: raise
+                retry = attempt < attempts
+                delay = NETWORK_FETCH_BACKOFF[attempt - 1] if retry else None
+                event = {"at": now(), "event": "network_retry_scheduled" if retry else "network_fetch_exhausted",
+                         "sector_code": code if kind == "trend" else None, "kind": kind, "page": page,
+                         "url": url, "attempt": attempt, "max_attempts": attempts,
+                         "exception_class": type(error).__name__, "exception_message": str(error),
+                         "reason": reason, "elapsed_seconds": round(time.monotonic() - attempt_started, 6),
+                         "total_elapsed_seconds": round(time.monotonic() - started, 6),
+                         "status": getattr(getattr(error, "response", None), "status_code", None),
+                         "timeout": list(OFFICIAL_REQUEST_TIMEOUT), "backoff_seconds": delay}
+                self.network_retry_events.append(event)
+                if self.retry_audit_path is not None:
+                    # A durable audit must precede any retry; no unaudited retry.
+                    try:
+                        self.retry_audit_path.parent.mkdir(parents=True, exist_ok=True)
+                        with self.retry_audit_path.open("a", encoding="utf-8") as log:
+                            log.write(json.dumps(event, sort_keys=True) + "\n")
+                            log.flush()
+                            os.fsync(log.fileno())
+                        sync_dir(self.retry_audit_path.parent)
+                    except OSError as audit_error:
+                        raise NetworkFetchBlocker("SHENWAN_NETWORK_RETRY_AUDIT_BLOCKER: " + str(audit_error)) from error
+                if not retry:
+                    raise NetworkFetchBlocker("SHENWAN_NETWORK_FETCH_EXHAUSTED_BLOCKER: "
+                        f"sector={event['sector_code']} attempts={attempts} url={url} "
+                        + type(error).__name__ + ": " + str(error)) from error
+                time.sleep(delay)
 
     def fetch(self, kind: str, *, code: str = "801012", page: int = 1) -> tuple[bytes, dict]:
         url = source_url(kind, code=code, page=page)
         initial, chain = url, []
         for _ in range(4):
             check_url(url, kind, code=code if kind == "trend" else None)
-            response = self.session.get(url, verify=self.verify, timeout=(15, 60), allow_redirects=False)
+            response = self._get_with_retry(url, kind, code, page)
             evidence = {"url": url, "httpStatus": response.status_code, "location": response.headers.get("Location")}
             chain.append(evidence)
             self.requests.append(evidence)

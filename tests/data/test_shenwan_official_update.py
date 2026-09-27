@@ -272,6 +272,223 @@ def test_transaction_preview_no_publish(api, synthetic_store):
     assert not (root / "data/raw/shenwan/sector_history_append").exists()
 
 
+def network_client(api, monkeypatch, get):
+    """Real OfficialClient retry boundary, synthetic HTTP only, strict TLS sentinel."""
+    monkeypatch.setattr(api, "prepare_tls", lambda: ("verified-test-bundle", {"verified": True}))
+    client = api.OfficialClient()
+    monkeypatch.setattr(client.session, "get", get)
+    monkeypatch.setattr(api.time, "sleep", lambda delay: None)
+    return client
+
+
+def network_response(api, raw=None, status=200):
+    response = api.requests.Response()
+    response.status_code = status
+    response._content = payload([bar()]) if raw is None else raw
+    return response
+
+
+def transient_error(api, kind):
+    if kind == "connect": return api.requests.ConnectTimeout("synthetic connect timeout")
+    if kind == "read": return api.requests.ReadTimeout("synthetic read timeout")
+    if kind == "wrapped-read":
+        return api.requests.ConnectionError(api.transport_errors.ReadTimeoutError(None, "/trend/", "synthetic read timeout"))
+    reset = ConnectionResetError(errno.ECONNRESET, "synthetic reset")
+    protocol = api.transport_errors.ProtocolError("synthetic connection aborted", reset)
+    if kind == "reset": return api.requests.ConnectionError(protocol)
+    if kind == "body-reset": return api.requests.exceptions.ChunkedEncodingError(protocol)
+    if kind == "wrapped-connect":
+        timeout = api.transport_errors.ConnectTimeoutError("synthetic connect timeout")
+        return api.requests.ConnectionError(api.transport_errors.MaxRetryError(None, "/trend/", timeout))
+    raise AssertionError(kind)
+
+
+@pytest.mark.parametrize("kind", ["connect", "read", "wrapped-read", "reset", "body-reset", "wrapped-connect"])
+def test_network_first_transient_then_success_durable_audit(api, monkeypatch, tmp_path, kind):
+    calls, sleeps = [], []
+    error = transient_error(api, kind)
+    error.response = network_response(api)  # HTTP status, if known, is recorded.
+    def get(url, **options):
+        calls.append((url, options))
+        if len(calls) == 1: raise error
+        return network_response(api)
+    client = network_client(api, monkeypatch, get)
+    client.retry_audit_path = tmp_path / "independent-run-metadata/network_retry_audit.jsonl"
+    def sleep(delay):
+        recorded = [json.loads(line) for line in client.retry_audit_path.read_text().splitlines()]
+        assert recorded == client.network_retry_events  # Recorded BEFORE retry.
+        sleeps.append(delay)
+    monkeypatch.setattr(api.time, "sleep", sleep)
+    raw, trace = client.fetch("trend", code="801012")
+    assert len(calls) == 2 and sleeps == [1.0]
+    assert raw == payload([bar()]) and trace["responseHash"] == __import__("hashlib").sha256(raw).hexdigest()
+    assert all(url == api.source_url("trend") for url, _ in calls)
+    assert all(options == {"verify": "verified-test-bundle", "timeout": (15, 60), "allow_redirects": False}
+               for _, options in calls)
+    event = client.network_retry_events[0]
+    assert event["sector_code"] == "801012" and event["attempt"] == 1 and event["max_attempts"] == 4
+    assert event["exception_class"] == type(error).__name__ and event["status"] == 200
+    assert event["elapsed_seconds"] >= 0 and event["total_elapsed_seconds"] >= event["elapsed_seconds"]
+    assert event["event"] == "network_retry_scheduled" and len(client.requests) == 1
+    assert client.tls["verified"] and not client.session.cookies and client.session.auth is None
+
+
+@pytest.mark.parametrize("kind", ["connect", "read", "wrapped-read"])
+def test_network_repeated_timeout_finite_blocker(api, monkeypatch, tmp_path, kind):
+    calls, sleeps = [], []
+    def get(url, **options):
+        calls.append(url)
+        raise transient_error(api, kind)
+    client = network_client(api, monkeypatch, get)
+    client.retry_audit_path = tmp_path / "network_retry_audit.jsonl"
+    monkeypatch.setattr(api.time, "sleep", sleeps.append)
+    with pytest.raises(api.NetworkFetchBlocker, match="NETWORK_FETCH_EXHAUSTED") as caught:
+        client.fetch("trend", code="801012")
+    assert isinstance(caught.value.__cause__, api.requests.RequestException)
+    assert len(calls) == 4 and sleeps == [1.0, 2.0, 4.0]
+    records = [json.loads(line) for line in client.retry_audit_path.read_text().splitlines()]
+    assert [event["attempt"] for event in records] == [1, 2, 3, 4]
+    assert records[-1]["event"] == "network_fetch_exhausted" and records[-1]["backoff_seconds"] is None
+    assert all(event["status"] is None for event in records)
+    assert client.requests == []
+
+
+@pytest.mark.parametrize("defect", ["tls", "proxy", "text-only", "dns", "refused", "truncated-body", "http"])
+def test_network_does_not_retry_unknown_or_nontransport_errors(api, monkeypatch, defect):
+    calls = []
+    errors = {
+        "tls": api.requests.exceptions.SSLError("synthetic TLS failure"),
+        "proxy": api.requests.exceptions.ProxyError("synthetic proxy failure"),
+        "text-only": api.requests.ConnectionError("Read timed out. connection reset"),
+        "dns": api.requests.ConnectionError(api.transport_errors.NameResolutionError("invalid.test", None, OSError("synthetic DNS"))),
+        "refused": api.requests.ConnectionError(ConnectionRefusedError(errno.ECONNREFUSED, "synthetic refused")),
+        "truncated-body": api.requests.exceptions.ChunkedEncodingError(api.transport_errors.ProtocolError("synthetic truncated JSON")),
+    }
+    def get(url, **options):
+        calls.append(url)
+        if defect == "http": return network_response(api, status=503)
+        raise errors[defect]
+    client = network_client(api, monkeypatch, get)
+    with pytest.raises((api.requests.RequestException, ValueError)):
+        client.fetch("trend")
+    assert len(calls) == 1 and client.network_retry_events == []
+
+
+def test_network_nested_tls_failure_overrides_timeout(api):
+    error = api.requests.ConnectionError(api.transport_errors.ReadTimeoutError(None, "/trend/", "synthetic"))
+    error.__context__ = api.requests.exceptions.SSLError("synthetic certificate failure")
+    assert api._transient_network_failure(error) is None
+    error.__context__ = error  # Cyclic cause graph cannot loop forever.
+    assert api._transient_network_failure(error) == "read_timeout"
+
+
+def test_network_retry_requires_persisted_audit(api, monkeypatch, tmp_path):
+    calls = []
+    def get(url, **options):
+        calls.append(url)
+        raise api.requests.ReadTimeout("synthetic timeout")
+    client = network_client(api, monkeypatch, get)
+    client.retry_audit_path = tmp_path / "network_retry_audit.jsonl"
+    original_open = Path.open
+    def open_path(path, *args, **kwargs):
+        if path == client.retry_audit_path: raise PermissionError(errno.EACCES, "synthetic log denied")
+        return original_open(path, *args, **kwargs)
+    monkeypatch.setattr(Path, "open", open_path)
+    with pytest.raises(api.NetworkFetchBlocker, match="NETWORK_RETRY_AUDIT"):
+        client.fetch("trend")
+    assert len(calls) == 1 and len(client.network_retry_events) == 1
+
+
+def test_network_retry_cannot_duplicate_staged_rows(api, synthetic_store, monkeypatch):
+    root, parent, _ = synthetic_store
+    calls = []
+    def get(url, **options):
+        code = api.parse_qs(api.urlparse(url).query)["swindexcode"][0]
+        calls.append(code)
+        if calls == ["801012"]: raise transient_error(api, "wrapped-read")
+        return network_response(api, payload([bar(code=code), bar("2026-09-21", code=code)]))
+    client = network_client(api, monkeypatch, get)
+    client.retry_audit_path = root / "data/manifests/shenwan_official_runs/no-duplicates/network_retry_audit.jsonl"
+    folder = api.stage(root, parent, client, {"status": "PASS"}, "no-duplicates")
+    assert calls == ["801012", "801012", "801013"]
+    assert len(list(folder.glob("801*.json"))) == 2 and api.read_json(folder / "stage.json")["status"] == "STAGED"
+    audit, _ = api.audit_stage(root, parent, folder)
+    assert audit["sectorCount"] == 2 and audit["totalOverlapRows"] == 2 and audit["totalNewRows"] == 2
+    assert api.read_parent(root)["snapshotId"] == parent["snapshotId"]
+
+
+@pytest.mark.parametrize("failed_code", ["801012", "801013"])
+def test_network_sector_exhaustion_blocks_apply_and_preserves_canonical(api, synthetic_store, monkeypatch, failed_code):
+    from scripts.data import update_shenwan_official as cli
+    root, parent, _ = synthetic_store
+    before = {str(p.relative_to(root)): api.sha(p) for base in (root / "data/raw", root / "data/processed")
+              for p in base.rglob("*") if p.is_file()}
+    calls = []
+    def get(url, **options):
+        code = api.parse_qs(api.urlparse(url).query)["swindexcode"][0]
+        calls.append(code)
+        if code == failed_code: raise transient_error(api, "wrapped-read")
+        return network_response(api, payload([bar(code=code), bar("2026-09-21", code=code)]))
+    client = network_client(api, monkeypatch, get)
+    monkeypatch.setattr(cli, "ROOT", root)
+    monkeypatch.setattr(cli, "git_state", lambda clean: ("synthetic-git", ""))
+    readiness = {"ready": 19, "snapshotId": parent["snapshotId"], "cutoff": parent["cutoff"]}
+    monkeypatch.setattr(api, "current_readiness", lambda root: ({"knownAnomalies": {}}, readiness))
+    monkeypatch.setattr(api, "OfficialClient", lambda: client)
+    monkeypatch.setattr(api, "probe", lambda client, parent: {"status": "PASS"})
+    def forbidden_apply(*args, **kwargs): raise AssertionError("partial fetch must not enter apply")
+    monkeypatch.setattr(api, "apply_stage", forbidden_apply)
+    result = cli.execute("cycle", "sector-exhausted", False)
+    assert result["status"] == "NETWORK_FETCH_BLOCKER" and result["fetchStatus"] == "FAIL"
+    assert result["sectorsFetched"] == (0 if failed_code == "801012" else 1)
+    assert calls.count(failed_code) == 4 and len(result["networkRetryEvents"]) == 4
+    assert not result["updateAttempted"] and not result["updateApplied"] and not result["publicationOccurred"]
+    folder = root / "data/staging/shenwan_official/sector-exhausted"
+    assert api.read_json(folder / "stage.json")["status"] == "BLOCKED"
+    with pytest.raises(ValueError): api.audit_stage(root, parent, folder)
+    assert before == {str(p.relative_to(root)): api.sha(p) for base in (root / "data/raw", root / "data/processed")
+                      for p in base.rglob("*") if p.is_file()}
+    assert not (root / api.LINEAGE / "current.json").exists()
+    assert not (root / "data/raw/shenwan/sector_history_append").exists()
+
+
+@pytest.mark.parametrize("defect", ["malformed", "schema", "missing-sector", "wrong-code", "source-redirect"])
+def test_network_schema_missing_source_errors_are_not_retried(api, synthetic_store, monkeypatch, defect):
+    root, parent, _ = synthetic_store
+    calls = []
+    def get(url, **options):
+        calls.append(url)
+        if defect == "source-redirect":
+            response = network_response(api, status=302)
+            response.headers["Location"] = "https://other.example/data"
+            return response
+        raw = {"malformed": b'{', "schema": payload([{"unexpected": True}]),
+               "missing-sector": payload([]), "wrong-code": payload([bar(code="801999")])}[defect]
+        return network_response(api, raw)
+    client = network_client(api, monkeypatch, get)
+    with pytest.raises(ValueError): api.stage(root, parent, client, {"status": "PASS"}, "no-schema-retry")
+    assert len(calls) == 1 and client.network_retry_events == []
+    assert api.read_parent(root)["snapshotId"] == parent["snapshotId"]
+    assert not (root / api.LINEAGE / "current.json").exists()
+
+
+def test_network_historical_revision_is_not_retried(api, synthetic_store, monkeypatch):
+    root, parent, _ = synthetic_store
+    calls = []
+    def get(url, **options):
+        code = api.parse_qs(api.urlparse(url).query)["swindexcode"][0]
+        calls.append(code)
+        return network_response(api, payload([bar(code=code, closeindex=11.01), bar("2026-09-21", code=code)]))
+    client = network_client(api, monkeypatch, get)
+    folder = api.stage(root, parent, client, {"status": "PASS"}, "revision-no-retry")
+    result = api.apply_stage(root, folder, "synthetic-git")
+    assert result["status"] == "HISTORICAL_SOURCE_REVISION_DETECTED_BLOCKER" and not result["updateApplied"]
+    assert calls == sorted(parent["names"]) and client.network_retry_events == []
+    assert api.read_parent(root)["snapshotId"] == parent["snapshotId"]
+    assert not (root / api.LINEAGE / "current.json").exists()
+    assert not (root / "data/raw/shenwan/sector_history_append").exists()
+
+
 def test_full_publish_lineage_prefix_and_idempotency(api, synthetic_store):
     root, parent, folder = synthetic_store
     result = api.apply_stage(root, folder, "synthetic-git")

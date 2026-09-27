@@ -116,3 +116,35 @@ all source/schema/overlap/history/publication gates are unchanged.
 Progress is count-only writer output to stderr from INSIDE Docker. Stdout retains
 the final result JSON. Do not poll/read active staging files from Windows; do not
 kill processes, change ACLs, delete evidence or bypass gates to release a handle.
+
+## Network fetch resilience V1
+
+Only the idempotent, already-authorized public GET transport receives retry.
+The existing connect/read timeout remains 15/60 seconds. At most four attempts
+per authorized GET/hop, with 1/2/4-second backoff; the existing four-hop redirect
+and exact host/path/query checks remain unchanged. No HTTP-status retries,
+automatic alternate source, added headers, TLS changes or timeout inflation.
+
+Eligible failures are typed connect/read timeouts, including Requests'
+ConnectionError wrapping urllib3 ReadTimeoutError during body consumption, and
+typed connection reset/abort/broken pipe/transport timeout (OS errno). An
+interrupted body wrapped as ChunkedEncodingError is eligible ONLY with a typed
+reset/abort/pipe/timeout cause, not arbitrary truncation. TLS, proxy, unknown
+ConnectionError text, HTTP errors, decoding/malformed payload, schema drift,
+frozen-sector absence, revisions and source identity failures are not retried.
+JSON/schema/history parsing remains outside the transport retry boundary.
+
+Each eligible failure (including final exhaustion) records sector_code, URL,
+attempt/budget, exception class/message, reason, monotonic per-attempt and total
+elapsed time, status if available, timeout and delay. The CLI configures a
+separate ignored run log:
+`data/manifests/shenwan_official_runs/<run_id>/network_retry_audit.jsonl`.
+It is flushed/fsynced/closed BEFORE retry. Failure to persist it stops immediately.
+The native result also includes retry policy/events. Standalone client tests may
+use the in-memory events without a file sink; production CLI always sets the log.
+
+No bytes are staged until a GET's complete body returns successfully. Failed
+attempts cannot duplicate raw/staged rows. Exhaustion raises NetworkFetchBlocker
+and prevents complete STAGED status, overlap, transaction preview and apply.
+Every frozen U0 sector must still succeed; partial stages are never canonical.
+Progress stays inside Docker; do not read active staging payloads from Windows.
