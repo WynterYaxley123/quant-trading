@@ -20,6 +20,7 @@ import os
 from pathlib import Path
 import ssl
 import sys
+import types
 
 import pytest
 
@@ -152,14 +153,33 @@ def test_exception_chain_preserves_cause_links():
 
 
 def test_smoke_report_is_persisted_even_when_evidence_write_fails(monkeypatch, tmp_path):
-    """A storage fault must not erase the diagnostic record."""
+    """A storage fault must not erase the diagnostic record.
+
+    The pinned ``cnequity`` package is deliberately absent from the project test
+    environment (the sidecar owns it), so the upstream call is stubbed. This test
+    is about the report surviving a *storage* failure, not about the network.
+    """
     runner = _load("runner")
     monkeypatch.setattr(runner, "external_root", lambda path: tmp_path)
     monkeypatch.setattr(runner, "atomic_bytes",
                         lambda *a, **k: (_ for _ in ()).throw(OSError("SYNTHETIC_IO")))
+
+    failing = types.ModuleType("cnequity.adapters.sw.industry_history")
+
+    def _boom(*args, **kwargs):
+        raise RuntimeError("SYNTHETIC_UPSTREAM_FAILURE")
+
+    failing.fetch_sw_industry_intervals = _boom
+    failing.sw_client = _boom
+    for name in ("cnequity", "cnequity.adapters", "cnequity.adapters.sw"):
+        monkeypatch.setitem(sys.modules, name, types.ModuleType(name))
+    monkeypatch.setitem(sys.modules, "cnequity.adapters.sw.industry_history", failing)
+
     report = runner.smoke_metadata(tmp_path)
     assert report["status"] == "NETWORK_METADATA_SMOKE_BLOCKED"
     assert report["evidence_write_warning"] == "OSError"
+    assert report["exception_class"] == "RuntimeError"
+    assert report["retries"] == 0
 
 
 def test_smoke_uses_strict_tls_and_defaults_to_direct_policy():
