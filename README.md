@@ -1,337 +1,191 @@
-# quant-trading — A股/ETF 量化研究项目
+# Quant Research + ETF Quant V1
 
-> **ENVIRONMENT + QUANT WORKFLOW FOUNDATION COMPLETE**
-> 环境已部署验证通过，开发工作流已定型。当前仓库**不含任何策略、回测或交易代码**。
+Two independent product lines share a repository, not a strategy or data source.
 
-## 项目定位
+| Product | Purpose | Boundary |
+|---|---|---|
+| Shenwan Research | Frozen Development research / read-only dashboard | Official canonical data; F1 unchanged; Validation and Final OOS SEALED |
+| ETF Quant V1 | Current-snapshot models + forward-only SIMULATION_ONLY account observer | Pinned CNEquity sidecar → immutable export → existing Docker → external runtime → separate API |
 
-面向 A 股 / ETF 的量化研究项目。研究用的 Python 依赖全部收敛进 Docker 容器，
-Windows 宿主机只保留工具链（Git / VS Code / Docker / ChatGPT），
-不在宿主机装任何量化依赖。
+Not a broker terminal, official Shenwan index, historical performance report or
+investment advice. No real order, broker connection, leverage or shorting path.
+Historical warmup is not forward performance. Source C never replaces the
+official F1 Research series.
 
-## 角色分工
+## Integration and Research firewall
 
-| 角色 | 承担方 | 状态 |
-|------|--------|------|
-| 主要代码开发 | Windows ChatGPT | 现行 |
-| 环境与自动化编排 | Hermes | 现行 |
-| 主研究框架 | Hikyuu | 已部署，未开始使用 |
-| 独立验证框架 | RQAlpha | 已部署，未开始使用 |
-| 数据获取 | AKShare | 已部署 |
-| 交互研究界面 | JupyterLab | 已部署 |
-| 备用工具 | WSL codex-cli | 可选 |
-| 模拟盘 | JoinQuant | 未来 |
-| 通知推送 | 飞书 | 未来 |
-| 代码与成果同步 | GitHub | 未来（账号 suspended） |
-| 实盘执行 | QMT / MiniQMT | 未来 |
+Work is on `integration/etf-quant-v1` in
+`D:/quant-worktrees/etf-quant-integration`, based on
+`integration/research-dashboard-v1` at
+`457b432056ebc894992de330a3b480c062e90bcc`. It includes the committed Research
+API and Dashboard heads, intentionally not later main Research changes.
+Main `D:/quant-trading` remains read-only at
+`bd13d278b25eace66a7eae287307413f930effd9`.
 
-**Hermes 默认不修改核心量化逻辑**（`strategies/` 下的策略包、`research/`）。
-详见 `AGENTS.md` 与 `docs/architecture.md`。
+`strategies/sw_sector_rotation/`, `research/`, F1 protocols/seals, the official
+updater and canonical/raw data/snapshots are unchanged. F1 readiness 23/60 is
+user-provided context, not recalculated here. Validation performance and Final
+OOS are never read. `AGENTS.md` remains the historical policy; the explicit
+ETF task permits only this independent simulation product, external sidecar,
+read-only UI/API and conditional integration-branch sync. It does not authorize
+general research execution, global quant installation or Docker changes.
 
-## 开发架构
+## Frozen ETF model
 
-```
-User
- │
- ▼
-Windows ChatGPT                 ← 主要开发入口
- │
- ▼
-D:\quant-trading                ← 项目根目录
- │
- ├──────────────┬───────────────┐
- ▼              ▼               │
-Local Git  Docker Desktop       │
-                │               │
-                ▼               │
-         quant-research         │
-                │               │
-        ┌───────┴───────┐       │
-        ▼               ▼       │
-     Hikyuu          RQAlpha    │
-    Main Research   Validation  │
-        └───────┬───────┘       │
-                ▼               │
-            Reports             │
-                │               │
-        ┌───────┴───────┐       │
-        ▼               ▼       │
-      Feishu         GitHub     │
-   Notification     Archive     │
-     (future)       (future)    │
-```
+`ETF_QUANT_V1`: CNY10,000 configured budget, **not current account equity**.
+Three independent Ridge models, alpha .01, raw X without scaling, six calendar
+months anchored at each horizon's label cutoff, minimum 30 valid training dates.
+Target: same-date full-universe cross-sectional excess forward return.
 
-完整说明见 `docs/architecture.md`。
+- H10: `d10, p5, align, vc, dd20`.
+- H40/H120 ordered: `d5, d10, d20, d60, d120, p5, p10, p20, p60, p120, align, v5, v20, vc, rev5, rev10, dd20, dd60, rsi`.
+- Per-date/horizon population z-score (ddof=0) **before** .25/.50/.25 fusion;
+  score descending, code ascending ties; Top5.
+- Capped softmax, 35% target cap, redistribution only to uncapped names.
+  Infeasible/insufficient sets block; no hidden capacity change.
+- Rebalance only when the **executable ETF member set changes**, not score/
+  weight changes inside the same set. Initial build is allowed.
 
-## 执行原则
+Core is self-contained under `strategies/etf_quant/`, independent of existing
+Research and any vendor SDK/client. Actual close formulas, named coefficients,
+training cutoffs and model hashes are available in the ETF namespace.
 
-ChatGPT 执行量化 Python 代码**必须**通过 `quant-research` 容器：
+## Isolated CNEquity and Source C
 
-```bash
-docker compose exec quant-research python <script.py>
-docker compose exec quant-research pytest tests -q
-```
+Official software: [CNEquity](https://github.com/rootSunc/CNEquity), pinned
+`1650e384a3fd1f67a70144a489acc91432f1df27`, 0.11.0.
+Source/venv/lake/locks/exports/logs are repo-external. The explicitly authorized
+sidecar venv is an exception, not a global quant environment. Existing
+`quant-research:py3.12` image/dependencies/compose/mounts are unchanged.
+See [sidecar](services/cnequity-sidecar/README.md).
 
-**不使用 Windows 全局 Python。**
+Seven immutable CSV+JSON tables: calendar, exact-HFQ stock bars, reconstructed
+SW membership, raw ETF bars, instruments, trading status, CSI300.
+CSV rather than a new Parquet mount is an explicit implementation discrepancy
+to preserve Docker. Source/version/fetched time, queries, hashes, counts,
+cutoff and pin are retained. Missing amount stays null, never volume×close.
+Stock `strict_adj=True` / `adj_is_exact=true` are mandatory. Non-PIT `as_of`
+is not historical availability proof.
 
-### Windows 侧 Docker CLI 路径
+Source C: `INTERNAL_SHENWAN_INDUSTRY_SERIES_V1`, construction
+`INTERNAL_EQUAL_WEIGHT_SHENWAN_SERIES_V1`: equal-weight exact-adjusted
+constituent returns, recursive base1000. Minimum five valid constituents and
+80% coverage against **all** eligible members. No ffill, interpolation, fake
+zero returns, synthetic OHLC, hidden repair/rebase. A broken recursive prefix
+blocks that series. Original six-digit codes are preserved, alias names not
+claimed as verified names or guessed official index identities. Membership
+PIT is **UNPROVEN**; source available_at/published_at stay null. Historical
+uses: MODEL_WARMUP / TRAINING_INPUT / ENGINEERING_VALIDATION only.
+No upstream derived industry_index, THS or other-provider fallback.
 
-`C:\Program Files\Docker\Docker\resources\bin` 已在 Machine PATH 注册表中。
-若当前进程继承旧环境快照而找不到 `docker` 命令，使用完整路径：
+**Actual admission is blocked:** strict upstream metadata smoke on 2026-09-27
+failed with RemoteProtocolError. No real lake/export/model/epoch/account was
+admitted. Passing synthetic offline tests does not change that fact.
 
-```
-"C:\Program Files\Docker\Docker\resources\bin\docker.exe" compose ps
-```
+## Evidence mapping and forward accounting
 
-**PATH 缺失不代表 Docker 不可用。**
-重启 ChatGPT/Codex 应用后 PATH 生效，即可直接使用 `docker`。
+Default VERIFIED_MAPPING_REGISTRY_V1 is empty. VERIFIED requires official
+tracking-index evidence, original external file/SHA256, provider/URL and real
+retrieval/verification/availability/effective timing. No fuzzy names, invented
+ETF codes or backfilled effective dates. Only A_SHARE_INDUSTRY_OR_THEME_ETF.
+Twenty explicit complete sessions require valid listing/raw OHLC, genuine
+nonzero volume and amount≥1 CNY. Highest true mean amount wins, code ASC ties;
+duplicate ETFs try next candidates; exactly five distinct executable ETFs.
+EastMoney default booleans are not proof; credible exchange halt overrides bars.
+See [mapping contract](docs/etf_quant/industry_etf_mapping_contract_v1.md).
 
-## 当前技术栈
+T0 close intent persists first. User-authorized **delayed T+1 EOD accounting**
+uses the genuine finalized T+1 raw OPEN. market_execution_at=09:30 market time;
+processed_at and fill executed_at retain actual processing time. Missed T+1
+blocks, never retrospective replay. Epoch starts at actual first all-gates-PASS
+processing time; **no pre-epoch NAV**.
 
-| 组件 | 角色 | 版本 |
-|------|------|------|
-| Python | 运行时 | 3.12.11 |
-| Hikyuu | 主研究框架 | 2.8.2 |
-| RQAlpha | 独立验证框架 | 6.4.0 |
-| AKShare | 数据获取 | 1.18.88 |
-| NumPy | 数值计算 | 2.3.5 |
-| Pandas | 数据处理 | 2.3.3 |
-| SciPy | 科学计算 | 1.16.3 |
-| JupyterLab | 交互研究界面 | 4.4.9 |
-| Docker 镜像 | 环境隔离 | `quant-research:py3.12` |
+Commission3bps/slippage5bps per side, duty0/minimum0 explicitly modeled and
+configurable. Lot100 configurable; floor quantities, SELL before BUY, costs
+cash-aware, leftovers kept, cash never negative. Slippage affects price and
+is not charged twice. EOD needs current finalized raw close; missing close
+blocks, no carry-forward fallback. Turnover=cumulative absolute slipped
+notional / initial cash. First daily return and insufficient Sharpe are null.
 
-**以上版本为稳定基线，除确有必要外不得修改。**
-依赖冲突的解决记录见 `docs/dependency_conflicts.md`。
+## Manual runner — no scheduler
 
-## 当前明确边界
+Copy [external config/profile templates](services/etf-quant-runner/README.md)
+outside Git; fill absolute external paths and an authorized existing lake.
+The transport refuses dirty/uncommitted integration code and downloads no
+missing market data.
 
-```
-NO STRATEGY
-NO FACTOR
-NO DATA DOWNLOAD
-NO BACKTEST
-NO PAPER TRADING
-NO LIVE TRADING
-```
-
-本阶段只做项目结构、角色定义、工作流、文档与接口骨架。
-
-## 远程仓库状态
-
-```
-GitHub remote currently unavailable due to account suspension.
-Project currently uses local Git only.
+```powershell
+# Host file transport only; numerical execution is in existing Docker.
+python -B services/etf-quant-runner/run.py cycle --config <external-config.json>
 ```
 
-GitHub 账号处于 suspended 状态，本仓库**没有配置任何远程仓库**。
-这是预期状态，不视为部署失败。账号恢复后再补 remote。
-项目保持 **GitHub-ready** 结构，详见 `docs/github_workflow.md`。
+Only ETF code, hash-verified snapshot/profile/evidence and last committed state/
+prefix go to a unique Docker temp workspace, never the main /workspace bind.
+Docker verifies export → Source C → models → ranking → mapping → legal pending
+T+1 fills → valuation → state/NAV. A hidden external bridge verifies all outputs
+before immutable publication and advances latest pointer **last**. Failures
+preserve the successful account. No new mounts/dependencies/rebuilds, automatic
+Validation, source init or market scheduler.
 
-## 文档索引
+## Read-only API and Dashboard
 
-| 文档 | 用途 |
-|------|------|
-| `AGENTS.md` | 强制约束与角色定义 |
-| `docs/architecture.md` | 项目架构与角色定义 |
-| `docs/chatgpt_workflow.md` | ChatGPT 标准工作流 |
-| `docs/joinquant_import.md` | 聚宽策略导入流程 |
-| `docs/strategy_specification.md` | 策略规格模板 |
-| `docs/report_schema.md` | 报告输出标准 |
-| `docs/feishu_integration.md` | 飞书集成规划 |
-| `docs/github_workflow.md` | GitHub 工作流规划 |
-| `docs/future_quant_api.md` | 未来 API / MCP 规划 |
-| `docs/environment_setup_report.md` | 环境验收报告 |
-| `docs/dependency_conflicts.md` | 依赖冲突记录 |
-| `docs/codex_usage.md` | WSL codex-cli 备用工具说明 |
+ETF API: built-in Node only, loopback3312, `/api/etf-quant/v1/`,
+GET/HEAD/OPTIONS; writes405. Explicit external runtime, realpath containment,
+pointer/manifest/all-file hashes, public DTOs only; no paths/secrets/stack leaks.
+[API instructions](services/etf-quant-api/README.md).
 
-
-## 环境搭建
-
-### 宿主机前置
-
-- Git for Windows
-- VS Code（扩展：Python / Pylance / Docker / Dev Containers / Jupyter）
-- Docker Desktop（WSL2 后端）
-- Codex
-- GitHub Desktop（已安装，未登录）
-
-### 构建容器
-
-```bash
-docker compose build
+```powershell
+$env:ETF_QUANT_RUNTIME_ROOT='<external-runtime-root>'
+node services/etf-quant-api/server.mjs
+# Separate shell, integration checkout:
+cd dashboard
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm dev --host 127.0.0.1
 ```
 
-### 启动服务
+Eight `/etf-quant/` routes: overview, portfolio, rankings, factors, mappings,
+trades, benchmarks, health. Independent capability/data contracts: Research API
+disconnect does not block ETF pages. Original Research contracts/nav/seals stay.
+Every page shows SIMULATION_ONLY, snapshot/cutoff/hashes/processing/epoch state.
+Not-started means null metrics, empty holdings/trades and no NAV graph, never
+fake CNY10,000 equity. No automatic mock fallback. Rankings Top20/show-all/Top5;
+factors signed named coefficients; mapping explicit blockers.
+[Dashboard instructions](dashboard/README.md).
 
-```bash
-docker compose up -d
+CSI300 uses only sidecar `000300.SH`, same forward epoch normalization,
+display-only, never model input. NASDAQ Composite / S&P500 **DEFERRED**.
+No Yahoo/FRED/AKShare fallback or fake US curves.
+
+## Verification and safe sync
+
+Python tests run only in existing Docker against a copied integration source
+workspace, never the main bind. [Handoff](docs/etf_quant/integration_v1_handoff.md)
+records commands/counts and distinguishes engineering tests from real admission.
+Never say the full frozen-data-dependent suite passed without its exact external
+fixtures. Failed tests are not removed/skipped to pass.
+
+```text
+Docker: pytest tests/etf_quant -q
+ETF API: node --test
+Research API: pnpm test:unit && pnpm typecheck
+Dashboard: pnpm typecheck && pnpm lint && pnpm exec vitest run --maxWorkers=1 && pnpm build
 ```
 
-启动两个容器：
+Origin already exists; earlier “no remote configured” claims were obsolete.
+Only integration/etf-quant-v1 sync is authorized after required tests, clean
+committed code, firewall, secret and data-leak gates. No main merge/push,
+force-push, agent-branch push or credential changes.
 
-| 容器 | 作用 | 端口（仅绑定 Windows localhost） |
-|------|------|--------------------------------|
-| `quant-research` | 研究环境（常驻 bash） | 9200 / 9201（hikyuu 行情服务预留） |
-| `quant-jupyter` | JupyterLab 交互界面 | 8888 |
+Never commit .env, market data/caches/databases, runtime state/NAV/trades/logs,
+accounts/tokens/cookies. Templates contain no secrets. Software licensing is
+not data redistribution permission; no CNEquity market data is in Git.
+[Third-party notices](THIRD_PARTY_NOTICES.md) and
+[historical safety audit](docs/etf_quant/etf_quant_public_github_security_baseline_v1.md).
+No repository-wide license grant is invented; ownership/licensing needs human
+review before reuse. Research/engineering observation, not investment advice.
 
-### 进入容器
-
-```bash
-docker exec -it quant-research bash
-```
-
-### JupyterLab
-
-#### 配置密码
-
-Jupyter 使用**密码认证**。宿主机 `.env` 中只存密码的 argon2 哈希（不存明文），
-该文件已被 `.gitignore` 忽略，不会进入 Git。
-
-配置步骤：
-
-```bash
-# 1. 生成密码哈希（把 <你的密码> 换成自己要设的密码）
-docker exec quant-jupyter python -c \
-  "from jupyter_server.auth import passwd; print(passwd('<你的密码>'))"
-
-# 2. 写入 .env（注意：哈希中的每个 $ 必须写成 $$，否则会被 compose 插值破坏）
-#    JUPYTER_PASSWORD=argon2:$$argon2id$$v=19$$m=10240,t=10,p=8$$xxxx$$yyyy
-```
-
-`.env.example` 中的 `JUPYTER_PASSWORD` 保持为空，仅作模板，不填任何真实值。
-
-#### 为什么哈希里的 `$` 要写成 `$$`
-
-Docker Compose 会对 `.env` 中的值做变量插值，`$argon2id`、`$v` 这类片段会被
-当成变量名展开成空字符串，导致哈希被静默破坏、密码永远校验失败。写成 `$$`
-后 compose 输出单个 `$`，哈希还原正确。
-
-验证方法（应输出 105 和 5，即长度 105、含 5 个 `$`）：
-
-```bash
-docker exec quant-jupyter bash -c \
-  'v="$JUPYTER_PASSWORD"; echo "len=${#v} dollars=$(printf %s "$v" | tr -cd "$" | wc -c)"'
-```
-
-#### 访问
-
-启动服务后，在 Windows 浏览器打开：
-
-```
-http://localhost:8888/lab
-```
-
-- 首次访问跳出登录页，输入密码即可
-- 浏览器会记住会话，之后直接访问 `localhost:8888/lab` 无需重复输入
-- 未认证访问 `/lab` 返回 302（跳登录页）
-- 工作目录为 `/workspace`（对应宿主机 `D:\quant-trading`）
-
-#### 安全边界
-
-- 端口映射为 `127.0.0.1:8888:8888`，**仅监听 Windows 本机回环地址**
-- 局域网内其他设备无法访问（端口不绑定 `0.0.0.0`）
-- 不使用无认证模式；密码哈希存于 `.env`，不进 Git
-- 容器内监听 `0.0.0.0:8888` 是端口映射的必要条件（服务只绑 loopback 时宿主机转发不进来），
-  对外暴露面由宿主机侧 `127.0.0.1` 绑定限定
-
-### VS Code 开发容器
-
-在 VS Code 中执行 `Dev Containers: Reopen in Container`，进入后：
-
-- 工作目录为 `/workspace`
-- Python 解释器为容器内的 `/opt/conda/bin/python`
-- 可使用 Hikyuu / RQAlpha / AKShare
-- 可运行 `pytest`
-
-**不要建立 .venv** —— 所有 Python 依赖统一在容器内。
-
-### 运行环境测试
-
-```bash
-docker exec quant-research pytest tests -v
-```
-
-## 目录结构
-
-```
-quant-trading/
-├─ docker/
-│  └─ Dockerfile           固定 Python 3.12（Ubuntu 24.04 底座），仅装依赖
-├─ .devcontainer/
-│  └─ devcontainer.json    Reopen in Container 配置
-├─ src/
-│  ├─ strategies/
-│  │  ├─ imported/
-│  │  │  └─ joinquant/     原始聚宽代码（只读，不覆盖）
-│  │  ├─ hikyuu/           Hikyuu 实现（主研究）
-│  │  └─ rqalpha/          RQAlpha 验证版（独立验证）
-│  ├─ factors/             因子计算
-│  ├─ signals/             信号生成
-│  ├─ risk/                风控指标（TGT / TR / RGrid / ZMB / SL）
-│  ├─ portfolio/           组合与仓位管理
-│  ├─ adapters/            框架适配层
-│  ├─ reporting/           报告生成
-│  ├─ notifications/       通知（飞书骨架已就位）
-│  ├─ common/              通用工具
-│  └─ data/                数据获取与清洗
-├─ research/
-│  └─ factors/             因子研究笔记
-├─ reports/
-│  ├─ strategies/          策略规格汇总
-│  ├─ backtests/           回测结果
-│  ├─ factors/             因子研究结果
-│  ├─ comparisons/         双框架交叉验证
-│  └─ daily/               日常研究记录
-├─ scripts/
-│  └─ automation/          自动化脚本（Hermes 维护）
-├─ notebooks/              Jupyter 笔记本（当前只有说明）
-├─ data/                   行情数据（挂载，不进 Git）
-├─ logs/                   运行日志（不进 Git）
-├─ secrets/                敏感配置（不进 Git）
-├─ tests/
-│  └─ test_environment.py  仅验证依赖可导入
-├─ docs/                   项目文档
-├─ .gitignore
-├─ .dockerignore
-├─ docker-compose.yml      服务: quant-research + quant-jupyter
-├─ requirements.txt
-├─ README.md
-└─ AGENTS.md
-```
-
-## 版本管理规则
-
-| 分支 | 用途 |
-|------|------|
-| `main` | 稳定环境 + 已验证成果 |
-| `dev` | 开发主线 |
-| `experiment/<name>` | 试验性工作 |
-
-**不创建** `live` / `production` / `trading` 等任何实盘相关分支。
-
-当前 `main` 与 `dev` 均指向稳定基线。GitHub 账号恢复前不使用远程仓库。
-
-## 安全声明
-
-- `.env`、`data/`、`logs/`、`secrets/` 永不进入 Git
-- `.env.example` 所有凭证项保持空值，仅作模板
-- 不在宿主机全局 Python 环境安装量化依赖
-- 不配置任何真实账号、Token、Cookie
-- 不接入任何券商接口
-- 所有端口映射仅绑定 `127.0.0.1`，不对局域网暴露
-- Jupyter 使用密码认证（argon2 哈希存于 .env），不使用无认证模式
-- 飞书凭证项仅留空值模板，不填真实值
-- 回测报告不编造数据，未产生结果为 `null`
-
-## 下一阶段（尚未开始）
-
-以下事项**均未开始**，需用户明确指令后启动：
-
-- 行情数据准备
-- Hikyuu 数据导入
-- 策略开发
-- 因子开发
-- 回测
-- RQAlpha 交叉验证
-- JoinQuant 模拟盘
-
+Directory roles: strategies=self-contained; src=existing framework;
+tests=framework/integration/ETF; scripts=data/automation; research=frozen;
+services=separate APIs/sidecar/transport; dashboard=observer; docs=contracts.
+Docker Python3.12.11/Hikyuu2.8.2/RQAlpha6.4.0/AKShare1.18.88/NumPy2.3.5/
+Pandas2.3.3/SciPy1.16.3 remain unchanged.

@@ -8,6 +8,33 @@
 /logs/
 /secrets/
 
+# Prevent accidental vendoring of external ETF runtime, sidecar and market data.
+/runtime/
+/external/
+/lake/
+/exports/
+/cache/
+**/.cnequity/
+**/cnequity_cache/
+services/etf-quant*/state/
+services/etf-quant*/runtime/
+services/cnequity-sidecar/lake/
+services/cnequity-sidecar/exports/
+services/cnequity-sidecar/logs/
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db-wal
+*.db-shm
+*.h5
+*.hdf5
+*.parquet
+*.p12
+*.pfx
+id_rsa*
+node_modules/
+
 # 回测产物（每次运行生成，体积大且不可复现，不进 Git）
 /reports/backtests/
 # 非执行研究运行产物（可由冻结输入重新生成）

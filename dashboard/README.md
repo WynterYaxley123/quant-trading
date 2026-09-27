@@ -7,7 +7,8 @@ sector-index rotation research programme.
 > Research phase: DEVELOPMENT ONLY · Validation: SEALED · Final OOS: SEALED ·
 > executable=false · tradable=false.
 > This dashboard **does not control research execution**, cannot trade, and shows no
-> portfolio/backtest metrics (no equity curve, Sharpe, drawdown, win rate, P&L).
+> portfolio/backtest metrics in the Research namespace. Independent ETF pages
+> below never convert Research results into account performance.
 
 ## Purpose
 
@@ -48,12 +49,12 @@ research files directly. See `docs/architecture.md` for the full design and
 
 ## Installation
 
-Node.js ≥ 20 and npm are required (the dashboard is an independent Node project; it does not
+Node.js ≥ 22 and pnpm 11.25 are required (the dashboard is an independent Node project; it does not
 touch the frozen quant Docker environment).
 
 ```bash
 cd dashboard
-npm install
+pnpm install --frozen-lockfile --ignore-scripts
 ```
 
 ## Development
@@ -108,7 +109,37 @@ research results). A global **模拟数据 / MOCK DATA** banner is shown on ever
   re-derived in the UI.
 - Prediction values are model outputs, **not** realized returns, and carry no buy/sell
   meaning anywhere in the product.
-- No portfolio / orders / trading / execution / account / broker / ETF / P&L features exist.
+- No portfolio / trading / account / ETF / P&L features exist in Research.
+- No broker or real-order path exists in either namespace.
+
+## Independent ETF Quant V1
+
+Eight /etf-quant/ routes: overview, portfolio, rankings, factors, mappings,
+trades, benchmarks, health. Separate EtfQuantDataPort and schemas use
+/api/etf-quant/v1/ on loopback3312, never ResearchDataPort. Its capability is
+independent: Research disconnect does not block an ETF route. Optional local-only
+VITE_ETF_QUANT_API_BASE_URL defaults to http://127.0.0.1:3312 when empty.
+No automatic mock fallback. All envelope generations must match; a mid-refresh
+pointer change requests manual refresh, not mixed state.
+
+Every page says SIMULATION_ONLY, shows cutoff/source/code/mapping/strategy
+hashes and epoch/processing time. Unknowns are “—”; before a genuine forward
+epoch account metrics are null and holdings/trades/NAV empty. Test fixtures never
+populate production models or assets. Rankings have four tabs, Top20/show-all/
+Top5; factors have frozen5/19/19 names and signed coefficients. Mapping needs
+official evidence and20 real-amount sessions, no guessed ETFs. Portfolio/trades
+show lot-rounded simulated fills/costs/cash impact and actual processing time
+separate from T+1 market open. Historical warmup is not account performance.
+
+CSI300 only CNEquity000300.SH, same forward epoch, display-only. NASDAQ and
+S&P500 DEFERRED. No ETF reads of Research performance, sealed Validation or
+Final OOS. Existing Research adapter tests remain intact. ETF fixtures are
+explicitly synthetic and never published to actual runtime.
+
+Verification: pnpm typecheck / pnpm lint / pnpm exec vitest run --maxWorkers=1 /
+pnpm build. pnpm-lock.yaml was converted from existing npm lock; direct versions
+and existing package-lock.json were unchanged. Quant Docker is untouched.
+See ../docs/etf_quant/integration_v1_handoff.md for counts and admission blockers.
 
 ## Documentation
 
