@@ -5,16 +5,18 @@ import { useAppData } from './AppDataProvider';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/cn';
 import { phaseLabel } from '@/lib/labels';
+import { useEtfQuantCapability } from '@/etf-quant/Provider';
 
 /**
  * Sidebar content (research navigation). Shared between the desktop fixed
  * sidebar and the mobile drawer. Product identity is ours — no upstream
- * branding. Never contains trading/portfolio sections.
+ * branding. ETF Quant is independently capability-gated, never a Research flag.
  */
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { capabilities, status } = useAppData();
   const location = useLocation();
-  const groups = visibleNavGroups(capabilities);
+  const {etfQuant} = useEtfQuantCapability();
+  const groups = visibleNavGroups(capabilities,etfQuant);
 
   return (
     <div className="flex h-full flex-col gap-6 p-4">
@@ -59,7 +61,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="flex flex-col gap-1 px-2 text-xs text-muted-foreground">
-        {status ? (
+        {location.pathname.startsWith('/etf-quant/') ? <Badge variant="warning" className="w-fit">SIMULATION_ONLY</Badge> : status ? (
           <Badge variant="warning" className="w-fit">
             {phaseLabel(status.phase)}
           </Badge>

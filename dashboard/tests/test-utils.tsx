@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router';
 import { createAppRouter, type AppRouter } from '@/app/router';
 import { createMockApiAdapter } from '@/api/adapters/mock-api';
@@ -16,8 +16,12 @@ export async function renderApp(
 ): Promise<AppRouter> {
   setResearchApiForTesting(port);
   const router = createAppRouter(createMemoryHistory({ initialEntries: [initialPath] }));
-  render(<RouterProvider router={router} />);
-  await router.load();
+  // Settle React effects with the controlled asynchronous port before callers
+  // make synchronous assertions. router.load() alone does not flush effects.
+  await act(async () => {
+    render(<RouterProvider router={router} />);
+    await router.load();
+  });
   return router;
 }
 

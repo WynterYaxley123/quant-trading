@@ -7,6 +7,7 @@ import { sectorsRoute } from '@/routes/sectors';
 import { diagnosticsRoute } from '@/routes/diagnostics';
 import { integrityRoute } from '@/routes/integrity';
 import { notFoundRoute } from '@/routes/notFound';
+import { etfQuantRoutes } from '@/routes/etfQuant';
 
 const routeTree = rootRoute.addChildren([
   overviewRoute,
@@ -15,6 +16,7 @@ const routeTree = rootRoute.addChildren([
   sectorsRoute,
   diagnosticsRoute,
   integrityRoute,
+  ...etfQuantRoutes,
   notFoundRoute,
 ]);
 
