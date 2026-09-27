@@ -59,25 +59,29 @@ def source_prefix(provider):
     result = {}
     from .exports import KEYS
     for name, frame in provider.tables.items():
-        date_key = "as_of_date" if name == "industry_membership" else "trade_date"
+        date_key = "list_date" if name == "instruments" else "as_of_date" if name == "industry_membership" else "trade_date"
         if date_key not in frame:
             continue
         records = {}
         for row in frame.to_dict("records"):
-            if row[date_key] > provider.cutoff:
+            # Undated instrument evidence is not allowed to silently change
+            # after it influenced listing/tradability admission. Future known
+            # listings are not part of the already-consumed historical prefix.
+            row_day = row[date_key]
+            if row_day is not None and row_day > provider.cutoff:
                 continue
             key = "|".join(str(row[k]) for k in KEYS[name])
             # Observation time can advance on re-fetch; economic values/identity
             # may not silently change in a consumed historical prefix.
             economic = {k: str(v) for k, v in row.items() if k != "fetched_at"}
-            records[key] = {"date": str(row[date_key]), "hash": digest(json_bytes(economic))}
+            records[key] = {"date": str(row_day) if row_day is not None else None, "hash": digest(json_bytes(economic))}
         result[name] = records
     return result
 
 
 def check_prefix(previous, current, cutoff):
     for name, records in previous.items():
-        candidate = {k: v for k, v in current.get(name, {}).items() if v["date"] <= cutoff}
+        candidate = {k: v for k, v in current.get(name, {}).items() if v["date"] is None or v["date"] <= cutoff}
         if candidate != records:
             raise GateError("CONSUMED_EXPORT_HISTORICAL_REVISION_BLOCKER", {"dataset": name})
 

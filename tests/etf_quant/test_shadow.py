@@ -125,6 +125,7 @@ def test_forward_intent_delayed_t1_epoch_no_preepoch_nav_and_idempotency(tmp_pat
 
 @pytest.mark.parametrize("mutation,code", [
     (lambda q: q.tables["stock_bars"].loc.__setitem__((0, "adj_close"), 99.), "HISTORICAL_REVISION"),
+    (lambda q: q.tables["instruments"].loc.__setitem__((0, "name"), "SYNTHETIC_CHANGED_LISTING_EVIDENCE"), "HISTORICAL_REVISION"),
     (lambda q: q.tables["etf_bars"].drop(q.tables["etf_bars"].index[q.tables["etf_bars"].trade_date == q.cutoff], inplace=True), "EXECUTION_BAR"),
 ])
 def test_failed_run_preserves_latest_and_no_partial_state(tmp_path, mutation, code):
@@ -173,3 +174,16 @@ def test_no_runtime_default_fabricated_results():
     view = empty_view()
     assert view["portfolio_summary"]["sharpe"] is view["portfolio_summary"]["total_return"] is None
     assert view["benchmark"]["points"] == [] and view["benchmark"]["nasdaq"] == "DEFERRED"
+
+
+def test_unknown_instrument_dates_are_null_not_fabricated_and_still_frozen(tmp_path):
+    p, _ = inputs(tmp_path, empty=True)
+    p.tables["instruments"].loc[0, "list_date"] = None
+    prefix = shadow.source_prefix(p)
+    symbol = p.tables["instruments"].iloc[0].symbol
+    assert prefix["instruments"][symbol]["date"] is None
+    shadow.check_prefix(prefix, shadow.source_prefix(p), str(p.cutoff))
+    q = deepcopy(p)
+    q.tables["instruments"].loc[0, "asset_type"] = "SYNTHETIC_CHANGED_TYPE"
+    with pytest.raises(GateError, match="HISTORICAL_REVISION"):
+        shadow.check_prefix(prefix, shadow.source_prefix(q), str(p.cutoff))
