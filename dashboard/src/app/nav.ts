@@ -43,14 +43,15 @@ export const NAV_GROUPS: NavGroup[] = [
 export const ETF_QUANT_NAV_GROUP: NavGroup = {
   label: 'ETF Quant',
   items: [
-    {to:'/etf-quant/overview',label:'ETF Quant Overview',capability:'etfQuant'},
-    {to:'/etf-quant/portfolio',label:'Portfolio · 持仓 / NAV',capability:'etfQuant'},
-    {to:'/etf-quant/rankings',label:'Rankings · 行业排名',capability:'etfQuant'},
-    {to:'/etf-quant/factors',label:'Factors · 因子 / 系数',capability:'etfQuant'},
-    {to:'/etf-quant/mappings',label:'Mappings · 映射准入',capability:'etfQuant'},
-    {to:'/etf-quant/trades',label:'Trades · 模拟流水',capability:'etfQuant'},
-    {to:'/etf-quant/benchmarks',label:'Benchmark · CSI 300',capability:'etfQuant'},
-    {to:'/etf-quant/health',label:'Health · 数据健康',capability:'etfQuant'},
+    {to:'/etf-quant/overview',label:'总览',capability:'etfQuant'},
+    {to:'/etf-quant/readiness',label:'Shadow 准备',capability:'etfQuant'},
+    {to:'/etf-quant/portfolio',label:'模拟持仓',capability:'etfQuant'},
+    {to:'/etf-quant/rankings',label:'行业排名',capability:'etfQuant'},
+    {to:'/etf-quant/factors',label:'因子系数',capability:'etfQuant'},
+    {to:'/etf-quant/mappings',label:'映射准入',capability:'etfQuant'},
+    {to:'/etf-quant/trades',label:'模拟流水',capability:'etfQuant'},
+    {to:'/etf-quant/benchmarks',label:'基准 CSI300',capability:'etfQuant'},
+    {to:'/etf-quant/health',label:'数据健康',capability:'etfQuant'},
   ],
 };
 

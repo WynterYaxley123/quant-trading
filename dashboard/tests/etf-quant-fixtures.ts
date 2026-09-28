@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { snapshotSchema,type EtfQuantSnapshot } from '@/etf-quant/contracts';
+import { readinessSchema, snapshotSchema, type EtfQuantReadiness, type EtfQuantSnapshot } from '@/etf-quant/contracts';
 
 // Entirely SYNTHETIC unit-test DTOs; never copied to real runtime or API defaults.
 export function etfFixture():EtfQuantSnapshot {
@@ -47,4 +47,23 @@ export function trainedFixture():EtfQuantSnapshot {
       quality_flag:'HISTORICAL_MEMBERSHIP_PIT_UNPROVEN',model_hash:'f'.repeat(64)};
   });
   return snapshotSchema.parse(data);
+}
+
+// 默认：后台尚未发布 readiness artifact → 整体 NOT_REACHED、无门控记录。
+export function notReachedReadiness():EtfQuantReadiness {
+  return readinessSchema.parse({contract:'SHADOW_START_READINESS_V1',generated_at:null,data_cutoff:null,
+    overall:'NOT_REACHED',gates:[],shadow_epoch_created:false,shadow_started:false,notes:[]});
+}
+
+// 合成门控清单：覆盖 PASS / BLOCKED / DEFERRED / NOT_REACHED 四种状态。
+export function gatesReadinessFixture():EtfQuantReadiness {
+  return readinessSchema.parse({contract:'SHADOW_START_READINESS_V1',generated_at:'2026-09-24T18:05:00+08:00',data_cutoff:'2026-09-24',
+    overall:'BLOCKED',shadow_epoch_created:false,shadow_started:false,
+    gates:[
+      {name:'DATA_FRESHNESS',status:'PASS',summary:'数据截止日满足新鲜度要求。',evidence:'cutoff=2026-09-24'},
+      {name:'MAPPING_ADMISSION',status:'BLOCKED',summary:'映射准入被阻断，缺少已验证证据。',evidence:'NO_VERIFIED_EVIDENCE'},
+      {name:'OVERSEAS_BENCHMARK',status:'DEFERRED',summary:'海外基准暂缓接入，不影响启动评估。',evidence:null},
+      {name:'MODEL_WARMUP',status:'NOT_REACHED',summary:'模型预热评估尚未执行。',evidence:null},
+    ],
+    notes:['SYNTHETIC TEST ONLY：全部内容均为合成测试数据。']});
 }

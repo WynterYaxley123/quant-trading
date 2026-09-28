@@ -23,6 +23,11 @@
   --warning: oklch(0.66 0.13 62);
   --warning-foreground: oklch(0.28 0.06 62);
   --success: oklch(0.55 0.1 165);
+  /* 状态语义色（badge / 状态卡）与涨跌语义色（带符号数值）分离：
+     状态只出现在带图标+文字的徽章里，涨跌只出现在带正负号的数字上。 */
+  --info: oklch(0.52 0.11 240);
+  --gain: oklch(0.55 0.18 27);
+  --loss: oklch(0.58 0.12 175);
   --ring: oklch(0.53 0.16 277);
   --radius: 0.625rem;
 
@@ -53,6 +58,9 @@
   --warning: oklch(0.75 0.12 75);
   --warning-foreground: oklch(0.2 0.05 75);
   --success: oklch(0.65 0.1 165);
+  --info: oklch(0.7 0.1 240);
+  --gain: oklch(0.65 0.16 27);
+  --loss: oklch(0.68 0.11 175);
   --ring: oklch(0.68 0.14 277);
 
   --chart-1: oklch(0.68 0.14 277);
@@ -81,6 +89,9 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-success: var(--success);
+  --color-info: var(--info);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
