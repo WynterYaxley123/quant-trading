@@ -9,21 +9,59 @@
 ## 1. Status
 
 ```
-RECOVERY IN PROGRESS — monotonic, measurable, not yet drained
-exact ratio: 0.132244 -> 0.770322
+RECOVERY COMPLETE — BACKLOG DRAINED
+exact ratio: 0.132244 -> 0.999806
+residual non-exact: 358 rows, ALL from a single symbol (689009.SH)
 ```
 
-| Metric | Before | Current |
+| Metric | Before | After |
 |---|---|---|
-| `derived/adj_factors` rows | **334,417** | **1,789,893** |
+| `derived/adj_factors` rows | **334,417** | **2,227,256** |
 | symbols with factors | 5,274 | 5,306 |
-| **`adj_is_exact` TRUE** (production window) | **244,521** | **1,424,331** |
-| `adj_is_exact` FALSE | 1,604,486 | **424,676** |
-| **exact ratio** | **0.132244** | **0.770322** |
-| realignment backlog | 4,728 symbols | **1,728 symbols** |
+| **`adj_is_exact` TRUE** (production window) | **244,521** | **1,848,649** |
+| `adj_is_exact` FALSE | 1,604,486 | **358** |
+| **exact ratio** | **0.132244** | **0.999806** |
+| realignment backlog | 4,728 symbols | **0 (drained)** |
 
-The production window is 1,849,007 bar rows over 358 sessions. Factor rows are converging on bar parity
-(1,789,893 vs 1,849,007), which is the expected shape once the per-symbol daily history is present.
+The production window is 1,849,007 bar rows over 358 sessions. Factor rows (2,227,256) now exceed bar
+rows, which is the expected shape once the per-symbol daily history is present.
+
+### 1.1 The residual is a single instrument, fully enumerated
+
+| Property | Value |
+|---|---|
+| non-exact rows | **358** |
+| distinct symbols | **1** |
+| symbol | **`689009.SH`** |
+| exchange | SH |
+| date range | 2025-04-10 → 2026-09-24 (the whole window) |
+| enumeration written to | `D:\QuantForge\external\cnequity-etf-quant-v1\audit-out\nonexact_rows.csv` |
+
+`689009.SH` is the **only CDR** in the instrument master (`asset_type='cdr'`, 1 of 7,702 rows). CNEquity
+excludes CDRs from the adjustment scope by design — `derive/adj_factors.py:441` filters the factor
+universe to `asset_type.is_in(["stock","etf"])`, deliberately omitting CDRs because Sina serves them no
+usable factor series. Its absence from the factor table is therefore **correct behaviour**, not a defect
+and not a data gap that can be closed.
+
+**Consequence:** `strict_adj=True` still raises for this symbol, because that flag is a global
+fail-closed switch. **It is not, however, an irrelevant row:** `689009.SH` **IS** a Shenwan membership
+constituent (72 SW snapshots), so it counts in its industry's `eligible` denominator and its missing
+factor **reduces that industry's coverage ratio** exactly as a missing BJ name does. The correct handling
+is therefore the same rule the BJ policy already established: keep it visible in the ratio, never drop it
+silently, and never fabricate a factor for it.
+
+Closing the CDR gap would require a CDR factor series, which `derive/adj_factors.py:441` deliberately
+does not request. That is a **contract decision**, not a data-layer bug.
+
+### 1.2 Gate position
+
+| Criterion | State |
+|---|---|
+| `adj_is_exact` ratio on production-window bars | **0.999806** |
+| residual non-exact | **358 rows, 1 symbol (`689009.SH`, CDR)** |
+| `strict_adj=True` global switch | **still raises** (fail-closed, by design) |
+| production-relevant industry-dates affected | **to be measured** — the affected industry's coverage ratio is reduced, not zeroed |
+| `STRICT_ADJUSTMENT_GATE_PASS` | **not claimed** — requires the per-industry impact measurement first |
 
 ---
 
@@ -56,6 +94,10 @@ Journal: `D:\QuantForge\runtime\etf-quant-v1\data-to-shadow-ready\journal.jsonl`
 | 3 | 1,152,478 | 1,352,305 | +199,827 | 2,728 | 288 s |
 | 4 | 1,352,305 | 1,589,964 | +237,659 | 2,228 | 287 s |
 | 5 | 1,589,964 | 1,789,893 | +199,929 | 1,728 | 288 s |
+| 6 | 1,789,893 | 1,972,603 | +182,710 | 1,228 | 289 s |
+| 7 | 1,972,603 | 2,152,710 | +180,107 | 728 | 267 s |
+| 8 | 2,152,710 | 2,227,256 | +74,546 | 228 | 174 s |
+| 9 | 2,227,256 | 2,227,256 | +0 | **0 — DRAINED** | 43 s |
 
 Each pass is bounded, resumable and individually recorded — the loop can be stopped and restarted
 without losing completed work, and the watermark now advances with real history rather than hiding it.
