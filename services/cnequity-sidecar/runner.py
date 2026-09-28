@@ -196,6 +196,9 @@ def main():
     parser.add_argument("--proxy-policy", choices=list(POLICIES), default=POLICY_DIRECT,
                         help="direct (default) scopes away ambient proxy state; "
                              "inherit_environment is an explicit operator opt-in")
+    parser.add_argument("--streaming", action="store_true",
+                        help="bound export memory: scan stock bars one calendar session per pinned query; "
+                             "publication bytes are identical to the batch exporter")
     args = parser.parse_args()
     verify_install(args.root)
     if args.command == "smoke":
@@ -209,7 +212,12 @@ def main():
         if any((p / ".git").exists() for p in config_path.parents):
             raise GateError("EXTERNAL_CONFIG_REQUIRED")
         from cnequity.query import load
-        result = export_lake(tomllib.loads(config_path.read_text(encoding="utf-8")), load)
+        config = tomllib.loads(config_path.read_text(encoding="utf-8"))
+        if args.streaming:
+            from export_streaming import export_lake_streaming
+            result = export_lake_streaming(config, load)
+        else:
+            result = export_lake(config, load)
     print(json.dumps(result))
     return 0 if "BLOCKED" not in result.get("status", "") else 2
 
