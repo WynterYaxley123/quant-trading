@@ -1,0 +1,173 @@
+{
+  "handoff": "DEEPSEEK_PRODUCT_CLOSURE_MANIFEST_V1",
+  "generated_by": "DeepSeek",
+  "generated_at": "2026-09-28",
+  "language": "zh-CN",
+  "contains_market_rows": false,
+  "note": "仅 metadata。不含任何真实行情行。",
+
+  "git": {
+    "branch": "agent/deepseek-etf-quant-product-closure-v1",
+    "worktree": "D:\\quant-worktrees\\deepseek-etf-quant-product-closure",
+    "base_sha": "7e1931627aa3d5061ec78e43c14dec63ed682ee2",
+    "base_verified": true,
+    "integration_branch_modified": false,
+    "main_modified": false,
+    "push_performed": false
+  },
+
+  "handoff_doc": "docs/etf_quant/deepseek_product_closure_handoff_v1.md",
+
+  "frozen_contracts_preserved": {
+    "industry_level": "SHENWAN_L2",
+    "membership": "TIME_VARYING_ASOF_MEMBERSHIP_UNIVERSE",
+    "adjustment": "exact-only numerator; raw fallback forbidden",
+    "cnequity_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "cnequity_version": "0.11.0",
+    "ridge_alpha": 0.01,
+    "training_window": "6 calendar months",
+    "min_valid_training_days": 30,
+    "fusion_weights": [0.25, 0.50, 0.25],
+    "top_k": 5,
+    "single_etf_cap": 0.35,
+    "liquidity_window_sessions": 20,
+    "source_c_min_constituents": 5,
+    "source_c_min_coverage_ratio": 0.80,
+    "factor_count": 19
+  },
+
+  "verified_this_round": [
+    {
+      "id": "WORKTREE_BASE_VERIFIED",
+      "result": "PASS",
+      "evidence": "git rev-parse HEAD == 7e1931627aa3d5061ec78e43c14dec63ed682ee2, status clean"
+    },
+    {
+      "id": "ETF_MARKET_DATA_CAPABILITY_EXISTS",
+      "result": "PASS",
+      "evidence": "pinned CNEquity fetch_daily_bars(['510300.SH'], 2025-04-10, 2026-09-24) -> 358 rows with open/high/low/close/volume/amount",
+      "conclusion": "ETF 行情不是源缺失；真实阻塞是选择域为空 (NO_VERIFIED_ETF_SCOPE)"
+    },
+    {
+      "id": "OFFICIAL_METADATA_FETCH_AVAILABLE",
+      "result": "PASS",
+      "evidence": "official fund page fetched; parsed tracking_target='沪深300指数' for 510300",
+      "conclusion": "verified mapping 是工作量问题，不是能力问题"
+    },
+    {
+      "id": "BROAD_BASED_ETF_COUNTEREXAMPLE",
+      "result": "FOUND",
+      "evidence": "510300 name contains 沪深300 and type=指数型-股票, but tracks a broad-based index, not a Shenwan L2 industry index",
+      "conclusion": "证明名称模糊匹配必须禁止"
+    }
+  ],
+
+  "blockers": [
+    {
+      "id": "L2_L3_MAPPING_REGISTRY_MISALIGNED",
+      "root_cause": "mapping registry 建在六位 L3 代码上，冻结模型粒度是四位 L2，且无已验证 L3→L2 taxonomy 关系",
+      "evidence": "工程 Top5 L2 = 3706,3703,4901,4803,3701；registry 寻址六位 L3；etf_bars.row_count=0",
+      "affected_industries": ["3706", "3703", "4901", "4803", "3701"],
+      "affected_etfs": 0,
+      "affected_dates": ["2026-09-24"],
+      "bypass_unsafe_because": "前缀猜测会伪造 taxonomy 关系；改模型为 L3 违反冻结契约",
+      "codex_can_solve": true,
+      "user_decision_required": false
+    },
+    {
+      "id": "NO_VERIFIED_L2_ETF_MAPPING",
+      "root_cause": "未完成任何具官方证据的 L2 行业→ETF 映射",
+      "evidence": "已准入 mapping = 0；Shenwan 证据包 0/124 主映射通过；6 个仅部分证据",
+      "affected_industries": ["3706", "3703", "4901", "4803", "3701"],
+      "affected_etfs": 0,
+      "bypass_unsafe_because": "§20/§21 禁止名称模糊匹配，必须官方一手资料",
+      "codex_can_solve": true,
+      "user_decision_required": false
+    },
+    {
+      "id": "ETF_MARKET_DATA_NOT_EXPORTED",
+      "root_cause": "选择域为空，未发起 ETF 行情导出",
+      "evidence": "etf_bars.row_count=0; trading_status.row_count=0; manifest=NO_VERIFIED_ETF_SCOPE",
+      "bypass_unsafe_because": "不得跳过 mapping 直接抓猜测的 ETF 名单",
+      "codex_can_solve": true,
+      "user_decision_required": false
+    },
+    {
+      "id": "PRODUCTION_CANDIDATE_NOT_CREATED",
+      "root_cause": "依赖上述 3 项完成",
+      "evidence": "docs/etf_quant/production_candidate_snapshot_final_v2.md 状态 blocked",
+      "codex_can_solve": true,
+      "user_decision_required": false
+    },
+    {
+      "id": "TIME_SEMANTICS_CONTRACT_MISSING",
+      "root_cause": "docs/etf_quant/production_time_semantics_v1.md 未创建",
+      "evidence": "需区分 event/effective vs observed_at/available_at/processed_at/signal_date",
+      "constraint": "2026-09-24 = HISTORICAL_ENGINEERING_REFERENCE_DATE，不得称为 Shadow epoch 起点",
+      "codex_can_solve": true,
+      "user_decision_required": false
+    },
+    {
+      "id": "BJ_LIST_DATE_UNVERIFIED",
+      "root_cause": "920201.BJ list_date == 2026-09-24 == cutoff，且 TDX 返回 0 行历史",
+      "affected_symbols": ["920201.BJ"],
+      "source_c_impact": "none (Source-C 不读 list_date)",
+      "codex_can_solve": true,
+      "user_decision_required": false
+    }
+  ],
+
+  "phases_not_reached": [
+    "L2/L3 code alignment across the production chain",
+    "production_time_semantics_v1.md",
+    "verified L2 to ETF mapping registry",
+    "ETF market data export",
+    "20d liquidity admission",
+    "distinct executable Top5",
+    "softmax + 35% cap feasibility",
+    "Production Candidate creation",
+    "T+1 execution contract audit",
+    "shadow start readiness audit",
+    "targeted test run"
+  ],
+
+  "status": {
+    "DEEPSEEK_PRODUCT_CLOSURE_COMPLETE": false,
+    "CODEX_HANDOFF_READY": true,
+    "L2_PRODUCTION_SEMANTICS_PASS": "BLOCKED",
+    "TIME_SEMANTICS_PASS": "BLOCKED",
+    "VERIFIED_L2_ETF_MAPPING_PASS": "BLOCKED",
+    "ETF_MARKET_DATA_PASS": "BLOCKED",
+    "ETF_20D_LIQUIDITY_PASS": "NOT_REACHED",
+    "DISTINCT_EXECUTABLE_TOP5_PASS": "NOT_REACHED",
+    "PORTFOLIO_FEASIBILITY_PASS": "NOT_REACHED",
+    "PRODUCTION_CANDIDATE_PASS": "NOT_REACHED",
+    "SHADOW_START_READINESS": "BLOCKED",
+    "ETF_QUANT_READY_FOR_SHADOW": false,
+    "SHADOW_EPOCH_CREATED": false
+  },
+
+  "security": {
+    "secrets_committed": 0,
+    "env_committed": 0,
+    "runtime_db_committed": 0,
+    "market_rows_committed": 0,
+    "credentials_printed": 0,
+    "licensing": "SOURCE_LICENSING_UNRESOLVED"
+  },
+
+  "recommended_codex_sequence": [
+    "1. 冻结 ETF_QUANT_INDUSTRY_LEVEL_V1 = SHENWAN_L2，并把 mapping registry 寻址基准从六位 L3 改为四位 L2（不得反向改模型）",
+    "2. 用官方一手资料建立 L2→ETF registry，排除宽基 ETF，记录 evidence_source/type/observed_at/verified",
+    "3. 经官方 staging→batch→settle→compact→curated 导出 ETF 行情；20 日完整且 amount 全有效才准入",
+    "4. 创建 production_time_semantics_v1.md，冻结 2026-09-24 = HISTORICAL_ENGINEERING_REFERENCE_DATE",
+    "5. distinct Top5 → softmax + 35% cap → Production Candidate → Shadow readiness 审计",
+    "6. Candidate manifest 必须写明 candidate_created_at > historical_cutoff"
+  ],
+
+  "merge_conflict_hotspots": [
+    "services/cnequity-sidecar/bootstrap.py",
+    "strategies/etf_quant/data/**",
+    "strategies/etf_quant/mapping/** (新增)"
+  ]
+}
