@@ -10,6 +10,7 @@ import pandas as pd
 import pytest
 
 from strategies.etf_quant.domain import IndustryRanking
+from strategies.etf_quant.domain.industry_level import ETF_QUANT_INDUSTRY_LEVEL_V1, default_taxonomy
 from strategies.etf_quant.mapping.registry import load_registry, select_mappings
 from strategies.etf_quant.runtime.storage import GateError, digest, json_bytes
 
@@ -17,22 +18,37 @@ TZ = timezone(timedelta(hours=8))
 SIGNAL = datetime(2026, 9, 24, 18, tzinfo=TZ)
 
 
+def industry_codes(count=5):
+    return list(default_taxonomy().named_industry_codes)[:count]
+
+
 def registry_doc(tmp_path):
+    """Five named Level-2 industries plus one extra candidate on the last one."""
     evidence = tmp_path / "evidence"
     evidence.mkdir(exist_ok=True)
     body = b"SYNTHETIC TEST ONLY - not a real fund document"
     (evidence / "synthetic.txt").write_bytes(body)
+    taxonomy = default_taxonomy()
+    codes = industry_codes()
     entries = []
-    for i in range(6):
-        entries.append({"industry_code": f"80101{min(i, 4)}", "industry_name": "SYNTHETIC",
-            "etf_code": f"51000{i}.SH", "etf_name": "SYNTHETIC", "mapping_method": "OFFICIAL_FUND_DOCUMENT",
-            "tracking_index_code": f"SYN_{i}", "tracking_index_name": "SYNTHETIC",
+    for i, code in enumerate(codes):
+        entries.append({"industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1, "industry_code": code,
+            "industry_name": taxonomy.name_of(code), "etf_code": f"51000{i}.SH", "etf_name": "SYNTHETIC",
+            "mapping_method": "OFFICIAL_FUND_DOCUMENT", "tracking_index_code": f"SYN_{i}",
+            "tracking_index_name": "SYNTHETIC", "tracking_target": "SYNTHETIC TEST TARGET",
             "classification": "A_SHARE_INDUSTRY_OR_THEME_ETF", "verification_status": "VERIFIED",
+            "verified": True, "evidence_source": "SYNTHETIC", "evidence_type": "FUND_CONTRACT",
+            "evidence_observed_at": "2026-08-01T17:30:00+08:00",
             "verified_at": "2026-08-01T18:00:00+08:00", "effective_from": "2026-08-02", "effective_to": None,
             "notes": "SYNTHETIC TEST ONLY", "available_at": "2026-08-01T18:00:00+08:00",
             "source_provider": "SYNTHETIC", "source_url": "https://example.invalid/synthetic",
-            "source_file": "synthetic.txt", "source_sha256": digest(body), "source_retrieved_at": "2026-08-01T17:00:00+08:00"})
-    return {"schema_version": "1.0.0", "registry_identity": "VERIFIED_MAPPING_REGISTRY_V1", "scope": "CURRENT_FORWARD_ONLY", "entries": entries}, evidence
+            "source_file": "synthetic.txt", "source_sha256": digest(body),
+            "source_retrieved_at": "2026-08-01T17:00:00+08:00"})
+    extra = dict(entries[-1], etf_code="510005.SH")     # second candidate for the last industry
+    entries.append(extra)
+    return {"schema_version": "1.0.0", "registry_identity": "VERIFIED_MAPPING_REGISTRY_V1",
+            "scope": "CURRENT_FORWARD_ONLY", "industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1,
+            "taxonomy_identity": taxonomy.identity, "entries": entries}, evidence
 
 
 def provider():
@@ -55,7 +71,8 @@ def select(tmp_path, doc=None, p=None):
     path = tmp_path / "registry.json"
     path.write_bytes(json_bytes(original if doc is None else doc))
     registry = load_registry(path, evidence_root=evidence)
-    return select_mappings(registry, tuple(IndustryRanking(i + 1, f"80101{i}", 5 - i) for i in range(5)),
+    return select_mappings(registry, tuple(IndustryRanking(i + 1, code, 5 - i)
+                                           for i, code in enumerate(industry_codes())),
                            provider() if p is None else p, signal_at=SIGNAL)
 
 
@@ -102,7 +119,8 @@ def test_liquidity_amount_not_substituted_or_partial(tmp_path, value):
 def test_collision_uses_next_verified_admitted_candidate(tmp_path):
     doc, _ = registry_doc(tmp_path)
     row = deepcopy(doc["entries"][0])
-    row["industry_code"] = "801014"
+    row["industry_code"] = industry_codes()[4]
+    row["industry_name"] = default_taxonomy().name_of(industry_codes()[4])
     doc["entries"].append(row)
     p = provider()
     p.tables["etf_bars"].loc[p.tables["etf_bars"].symbol == "510000.SH", "amount"] = 100000.

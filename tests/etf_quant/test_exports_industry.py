@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from strategies.etf_quant.domain.industry_level import default_taxonomy
 from strategies.etf_quant.factors import compute_close_factors, compute_price_factors
 from strategies.etf_quant.runtime.exports import ExportProvider, SCHEMAS, export_snapshot
 from strategies.etf_quant.runtime.industry import build_industry_series
@@ -122,7 +123,11 @@ def test_generation_rejects_partial_hash_and_closed_ids(tmp_path):
 
 def industry_provider(n=500):
     days = tuple(d.date() for d in pd.bdate_range("2024-01-01", periods=n))
-    codes = tuple(f"80101{i}" for i in range(5))
+    # Real Shenwan codes: the sealed taxonomy resolves stored Level-3 codes to the
+    # frozen Level-2 production universe, so the fixture must use codes it defines.
+    taxonomy = default_taxonomy()
+    level2 = list(taxonomy.named_industry_codes)[:5]
+    codes = tuple(taxonomy.level3_children[code][0] for code in level2)
     members, bars = [], []
     for c, code in enumerate(codes):
         for s in range(6):
@@ -151,8 +156,10 @@ def test_source_c_gap_never_bridged_or_rebased():
     p.tables["stock_bars"] = b.loc[~((b.symbol.isin(["SYN_0_0", "SYN_0_1"])) & (b.trade_date == p.sessions[1]))]
     out = build_industry_series(p, classification_version="SW2021")
     assert np.isnan(out.closes.iloc[1:, 0]).all()
-    row = next(r for r in out.audit if r["trade_date"] == str(p.sessions[1]) and r["industry_code"] == "801010")
+    first_industry = out.universe[0]
+    row = next(r for r in out.audit if r["trade_date"] == str(p.sessions[1]) and r["industry_code"] == first_industry)
     assert row["eligible_members"] == 6 and row["valid_constituents"] == 4
+    assert row["industry_level"] == "SHENWAN_L2"
     with pytest.raises(GateError, match="CLASSIFICATION_VERSION"):
         build_industry_series(p)
 
