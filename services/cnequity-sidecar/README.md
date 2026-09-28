@@ -26,7 +26,11 @@ full-market initialization or Docker mutation is performed by these scripts.
    already-populated lake only. It does not download missing datasets.
 
 No `as_of` is passed to non-PIT tables. `daily_bars` for stocks uses explicit
-membership symbols, `adjust="hfq", strict_adj=True`; ETF execution bars are raw
+membership symbols, `adjust="hfq", strict_adj=False` only at the audit/query
+boundary. Every non-exact adjusted row is counted and excluded from the
+published stock-bar numerator; the full membership denominator is retained,
+and the immutable export validator still requires every published adjusted
+row to be exact. ETF execution bars are raw
 and selected by explicit symbols, never `universe="all_a"`. No upstream derived
 `industry_index`, THS board series or other provider is substituted.
 

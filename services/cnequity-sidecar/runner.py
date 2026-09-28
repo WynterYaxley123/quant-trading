@@ -75,6 +75,7 @@ def export_lake(config, load, *, observed_at=None):
     lake = external_root(Path(config["paths"]["lake_root"]))
     before = lake_fingerprint(lake)
     queries, tables = {}, {}
+    adjustment_rejected_rows = 0
     # Membership must be complete, not narrowed to stocks with available prices.
     query = {"start": start.isoformat(), "end": cutoff.isoformat(), "data_root": lake}
     membership = load("industry_members", **query)
@@ -91,7 +92,12 @@ def export_lake(config, load, *, observed_at=None):
             continue
         args = {"start": str(start), "end": str(calendar_end if target == "trading_calendar" else cutoff), "data_root": lake}
         if target == "stock_bars":
-            args.update(symbols=symbols, adjust="hfq", strict_adj=True)
+            # The frozen constituent denominator includes the CDR. A global
+            # strict query aborts on its unsupported factor, so inspect the
+            # exactness flag and exclude only non-exact *price rows* here;
+            # membership is never narrowed. ExportProvider still requires
+            # every published adjusted close to be exact.
+            args.update(symbols=symbols, adjust="hfq", strict_adj=False)
         elif target == "etf_bars":
             if not etfs:
                 tables[target] = []
@@ -111,16 +117,23 @@ def export_lake(config, load, *, observed_at=None):
             args.update(symbols=["000300.SH"])
         frame = load(dataset, **args)
         result = frame.to_dicts()
+        if target == "stock_bars":
+            adjustment_rejected_rows = sum(r.get("adj_is_exact") is not True for r in result)
+            result = [r for r in result if r.get("adj_is_exact") is True]
         if target == "benchmark_csi300":
             result = [r for r in result if r.get("frequency") == "1d"]
         tables[target] = result
         queries[target] = {"dataset": dataset, **{k: str(v) if isinstance(v, Path) else v for k, v in args.items() if k != "data_root"},
                            "as_of": None}
+        if target == "stock_bars":
+            queries[target]["published_exact_only"] = True
+            queries[target]["rejected_nonexact_rows"] = adjustment_rejected_rows
     completed = datetime.now(timezone.utc) if observed_at is None else observed_at
     if lake_fingerprint(lake) != before:
         raise GateError("SOURCE_LAKE_CHANGED_DURING_EXPORT_BLOCKER")
     return export_snapshot(Path(config["paths"]["export_root"]), tables, identity={**IDENTITY, "lake_fingerprint_sha256": before},
         created_at=completed, fetch_started_at=started, fetch_completed_at=completed, cutoff=cutoff, queries=queries,
+        adjustment_rejected_rows=adjustment_rejected_rows,
         warnings=["NOT_EX_ANTE_AVAILABILITY_PROOF", "ETF_MAPPING_EXTERNAL_EVIDENCE_REQUIRED",
                   "CALENDAR_FUTURE_SESSIONS_ARE_NOT_FUTURE_PRICES", "NO_THIRD_PARTY_DATA_REDISTRIBUTION"])
 

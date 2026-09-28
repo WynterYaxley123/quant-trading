@@ -36,7 +36,8 @@ def inputs(tmp_path, end="2026-09-23", empty=False):
     p.tables["trading_status"] = p.tables["trading_status"].loc[p.tables["trading_status"].trade_date <= p.cutoff].copy()
     p.tables["trading_calendar"] = pd.DataFrame({"trade_date": p.sessions, "is_trading": True})
     p.tables["benchmark_csi300"] = pd.DataFrame({"trade_date": days, "symbol": "000300.SH", "close": 3000., "frequency": "1d"})
-    p.manifest = {"snapshot_id": "a" * 64, "source_commit": "b" * 40, "source_version": "SYNTHETIC"}
+    p.manifest = {"snapshot_id": "a" * 64, "source_commit": "b" * 40,
+                  "source_version": "SYNTHETIC", "adjustment_rejected_rows": 0}
     doc, evidence = registry_doc(tmp_path)
     if empty: doc["entries"] = []
     path = tmp_path / "registry.json"

@@ -286,7 +286,8 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
     view["rankings"]["fusion"] = to_primitive(fused.rankings)
     latest_audit = [r for r in series.audit if r["trade_date"] == str(provider.cutoff)]
     view["health"].update(status=phase, blockers=[] if portfolio else [phase],
-        adjustment_exact_rows=int(provider.tables["stock_bars"].adj_is_exact.sum()), adjustment_rejected_rows=0,
+        adjustment_exact_rows=int(provider.tables["stock_bars"].adj_is_exact.sum()),
+        adjustment_rejected_rows=provider.manifest["adjustment_rejected_rows"],
         coverage=latest_audit, source_snapshot=provider.manifest["snapshot_id"], source_schema="1.0.0")
     view["portfolio_summary"]["status"] = phase if portfolio is None else "RUNNING"
     manifest = {"status": "SUCCESSFUL_OBSERVATION", "phase": phase, "snapshot_id": provider.manifest["snapshot_id"],

@@ -90,9 +90,11 @@ def decode_table(body, columns, required):
 
 def export_snapshot(root: Path, tables: dict[str, list[dict]], *, identity: dict,
                     created_at: datetime, fetch_started_at: datetime, fetch_completed_at: datetime,
-                    cutoff: date, queries: dict, warnings=()) -> dict:
+                    cutoff: date, queries: dict, warnings=(), adjustment_rejected_rows=0) -> dict:
     if set(tables) != set(SCHEMAS):
         raise GateError("CNE_SNAPSHOT_SCHEMA_BLOCKER")
+    if type(adjustment_rejected_rows) is not int or adjustment_rejected_rows < 0:
+        raise GateError("ADJUSTMENT_SEMANTICS_BLOCKER")
     files, datasets, frames = {}, {}, {}
     for name, rows in tables.items():
         required = {**SCHEMAS[name], **PROVENANCE}
@@ -120,7 +122,8 @@ def export_snapshot(root: Path, tables: dict[str, list[dict]], *, identity: dict
                 "quality_flags": ["HISTORICAL_MEMBERSHIP_PIT_UNPROVEN", "SOURCE_LICENSING_UNRESOLVED"],
                 "historical_uses": ["MODEL_WARMUP", "TRAINING_INPUT", "ENGINEERING_VALIDATION"],
                 "available_at": None, "source_published_at": None,
-                "adjustment_exact_rows": int(frames["stock_bars"].adj_is_exact.sum()), "adjustment_rejected_rows": 0}
+                "adjustment_exact_rows": int(frames["stock_bars"].adj_is_exact.sum()),
+                "adjustment_rejected_rows": adjustment_rejected_rows}
     snapshot_id = digest(json_bytes(metadata))
     metadata["snapshot_id"] = snapshot_id
     pointer = publish_generation(external_root(root), snapshot_id, files, metadata)
@@ -151,6 +154,11 @@ class ExportProvider:
                 raise GateError("CNE_SNAPSHOT_TIME_BLOCKER")
             self.tables = {name: self._read(name) for name in SCHEMAS}
             self._validate()
+            if (type(m.get("adjustment_exact_rows")) is not int
+                    or m["adjustment_exact_rows"] != int(self.tables["stock_bars"].adj_is_exact.sum())
+                    or type(m.get("adjustment_rejected_rows")) is not int
+                    or m["adjustment_rejected_rows"] < 0):
+                raise GateError("ADJUSTMENT_SEMANTICS_BLOCKER")
         except GateError:
             raise
         except (OSError, ValueError, KeyError, TypeError, csv.Error) as error:

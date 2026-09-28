@@ -152,5 +152,43 @@ def test_sidecar_query_scope_exact_adjustment_and_no_asof(tmp_path):
     assert pointer["snapshot_id"]
     assert all("as_of" not in args and "universe" not in args for _, args in calls)
     stock = next(args for ds, args in calls if ds == "daily_bars" and args.get("adjust"))
-    assert stock["strict_adj"] is True and stock["symbols"] == ["600001.SH"]
+    assert stock["strict_adj"] is False and stock["symbols"] == ["600001.SH"]
     assert not any(ds == "industry_index" for ds, _ in calls)
+
+
+def test_sidecar_cdr_nonexact_row_rejected_without_thinning_membership(tmp_path):
+    module = load_sidecar()
+    from test_exports_industry import export_tables
+    tables = export_tables()
+    tables["industry_membership"][0]["symbol"] = "600001.SH"
+    cdr_member = deepcopy(tables["industry_membership"][0])
+    cdr_member["symbol"] = "689009.SH"
+    tables["industry_membership"].append(cdr_member)
+    cdr_bar = deepcopy(tables["stock_bars"][0])
+    cdr_bar["symbol"] = "689009.SH"
+    cdr_bar["adj_is_exact"] = False
+    tables["stock_bars"].append(cdr_bar)
+
+    class Frame:
+        def __init__(self, rows): self.rows = rows
+        def to_dicts(self): return deepcopy(self.rows)
+
+    reverse = {"industry_members": "industry_membership", "trading_calendar": "trading_calendar",
+               "instruments": "instruments", "trading_status": "trading_status",
+               "index_bars": "benchmark_csi300"}
+    def load(dataset, **kw):
+        target = "stock_bars" if kw.get("adjust") == "hfq" else "etf_bars" if dataset == "daily_bars" else reverse[dataset]
+        return Frame(tables[target])
+
+    cfg = {"paths": {"lake_root": str(tmp_path / "lake"), "export_root": str(tmp_path / "exports")},
+           "export": {"start": "2020-01-01", "cutoff": "2026-09-24", "calendar_end": "2026-09-25",
+                      "etf_symbols": ["510001.SH"], "classification_version": "SWCLASS2021"}}
+    pointer = module.export_lake(cfg, load, observed_at=SIGNAL)
+    from strategies.etf_quant.runtime.exports import ExportProvider
+    exported = ExportProvider(tmp_path / "exports" / pointer["snapshot_id"],
+                              expected_identity=module.IDENTITY, now=SIGNAL)
+    assert set(exported.tables["industry_membership"].symbol) == {"600001.SH", "689009.SH"}
+    assert set(exported.tables["stock_bars"].symbol) == {"600001.SH"}
+    assert exported.manifest["adjustment_exact_rows"] == 1
+    assert exported.manifest["adjustment_rejected_rows"] == 1
+    assert exported.manifest["datasets"]["stock_bars"]["query"]["rejected_nonexact_rows"] == 1

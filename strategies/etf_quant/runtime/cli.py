@@ -37,7 +37,8 @@ def main():
         result = {"status": "EXPORT_VERIFIED", "snapshot_id": provider.manifest["snapshot_id"],
             "row_counts": {k: len(v) for k, v in provider.tables.items()},
             "adjustment_exact_rows": int(provider.tables["stock_bars"].adj_is_exact.sum()),
-            "adjustment_rejected_rows": 0, "available_at": None, "source_published_at": None}
+            "adjustment_rejected_rows": provider.manifest["adjustment_rejected_rows"],
+            "available_at": None, "source_published_at": None}
     else:
         if args.runtime is None or args.registry is None:
             raise GateError("EXPLICIT_RUNTIME_AND_REGISTRY_REQUIRED")
