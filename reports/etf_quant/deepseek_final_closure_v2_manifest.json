@@ -1,0 +1,148 @@
+{
+  "manifest_identity": "ETF_QUANT_DEEPSEEK_FINAL_CLOSURE_V2_MANIFEST",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-28T23:35:00+08:00",
+  "contains_market_rows": false,
+  "primary_result": "DEEPSEEK_FINAL_CLOSURE_BLOCKED",
+  "etf_quant_ready_for_shadow": false,
+  "shadow_start_readiness": "BLOCKED",
+  "shadow_epoch_created": false,
+  "production_candidate_created": false,
+  "hard_blocker": {
+    "id": "DISTINCT_EXECUTABLE_ETF_BLOCKER",
+    "class": "TOP5_INDUSTRY_HAS_NO_VERIFIABLE_ETF",
+    "detail": "冻结 Top5 中 3706 医疗服务、3703 生物制品、3701 化学制药、4803 股份制银行Ⅱ 四个行业，经多个官方一手来源穷举与成分集包含检验，均不存在可准入的 A 股 ETF；仅 4901 证券Ⅱ 有 2 只可执行 ETF。可用不同 ETF 仪器数 2 < 5。",
+    "may_continue_only_by": "放宽映射规则或修改冻结策略 —— 属 TRUE HARD BLOCKER #1/#9"
+  },
+  "git": {
+    "base_sha": "7e1931627aa3d5061ec78e43c14dec63ed682ee2",
+    "base_branch": "integration/etf-quant-v1-final",
+    "work_branch": "agent/deepseek-etf-quant-final-closure-v2",
+    "worktree": "D:\\quant-worktrees\\deepseek-etf-quant-final-closure-v2",
+    "pushed": false
+  },
+  "cnequity": {
+    "commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "version": "0.11.0",
+    "pin_modified": false,
+    "tls_disabled": false,
+    "upgraded": false
+  },
+  "industry_level_contract": {
+    "identity": "ETF_QUANT_INDUSTRY_LEVEL_V1",
+    "value": "SHENWAN_L2",
+    "width": 4,
+    "taxonomy_identity": "SHENWAN_INDUSTRY_TAXONOMY_2021_V1",
+    "taxonomy_sha256": "3333b4e09c65d6a6b5b6a3b33717236f5723c059c3890415ef9c8f4af5b55836",
+    "taxonomy_source": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls",
+    "taxonomy_source_sha256": "98bc0d15312f6a561b14f933571442d7a69da2070849f00c6fb1f5bb56a87c22",
+    "named_level2_industries": 134,
+    "unnamed_legacy_level2_buckets": 63,
+    "stored_level3_codes_resolved": "396/396",
+    "model_changed_to_level3": false
+  },
+  "time_semantics": {
+    "document": "docs/etf_quant/production_time_semantics_v1.md",
+    "historical_engineering_reference_date": "2026-09-24",
+    "mapping_evidence_observed_at": "2026-09-28T23:20:00+08:00",
+    "production_ready_from": "2026-09-28",
+    "backdated_mapping_claims": false,
+    "delayed_t1_open_accounting": true
+  },
+  "mapping": {
+    "registry_sha256": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+    "entries": 6,
+    "verified": 2,
+    "verified_industries": ["4901"],
+    "containment_audit_sha256": "2549890f542719dcce524bffa990bb0dc101d18030a76c60fd313d605f6c4a6d",
+    "containment_rule": "index constituent set must be a subset of the Shenwan L2 member set",
+    "name_only_admission_used": false,
+    "unverified_etf_admitted": false
+  },
+  "etf_market_data": {
+    "lifecycle": "fetch -> staging -> batch -> settle -> compact -> curated -> immutable snapshot",
+    "source": "PINNED_CNEQUITY_ONLY",
+    "third_party_price_fallback": false,
+    "lake_etf_symbols": 92,
+    "candidate_pool": 89,
+    "snapshot_id": "7b34b95ad77de8af484201e47e9a14fd69f697c9123d87f44a7b0c6adda61fd7",
+    "date_start": "2025-04-10",
+    "date_end": "2026-09-24",
+    "null_amount_rows": 0
+  },
+  "liquidity": {
+    "artifact_sha256": "55960ab7b86d96a15f1193eef579cb3bb66c04f8ec23f8225799c6751043a86b",
+    "rule": "TWENTY_SESSION_REQUIRED_AMOUNT_NO_SUBSTITUTION",
+    "sessions": 20,
+    "window_start": "2026-08-28",
+    "window_end": "2026-09-24",
+    "execution_session": "2026-09-28",
+    "evaluated": 89,
+    "pass": 89,
+    "fail": 0,
+    "insufficient": 0,
+    "drop_null_mean_used": false,
+    "zero_fill_used": false,
+    "volume_substitution_used": false,
+    "shortened_window_used": false
+  },
+  "top5_executable_etfs": {
+    "frozen_rankings": [
+      {"rank": 1, "industry_code": "3706", "industry_name": "医疗服务", "etf": null},
+      {"rank": 2, "industry_code": "3703", "industry_name": "生物制品", "etf": null},
+      {"rank": 3, "industry_code": "4901", "industry_name": "证券Ⅱ", "etf": "512880.SH"},
+      {"rank": 4, "industry_code": "4803", "industry_name": "股份制银行Ⅱ", "etf": null},
+      {"rank": 5, "industry_code": "3701", "industry_name": "化学制药", "etf": null}
+    ],
+    "distinct_executable_instruments": ["159848.SZ", "512880.SH"],
+    "distinct_count": 2,
+    "required": 5,
+    "duplicate_etf_used_to_fake_five": false,
+    "certification_sha256": "4c206ffc7eb1a2bcf4f06bd45f9c895a9464829551a0676dd63f9240d3aaadbd"
+  },
+  "portfolio_contract": {
+    "weights_computed": false,
+    "reason": "不足 5 只不同 ETF，按冻结规则不得提前计算权重",
+    "weighting": "CAPPED_SOFTMAX_REDISTRIBUTE_UNCAPPED_ONLY",
+    "single_etf_cap": 0.35,
+    "leverage": false,
+    "short": false,
+    "engine_verified_by_unit_tests": true
+  },
+  "upstream_status": {
+    "source_c": {"status": "PASS", "value": "40800/57996 valid industry-days", "recomputed_this_round": false},
+    "factors": {"status": "PASS", "value": "107/162 L2 industries with full 19 factors", "recomputed_this_round": false},
+    "models": {"status": "PASS", "value": "H10/H40/H120 trained, mature days 128/119/118", "recomputed_this_round": false},
+    "csi300": {"status": "PASS", "value": "358/358", "recomputed_this_round": false},
+    "bj_history": {"status": "PASS", "value": "347 identities / 94972 rows / exact 100%", "recomputed_this_round": false},
+    "cdr_rule": {"status": "UNCHANGED", "value": "denominator=YES numerator=NO"}
+  },
+  "tests": {
+    "etf_python": {"passed": 266, "skipped": 1, "failed": 0},
+    "api": {"passed": 57, "failed": 0},
+    "frontend": {"passed": 95, "skipped": 3, "failed": 0},
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "new_regressions": 0,
+    "xfail_or_skip_added_to_hide_failures": false
+  },
+  "known_limitations": [
+    "冻结 Top5 的 4/5 行业没有可准入 ETF；这不是数据缺失，而是官方一级资料下的可复现否定结论。",
+    "529 个申万 L3 代码中 59 个不在 2021 版标准表内，以 vintage=PRE_2021_OR_UNMAPPED_LEGACY 保留且不带名称；它们只用于保持 width=4 解析与冻结工程层一致。",
+    "本 artifact 中的二级行业名称来自官方 2021 版代码表；四位代码本身是申万编码体系的呈现形式，官方平台同时使用 801xxx 指数代码。",
+    "中证指数公司官网为 SPA，本轮未能取到其自发布的编制方案页；399975 的书面依据来自基金法律文件（国联安招募说明书逐字列明目标指数代码 399975）与官方成分股集合。",
+    "ETF 行情窗口止于 2026-09-24，因为 pinned 湖在该日之后没有 finalized session 数据；本轮未把 2026-09-25 之后的历法交易日当作价格。"
+  ],
+  "safety": {
+    "main_modified": false,
+    "integration_branch_modified": false,
+    "other_agent_worktrees_modified": false,
+    "f1_opened": false,
+    "validation_opened": false,
+    "final_oos_read": false,
+    "broker_or_order_path": false,
+    "dashboard_read_only": true,
+    "real_market_data_committed": false,
+    "secrets_exposed": false
+  }
+}
