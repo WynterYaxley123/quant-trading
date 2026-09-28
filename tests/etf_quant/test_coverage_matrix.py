@@ -21,6 +21,7 @@ INSTRUMENT = {"symbol": "600000.SH", "asset_type": "stock", "list_date": None}
 
 
 def test_exact_calendar_adjacent_return_only():
+    assert {"adj_close", "prev_adj_close", "return_value"}.issubset(audit.FIELDS)
     assert audit.classify(INSTRUMENT, GOOD, PRIOR) is None
     assert audit.classify(INSTRUMENT, GOOD, None) == "PREVIOUS_BAR_MISSING"
     # Earlier sparse-prior audit would have counted a last-available bar;

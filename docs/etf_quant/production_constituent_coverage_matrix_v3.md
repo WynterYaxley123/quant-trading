@@ -5,9 +5,9 @@ Status: **READ-ONLY MEASUREMENT; NOT SOURCE-C ADMISSION**. Fixed window
 `1650e384a3fd1f67a70144a489acc91432f1df27`. The row-level CSV and
 machine-readable summary are outside Git:
 
-- `D:\QuantForge\runtime\etf-quant-v1\codex-final-completion\reports\production_constituent_coverage_matrix_v3_20260928T082941Z_24d008a9.csv`
-- `D:\QuantForge\runtime\etf-quant-v1\codex-final-completion\reports\coverage_summary_v3_20260928T082941Z_24d008a9.json`
-- CSV SHA-256: `2288c49115be5a081e02706017429b6cfe1fda69de16e92217c92bf0c416bad0`
+- `D:\QuantForge\runtime\etf-quant-v1\codex-final-completion\reports\production_constituent_coverage_matrix_v3_20260928T084046Z_81058918.csv`
+- `D:\QuantForge\runtime\etf-quant-v1\codex-final-completion\reports\coverage_summary_v3_20260928T084046Z_81058918.json`
+- CSV SHA-256: `7c77fee623392dd16eb7367f26ad0a688ff93ffbb88df5a75f0921cdfdfe5e25`
 
 The audit uses the pinned `cnequity.query.load` contract for instruments,
 trading calendar, Shenwan membership and `daily_bars` with `adjust="hfq"`.

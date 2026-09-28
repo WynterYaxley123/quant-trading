@@ -33,6 +33,7 @@ FIELDS = (
     "source_provenance", "prev_session", "prev_bar_available",
     "prev_adj_is_exact", "stored_list_date", "list_date_provenance",
     "stored_delist_date", "delist_date_provenance",
+    "adj_close", "prev_adj_close", "return_value",
 )
 
 
@@ -179,6 +180,8 @@ def audit(lake: Path, output: Path) -> dict:
     by_symbol = Counter()
     by_date = Counter()
     marginal_symbols = Counter()
+    marginal_not_stored_post_delist = Counter()
+    missing_not_stored_post_delist = Counter()
     per_industry = defaultdict(lambda: {"sessions": 0, "valid": 0, "coverage_sum": 0.0})
     valid_dates, legacy_valid_dates, total_dates = 0, 0, 0
     member_rows = 0
@@ -238,6 +241,9 @@ def audit(lake: Path, output: Path) -> dict:
                         stored_post_delist_gap = True
                     if stored_pre_list:
                         stored_pre_list_missing_members += 1
+                    if (reason in ("MEMBERSHIP_ONLY_NO_MARKET_DATA", "BAR_MISSING")
+                            and not stored_post_delist):
+                        missing_not_stored_post_delist[symbol] += 1
                     writer.writerow({
                         "trade_date": day.isoformat(), "industry_code": code,
                         "symbol": symbol, "canonical_symbol": symbol,
@@ -259,6 +265,9 @@ def audit(lake: Path, output: Path) -> dict:
                         "list_date_provenance": "UNVERIFIED_FIELD_LEVEL" if instrument else "UNKNOWN",
                         "stored_delist_date": instrument.get("delist_date") if instrument else None,
                         "delist_date_provenance": "UNVERIFIED_FIELD_LEVEL" if instrument else "UNKNOWN",
+                        "adj_close": cur[0] if cur else None,
+                        "prev_adj_close": prev[0] if prev else None,
+                        "return_value": cur[0] / prev[0] - 1.0 if is_valid else None,
                     })
                     member_rows += 1
                 eligible = len(symbols)
@@ -282,6 +291,11 @@ def audit(lake: Path, output: Path) -> dict:
                     # would pass after that one previously invalid member becomes valid.
                     if valid + 1 >= MIN_VALID and (valid + 1) / eligible >= MIN_COVERAGE:
                         marginal_symbols.update(invalid_symbols)
+                        for symbol in invalid_symbols:
+                            instrument = instruments.get(symbol)
+                            stored_delist = instrument.get("delist_date") if instrument else None
+                            if not isinstance(stored_delist, date) or day <= stored_delist:
+                                marginal_not_stored_post_delist[symbol] += 1
             for symbol, row in current_rows.items():
                 last_available[symbol] = row
             prior_rows = current_rows
@@ -322,6 +336,8 @@ def audit(lake: Path, output: Path) -> dict:
         "invalid_industry_days_by_date": dict(by_date.most_common()),
         "invalid_member_symbols_in_invalid_industries": dict(by_symbol.most_common()),
         "one_symbol_marginal_repair_opportunities": dict(marginal_symbols.most_common()),
+        "one_symbol_marginal_not_stored_post_delist": dict(marginal_not_stored_post_delist.most_common()),
+        "missing_bar_not_stored_post_delist_by_symbol": dict(missing_not_stored_post_delist.most_common()),
         "per_industry": {code: {**v, "mean_coverage": v["coverage_sum"] / v["sessions"]}
                          for code, v in sorted(per_industry.items())},
         "matrix_file": matrix.name,
