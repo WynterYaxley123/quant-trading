@@ -1,0 +1,3090 @@
+{
+ "schema_version": "1.0.0",
+ "taxonomy_identity": "SHENWAN_INDUSTRY_TAXONOMY_2021_V1",
+ "industry_level": "SHENWAN_L2",
+ "level_width": 4,
+ "industry_level_contract": "ETF_QUANT_INDUSTRY_LEVEL_V1",
+ "classification_version": "SWCLASS2021",
+ "source": {
+  "publisher": "申万宏源研究 (SWS Research)",
+  "source_url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls",
+  "source_file": "SwClassCode_2021.xls",
+  "source_sha256": "98bc0d15312f6a561b14f933571442d7a69da2070849f00c6fb1f5bb56a87c22",
+  "source_retrieved_at": "2026-09-28T15:20:08+00:00",
+  "source_bytes": 73728,
+  "statement": "申万宏源研究官网发布的 2021 版行业分类代码表，含一级/二级/三级行业代码与名称；本 artifact 的二级代码、二级名称与三级归属全部直接取自该官方表。"
+ },
+ "hierarchy_evidence": [
+  {
+   "publisher": "申万宏源研究 (SWS Research)",
+   "source_url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls",
+   "evidence_type": "OFFICIAL_CLASSIFICATION_CODE_TABLE",
+   "statement": "官方表同时发布一级(NN0000)、二级(NNnn00)、三级(NNnnmm)三层代码与各层名称；每一行三级记录自带其所属二级行业名称，二级代码为该行代码末两位归零。",
+   "observed_at": "2026-09-28T15:20:08+00:00"
+  },
+  {
+   "publisher": "申万宏源研究 (SWS Research)",
+   "source_url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/2014to2021.xlsx",
+   "evidence_type": "OFFICIAL_2014_TO_2021_COMPARISON",
+   "statement": "官方 2014→2021 新旧对照表证实 490100 由旧名『证券』更名为『证券Ⅱ』、370100 保持『化学制药』，并列出 2021 版新增的二级行业（如 480200/480300/480600）；因此旧版四位代码不得与 2021 版混用。",
+   "observed_at": "2026-09-28T15:20:08+00:00"
+  }
+ ],
+ "name_evidence": [
+  {
+   "publisher": "申万宏源研究 (SWS Research)",
+   "source_url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls",
+   "evidence_type": "OFFICIAL_NAME_COLUMN",
+   "statement": "全部二级行业名称取自官方表的『二级行业名称』列，无第三方镜像、无名称模糊匹配。",
+   "observed_at": "2026-09-28T15:20:08+00:00",
+   "named_level2_codes": 134
+  },
+  {
+   "publisher": "申万宏源研究 指数发布（经公开指数接口读取）",
+   "source_url": "https://www.swsresearch.com/institute_sw/allIndex/releasedIndex",
+   "evidence_type": "INDEPENDENT_CONSTITUENT_SET_BRIDGE",
+   "statement": "独立复核：用指数成分股集合包含关系把 335 个申万三级指数归并到分类三级代码，得到 126 个二级名称，与本次官方表逐条一致；医药生物 6 个、银行 4 个、非银金融 3 个共 13 个生产相关二级行业与官方 801xxx 指数名称 13/13 完全一致。",
+   "observed_at": "2026-09-28T15:20:08+00:00",
+   "crosschecked_industries": 13,
+   "crosscheck_result": "13/13 EXACT"
+  },
+  {
+   "publisher": "申万宏源研究 (SWS Research)",
+   "source_url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/StockClassifyUse_stock.xls",
+   "evidence_type": "OFFICIAL_STOCK_CLASSIFICATION_WORKBOOK",
+   "statement": "官方股票行业归属表另含 59 个未出现在 2021 版标准表中的三级代码（历史 spell）。冻结工程层按 width=4 解析全部存量代码，故这些代码必须继续可解析，否则生产链会与冻结模型静默分叉。它们以 vintage=PRE_2021_OR_UNMAPPED_LEGACY 单独保留且不带industry_name：无名称的代码永远不能作为生产映射键。",
+   "observed_at": "2026-09-28T15:20:08+00:00",
+   "legacy_level3_codes": 215,
+   "legacy_level2_codes": 63,
+   "stock_workbook_sha256": "adcaa592fc2f84872004f98f263129c7e21d20de4c24752843ae9b6ea10b1643"
+  }
+ ],
+ "industries": [
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1101",
+   "official_level2_code": "110100",
+   "industry_name": "种植业",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110101",
+    "110102",
+    "110103",
+    "110104"
+   ],
+   "level3_names": {
+    "110101": "种子",
+    "110102": "粮食种植",
+    "110103": "其他种植业",
+    "110104": "食用菌"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1102",
+   "official_level2_code": "110200",
+   "industry_name": "渔业",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110201",
+    "110202"
+   ],
+   "level3_names": {
+    "110201": "海洋捕捞",
+    "110202": "水产养殖"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1103",
+   "official_level2_code": "110300",
+   "industry_name": "林业Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110301"
+   ],
+   "level3_names": {
+    "110301": "林业Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1104",
+   "official_level2_code": "110400",
+   "industry_name": "饲料",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110401",
+    "110402",
+    "110403",
+    "110404"
+   ],
+   "level3_names": {
+    "110402": "畜禽饲料",
+    "110403": "水产饲料",
+    "110404": "宠物食品"
+   },
+   "unlisted_level3_children": [
+    "110401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1105",
+   "official_level2_code": "110500",
+   "industry_name": "农产品加工",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110501",
+    "110502",
+    "110503",
+    "110504"
+   ],
+   "level3_names": {
+    "110501": "果蔬加工",
+    "110502": "粮油加工",
+    "110504": "其他农产品加工"
+   },
+   "unlisted_level3_children": [
+    "110503"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1107",
+   "official_level2_code": "110700",
+   "industry_name": "养殖业",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110701",
+    "110702",
+    "110703",
+    "110704"
+   ],
+   "level3_names": {
+    "110702": "生猪养殖",
+    "110703": "肉鸡养殖",
+    "110704": "其他养殖"
+   },
+   "unlisted_level3_children": [
+    "110701"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1108",
+   "official_level2_code": "110800",
+   "industry_name": "动物保健Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110801"
+   ],
+   "level3_names": {
+    "110801": "动物保健Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1109",
+   "official_level2_code": "110900",
+   "industry_name": "农业综合Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "110901"
+   ],
+   "level3_names": {
+    "110901": "农业综合Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2202",
+   "official_level2_code": "220200",
+   "industry_name": "化学原料",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220201",
+    "220202",
+    "220203",
+    "220204",
+    "220205",
+    "220206"
+   ],
+   "level3_names": {
+    "220201": "纯碱",
+    "220202": "氯碱",
+    "220203": "无机盐",
+    "220204": "其他化学原料",
+    "220205": "煤化工",
+    "220206": "钛白粉"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2203",
+   "official_level2_code": "220300",
+   "industry_name": "化学制品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220301",
+    "220302",
+    "220303",
+    "220304",
+    "220305",
+    "220306",
+    "220307",
+    "220308",
+    "220309",
+    "220310",
+    "220311",
+    "220312",
+    "220313",
+    "220314",
+    "220315",
+    "220316",
+    "220317"
+   ],
+   "level3_names": {
+    "220305": "涂料油墨",
+    "220307": "民爆制品",
+    "220308": "纺织化学制品",
+    "220309": "其他化学制品",
+    "220311": "氟化工",
+    "220313": "聚氨酯",
+    "220315": "食品及饲料添加剂",
+    "220316": "有机硅",
+    "220317": "胶黏剂及胶带"
+   },
+   "unlisted_level3_children": [
+    "220301",
+    "220302",
+    "220303",
+    "220304",
+    "220306",
+    "220310",
+    "220312",
+    "220314"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2204",
+   "official_level2_code": "220400",
+   "industry_name": "化学纤维",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220401",
+    "220402",
+    "220403",
+    "220404",
+    "220405",
+    "220406"
+   ],
+   "level3_names": {
+    "220401": "涤纶",
+    "220403": "粘胶",
+    "220404": "其他化学纤维",
+    "220405": "氨纶",
+    "220406": "锦纶"
+   },
+   "unlisted_level3_children": [
+    "220402"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2205",
+   "official_level2_code": "220500",
+   "industry_name": "塑料",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220501",
+    "220502",
+    "220503",
+    "220504",
+    "220505"
+   ],
+   "level3_names": {
+    "220501": "其他塑料制品",
+    "220503": "改性塑料",
+    "220504": "合成树脂",
+    "220505": "膜材料"
+   },
+   "unlisted_level3_children": [
+    "220502"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2206",
+   "official_level2_code": "220600",
+   "industry_name": "橡胶",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220601",
+    "220602",
+    "220603",
+    "220604"
+   ],
+   "level3_names": {
+    "220602": "其他橡胶制品",
+    "220603": "炭黑",
+    "220604": "橡胶助剂"
+   },
+   "unlisted_level3_children": [
+    "220601"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2208",
+   "official_level2_code": "220800",
+   "industry_name": "农化制品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220801",
+    "220802",
+    "220803",
+    "220804",
+    "220805"
+   ],
+   "level3_names": {
+    "220801": "氮肥",
+    "220802": "磷肥及磷化工",
+    "220803": "农药",
+    "220804": "钾肥",
+    "220805": "复合肥"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2209",
+   "official_level2_code": "220900",
+   "industry_name": "非金属材料Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "220901"
+   ],
+   "level3_names": {
+    "220901": "非金属材料Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2303",
+   "official_level2_code": "230300",
+   "industry_name": "冶钢原料",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "230301",
+    "230302"
+   ],
+   "level3_names": {
+    "230301": "铁矿石",
+    "230302": "冶钢辅料"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2304",
+   "official_level2_code": "230400",
+   "industry_name": "普钢",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "230401",
+    "230402",
+    "230403"
+   ],
+   "level3_names": {
+    "230401": "长材",
+    "230402": "板材",
+    "230403": "钢铁管材"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2305",
+   "official_level2_code": "230500",
+   "industry_name": "特钢Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "230501"
+   ],
+   "level3_names": {
+    "230501": "特钢Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2402",
+   "official_level2_code": "240200",
+   "industry_name": "金属新材料",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "240201",
+    "240202",
+    "240203"
+   ],
+   "level3_names": {
+    "240201": "其他金属新材料",
+    "240202": "磁性材料"
+   },
+   "unlisted_level3_children": [
+    "240203"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2403",
+   "official_level2_code": "240300",
+   "industry_name": "工业金属",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "240301",
+    "240302",
+    "240303"
+   ],
+   "level3_names": {
+    "240301": "铝",
+    "240302": "铜",
+    "240303": "铅锌"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2404",
+   "official_level2_code": "240400",
+   "industry_name": "贵金属",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "240401",
+    "240402"
+   ],
+   "level3_names": {
+    "240401": "黄金",
+    "240402": "白银"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2405",
+   "official_level2_code": "240500",
+   "industry_name": "小金属",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "240501",
+    "240502",
+    "240503",
+    "240504",
+    "240505"
+   ],
+   "level3_names": {
+    "240501": "稀土",
+    "240502": "钨",
+    "240504": "其他小金属",
+    "240505": "钼"
+   },
+   "unlisted_level3_children": [
+    "240503"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2406",
+   "official_level2_code": "240600",
+   "industry_name": "能源金属",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "240601",
+    "240602",
+    "240603"
+   ],
+   "level3_names": {
+    "240601": "钴",
+    "240602": "镍",
+    "240603": "锂"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2701",
+   "official_level2_code": "270100",
+   "industry_name": "半导体",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "270101",
+    "270102",
+    "270103",
+    "270104",
+    "270105",
+    "270106",
+    "270107",
+    "270108"
+   ],
+   "level3_names": {
+    "270102": "分立器件",
+    "270103": "半导体材料",
+    "270104": "数字芯片设计",
+    "270105": "模拟芯片设计",
+    "270106": "集成电路制造",
+    "270107": "集成电路封测",
+    "270108": "半导体设备"
+   },
+   "unlisted_level3_children": [
+    "270101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2702",
+   "official_level2_code": "270200",
+   "industry_name": "元件",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "270201",
+    "270202",
+    "270203"
+   ],
+   "level3_names": {
+    "270202": "印制电路板",
+    "270203": "被动元件"
+   },
+   "unlisted_level3_children": [
+    "270201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2703",
+   "official_level2_code": "270300",
+   "industry_name": "光学光电子",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "270301",
+    "270302",
+    "270303"
+   ],
+   "level3_names": {
+    "270301": "面板",
+    "270302": "LED",
+    "270303": "光学元件"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2704",
+   "official_level2_code": "270400",
+   "industry_name": "其他电子Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "270401"
+   ],
+   "level3_names": {
+    "270401": "其他电子Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2705",
+   "official_level2_code": "270500",
+   "industry_name": "消费电子",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "270501",
+    "270502",
+    "270503",
+    "270504"
+   ],
+   "level3_names": {
+    "270503": "品牌消费电子",
+    "270504": "消费电子零部件及组装"
+   },
+   "unlisted_level3_children": [
+    "270501",
+    "270502"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2706",
+   "official_level2_code": "270600",
+   "industry_name": "电子化学品Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "270601"
+   ],
+   "level3_names": {
+    "270601": "电子化学品Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2802",
+   "official_level2_code": "280200",
+   "industry_name": "汽车零部件",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "280201",
+    "280202",
+    "280203",
+    "280204",
+    "280205",
+    "280206"
+   ],
+   "level3_names": {
+    "280202": "车身附件及饰件",
+    "280203": "底盘与发动机系统",
+    "280204": "轮胎轮毂",
+    "280205": "其他汽车零部件",
+    "280206": "汽车电子电气系统"
+   },
+   "unlisted_level3_children": [
+    "280201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2803",
+   "official_level2_code": "280300",
+   "industry_name": "汽车服务",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "280301",
+    "280302",
+    "280303"
+   ],
+   "level3_names": {
+    "280302": "汽车经销商",
+    "280303": "汽车综合服务"
+   },
+   "unlisted_level3_children": [
+    "280301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2804",
+   "official_level2_code": "280400",
+   "industry_name": "摩托车及其他",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "280401",
+    "280402"
+   ],
+   "level3_names": {
+    "280401": "其他运输设备",
+    "280402": "摩托车"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2805",
+   "official_level2_code": "280500",
+   "industry_name": "乘用车",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "280501",
+    "280502"
+   ],
+   "level3_names": {
+    "280501": "电动乘用车",
+    "280502": "综合乘用车"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2806",
+   "official_level2_code": "280600",
+   "industry_name": "商用车",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "280601",
+    "280602"
+   ],
+   "level3_names": {
+    "280601": "商用载货车",
+    "280602": "商用载客车"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3301",
+   "official_level2_code": "330100",
+   "industry_name": "白色家电",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330101",
+    "330102",
+    "330103",
+    "330104",
+    "330105",
+    "330106"
+   ],
+   "level3_names": {
+    "330102": "空调",
+    "330106": "冰洗"
+   },
+   "unlisted_level3_children": [
+    "330101",
+    "330103",
+    "330104",
+    "330105"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3302",
+   "official_level2_code": "330200",
+   "industry_name": "黑色家电",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330201",
+    "330202"
+   ],
+   "level3_names": {
+    "330201": "彩电",
+    "330202": "其他黑色家电"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3303",
+   "official_level2_code": "330300",
+   "industry_name": "小家电",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330301",
+    "330302",
+    "330303"
+   ],
+   "level3_names": {
+    "330301": "厨房小家电",
+    "330302": "清洁小家电",
+    "330303": "个护小家电"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3304",
+   "official_level2_code": "330400",
+   "industry_name": "厨卫电器",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330401",
+    "330402"
+   ],
+   "level3_names": {
+    "330401": "厨房电器",
+    "330402": "卫浴电器"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3305",
+   "official_level2_code": "330500",
+   "industry_name": "照明设备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330501"
+   ],
+   "level3_names": {
+    "330501": "照明设备Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3306",
+   "official_level2_code": "330600",
+   "industry_name": "家电零部件Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330601"
+   ],
+   "level3_names": {
+    "330601": "家电零部件Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3307",
+   "official_level2_code": "330700",
+   "industry_name": "其他家电Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "330701"
+   ],
+   "level3_names": {
+    "330701": "其他家电Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3404",
+   "official_level2_code": "340400",
+   "industry_name": "食品加工",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "340401",
+    "340402",
+    "340403",
+    "340404",
+    "340406",
+    "340407"
+   ],
+   "level3_names": {
+    "340401": "肉制品",
+    "340404": "其他食品",
+    "340406": "预加工食品",
+    "340407": "保健品"
+   },
+   "unlisted_level3_children": [
+    "340402",
+    "340403"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3405",
+   "official_level2_code": "340500",
+   "industry_name": "白酒Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "340501"
+   ],
+   "level3_names": {
+    "340501": "白酒Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3406",
+   "official_level2_code": "340600",
+   "industry_name": "非白酒",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "340601",
+    "340602"
+   ],
+   "level3_names": {
+    "340601": "啤酒",
+    "340602": "其他酒类"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3407",
+   "official_level2_code": "340700",
+   "industry_name": "饮料乳品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "340701",
+    "340702"
+   ],
+   "level3_names": {
+    "340701": "软饮料",
+    "340702": "乳品"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3408",
+   "official_level2_code": "340800",
+   "industry_name": "休闲食品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "340801",
+    "340802",
+    "340803"
+   ],
+   "level3_names": {
+    "340801": "零食",
+    "340802": "烘焙食品",
+    "340803": "熟食"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3409",
+   "official_level2_code": "340900",
+   "industry_name": "调味发酵品Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "340901"
+   ],
+   "level3_names": {
+    "340901": "调味发酵品Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3501",
+   "official_level2_code": "350100",
+   "industry_name": "纺织制造",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "350101",
+    "350102",
+    "350103",
+    "350104",
+    "350105",
+    "350106",
+    "350107"
+   ],
+   "level3_names": {
+    "350102": "棉纺",
+    "350104": "印染",
+    "350105": "辅料",
+    "350106": "其他纺织",
+    "350107": "纺织鞋类制造"
+   },
+   "unlisted_level3_children": [
+    "350101",
+    "350103"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3502",
+   "official_level2_code": "350200",
+   "industry_name": "服装家纺",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "350201",
+    "350202",
+    "350203",
+    "350204",
+    "350205",
+    "350206",
+    "350207",
+    "350208",
+    "350209"
+   ],
+   "level3_names": {
+    "350205": "鞋帽及其他",
+    "350206": "家纺",
+    "350208": "运动服装",
+    "350209": "非运动服装"
+   },
+   "unlisted_level3_children": [
+    "350201",
+    "350202",
+    "350203",
+    "350204",
+    "350207"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3503",
+   "official_level2_code": "350300",
+   "industry_name": "饰品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "350301",
+    "350302",
+    "350303"
+   ],
+   "level3_names": {
+    "350301": "钟表珠宝",
+    "350302": "多品类奢侈品",
+    "350303": "其他饰品"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3601",
+   "official_level2_code": "360100",
+   "industry_name": "造纸",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "360101",
+    "360102",
+    "360103"
+   ],
+   "level3_names": {
+    "360102": "大宗用纸",
+    "360103": "特种纸"
+   },
+   "unlisted_level3_children": [
+    "360101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3602",
+   "official_level2_code": "360200",
+   "industry_name": "包装印刷",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "360201",
+    "360202",
+    "360203",
+    "360204",
+    "360205",
+    "360206"
+   ],
+   "level3_names": {
+    "360202": "印刷",
+    "360203": "金属包装",
+    "360204": "塑料包装",
+    "360205": "纸包装",
+    "360206": "综合包装"
+   },
+   "unlisted_level3_children": [
+    "360201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3603",
+   "official_level2_code": "360300",
+   "industry_name": "家居用品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "360301",
+    "360302",
+    "360303",
+    "360304",
+    "360305",
+    "360306",
+    "360307",
+    "360308",
+    "360309",
+    "360311"
+   ],
+   "level3_names": {
+    "360306": "瓷砖地板",
+    "360307": "成品家居",
+    "360308": "定制家居",
+    "360309": "卫浴制品",
+    "360311": "其他家居用品"
+   },
+   "unlisted_level3_children": [
+    "360301",
+    "360302",
+    "360303",
+    "360304",
+    "360305"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3605",
+   "official_level2_code": "360500",
+   "industry_name": "文娱用品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "360501",
+    "360502"
+   ],
+   "level3_names": {
+    "360501": "文化用品",
+    "360502": "娱乐用品"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3701",
+   "official_level2_code": "370100",
+   "industry_name": "化学制药",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "370101",
+    "370102",
+    "370103"
+   ],
+   "level3_names": {
+    "370101": "原料药",
+    "370102": "化学制剂"
+   },
+   "unlisted_level3_children": [
+    "370103"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3702",
+   "official_level2_code": "370200",
+   "industry_name": "中药Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "370201"
+   ],
+   "level3_names": {
+    "370201": "中药Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3703",
+   "official_level2_code": "370300",
+   "industry_name": "生物制品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "370301",
+    "370302",
+    "370303",
+    "370304"
+   ],
+   "level3_names": {
+    "370302": "血液制品",
+    "370303": "疫苗",
+    "370304": "其他生物制品"
+   },
+   "unlisted_level3_children": [
+    "370301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3704",
+   "official_level2_code": "370400",
+   "industry_name": "医药商业",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "370401",
+    "370402",
+    "370403",
+    "370404"
+   ],
+   "level3_names": {
+    "370402": "医药流通",
+    "370403": "线下药店",
+    "370404": "互联网药店"
+   },
+   "unlisted_level3_children": [
+    "370401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3705",
+   "official_level2_code": "370500",
+   "industry_name": "医疗器械",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "370501",
+    "370502",
+    "370503",
+    "370504"
+   ],
+   "level3_names": {
+    "370502": "医疗设备",
+    "370503": "医疗耗材",
+    "370504": "体外诊断"
+   },
+   "unlisted_level3_children": [
+    "370501"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3706",
+   "official_level2_code": "370600",
+   "industry_name": "医疗服务",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "370601",
+    "370602",
+    "370603",
+    "370604",
+    "370605"
+   ],
+   "level3_names": {
+    "370602": "诊断服务",
+    "370603": "医疗研发外包",
+    "370604": "医院",
+    "370605": "其他医疗服务"
+   },
+   "unlisted_level3_children": [
+    "370601"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4101",
+   "official_level2_code": "410100",
+   "industry_name": "电力",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "410101",
+    "410102",
+    "410103",
+    "410104",
+    "410105",
+    "410106",
+    "410107",
+    "410108",
+    "410109",
+    "410110"
+   ],
+   "level3_names": {
+    "410101": "火力发电",
+    "410102": "水力发电",
+    "410104": "热力服务",
+    "410106": "光伏发电",
+    "410107": "风力发电",
+    "410108": "核力发电",
+    "410109": "其他能源发电",
+    "410110": "电能综合服务"
+   },
+   "unlisted_level3_children": [
+    "410103",
+    "410105"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4103",
+   "official_level2_code": "410300",
+   "industry_name": "燃气Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "410301"
+   ],
+   "level3_names": {
+    "410301": "燃气Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4208",
+   "official_level2_code": "420800",
+   "industry_name": "物流",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "420801",
+    "420802",
+    "420803",
+    "420804",
+    "420805",
+    "420806",
+    "420807"
+   ],
+   "level3_names": {
+    "420802": "原材料供应链服务",
+    "420803": "中间产品及消费品供应链服务",
+    "420804": "快递",
+    "420805": "跨境物流",
+    "420806": "仓储物流",
+    "420807": "公路货运"
+   },
+   "unlisted_level3_children": [
+    "420801"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4209",
+   "official_level2_code": "420900",
+   "industry_name": "铁路公路",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "420901",
+    "420902",
+    "420903"
+   ],
+   "level3_names": {
+    "420901": "高速公路",
+    "420902": "公交",
+    "420903": "铁路运输"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4210",
+   "official_level2_code": "421000",
+   "industry_name": "航空机场",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "421001",
+    "421002"
+   ],
+   "level3_names": {
+    "421001": "航空运输",
+    "421002": "机场"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4211",
+   "official_level2_code": "421100",
+   "industry_name": "航运港口",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "421101",
+    "421102"
+   ],
+   "level3_names": {
+    "421101": "航运",
+    "421102": "港口"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4301",
+   "official_level2_code": "430100",
+   "industry_name": "房地产开发",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "430101",
+    "430102",
+    "430103"
+   ],
+   "level3_names": {
+    "430101": "住宅开发",
+    "430102": "商业地产",
+    "430103": "产业地产"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4303",
+   "official_level2_code": "430300",
+   "industry_name": "房地产服务",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "430301",
+    "430302",
+    "430303"
+   ],
+   "level3_names": {
+    "430301": "物业管理",
+    "430302": "房产租赁经纪",
+    "430303": "房地产综合服务"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4502",
+   "official_level2_code": "450200",
+   "industry_name": "贸易Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "450201"
+   ],
+   "level3_names": {
+    "450201": "贸易Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4503",
+   "official_level2_code": "450300",
+   "industry_name": "一般零售",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "450301",
+    "450302",
+    "450303",
+    "450304"
+   ],
+   "level3_names": {
+    "450301": "百货",
+    "450302": "超市",
+    "450303": "多业态零售",
+    "450304": "商业物业经营"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4504",
+   "official_level2_code": "450400",
+   "industry_name": "专业连锁Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "450401"
+   ],
+   "level3_names": {
+    "450401": "专业连锁Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4506",
+   "official_level2_code": "450600",
+   "industry_name": "互联网电商",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "450601",
+    "450602",
+    "450603"
+   ],
+   "level3_names": {
+    "450601": "综合电商",
+    "450602": "跨境电商",
+    "450603": "电商服务"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4507",
+   "official_level2_code": "450700",
+   "industry_name": "旅游零售Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "450701"
+   ],
+   "level3_names": {
+    "450701": "旅游零售Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4606",
+   "official_level2_code": "460600",
+   "industry_name": "体育Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "460601"
+   ],
+   "level3_names": {
+    "460601": "体育Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4607",
+   "official_level2_code": "460700",
+   "industry_name": "本地生活服务Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "460701"
+   ],
+   "level3_names": {
+    "460701": "本地生活服务Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4608",
+   "official_level2_code": "460800",
+   "industry_name": "专业服务",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "460801",
+    "460802",
+    "460803",
+    "460804"
+   ],
+   "level3_names": {
+    "460801": "人力资源服务",
+    "460802": "检测服务",
+    "460803": "会展服务",
+    "460804": "其他专业服务"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4609",
+   "official_level2_code": "460900",
+   "industry_name": "酒店餐饮",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "460901",
+    "460902"
+   ],
+   "level3_names": {
+    "460901": "酒店",
+    "460902": "餐饮"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4610",
+   "official_level2_code": "461000",
+   "industry_name": "旅游及景区",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "461001",
+    "461002",
+    "461003",
+    "461004"
+   ],
+   "level3_names": {
+    "461001": "博彩",
+    "461002": "人工景区",
+    "461003": "自然景区",
+    "461004": "旅游综合"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4611",
+   "official_level2_code": "461100",
+   "industry_name": "教育",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "461101",
+    "461102",
+    "461103"
+   ],
+   "level3_names": {
+    "461101": "学历教育",
+    "461102": "培训教育",
+    "461103": "教育运营及其他"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4802",
+   "official_level2_code": "480200",
+   "industry_name": "国有大型银行Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "480201"
+   ],
+   "level3_names": {
+    "480201": "国有大型银行Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4803",
+   "official_level2_code": "480300",
+   "industry_name": "股份制银行Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "480301"
+   ],
+   "level3_names": {
+    "480301": "股份制银行Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4804",
+   "official_level2_code": "480400",
+   "industry_name": "城商行Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "480401"
+   ],
+   "level3_names": {
+    "480401": "城商行Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4805",
+   "official_level2_code": "480500",
+   "industry_name": "农商行Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "480501"
+   ],
+   "level3_names": {
+    "480501": "农商行Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4806",
+   "official_level2_code": "480600",
+   "industry_name": "其他银行Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "480601"
+   ],
+   "level3_names": {
+    "480601": "其他银行Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4901",
+   "official_level2_code": "490100",
+   "industry_name": "证券Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "490101"
+   ],
+   "level3_names": {
+    "490101": "证券Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4902",
+   "official_level2_code": "490200",
+   "industry_name": "保险Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "490201"
+   ],
+   "level3_names": {
+    "490201": "保险Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4903",
+   "official_level2_code": "490300",
+   "industry_name": "多元金融",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "490301",
+    "490302",
+    "490303",
+    "490304",
+    "490305",
+    "490306",
+    "490307",
+    "490308"
+   ],
+   "level3_names": {
+    "490302": "金融控股",
+    "490303": "期货",
+    "490304": "信托",
+    "490305": "租赁",
+    "490306": "金融信息服务",
+    "490307": "资产管理",
+    "490308": "其他多元金融"
+   },
+   "unlisted_level3_children": [
+    "490301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "5101",
+   "official_level2_code": "510100",
+   "industry_name": "综合Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "510101"
+   ],
+   "level3_names": {
+    "510101": "综合Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6101",
+   "official_level2_code": "610100",
+   "industry_name": "水泥",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "610101",
+    "610102"
+   ],
+   "level3_names": {
+    "610101": "水泥制造",
+    "610102": "水泥制品"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6102",
+   "official_level2_code": "610200",
+   "industry_name": "玻璃玻纤",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "610201",
+    "610202"
+   ],
+   "level3_names": {
+    "610201": "玻璃制造",
+    "610202": "玻纤制造"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6103",
+   "official_level2_code": "610300",
+   "industry_name": "装修建材",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "610301",
+    "610302",
+    "610303",
+    "610304",
+    "610305"
+   ],
+   "level3_names": {
+    "610301": "耐火材料",
+    "610302": "管材",
+    "610303": "其他建材",
+    "610304": "防水材料",
+    "610305": "涂料"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6201",
+   "official_level2_code": "620100",
+   "industry_name": "房屋建设Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "620101"
+   ],
+   "level3_names": {
+    "620101": "房屋建设Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6202",
+   "official_level2_code": "620200",
+   "industry_name": "装修装饰Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "620201"
+   ],
+   "level3_names": {
+    "620201": "装修装饰Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6203",
+   "official_level2_code": "620300",
+   "industry_name": "基础建设",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "620301",
+    "620302",
+    "620303",
+    "620304",
+    "620305",
+    "620306",
+    "620307"
+   ],
+   "level3_names": {
+    "620306": "基建市政工程",
+    "620307": "园林工程"
+   },
+   "unlisted_level3_children": [
+    "620301",
+    "620302",
+    "620303",
+    "620304",
+    "620305"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6204",
+   "official_level2_code": "620400",
+   "industry_name": "专业工程",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "620401",
+    "620402",
+    "620403",
+    "620404"
+   ],
+   "level3_names": {
+    "620401": "钢结构",
+    "620402": "化学工程",
+    "620403": "国际工程",
+    "620404": "其他专业工程"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6206",
+   "official_level2_code": "620600",
+   "industry_name": "工程咨询服务Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "620601"
+   ],
+   "level3_names": {
+    "620601": "工程咨询服务Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6301",
+   "official_level2_code": "630100",
+   "industry_name": "电机Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "630101"
+   ],
+   "level3_names": {
+    "630101": "电机Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6303",
+   "official_level2_code": "630300",
+   "industry_name": "其他电源设备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "630301",
+    "630302",
+    "630303",
+    "630304",
+    "630305",
+    "630306"
+   ],
+   "level3_names": {
+    "630301": "综合电力设备商",
+    "630304": "火电设备",
+    "630306": "其他电源设备Ⅲ"
+   },
+   "unlisted_level3_children": [
+    "630302",
+    "630303",
+    "630305"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6305",
+   "official_level2_code": "630500",
+   "industry_name": "光伏设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "630501",
+    "630502",
+    "630503",
+    "630504",
+    "630505"
+   ],
+   "level3_names": {
+    "630501": "硅料硅片",
+    "630502": "光伏电池组件",
+    "630503": "逆变器",
+    "630504": "光伏辅材",
+    "630505": "光伏加工设备"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6306",
+   "official_level2_code": "630600",
+   "industry_name": "风电设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "630601",
+    "630602"
+   ],
+   "level3_names": {
+    "630601": "风电整机",
+    "630602": "风电零部件"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6307",
+   "official_level2_code": "630700",
+   "industry_name": "电池",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "630701",
+    "630702",
+    "630703",
+    "630704",
+    "630705"
+   ],
+   "level3_names": {
+    "630701": "锂电池",
+    "630702": "电池化学品",
+    "630703": "锂电专用设备",
+    "630704": "燃料电池",
+    "630705": "蓄电池及其他电池"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6308",
+   "official_level2_code": "630800",
+   "industry_name": "电网设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "630801",
+    "630802",
+    "630803",
+    "630804",
+    "630805"
+   ],
+   "level3_names": {
+    "630801": "输变电设备",
+    "630802": "配电设备",
+    "630803": "电网自动化设备",
+    "630804": "电工仪器仪表",
+    "630805": "线缆部件及其他"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6401",
+   "official_level2_code": "640100",
+   "industry_name": "通用设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "640101",
+    "640102",
+    "640103",
+    "640104",
+    "640105",
+    "640106",
+    "640107",
+    "640108"
+   ],
+   "level3_names": {
+    "640101": "机床工具",
+    "640103": "磨具磨料",
+    "640105": "制冷空调设备",
+    "640106": "其他通用设备",
+    "640107": "仪器仪表",
+    "640108": "金属制品"
+   },
+   "unlisted_level3_children": [
+    "640102",
+    "640104"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6402",
+   "official_level2_code": "640200",
+   "industry_name": "专用设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "640201",
+    "640202",
+    "640203",
+    "640204",
+    "640205",
+    "640206",
+    "640207",
+    "640208",
+    "640209"
+   ],
+   "level3_names": {
+    "640203": "能源及重型设备",
+    "640204": "楼宇设备",
+    "640206": "纺织服装设备",
+    "640207": "农用机械",
+    "640208": "印刷包装机械",
+    "640209": "其他专用设备"
+   },
+   "unlisted_level3_children": [
+    "640201",
+    "640202",
+    "640205"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6405",
+   "official_level2_code": "640500",
+   "industry_name": "轨交设备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "640501"
+   ],
+   "level3_names": {
+    "640501": "轨交设备Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6406",
+   "official_level2_code": "640600",
+   "industry_name": "工程机械",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "640601",
+    "640602"
+   ],
+   "level3_names": {
+    "640601": "工程机械整机",
+    "640602": "工程机械器件"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6407",
+   "official_level2_code": "640700",
+   "industry_name": "自动化设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "640701",
+    "640702",
+    "640703",
+    "640704"
+   ],
+   "level3_names": {
+    "640701": "机器人",
+    "640702": "工控设备",
+    "640703": "激光设备",
+    "640704": "其他自动化设备"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6501",
+   "official_level2_code": "650100",
+   "industry_name": "航天装备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "650101"
+   ],
+   "level3_names": {
+    "650101": "航天装备Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6502",
+   "official_level2_code": "650200",
+   "industry_name": "航空装备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "650201"
+   ],
+   "level3_names": {
+    "650201": "航空装备Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6503",
+   "official_level2_code": "650300",
+   "industry_name": "地面兵装Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "650301"
+   ],
+   "level3_names": {
+    "650301": "地面兵装Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6504",
+   "official_level2_code": "650400",
+   "industry_name": "航海装备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "650401"
+   ],
+   "level3_names": {
+    "650401": "航海装备Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6505",
+   "official_level2_code": "650500",
+   "industry_name": "军工电子Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "650501"
+   ],
+   "level3_names": {
+    "650501": "军工电子Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7101",
+   "official_level2_code": "710100",
+   "industry_name": "计算机设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "710101",
+    "710102",
+    "710103"
+   ],
+   "level3_names": {
+    "710102": "安防设备",
+    "710103": "其他计算机设备"
+   },
+   "unlisted_level3_children": [
+    "710101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7103",
+   "official_level2_code": "710300",
+   "industry_name": "IT服务Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "710301"
+   ],
+   "level3_names": {
+    "710301": "IT服务Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7104",
+   "official_level2_code": "710400",
+   "industry_name": "软件开发",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "710401",
+    "710402"
+   ],
+   "level3_names": {
+    "710401": "垂直应用软件",
+    "710402": "横向通用软件"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7204",
+   "official_level2_code": "720400",
+   "industry_name": "游戏Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "720401"
+   ],
+   "level3_names": {
+    "720401": "游戏Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7205",
+   "official_level2_code": "720500",
+   "industry_name": "广告营销",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "720501",
+    "720502"
+   ],
+   "level3_names": {
+    "720501": "营销代理",
+    "720502": "广告媒体"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7206",
+   "official_level2_code": "720600",
+   "industry_name": "影视院线",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "720601",
+    "720602"
+   ],
+   "level3_names": {
+    "720601": "影视动漫制作",
+    "720602": "院线"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7207",
+   "official_level2_code": "720700",
+   "industry_name": "数字媒体",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "720701",
+    "720702",
+    "720703",
+    "720704",
+    "720705",
+    "720706"
+   ],
+   "level3_names": {
+    "720701": "视频媒体",
+    "720702": "音频媒体",
+    "720703": "图片媒体",
+    "720704": "门户网站",
+    "720705": "文字媒体",
+    "720706": "其他数字媒体"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7208",
+   "official_level2_code": "720800",
+   "industry_name": "社交Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "720801"
+   ],
+   "level3_names": {
+    "720801": "社交Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7209",
+   "official_level2_code": "720900",
+   "industry_name": "出版",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "720901",
+    "720902",
+    "720903"
+   ],
+   "level3_names": {
+    "720901": "教育出版",
+    "720902": "大众出版",
+    "720903": "其他出版"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7210",
+   "official_level2_code": "721000",
+   "industry_name": "电视广播Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "721001"
+   ],
+   "level3_names": {
+    "721001": "电视广播Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7301",
+   "official_level2_code": "730100",
+   "industry_name": "通信服务",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "730101",
+    "730102",
+    "730103",
+    "730104"
+   ],
+   "level3_names": {
+    "730102": "电信运营商",
+    "730103": "通信工程及服务",
+    "730104": "通信应用增值服务"
+   },
+   "unlisted_level3_children": [
+    "730101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7302",
+   "official_level2_code": "730200",
+   "industry_name": "通信设备",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "730201",
+    "730202",
+    "730203",
+    "730204",
+    "730205",
+    "730206",
+    "730207"
+   ],
+   "level3_names": {
+    "730204": "通信网络设备及器件",
+    "730205": "通信线缆及配套",
+    "730206": "通信终端及配件",
+    "730207": "其他通信设备"
+   },
+   "unlisted_level3_children": [
+    "730201",
+    "730202",
+    "730203"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7401",
+   "official_level2_code": "740100",
+   "industry_name": "煤炭开采",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "740101",
+    "740102"
+   ],
+   "level3_names": {
+    "740101": "动力煤",
+    "740102": "焦煤"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7402",
+   "official_level2_code": "740200",
+   "industry_name": "焦炭Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "740201"
+   ],
+   "level3_names": {
+    "740201": "焦炭Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7501",
+   "official_level2_code": "750100",
+   "industry_name": "油气开采Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "750101"
+   ],
+   "level3_names": {
+    "750101": "油气开采Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7502",
+   "official_level2_code": "750200",
+   "industry_name": "油服工程",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "750201",
+    "750202"
+   ],
+   "level3_names": {
+    "750201": "油田服务",
+    "750202": "油气及炼化工程"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7503",
+   "official_level2_code": "750300",
+   "industry_name": "炼化及贸易",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "750301",
+    "750302",
+    "750303"
+   ],
+   "level3_names": {
+    "750301": "炼油化工",
+    "750302": "油品石化贸易",
+    "750303": "其他石化"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7601",
+   "official_level2_code": "760100",
+   "industry_name": "环境治理",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "760101",
+    "760102",
+    "760103",
+    "760104"
+   ],
+   "level3_names": {
+    "760101": "大气治理",
+    "760102": "水务及水治理",
+    "760103": "固废治理",
+    "760104": "综合环境治理"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7602",
+   "official_level2_code": "760200",
+   "industry_name": "环保设备Ⅱ",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "760201"
+   ],
+   "level3_names": {
+    "760201": "环保设备Ⅲ"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7701",
+   "official_level2_code": "770100",
+   "industry_name": "个护用品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "770101",
+    "770102"
+   ],
+   "level3_names": {
+    "770101": "生活用纸",
+    "770102": "洗护用品"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7702",
+   "official_level2_code": "770200",
+   "industry_name": "化妆品",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "770201",
+    "770202"
+   ],
+   "level3_names": {
+    "770201": "化妆品制造及其他",
+    "770202": "品牌化妆品"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7703",
+   "official_level2_code": "770300",
+   "industry_name": "医疗美容",
+   "vintage": "SWCLASS2021",
+   "level3_children": [
+    "770301",
+    "770302"
+   ],
+   "level3_names": {
+    "770301": "医美耗材",
+    "770302": "医美服务"
+   }
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "1106",
+   "official_level2_code": "110600",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "110601"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2101",
+   "official_level2_code": "210100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "210101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2102",
+   "official_level2_code": "210200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "210201",
+    "210202"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2103",
+   "official_level2_code": "210300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "210301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2104",
+   "official_level2_code": "210400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "210401",
+    "210402"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2201",
+   "official_level2_code": "220100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "220101",
+    "220103"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2207",
+   "official_level2_code": "220700",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "220701",
+    "220702",
+    "220703"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2301",
+   "official_level2_code": "230100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "230101",
+    "230102"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2302",
+   "official_level2_code": "230200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "230201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2401",
+   "official_level2_code": "240100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "240101",
+    "240102",
+    "240103",
+    "240104",
+    "240105",
+    "240106"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2501",
+   "official_level2_code": "250100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "250101",
+    "250102",
+    "250103",
+    "250104",
+    "250105",
+    "250106"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2502",
+   "official_level2_code": "250200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "250201",
+    "250202",
+    "250203",
+    "250204",
+    "250205"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2601",
+   "official_level2_code": "260100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "260101",
+    "260102",
+    "260103",
+    "260104",
+    "260105",
+    "260106"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2602",
+   "official_level2_code": "260200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "260201",
+    "260202",
+    "260203",
+    "260204",
+    "260205",
+    "260206",
+    "260207",
+    "260208",
+    "260209"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2603",
+   "official_level2_code": "260300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "260301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2604",
+   "official_level2_code": "260400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "260401",
+    "260402",
+    "260403",
+    "260404",
+    "260405"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2605",
+   "official_level2_code": "260500",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "260501"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "2801",
+   "official_level2_code": "280100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "280101",
+    "280102",
+    "280103"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3101",
+   "official_level2_code": "310100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "310101",
+    "310102",
+    "310103",
+    "310104"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3102",
+   "official_level2_code": "310200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "310201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3103",
+   "official_level2_code": "310300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "310301",
+    "310302",
+    "310303",
+    "310304",
+    "310305",
+    "310306",
+    "310307"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3104",
+   "official_level2_code": "310400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "310401",
+    "310402"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3201",
+   "official_level2_code": "320100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "320101",
+    "320102",
+    "320103",
+    "320104"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3202",
+   "official_level2_code": "320200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "320201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3401",
+   "official_level2_code": "340100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "340101",
+    "340102",
+    "340103"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3402",
+   "official_level2_code": "340200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "340201",
+    "340202"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3403",
+   "official_level2_code": "340300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "340301",
+    "340302",
+    "340303",
+    "340304",
+    "340305",
+    "340306"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "3604",
+   "official_level2_code": "360400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "360401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4102",
+   "official_level2_code": "410200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "410201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4104",
+   "official_level2_code": "410400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "410401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4201",
+   "official_level2_code": "420100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4202",
+   "official_level2_code": "420200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4203",
+   "official_level2_code": "420300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4204",
+   "official_level2_code": "420400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4205",
+   "official_level2_code": "420500",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420501"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4206",
+   "official_level2_code": "420600",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420601"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4207",
+   "official_level2_code": "420700",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "420701"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4302",
+   "official_level2_code": "430200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "430201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4401",
+   "official_level2_code": "440100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "440101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4402",
+   "official_level2_code": "440200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "440201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4403",
+   "official_level2_code": "440300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "440301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4404",
+   "official_level2_code": "440400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "440401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4501",
+   "official_level2_code": "450100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "450101",
+    "450102",
+    "450103"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4505",
+   "official_level2_code": "450500",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "450501",
+    "450502"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4601",
+   "official_level2_code": "460100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "460101",
+    "460102"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4602",
+   "official_level2_code": "460200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "460201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4603",
+   "official_level2_code": "460300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "460301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4604",
+   "official_level2_code": "460400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "460401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4605",
+   "official_level2_code": "460500",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "460501"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4701",
+   "official_level2_code": "470100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "470101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4702",
+   "official_level2_code": "470200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "470201",
+    "470202",
+    "470203",
+    "470204"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4703",
+   "official_level2_code": "470300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "470301",
+    "470302",
+    "470303"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4704",
+   "official_level2_code": "470400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "470401",
+    "470402",
+    "470403",
+    "470404"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "4801",
+   "official_level2_code": "480100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "480101"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6205",
+   "official_level2_code": "620500",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "620501"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6302",
+   "official_level2_code": "630200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "630201",
+    "630202",
+    "630203"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6304",
+   "official_level2_code": "630400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "630401",
+    "630402",
+    "630403",
+    "630404"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6403",
+   "official_level2_code": "640300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "640301"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "6404",
+   "official_level2_code": "640400",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "640401"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7102",
+   "official_level2_code": "710200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "710201",
+    "710202"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7201",
+   "official_level2_code": "720100",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "720101",
+    "720102",
+    "720103",
+    "720104"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7202",
+   "official_level2_code": "720200",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "720201"
+   ]
+  },
+  {
+   "industry_level": "SHENWAN_L2",
+   "industry_code": "7203",
+   "official_level2_code": "720300",
+   "vintage": "PRE_2021_OR_UNMAPPED_LEGACY",
+   "level3_children": [
+    "720301",
+    "720302",
+    "720303"
+   ]
+  }
+ ]
+}

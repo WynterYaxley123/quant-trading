@@ -1,4 +1,11 @@
-"""Source C: internal equal-weight close series, NOT an official index."""
+"""Source C: internal equal-weight close series, NOT an official index.
+
+Production granularity is frozen at ``ETF_QUANT_INDUSTRY_LEVEL_V1`` (Shenwan
+2021 Level 2). The stored membership layer publishes 6-digit Shenwan codes, so
+every stored code is resolved through the sealed taxonomy artifact's explicit
+``level3 -> level2`` relation before any series is built. String truncation is
+deliberately not used: an unknown code is a blocker, not a shorter code.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,11 +15,14 @@ import re
 import numpy as np
 import pandas as pd
 
+from ..domain.industry_level import (ETF_QUANT_INDUSTRY_LEVEL_V1, TAXONOMY_IDENTITY, TaxonomyError,
+                                     default_taxonomy)
 from .storage import GateError
 
 IDENTITY = "INTERNAL_SHENWAN_INDUSTRY_SERIES_V1"
 METHOD = "INTERNAL_EQUAL_WEIGHT_SHENWAN_SERIES_V1"
 PIT_FLAG = "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN"
+INDUSTRY_LEVEL = ETF_QUANT_INDUSTRY_LEVEL_V1
 
 
 @dataclass(frozen=True)
@@ -23,10 +33,13 @@ class IndustrySeries:
     identity: str = IDENTITY
     method: str = METHOD
     quality_flag: str = PIT_FLAG
+    industry_level: str = INDUSTRY_LEVEL
+    taxonomy_identity: str = TAXONOMY_IDENTITY
+    taxonomy_sha256: str | None = None
 
 
 def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8,
-                          classification_version=None) -> IndustrySeries:
+                          classification_version=None, taxonomy=None) -> IndustrySeries:
     """Calendar-adjacent exact-adjusted returns, backward-asof membership only.
 
     Unknown availability is never manufactured. Membership is reconstructed
@@ -38,6 +51,7 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
         raise ValueError("minimum coverage may not be weakened")
     if classification_version is None:
         raise GateError("CLASSIFICATION_VERSION_BLOCKER")
+    taxonomy = default_taxonomy() if taxonomy is None else taxonomy
     members = provider.tables["industry_membership"]
     bars = provider.tables["stock_bars"]
     if members.empty or bars.empty:
@@ -46,8 +60,14 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
             or bars.duplicated(["symbol", "trade_date"]).any()
             or any(not re.fullmatch(r"[0-9]{6}", c) for c in members.industry_code)):
         raise GateError("SOURCE_C_MEMBERSHIP_SCHEMA_BLOCKER")
+    # Stored codes are Level 3; the production universe is Level 2 resolved by
+    # an explicit sealed relation, never by truncating the string.
+    try:
+        resolved = {code: taxonomy.level2_of(code) for code in set(members.industry_code)}
+    except TaxonomyError as error:
+        raise GateError(error.code, error.details) from error
     days = tuple(d for d in provider.sessions if d <= provider.cutoff)
-    universe = tuple(sorted(set(members.industry_code)))
+    universe = tuple(sorted(set(resolved.values())))
     if len(universe) < 5:
         raise GateError("INSUFFICIENT_INDUSTRY_UNIVERSE")
     records = {(r["symbol"], r["trade_date"]): r for r in bars.to_dict("records")}
@@ -58,7 +78,7 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
     for i, day in enumerate(days):
         for change_day in sorted(d for d in changes if d <= day):
             for row in changes.pop(change_day):
-                active[row["symbol"]] = row["industry_code"]
+                active[row["symbol"]] = resolved[row["industry_code"]]
         closes = {}
         for code in universe:
             symbols = sorted(s for s, c in active.items() if c == code)
@@ -86,11 +106,14 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
                 if code in started:
                     broken.add(code)
                 closes[code] = np.nan
-            audit.append({"trade_date": day.isoformat(), "industry_code": code, "status": status,
-                "eligible_members": len(symbols), "valid_constituents": len(values), "coverage": ratio,
-                "excluded_symbols": rejected, "daily_return": daily_return, "close": closes[code] if status == "VALID" else None,
+            audit.append({"trade_date": day.isoformat(), "industry_code": code,
+                "industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1,
+                "status": status, "eligible_members": len(symbols), "valid_constituents": len(values),
+                "coverage": ratio, "excluded_symbols": rejected, "daily_return": daily_return,
+                "close": closes[code] if status == "VALID" else None,
                 "classification_version": classification_version, "available_at": None, "source_published_at": None,
                 "quality_flag": PIT_FLAG, "reason": "RECURSIVE_PREFIX_BROKEN" if code in broken else
                 "INSUFFICIENT_COVERAGE" if not valid else None})
         result.append(closes)
-    return IndustrySeries(pd.DataFrame(result, index=pd.DatetimeIndex(days), columns=universe), tuple(audit), universe)
+    return IndustrySeries(pd.DataFrame(result, index=pd.DatetimeIndex(days), columns=universe), tuple(audit),
+                          universe, taxonomy_sha256=taxonomy.sha256)
