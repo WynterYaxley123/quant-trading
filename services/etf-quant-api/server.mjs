@@ -15,7 +15,11 @@ export const ENDPOINTS = Object.freeze({
   'rankings/120d': ['rankings', '120d'], 'rankings/fusion': ['rankings', 'fusion'],
   'portfolio/summary': 'portfolio_summary', 'portfolio/holdings': 'holdings', 'portfolio/nav': 'nav',
   trades: 'trades', mappings: 'mappings', 'benchmark/csi300': 'benchmark', health: 'health',
+  readiness: 'readiness',
 });
+export const READINESS_DEFAULT = Object.freeze({contract:'SHADOW_START_READINESS_V1',generated_at:null,
+  data_cutoff:null,overall:'NOT_REACHED',gates:[],shadow_epoch_created:false,shadow_started:false,notes:[]});
+const GATE_STATUSES = new Set(['PASS','BLOCKED','NOT_REACHED','DEFERRED','UNKNOWN']);
 const HASH = /^[a-f0-9]{64}$/;
 const ID = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$/;
 const ORIGINS = new Set(['http://127.0.0.1:5173', 'http://localhost:5173', 'http://127.0.0.1:4173', 'http://localhost:4173']);
@@ -197,6 +201,37 @@ export async function observe(root, now = Date.now()) {
   return {view,pointer,attemptPointer};
 }
 
+function validateReadiness(doc, now) {
+  invariant(doc && doc.contract==='SHADOW_START_READINESS_V1' && Array.isArray(doc.gates)
+    && Array.isArray(doc.notes) && doc.gates.length<=64 && doc.notes.length<=64);
+  invariant(doc.generated_at===null || Number.isFinite(Date.parse(doc.generated_at)) && Date.parse(doc.generated_at)<=now);
+  invariant(doc.data_cutoff===null || /^\d{4}-\d{2}-\d{2}$/.test(doc.data_cutoff));
+  invariant(['PASS','BLOCKED','NOT_REACHED'].includes(doc.overall));
+  // This V1 artifact is a pre-shadow gate record; a started epoch contradicts it by construction.
+  invariant(doc.shadow_epoch_created===false && doc.shadow_started===false);
+  invariant(doc.notes.every(n=>typeof n==='string' && n.length<=300));
+  for (const g of doc.gates) {
+    invariant(g && typeof g.name==='string' && /^[A-Z0-9_]{1,64}$/.test(g.name) && GATE_STATUSES.has(g.status)
+      && typeof g.summary==='string' && g.summary.length<=500
+      && (g.evidence===null || typeof g.evidence==='string' && g.evidence.length<=300));
+  }
+  const blocked=doc.gates.some(g=>g.status==='BLOCKED'), allPass=doc.gates.length>0 && doc.gates.every(g=>g.status==='PASS');
+  if (blocked) invariant(doc.overall==='BLOCKED');
+  else if (allPass) invariant(doc.overall==='PASS');
+  else invariant(doc.overall!=='PASS');
+  safeTree(doc);
+}
+export async function observeReadiness(root, now = Date.now()) {
+  if (!root) return READINESS_DEFAULT;
+  root = await externalRoot(root);
+  let raw;
+  try { raw = await readSmall(await contained(root,'readiness.json'),1024*1024); }
+  catch (error) { if (error.code === 'ENOENT') return READINESS_DEFAULT; throw error; }
+  const doc = JSON.parse(raw);
+  validateReadiness(doc, now);
+  return doc;
+}
+
 export function createApi({runtimeRoot='',now=()=>Date.now()}={}) {
   return http.createServer(async (req,res)=>{
     res.setHeader('Content-Type','application/json; charset=utf-8');
@@ -221,7 +256,8 @@ export function createApi({runtimeRoot='',now=()=>Date.now()}={}) {
     try {
       const {view,pointer,attemptPointer}=await observe(runtimeRoot,now());
       const route=ENDPOINTS[resource];
-      const data=Array.isArray(route)?view[route[0]][route[1]]:view[route];
+      const data=resource==='readiness'?await observeReadiness(runtimeRoot,now())
+        :Array.isArray(route)?view[route[0]][route[1]]:view[route];
       return respond(200,data,null,{runId:pointer?.run_id ?? null,manifestSha256:pointer?.manifest_sha256 ?? null,
         attemptRunId:attemptPointer?.run_id ?? null,attemptManifestSha256:attemptPointer?.manifest_sha256 ?? null,etfQuant:true});
     } catch {return respond(503,null,'RUNTIME_INTEGRITY_BLOCKER');}

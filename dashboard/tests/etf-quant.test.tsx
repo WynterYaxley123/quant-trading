@@ -8,7 +8,7 @@ import { ResearchApiError } from '@/api/errors';
 import { renderApp } from './test-utils';
 import { etfFixture,trainedFixture,runningFixture } from './etf-quant-fixtures';
 
-beforeEach(()=>{const data=etfFixture();setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;}});});
+beforeEach(()=>{const data=etfFixture();setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return {contract:'SHADOW_START_READINESS_V1',generated_at:null,data_cutoff:null,overall:'NOT_REACHED',gates:[],shadow_epoch_created:false,shadow_started:false,notes:[]};}});});
 afterEach(()=>setEtfQuantPortForTesting(null));
 
 describe('ETF Quant independent product',()=>{
@@ -55,7 +55,7 @@ describe('ETF Quant independent product',()=>{
     }
   });
   it('factors use frozen 5/19/19 names and signed coefficients',async()=>{
-    const data=trainedFixture();setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;}});
+    const data=trainedFixture();setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return {contract:'SHADOW_START_READINESS_V1',generated_at:null,data_cutoff:null,overall:'NOT_REACHED',gates:[],shadow_epoch_created:false,shadow_started:false,notes:[]};}});
     await renderApp('/etf-quant/factors');
     expect(await screen.findByRole('table',{name:'10d 因子和系数'})).toBeInTheDocument();
     expect(screen.getByText('-0.01')).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('ETF Quant independent product',()=>{
     expect(()=>createEtfQuantApi('https://example.invalid')).toThrow();
   });
   it('synthetic forward holdings and CSI300 chart render only after an epoch',async()=>{
-    const data=runningFixture();setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;}});
+    const data=runningFixture();setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return {contract:'SHADOW_START_READINESS_V1',generated_at:null,data_cutoff:null,overall:'NOT_REACHED',gates:[],shadow_epoch_created:false,shadow_started:false,notes:[]};}});
     await renderApp('/etf-quant/portfolio');
     expect(await screen.findByText('SYNTHETIC ETF TEST ONLY')).toBeInTheDocument();
     expect(screen.getByText('SYNTHETIC INDUSTRY')).toBeInTheDocument();

@@ -72,6 +72,12 @@ export const snapshotSchema = z.object({status:statusSchema,strategy:strategySch
   .refine(v=>!v.status.epoch || v.nav.every(p=>Date.parse(p.timestamp)>=Date.parse(v.status.epoch!.started_at)
     && p.trade_date>=v.status.epoch!.market_cutoff), 'No pre-epoch NAV')
   .refine(v=>!v.status.epoch || v.holdings.every(p=>Number(p.quantity)>0 && Number(p.quantity)%v.strategy.lot_size===0), 'No fractional/short holdings');
+const gateStatus = z.enum(['PASS','BLOCKED','NOT_REACHED','DEFERRED','UNKNOWN']);
+export const readinessSchema = z.object({contract:z.literal('SHADOW_START_READINESS_V1'),generated_at:nullableText,
+  data_cutoff:nullableText,overall:z.enum(['PASS','BLOCKED','NOT_REACHED']),
+  gates:z.array(z.object({name:z.string(),status:gateStatus,summary:z.string(),evidence:nullableText})).max(64),
+  shadow_epoch_created:z.literal(false),shadow_started:z.literal(false),notes:z.array(z.string()).max(64)});
+export type EtfQuantReadiness = z.infer<typeof readinessSchema>;
 export type EtfQuantSnapshot = z.infer<typeof snapshotSchema>;
 export type EtfQuantStatus = z.infer<typeof statusSchema>;
 export const endpointSchemas = {'status':statusSchema,'strategy':strategySchema,'models':z.array(model),

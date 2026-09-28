@@ -158,6 +158,42 @@ test('failure before first epoch is explicit data blocked and still NULL account
   assert.equal((await request(port,PREFIX+'portfolio/summary')).body.data.total_equity,null);
 });
 
+test('readiness without artifact is explicit NOT_REACHED, never fabricated',async t=>{
+  const root=await fixture(t);await generation(root);const port=await server(t,root);
+  const reply=await request(port,PREFIX+'readiness');
+  assert.equal(reply.status,200);assert.equal(reply.body.error,null);
+  assert.equal(reply.body.data.contract,'SHADOW_START_READINESS_V1');
+  assert.equal(reply.body.data.overall,'NOT_REACHED');
+  assert.deepEqual(reply.body.data.gates,[]);
+  assert.equal(reply.body.data.shadow_epoch_created,false);
+  assert.equal(reply.body.meta.runId,'SYNTHETIC_001');
+});
+test('valid readiness artifact is served as recorded',async t=>{
+  const root=await fixture(t);await generation(root);
+  await writeFile(path.join(root,'readiness.json'),bytes({contract:'SHADOW_START_READINESS_V1',
+    generated_at:'2026-09-27T11:00:00Z',data_cutoff:'2026-09-24',overall:'BLOCKED',shadow_epoch_created:false,
+    shadow_started:false,notes:['synthetic'],gates:[
+      {name:'DATA',status:'PASS',summary:'synthetic pass',evidence:null},
+      {name:'MAPPING',status:'BLOCKED',summary:'synthetic block',evidence:'MAPPING_ADMISSION_BLOCKED'}]}));
+  const data=(await request(await server(t,root),PREFIX+'readiness')).body.data;
+  assert.equal(data.overall,'BLOCKED');assert.equal(data.gates.length,2);
+  assert.equal(data.gates[1].name,'MAPPING');
+});
+for (const mutation of [d=>{d.shadow_epoch_created=true;},d=>{d.overall='PASS';},
+  d=>{d.gates[1].status='FAILED';},d=>{d.generated_at='2099-01-01T00:00:00Z';},
+  d=>{d.gates[0].evidence='D:\\SYNTHETIC\\private';},d=>{d.notes=['x'.repeat(301)];}]) {
+  test('unsafe or contradictory readiness artifact is an integrity blocker',async t=>{
+    const root=await fixture(t);await generation(root);
+    const doc={contract:'SHADOW_START_READINESS_V1',generated_at:'2026-09-27T11:00:00Z',data_cutoff:'2026-09-24',
+      overall:'BLOCKED',shadow_epoch_created:false,shadow_started:false,notes:[],gates:[
+        {name:'DATA',status:'PASS',summary:'synthetic',evidence:null},
+        {name:'MAPPING',status:'BLOCKED',summary:'synthetic',evidence:null}]};
+    mutation(doc);
+    await writeFile(path.join(root,'readiness.json'),bytes(doc));
+    assert.equal((await request(await server(t,root),PREFIX+'readiness')).status,503);
+  });
+}
+
 test('malformed pointer JSON is an integrity blocker with safe errors',async t=>{
   const root=await fixture(t);await generation(root);await writeFile(path.join(root,'latest.json'),'{SYNTHETIC_BAD');
   const response=await request(await server(t,root),PREFIX+'status');

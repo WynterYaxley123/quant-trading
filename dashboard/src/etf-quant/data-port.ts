@@ -1,8 +1,9 @@
-import { endpointSchemas,envelopeSchema,snapshotSchema,statusSchema,type EtfEndpoint,type EtfQuantSnapshot,type EtfQuantStatus } from './contracts';
+import { endpointSchemas,envelopeSchema,readinessSchema,snapshotSchema,statusSchema,type EtfEndpoint,type EtfQuantReadiness,type EtfQuantSnapshot,type EtfQuantStatus } from './contracts';
 
 export interface EtfQuantDataPort {
   getStatus(signal?:AbortSignal):Promise<EtfQuantStatus>;
   getSnapshot(signal?:AbortSignal):Promise<EtfQuantSnapshot>;
+  getReadiness(signal?:AbortSignal):Promise<EtfQuantReadiness>;
 }
 export class EtfQuantDataError extends Error {
   constructor(readonly code:'UNREACHABLE'|'INVALID_RESPONSE'|'GENERATION_CHANGED'|'INTEGRITY_BLOCKED') {
@@ -27,6 +28,18 @@ export function createEtfQuantApi(base='http://127.0.0.1:3312',transport:typeof 
   }
   return {
     async getStatus(signal) {return statusSchema.parse((await read('status',signal)).data);},
+    async getReadiness(signal) {
+      try {
+        const timed=AbortSignal.timeout(10000);
+        const response=await transport(`${origin.origin}/api/etf-quant/v1/readiness`,{method:'GET',signal:signal?AbortSignal.any([signal,timed]):timed,credentials:'omit'});
+        if (!response.ok) throw new EtfQuantDataError('INTEGRITY_BLOCKED');
+        const envelope=envelopeSchema.parse(await response.json());
+        return readinessSchema.parse(envelope.data);
+      } catch (error) {
+        if (error instanceof EtfQuantDataError) throw error;
+        throw new EtfQuantDataError(error instanceof TypeError || (error instanceof Error && error.name==='TimeoutError')?'UNREACHABLE':'INVALID_RESPONSE');
+      }
+    },
     async getSnapshot(signal) {
       const names=Object.keys(endpointSchemas) as EtfEndpoint[];
       const replies=await Promise.all(names.map(name=>read(name,signal)));
@@ -54,4 +67,5 @@ export function getEtfQuantPort():EtfQuantDataPort {
 const disabledPort:EtfQuantDataPort={
   async getStatus(){throw new EtfQuantDataError('UNREACHABLE');},
   async getSnapshot(){throw new EtfQuantDataError('UNREACHABLE');},
+  async getReadiness(){throw new EtfQuantDataError('UNREACHABLE');},
 };
