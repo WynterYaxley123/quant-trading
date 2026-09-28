@@ -17,7 +17,7 @@
   "factors": {"frozen_count": 19, "finite_cutoff_l2_industries": 107, "formal_forward_signal": false},
   "models": {"status": "HISTORICAL_ENGINEERING_VALIDATION_ONLY", "common_l2_universe": 107, "h10_training_dates": 128, "h40_training_dates": 119, "h120_training_dates": 118, "report_sha256": "75d21fd4f02e63df26f2be85f1b661f7ebed0965710f7f4d5e1cfe8c01610b68"},
   "csi300": {"required_sessions": 358, "actual_sessions": 358, "missing": 0, "duplicate": 0, "invalid_close": 0},
-  "engineering_export": {"manifest_sha256": "4deb4c71da68fef9f6a0a37f77f39c23ac9027b15ffe04ade7f3e2474052d595", "file_hashes_verified": 7, "stock_bar_rows": 2124486, "etf_bar_rows": 0},
+  "engineering_export": {"manifest_sha256": "4deb4c71da68fef9f6a0a37f77f39c23ac9027b15ffe04ade7f3e2474052d595", "file_hashes_verified": 7, "stock_bar_rows": 2124486, "etf_bar_rows": 0, "full_export_provider_load_verified": false},
   "production_candidate": {"status": "BLOCKED", "snapshot_id": null, "hash": null, "integrity_pass_claimed": false},
   "mapping": {"status": "NOT_REACHED", "verified_industries": 0, "admitted_etfs": 0, "name_only_admitted": false},
   "liquidity": {"status": "NOT_REACHED", "twenty_session_pass_etfs": 0, "distinct_executable_top5": 0, "target_weights": null},

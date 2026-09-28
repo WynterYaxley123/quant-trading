@@ -69,6 +69,13 @@ Top5 = 0, target weights = null, 35% cap = deferred. These are **blocked or
 not reached**, not failed-return results. See the final candidate, mapping,
 liquidity and readiness records alongside this report.
 
+The seven-file export was independently streamed for hashes and row counts.
+The current `ExportProvider` still materializes complete CSV tables in memory;
+it was **not** exercised on this 2.1-million-row export. Its large-export
+memory behavior is therefore unverified, not silently declared production
+ready. This does not affect the file-level integrity verdict or remove the
+separate admission blockers above.
+
 ## Dashboard, API and tests
 
 Kimi's read-only visual system was preserved and completed rather than
