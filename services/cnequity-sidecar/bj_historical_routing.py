@@ -99,4 +99,3 @@ def diagnose() -> dict[str, Any]:
         "installed": PATCHED,
         "note": "routing fix designed but intentionally not installed; see docstring",
     }
-
