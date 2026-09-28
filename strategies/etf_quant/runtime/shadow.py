@@ -272,9 +272,13 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         source_commit=provider.manifest["source_commit"], source_version=provider.manifest["source_version"], code_commit=code_commit,
         cutoff=str(provider.cutoff), updated_at=now.isoformat(), signal_date=str(provider.cutoff),
         execution_date=ledger["pending"]["execution_date"] if ledger["pending"] else None, epoch=ledger["epoch"],
-        mapping_hash=registry.sha256, strategy_hash=strategy_hash)
+        mapping_hash=registry.sha256, strategy_hash=strategy_hash,
+        industry_level=selected["industry_level"])
     view["mappings"] = {"status": selected["status"], "reason": selected["reason"],
-        "entries": to_primitive(selected["selected"]), "diagnostics": selected["diagnostics"]}
+        "entries": to_primitive(selected["selected"]), "diagnostics": selected["diagnostics"],
+        "industry_level": selected["industry_level"], "liquidity_sessions": selected["liquidity_sessions"],
+        "liquidity_window": selected.get("liquidity_window", []),
+        "taxonomy_identity": selected.get("taxonomy_identity")}
     for h, model in models.items():
         view["models"].append({"horizon": int(h), "factor_names": list(model.spec.factor_names), "alpha": .01,
             "coefficients": list(model.coefficients), "intercept": model.intercept,

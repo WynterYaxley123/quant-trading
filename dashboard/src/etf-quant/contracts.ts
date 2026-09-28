@@ -14,7 +14,8 @@ export const statusSchema = z.object({product:z.literal('ETF_QUANT'),version:z.l
   phase:z.string(),reason:nullableText,snapshot_id:nullableText,source_commit:nullableText,source_version:nullableText,
   code_commit:nullableText,cutoff:nullableText,updated_at:nullableText,signal_date:nullableText,execution_date:nullableText,
   epoch:epoch.nullable(),mapping_hash:nullableText,strategy_hash:nullableText,broker_enabled:z.literal(false),
-  real_order_path:z.literal(false),validation_opened:z.literal(false),final_oos_read:z.literal(false)});
+  real_order_path:z.literal(false),validation_opened:z.literal(false),final_oos_read:z.literal(false),
+  industry_level:z.literal('SHENWAN_L2').optional()});
 export const strategySchema = z.object({version:z.literal('ETF_QUANT_V1'),mode:z.literal('SIMULATION_ONLY'),
   currency:z.literal('CNY'),initial_cash:z.literal('10000'),model:z.literal('Ridge'),alpha:z.literal(.01),
   training_window_months:z.literal(6),minimum_training_days:z.literal(30),window_anchor:z.literal('PER_HORIZON_LABEL_CUTOFF'),
@@ -27,6 +28,9 @@ export const strategySchema = z.object({version:z.literal('ETF_QUANT_V1'),mode:z
   costs:z.object({commission_bps:money,slippage_bps:money,stamp_duty_bps:money,minimum_commission:money}),
   broker_enabled:z.literal(false),real_order_path:z.literal(false),source_c_identity:z.literal('INTERNAL_SHENWAN_INDUSTRY_SERIES_V1'),
   construction:z.literal('INTERNAL_EQUAL_WEIGHT_SHENWAN_SERIES_V1'),pit_quality:z.literal('HISTORICAL_MEMBERSHIP_PIT_UNPROVEN'),
+  industry_level:z.literal('SHENWAN_L2'),industry_level_width:z.literal(4),
+  taxonomy_identity:z.literal('SHENWAN_INDUSTRY_TAXONOMY_2021_V1'),
+  liquidity_rule:z.literal('TWENTY_SESSION_REQUIRED_AMOUNT_NO_SUBSTITUTION'),liquidity_sessions:z.literal(20),
   available_at:z.null(),source_published_at:z.null(),
   factor_registry:z.array(z.object({name:z.string(),formula:z.string(),lookback_sessions:z.number().int().positive(),input_fields:z.array(z.string())})).length(19)}).passthrough();
 const model = z.object({horizon:z.union([z.literal(10),z.literal(40),z.literal(120)]),factor_names:z.array(z.string()),alpha:z.literal(.01),
@@ -51,11 +55,14 @@ const trade = z.object({fill_id:z.string(),intent:z.object({intent_id:z.string()
   processed_at:z.string(),market_execution_at:z.string(),intent_persisted_at:z.string(),execution_price_source:z.string(),accounting_mode:z.string(),
   provider_snapshot_id:z.string(),total_cash_impact:money,rebalance_reason:z.enum(['INITIAL_BUILD','EXECUTABLE_ETF_SET_CHANGED'])});
 const mapping = z.object({status:z.string(),reason:nullableText,
+  industry_level:z.literal('SHENWAN_L2').optional(),liquidity_sessions:z.literal(20).optional(),
+  liquidity_window:z.array(z.string()).optional(),
   entries:z.array(z.object({industry_code:z.string(),industry_name:z.string(),etf_code:z.string(),etf_name:z.string(),
     verification_status:z.string(),mapping_method:z.string(),classification:z.string(),effective_from:z.string(),effective_to:nullableText,
     tracking_index_code:z.string(),tracking_index_name:z.string(),mean_amount_cny:numeric}).passthrough()),
   diagnostics:z.array(z.object({industry_code:z.string(),etf_code:z.string(),reason:nullableText,verification_status:z.string(),
-    liquidity_sessions:z.number().int(),mean_amount_cny:numeric.nullable()}))});
+    liquidity_sessions:z.number().int(),mean_amount_cny:numeric.nullable(),
+    industry_level:z.literal('SHENWAN_L2').optional(),liquidity_window:z.array(z.string()).optional()}).passthrough())});
 const benchmark = z.object({symbol:z.literal('000300.SH'),status:z.string(),points:z.array(z.object({trade_date:z.string(),normalized:numeric,close:numeric,snapshot_id:z.string()})),
   nasdaq:z.literal('DEFERRED'),sp500:z.literal('DEFERRED'),model_input:z.literal(false)});
 const health = z.object({status:z.string(),blockers:z.array(z.string()),quality_flags:z.array(z.string()),

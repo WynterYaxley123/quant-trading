@@ -16,6 +16,7 @@ const ENTRY_COLUMNS = buildColumns([
 ]);
 
 const DIAGNOSTIC_COLUMNS = buildColumns([
+  { key: 'industry_level', header: '行业层级' },
   { key: 'industry_code', header: '行业', kind: 'code' },
   { key: 'etf_code', header: 'ETF', kind: 'code' },
   { key: 'verification_status', header: '状态' },
@@ -34,7 +35,7 @@ export function MappingsSection({ data }: { data: EtfQuantSnapshot }) {
     <>
       <SectionCard
         title={<span className="font-mono">{data.mappings.status}</span>}
-        description="只接受 VERIFIED + A_SHARE_INDUSTRY_OR_THEME_ETF。20 个完整交易日真实 amount（CNY）/ 非零 volume；不按名字猜测，不倒填映射历史。"
+        description={`生产行业层级：${data.mappings.industry_level ?? data.strategy.industry_level}（申万 2021 二级，4 位代码）。只接受 VERIFIED + A_SHARE_INDUSTRY_OR_THEME_ETF；要求 ${data.mappings.liquidity_sessions ?? data.strategy.liquidity_sessions} 个完整交易日的真实 amount（CNY）与非零 volume；不按名字猜测，不倒填映射历史。`}
       >
         <p className="text-sm">{data.mappings.reason ?? '准入说明未提供；不可据此推断已有五个独立、已验证 ETF。'}</p>
         <DataTable data={data.mappings.entries as Row[]} columns={ENTRY_COLUMNS} caption="已准入 ETF 映射" manualSorting />

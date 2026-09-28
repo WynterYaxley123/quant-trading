@@ -12,6 +12,9 @@
   "lot_size": 100, "costs": {"commission_bps": "3", "slippage_bps": "5", "stamp_duty_bps": "0", "minimum_commission": "0"},
   "broker_enabled": false, "real_order_path": false, "source_c_identity": "INTERNAL_SHENWAN_INDUSTRY_SERIES_V1",
   "construction": "INTERNAL_EQUAL_WEIGHT_SHENWAN_SERIES_V1", "pit_quality": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+  "industry_level": "SHENWAN_L2", "industry_level_width": 4,
+  "taxonomy_identity": "SHENWAN_INDUSTRY_TAXONOMY_2021_V1",
+  "liquidity_rule": "TWENTY_SESSION_REQUIRED_AMOUNT_NO_SUBSTITUTION", "liquidity_sessions": 20,
   "available_at": null, "source_published_at": null,
   "factor_registry": [
     {"name":"d5","formula":"(close-MA5)/MA5","lookback_sessions":5,"input_fields":["close"]},
