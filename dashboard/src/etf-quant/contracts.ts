@@ -15,7 +15,7 @@ export const statusSchema = z.object({product:z.literal('ETF_QUANT'),version:z.l
   code_commit:nullableText,cutoff:nullableText,updated_at:nullableText,signal_date:nullableText,execution_date:nullableText,
   epoch:epoch.nullable(),mapping_hash:nullableText,strategy_hash:nullableText,broker_enabled:z.literal(false),
   real_order_path:z.literal(false),validation_opened:z.literal(false),final_oos_read:z.literal(false),
-  industry_level:z.literal('SHENWAN_L2').optional()});
+  industry_level:z.literal('SHENWAN_L2').optional(),execution_policy:z.literal('B40_WITH_CASH').optional()});
 export const strategySchema = z.object({version:z.literal('ETF_QUANT_V1'),mode:z.literal('SIMULATION_ONLY'),
   currency:z.literal('CNY'),initial_cash:z.literal('10000'),model:z.literal('Ridge'),alpha:z.literal(.01),
   training_window_months:z.literal(6),minimum_training_days:z.literal(30),window_anchor:z.literal('PER_HORIZON_LABEL_CUTOFF'),
@@ -23,7 +23,7 @@ export const strategySchema = z.object({version:z.literal('ETF_QUANT_V1'),mode:z
   horizons:z.tuple([z.literal(10),z.literal(40),z.literal(120)]),h10_factors:namedFactors(H10),
   h40_factors:namedFactors(HLONG),h120_factors:namedFactors(HLONG),
   fusion:z.object({'10':z.literal(.25),'40':z.literal(.5),'120':z.literal(.25)}),zscore_ddof:z.literal(0),
-  top_k:z.literal(5),target_weight_cap:z.literal(.35),weighting:z.string(),rebalance:z.literal('EXECUTABLE_ETF_SET_CHANGE_ONLY'),
+  top_k:z.literal(5),target_weight_cap:z.literal(.35),weighting:z.string(),rebalance:z.enum(['EXECUTABLE_ETF_SET_CHANGE_ONLY','EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1']),
   execution:z.string(),bookkeeping:z.literal('DELAYED_EOD_ACTUAL_PROCESSED_AT'),lot_size:z.number().int().positive(),
   costs:z.object({commission_bps:money,slippage_bps:money,stamp_duty_bps:money,minimum_commission:money}),
   broker_enabled:z.literal(false),real_order_path:z.literal(false),source_c_identity:z.literal('INTERNAL_SHENWAN_INDUSTRY_SERIES_V1'),
@@ -32,7 +32,11 @@ export const strategySchema = z.object({version:z.literal('ETF_QUANT_V1'),mode:z
   taxonomy_identity:z.literal('SHENWAN_INDUSTRY_TAXONOMY_2021_V1'),
   liquidity_rule:z.literal('TWENTY_SESSION_REQUIRED_AMOUNT_NO_SUBSTITUTION'),liquidity_sessions:z.literal(20),
   available_at:z.null(),source_published_at:z.null(),
-  factor_registry:z.array(z.object({name:z.string(),formula:z.string(),lookback_sessions:z.number().int().positive(),input_fields:z.array(z.string())})).length(19)}).passthrough();
+  factor_registry:z.array(z.object({name:z.string(),formula:z.string(),lookback_sessions:z.number().int().positive(),input_fields:z.array(z.string())})).length(19),
+  execution_policy:z.literal('B40_WITH_CASH').optional(),cash_semantics:z.literal('UNALLOCATED_EXECUTION_CAPACITY').optional()}).passthrough()
+  .refine(v=>v.execution_policy==='B40_WITH_CASH'
+    ? v.rebalance==='EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1' && v.cash_semantics==='UNALLOCATED_EXECUTION_CAPACITY'
+    : v.rebalance==='EXECUTABLE_ETF_SET_CHANGE_ONLY' && v.cash_semantics===undefined);
 const model = z.object({horizon:z.union([z.literal(10),z.literal(40),z.literal(120)]),factor_names:z.array(z.string()),alpha:z.literal(.01),
   coefficients:z.array(numeric),intercept:numeric,training:z.object({window_start:z.string(),label_cutoff:z.string(),training_start:z.string(),
     training_end:z.string(),training_day_count:z.number().int(),sample_count:z.number().int()}).passthrough(),
@@ -54,15 +58,25 @@ const trade = z.object({fill_id:z.string(),intent:z.object({intent_id:z.string()
   executed_at:z.string(),reference_open:money,price:money,commission:money,slippage:money,stamp_duty:money,
   processed_at:z.string(),market_execution_at:z.string(),intent_persisted_at:z.string(),execution_price_source:z.string(),accounting_mode:z.string(),
   provider_snapshot_id:z.string(),total_cash_impact:money,rebalance_reason:z.enum(['INITIAL_BUILD','EXECUTABLE_ETF_SET_CHANGED'])});
+const b40Entry=z.object({industry_code:z.string(),industry_name:z.string().nullable(),industry_rank:z.number().int().positive(),
+  score:numeric,mapping_type:z.enum(['STRICT_MAPPING','PROXY_EXPOSURE','CASH_UNEXECUTABLE_SIGNAL']),
+  etf_code:nullableText,etf_name:nullableText,target_l2_exposure:numeric.nullable(),
+  target_is_largest_l2:z.boolean().nullable(),liquidity_status:nullableText,mean_amount_cny:numeric.nullable(),
+  execution_reason:z.string(),evidence_available_at:z.string().optional(),target_weight:numeric.optional(),
+  cash_retained_weight:numeric.optional()}).passthrough();
 const mapping = z.object({status:z.string(),reason:nullableText,
   industry_level:z.literal('SHENWAN_L2').optional(),liquidity_sessions:z.literal(20).optional(),
   liquidity_window:z.array(z.string()).optional(),
-  entries:z.array(z.object({industry_code:z.string(),industry_name:z.string(),etf_code:z.string(),etf_name:z.string(),
+  entries:z.array(z.union([z.object({industry_code:z.string(),industry_name:z.string(),etf_code:z.string(),etf_name:z.string(),
     verification_status:z.string(),mapping_method:z.string(),classification:z.string(),effective_from:z.string(),effective_to:nullableText,
-    tracking_index_code:z.string(),tracking_index_name:z.string(),mean_amount_cny:numeric}).passthrough()),
-  diagnostics:z.array(z.object({industry_code:z.string(),etf_code:z.string(),reason:nullableText,verification_status:z.string(),
+    tracking_index_code:z.string(),tracking_index_name:z.string(),mean_amount_cny:numeric}).passthrough(),b40Entry])),
+  diagnostics:z.array(z.union([z.object({industry_code:z.string(),etf_code:z.string(),reason:nullableText,verification_status:z.string(),
     liquidity_sessions:z.number().int(),mean_amount_cny:numeric.nullable(),
-    industry_level:z.literal('SHENWAN_L2').optional(),liquidity_window:z.array(z.string()).optional()}).passthrough())});
+    industry_level:z.literal('SHENWAN_L2').optional(),liquidity_window:z.array(z.string()).optional()}).passthrough(),
+    z.object({industry_code:z.string(),etf_code:z.string(),mapping_type:z.string(),admitted:z.boolean(),reason:nullableText,
+      liquidity_status:z.string()}).passthrough()])),
+  slots:z.array(b40Entry).length(5).optional(),cash_weight:numeric.optional(),risk_asset_weight:numeric.optional(),
+  evidence_book_hash:z.string().optional()});
 const benchmark = z.object({symbol:z.literal('000300.SH'),status:z.string(),points:z.array(z.object({trade_date:z.string(),normalized:numeric,close:numeric,snapshot_id:z.string()})),
   nasdaq:z.literal('DEFERRED'),sp500:z.literal('DEFERRED'),model_input:z.literal(false)});
 const health = z.object({status:z.string(),blockers:z.array(z.string()),quality_flags:z.array(z.string()),
@@ -78,7 +92,14 @@ export const snapshotSchema = z.object({status:statusSchema,strategy:strategySch
       'total_pnl','daily_return','turnover','max_drawdown','sharpe','rebalance_count'].every(k=>v.portfolio_summary[k as keyof typeof v.portfolio_summary]===null)), 'No fabricated pre-epoch results')
   .refine(v=>!v.status.epoch || v.nav.every(p=>Date.parse(p.timestamp)>=Date.parse(v.status.epoch!.started_at)
     && p.trade_date>=v.status.epoch!.market_cutoff), 'No pre-epoch NAV')
-  .refine(v=>!v.status.epoch || v.holdings.every(p=>Number(p.quantity)>0 && Number(p.quantity)%v.strategy.lot_size===0), 'No fractional/short holdings');
+  .refine(v=>!v.status.epoch || v.holdings.every(p=>Number(p.quantity)>0 && Number(p.quantity)%v.strategy.lot_size===0), 'No fractional/short holdings')
+  .refine(v=>v.strategy.execution_policy==='B40_WITH_CASH'
+    ? v.status.execution_policy==='B40_WITH_CASH' && v.mappings.slots?.length===5
+      && v.mappings.cash_weight!==undefined && v.mappings.risk_asset_weight!==undefined
+      && Math.abs(v.mappings.cash_weight+v.mappings.risk_asset_weight-1)<1e-9
+      && v.mappings.slots.every(s=>s.etf_code!==null || s.mapping_type==='CASH_UNEXECUTABLE_SIGNAL'
+        && s.execution_reason==='NO_ORDER_UNEXECUTABLE_SIGNAL')
+    : v.status.execution_policy===undefined && v.mappings.slots===undefined, 'Execution policy and Cash slots must agree');
 const gateStatus = z.enum(['PASS','BLOCKED','NOT_REACHED','DEFERRED','UNKNOWN']);
 export const readinessSchema = z.object({contract:z.literal('SHADOW_START_READINESS_V1'),generated_at:nullableText,
   data_cutoff:nullableText,overall:z.enum(['PASS','BLOCKED','NOT_REACHED']),

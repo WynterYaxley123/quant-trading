@@ -128,6 +128,36 @@ test('public frozen constants do not couple to Research',()=>{
   assert.equal(strategy.broker_enabled,false);
 });
 
+test('explicit B40 view is read-only and rejects fabricated cash accounting',async t=>{
+  const root=await fixture(t);
+  await generation(root,emptyView(),v=>{
+    v.strategy={...v.strategy,execution_policy:'B40_WITH_CASH',
+      rebalance:'EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1',
+      cash_semantics:'UNALLOCATED_EXECUTION_CAPACITY'};
+    v.status.execution_policy='B40_WITH_CASH';
+    const slots=[0,1,2,3,4].map(i=>({industry_code:String(3701+i),etf_code:i===4?null:`51000${i}.SH`,
+      mapping_type:i===4?'CASH_UNEXECUTABLE_SIGNAL':i===0?'STRICT_MAPPING':'PROXY_EXPOSURE',
+      target_weight:.2,cash_retained_weight:i===4?.2:0,
+      evidence_available_at:i===4?null:'2026-09-26T10:00:00Z',
+      execution_reason:i===4?'NO_ORDER_UNEXECUTABLE_SIGNAL':'B40_ADMITTED'}));
+    v.mappings={...v.mappings,status:'READY',slots,entries:slots.filter(s=>s.etf_code),
+      cash_weight:.2,risk_asset_weight:.8};
+  });
+  const port=await server(t,root);
+  assert.equal((await request(port,PREFIX+'mappings')).status,200);
+  assert.equal((await request(port,PREFIX+'mappings')).body.data.slots[4].etf_code,null);
+  assert.equal((await request(port,PREFIX+'orders','POST')).status,405);
+  const bad=await fixture(t);
+  await generation(bad,emptyView(),v=>{
+    v.strategy={...v.strategy,execution_policy:'B40_WITH_CASH',
+      rebalance:'EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1',
+      cash_semantics:'UNALLOCATED_EXECUTION_CAPACITY'};
+    v.status.execution_policy='B40_WITH_CASH';
+    v.mappings={...v.mappings,status:'READY',slots:[],entries:[],cash_weight:0,risk_asset_weight:1};
+  });
+  assert.equal((await request(await server(t,bad),PREFIX+'mappings')).status,503);
+});
+
 test('directory link cannot escape the runtime root',async t=>{
   const root=await fixture(t), outside=await fixture(t);
   const folder=await generation(outside);

@@ -25,12 +25,35 @@ const DIAGNOSTIC_COLUMNS = buildColumns([
   { key: 'reason', header: '阻断原因' },
 ]);
 
+const B40_SLOT_COLUMNS = buildColumns([
+  { key: 'industry_code', header: '原 Top5 行业', kind: 'code' },
+  { key: 'mapping_type', header: '执行类型' },
+  { key: 'etf_code', header: 'ETF / Cash', kind: 'code' },
+  { key: 'target_l2_exposure', header: '目标 L2 占比 %', kind: 'num' },
+  { key: 'liquidity_status', header: '20 日流动性' },
+  { key: 'target_weight', header: '原目标权重', kind: 'num' },
+  { key: 'cash_retained_weight', header: '保留 Cash', kind: 'num' },
+  { key: 'execution_reason', header: '执行说明' },
+]);
+
 /**
  * ETF 映射准入：只接受 VERIFIED + A_SHARE_INDUSTRY_OR_THEME_ETF，
  * 要求 20 个完整交易日的真实成交额（CNY）与非零 volume；
  * 不按名字猜测，不倒填映射历史。BLOCKED 原因必须显式可见。
  */
 export function MappingsSection({ data }: { data: EtfQuantSnapshot }) {
+  if (data.strategy.execution_policy === 'B40_WITH_CASH') return (
+    <>
+      <SectionCard title="B40_WITH_CASH · 只读执行映射"
+        description="按原 Top5 排名逐槽显示 Strict / Proxy / Cash；证据不足或流动性不合格时保留原权重为 Cash。Cash 不是 ETF，也不会产生订单。">
+        <p className="text-sm">信号目标风险资产：{data.mappings.risk_asset_weight ?? '—'} · 目标保留 Cash：{data.mappings.cash_weight ?? '—'} · 实际账户现金以持仓页为准；Shadow 状态以正式 readiness 记录为准。</p>
+        <DataTable data={(data.mappings.slots ?? []) as Row[]} columns={B40_SLOT_COLUMNS} caption="PIT 执行槽（含 Cash）" manualSorting />
+      </SectionCard>
+      <SectionCard title="B40 准入诊断" description="只读显示证据与流动性判定；历史工程参考不等于当前可执行映射。">
+        <DataTable data={data.mappings.diagnostics as Row[]} columns={DIAGNOSTIC_COLUMNS} caption="PIT 候选诊断" manualSorting />
+      </SectionCard>
+    </>
+  );
   return (
     <>
       <SectionCard

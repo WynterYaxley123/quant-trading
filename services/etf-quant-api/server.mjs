@@ -114,9 +114,28 @@ function validateView(view, now) {
     && view.portfolio_summary && view.mappings && view.health);
   for (const k of ['version','mode','currency','initial_cash','model','alpha','training_window_months','minimum_training_days',
     'window_anchor','target','preprocessing','horizons','h10_factors','h40_factors','h120_factors','fusion','zscore_ddof','top_k',
-    'target_weight_cap','weighting','rebalance','execution','bookkeeping','source_c_identity','construction','pit_quality','factor_registry']) {
+    'target_weight_cap','weighting','execution','bookkeeping','source_c_identity','construction','pit_quality','factor_registry']) {
     invariant(isDeepStrictEqual(view.strategy[k],strategy[k]));
   }
+  const b40 = view.strategy.execution_policy === 'B40_WITH_CASH';
+  if (b40) {
+    invariant(view.status.execution_policy === 'B40_WITH_CASH'
+      && view.strategy.rebalance === 'EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1'
+      && view.strategy.cash_semantics === 'UNALLOCATED_EXECUTION_CAPACITY'
+      && view.mappings.status === 'READY' && Array.isArray(view.mappings.slots)
+      && view.mappings.slots.length === 5 && Array.isArray(view.mappings.entries));
+    const slots = view.mappings.slots;
+    invariant(new Set(slots.map(s=>s.industry_code)).size===5
+      && new Set(slots.filter(s=>s.etf_code).map(s=>s.etf_code)).size===view.mappings.entries.length
+      && slots.filter(s=>s.etf_code).length===view.mappings.entries.length
+      && slots.every(s=>s.etf_code===null || ['STRICT_MAPPING','PROXY_EXPOSURE'].includes(s.mapping_type))
+      && slots.every(s=>s.etf_code!==null || s.mapping_type==='CASH_UNEXECUTABLE_SIGNAL'
+        && s.execution_reason==='NO_ORDER_UNEXECUTABLE_SIGNAL')
+      && slots.every(s=>!s.etf_code || Date.parse(s.evidence_available_at)<=Date.parse(view.status.updated_at))
+      && Math.abs(slots.reduce((n,s)=>n+s.target_weight,0)-1)<1e-9
+      && Math.abs(slots.reduce((n,s)=>n+s.cash_retained_weight,0)-view.mappings.cash_weight)<1e-9
+      && Math.abs(view.mappings.cash_weight+view.mappings.risk_asset_weight-1)<1e-9);
+  } else invariant(view.strategy.execution_policy===undefined && view.strategy.rebalance===strategy.rebalance);
   const money = v=>typeof v==='string' && /^-?\d+(\.\d+)?$/.test(v) && Number.isFinite(Number(v));
   invariant(Number.isInteger(view.strategy.lot_size) && view.strategy.lot_size>0);
   invariant(Object.values(view.strategy.costs).every(v=>money(v) && Number(v)>=0));
@@ -152,6 +171,12 @@ function validateView(view, now) {
       && Date.parse(t.processed_at)>=start && Date.parse(t.processed_at)<=updated && t.executed_at===t.processed_at
       && Date.parse(t.intent_persisted_at)<Date.parse(t.market_execution_at)
       && Date.parse(t.market_execution_at)<=Date.parse(t.processed_at)));
+    if (b40) invariant(view.trades.every(t=>t.accounting_mode==='DELAYED_T1_OPEN_ACCOUNTING'
+      && t.execution_evidence==='NOT_REALTIME_EXECUTION_EVIDENCE'
+      && t.economic_execution_at===t.market_execution_at
+      && Date.parse(t.economic_execution_at)<Date.parse(t.evidence_available_at)
+      && Date.parse(t.evidence_available_at)<=Date.parse(t.processed_at)
+      && t.intent.asset_id!=='CASH'));
   }
   safeTree(view);
 }

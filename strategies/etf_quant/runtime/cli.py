@@ -6,6 +6,7 @@ from pathlib import Path
 
 from ..domain import StrategyConfig, TransactionCost
 from ..mapping.registry import load_registry
+from ..mapping.pit import load_pit_evidence
 from .exports import ExportProvider
 from .shadow import daily_cycle
 from .storage import GateError, json_bytes
@@ -21,6 +22,9 @@ def main():
     parser.add_argument("--evidence-root", type=Path)
     parser.add_argument("--profile", type=Path)
     parser.add_argument("--commit")
+    parser.add_argument("--execution-policy", choices=("STRICT_TOP5", "B40_WITH_CASH"), default="STRICT_TOP5")
+    parser.add_argument("--pit-evidence", type=Path)
+    parser.add_argument("--pit-source-root", type=Path)
     args = parser.parse_args()
     if args.command == "describe":
         print(json_bytes(public_strategy()).decode())
@@ -43,12 +47,19 @@ def main():
         if args.runtime is None or args.registry is None:
             raise GateError("EXPLICIT_RUNTIME_AND_REGISTRY_REQUIRED")
         registry = load_registry(args.registry, evidence_root=args.evidence_root)
+        if args.execution_policy == "B40_WITH_CASH" and (args.pit_evidence is None or args.pit_source_root is None):
+            raise GateError("EXPLICIT_PIT_EVIDENCE_REQUIRED")
+        if args.execution_policy == "STRICT_TOP5" and (args.pit_evidence is not None or args.pit_source_root is not None):
+            raise GateError("STRICT_PATH_PIT_EVIDENCE_FORBIDDEN")
+        pit_evidence = (load_pit_evidence(args.pit_evidence, source_root=args.pit_source_root)
+                        if args.execution_policy == "B40_WITH_CASH" else None)
         costs = TransactionCost(**profile.get("costs", {}))
         config = StrategyConfig(costs=costs)
         result = daily_cycle(provider, registry, args.runtime, now=now, code_commit=args.commit, config=config,
             lot_size=profile.get("lot_size", 100), min_constituents=profile.get("min_valid_constituents", 5),
             coverage_threshold=profile.get("min_constituent_coverage_ratio", .8),
-            classification_version=profile.get("classification_version"))
+            classification_version=profile.get("classification_version"),
+            execution_policy=args.execution_policy, pit_evidence=pit_evidence)
     print(json_bytes(result).decode())
     return 0
 

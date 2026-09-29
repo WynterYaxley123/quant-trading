@@ -13,7 +13,10 @@ import numpy as np
 
 from ..domain import PortfolioState, Position, StrategyConfig, TargetPosition, TradingCalendar, decimal_math
 from ..mapping.registry import active, eligible_bar, select_mappings
+from ..mapping.pit import PITEvidenceBook, select_pit_mappings
 from ..portfolio import RebalanceStatus, rebalance_decision, size_targets
+from ..portfolio.partial import rebalance_decision_v2
+from ..portfolio.policy import POLICY_B40_WITH_CASH, REBALANCE_TRIGGER
 from ..schemas import to_primitive
 from ..simulation import mark_to_market, nav_point, new_portfolio
 from ..simulation.lots import rebalance_at_open
@@ -79,11 +82,24 @@ def source_prefix(provider):
     return result
 
 
-def check_prefix(previous, current, cutoff):
+def check_prefix(previous, current, cutoff, *, previous_decision_at=None):
     for name, records in previous.items():
-        candidate = {k: v for k, v in current.get(name, {}).items() if v["date"] is None or v["date"] <= cutoff}
+        if name in ("execution_evidence", "strict_mapping"):
+            if previous_decision_at is None:
+                raise GateError("PIT_PREFIX_TIME_BLOCKER")
+            candidate = {k: v for k, v in current.get(name, {}).items()
+                         if observed_time(v["available_at"]) <= observed_time(previous_decision_at)}
+        else:
+            candidate = {k: v for k, v in current.get(name, {}).items() if v["date"] is None or v["date"] <= cutoff}
         if candidate != records:
             raise GateError("CONSUMED_EXPORT_HISTORICAL_REVISION_BLOCKER", {"dataset": name})
+
+
+def _registry_prefix(registry, decision_at):
+    return {"|".join((row["industry_code"], row["etf_code"], str(row["effective_from"]))):
+        {"date": str(row["available_at"].date()), "available_at": row["available_at"].isoformat(),
+         "hash": digest(json_bytes(to_primitive(row)))} for row in registry.entries
+         if row["verification_status"] == "VERIFIED" and row["available_at"] <= decision_at}
 
 
 def portfolio_view(state, ledger):
@@ -117,9 +133,38 @@ def portfolio_view(state, ledger):
     return summary, holdings
 
 
+def _slot_transitions(previous, current):
+    """Audit ETF/Cash slot changes; the rebalance trigger remains ETF SET only."""
+    old = {row["industry_code"]: row for row in previous}
+    new = {row["industry_code"]: row for row in current}
+    changes = []
+    for code in sorted(set(old) | set(new)):
+        before, after = old.get(code), new.get(code)
+        before_etf = before.get("etf_code") if before else None
+        after_etf = after.get("etf_code") if after else None
+        if before_etf == after_etf:
+            reason = "NO_CHANGE"
+        elif before is None or after is None:
+            reason = "SIGNAL_MEMBER_CHANGED"
+        elif before_etf is None:
+            reason = "MAPPING_BECAME_AVAILABLE"
+        elif after_etf is None:
+            reason = "LIQUIDITY_OR_EVIDENCE_FAILED"
+        elif before.get("mapping_type") == "PROXY_EXPOSURE" and after.get("mapping_type") == "STRICT_MAPPING":
+            reason = "STRICT_SUPERSEDED_PROXY"
+        elif before.get("mapping_type") == "STRICT_MAPPING" and after.get("mapping_type") == "PROXY_EXPOSURE":
+            reason = "STRICT_EXPIRED_PROXY_ADMITTED"
+        else:
+            reason = "PROXY_OR_INSTRUMENT_REPLACED"
+        changes.append({"industry_code": code, "previous_state": before.get("mapping_type") if before else None,
+            "current_state": after.get("mapping_type") if after else None,
+            "previous_etf": before_etf, "current_etf": after_etf, "reason": reason})
+    return changes
+
+
 def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_commit: str,
                 config=None, lot_size=100, min_constituents=5, coverage_threshold=.8,
-                classification_version=None):
+                classification_version=None, execution_policy="STRICT_TOP5", pit_evidence: PITEvidenceBook | None = None):
     """All computation uses one verified export. T0 intent survives until T+1.
 
     Authorized delayed EOD accounting: a prior persisted T0 intent is priced at
@@ -128,6 +173,12 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
     precedes the actual start. A missed T+1 is blocked, never replayed later.
     """
     config = StrategyConfig() if config is None else config
+    if execution_policy not in ("STRICT_TOP5", POLICY_B40_WITH_CASH):
+        raise GateError("UNKNOWN_EXECUTION_POLICY_BLOCKER")
+    if execution_policy == POLICY_B40_WITH_CASH and not isinstance(pit_evidence, PITEvidenceBook):
+        raise GateError("EXPLICIT_PIT_EVIDENCE_REQUIRED")
+    if execution_policy == "STRICT_TOP5" and pit_evidence is not None:
+        raise GateError("STRICT_PATH_PIT_EVIDENCE_FORBIDDEN")
     root = external_root(runtime_root)
     if not isinstance(code_commit, str) or len(code_commit) != 40 or any(c not in "0123456789abcdef" for c in code_commit):
         raise GateError("IMPLEMENTATION_COMMIT_REQUIRED")
@@ -136,7 +187,8 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
         try:
             with decimal_math():
                 return _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
-                              min_constituents, coverage_threshold, classification_version)
+                              min_constituents, coverage_threshold, classification_version,
+                              execution_policy, pit_evidence)
         except Exception as error:
             code = error.code if isinstance(error, GateError) else "RUNTIME_CYCLE_BLOCKER"
             failure = {"schema_version": "1.0.0", "run_id": run_id, "status": "FAILED", "blocker": code,
@@ -151,26 +203,37 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
             raise GateError(code) from error
 
 
-def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size, minimum, coverage, classification):
+def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size, minimum, coverage, classification,
+           execution_policy, pit_evidence):
     local_now = now.astimezone(SHANGHAI)
     if (now < provider.created_at or provider.cutoff != local_now.date() or local_now.time() < time(15, 5)):
         raise GateError("CURRENT_FINALIZED_SESSION_REQUIRED")
     strategy = {**public_strategy(config, lot_size=lot_size), "minimum_constituents": minimum,
                 "coverage_threshold": coverage, "classification_version": classification}
+    if execution_policy == POLICY_B40_WITH_CASH:
+        strategy.update(execution_policy=execution_policy, rebalance=REBALANCE_TRIGGER,
+                        cash_semantics="UNALLOCATED_EXECUTION_CAPACITY")
     strategy_hash = digest(json_bytes(strategy))
+    mapping_hash = (registry.sha256 if execution_policy == "STRICT_TOP5" else digest(json_bytes({
+        "execution_policy": execution_policy, "registry_identity": registry.identity,
+        "taxonomy_sha256": registry.taxonomy_sha256})))
     previous, ledger, portfolio, parent_pointer = None, None, None, None
     latest = root / "latest.json"
     prefix = source_prefix(provider)
+    if execution_policy == POLICY_B40_WITH_CASH:
+        prefix["execution_evidence"] = pit_evidence.prefix(now)
+        prefix["strict_mapping"] = _registry_prefix(registry, now)
     if latest.exists():
         parent_pointer = json.loads(latest.read_bytes())
         m, bodies = read_generation(root / "runs", parent_pointer)
         previous = json.loads(bodies["view.json"])
         ledger = json.loads(bodies["state.json"])
         previous_prefix = json.loads(bodies["prefix.json"])
-        if (m["mapping_hash"] != registry.sha256 or m["strategy_hash"] != strategy_hash
+        if (m["mapping_hash"] != mapping_hash or m["strategy_hash"] != strategy_hash
                 or m["source_commit"] != provider.manifest["source_commit"]):
             raise GateError("RUNTIME_CONFIG_OR_SOURCE_DRIFT_BLOCKER")
-        check_prefix(previous_prefix, prefix, previous["status"]["cutoff"])
+        check_prefix(previous_prefix, prefix, previous["status"]["cutoff"],
+                     previous_decision_at=previous["status"]["updated_at"])
         if previous["status"]["cutoff"] > str(provider.cutoff):
             raise GateError("RUNTIME_TIME_REVERSAL_BLOCKER")
         if previous["status"]["cutoff"] == str(provider.cutoff):
@@ -187,11 +250,14 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
     series = build_industry_series(provider, min_constituents=minimum, coverage_threshold=coverage,
                                    classification_version=classification)
     models, predictions, fused = current_predictions(series, provider, signal_at=now, config=config)
-    selected = select_mappings(registry, fused.rankings, provider, signal_at=now)
+    selected = (select_mappings(registry, fused.rankings, provider, signal_at=now)
+                if execution_policy == "STRICT_TOP5" else
+                select_pit_mappings(registry, fused.rankings, provider, pit_evidence, signal_at=now))
     pending = ledger["pending"]
     if pending is not None:
         if (pending["execution_date"] != str(provider.cutoff) or observed_time(pending["persisted_at"]) >= provider.created_at
-                or pending["mapping_hash"] != registry.sha256 or pending["strategy_hash"] != strategy_hash):
+                or pending["mapping_hash"] != mapping_hash or pending["strategy_hash"] != strategy_hash
+                or pending.get("execution_policy", "STRICT_TOP5") != execution_policy):
             raise GateError("PERSISTED_T0_INTENT_INTEGRITY_BLOCKER")
         opens = {}
         for asset in set(pending["members"]) | ({p.asset_id for p in portfolio.positions} if portfolio else set()):
@@ -200,15 +266,22 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
                 raise GateError("T1_EXECUTION_BAR_BLOCKER", {"reason": why})
             opens[asset] = Decimal(str(bar["open"]))
         for entry in pending["mapping_entries"]:
-            actual = next((r for r in registry.entries if r["industry_code"] == entry["industry_code"]
-                           and r["etf_code"] == entry["etf_code"]), None)
-            if actual is None or not active(actual, provider.cutoff, observed_time(pending["persisted_at"])):
-                raise GateError("T1_MAPPING_CONTINUITY_BLOCKER")
+            if execution_policy == POLICY_B40_WITH_CASH and entry["mapping_type"] == "PROXY_EXPOSURE":
+                actual = next((r for r in pit_evidence.records if r.industry_code == entry["industry_code"]
+                    and r.etf_code == entry["etf_code"] and r.evidence_hash == entry["evidence_hash"]), None)
+                if (actual is None or actual.available_at > observed_time(pending["persisted_at"])
+                        or actual.valid_through < provider.cutoff):
+                    raise GateError("T1_MAPPING_CONTINUITY_BLOCKER")
+            else:
+                actual = next((r for r in registry.entries if r["industry_code"] == entry["industry_code"]
+                               and r["etf_code"] == entry["etf_code"]), None)
+                if actual is None or not active(actual, provider.cutoff, observed_time(pending["persisted_at"])):
+                    raise GateError("T1_MAPPING_CONTINUITY_BLOCKER")
         if portfolio is None:
             portfolio = new_portfolio(now, config)
             ledger["epoch"] = {"epoch_id": "EPOCH_" + run_id, "started_at": now.isoformat(),
                 "market_cutoff": str(provider.cutoff), "provider_snapshot_id": provider.manifest["snapshot_id"],
-                "mapping_hash": registry.sha256, "strategy_config_hash": strategy_hash, "initial_cash": "10000",
+                "mapping_hash": mapping_hash, "strategy_config_hash": strategy_hash, "initial_cash": "10000",
                 "code_commit": code_commit, "bookkeeping": "DELAYED_EOD_ACTUAL_PROCESSED_AT"}
         targets = tuple(TargetPosition(r["asset_id"], r["target_weight"]) for r in pending["targets"])
         from datetime import date
@@ -221,12 +294,21 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
             "intent_persisted_at": pending["persisted_at"], "provider_snapshot_id": provider.manifest["snapshot_id"],
             "total_cash_impact": str((-1 if f.intent.side.value == "BUY" else 1) * f.price * f.intent.quantity
                                       - f.commission - f.stamp_duty),
-            "rebalance_reason": "INITIAL_BUILD" if not ledger["members"] else "EXECUTABLE_ETF_SET_CHANGED"} for f in fills)
+            "rebalance_reason": "INITIAL_BUILD" if not ledger["members"] else "EXECUTABLE_ETF_SET_CHANGED",
+            **({"accounting_mode": "DELAYED_T1_OPEN_ACCOUNTING", "execution_evidence": "NOT_REALTIME_EXECUTION_EVIDENCE",
+                "economic_execution_at": market_open, "evidence_available_at": provider.created_at.isoformat()}
+               if execution_policy == POLICY_B40_WITH_CASH else {})} for f in fills)
         ledger["turnover_notional"] = str(Decimal(ledger["turnover_notional"]) +
             sum((f.price * f.intent.quantity for f in fills), Decimal(0)))
         ledger["holding_metadata"].update({r["etf_code"]: {k: r[k] for k in ("etf_name", "industry_code", "industry_name")}
                                          for r in pending["mapping_entries"]})
         ledger["members"] = pending["members"]
+        if execution_policy == POLICY_B40_WITH_CASH:
+            ledger["execution_slots"] = pending["slots"]
+            ledger.setdefault("rebalance_events", []).append({"signal_date": pending["signal_date"],
+                "processed_at": now.isoformat(), "previous_members": pending["previous_members"],
+                "current_members": pending["members"], "transitions": pending["transitions"],
+                "cash_target_weight": pending["cash_target_weight"]})
         ledger["rebalance_count"] += 1
         ledger["last_rebalance_at"] = now.isoformat()
         ledger["pending"] = None
@@ -258,27 +340,64 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         view["benchmark"].update(status="RUNNING", points=ledger["benchmark"])
     if selected["status"] == "READY":
         current = [r["etf_code"] for r in selected["selected"]]
-        if rebalance_decision(ledger["members"], current) is RebalanceStatus.REQUIRED:
-            allocation = size_targets({r["etf_code"]: r["score"] for r in selected["selected"]})
-            if not allocation.targets:
+        if execution_policy == "STRICT_TOP5":
+            changed = rebalance_decision(ledger["members"], current) is RebalanceStatus.REQUIRED
+            if changed:
+                allocation = size_targets({r["etf_code"]: r["score"] for r in selected["selected"]})
+                if not allocation.targets:
+                    raise GateError("ALLOCATION_CAPACITY_BLOCKER")
+                ledger["pending"] = {"intent_id": "INTENT_" + run_id, "persisted_at": now.isoformat(),
+                    "signal_date": str(provider.cutoff), "execution_date": str(selected["execution_date"]), "members": current,
+                    "targets": to_primitive(allocation.targets), "mapping_entries": to_primitive(selected["selected"]),
+                    "strategy_hash": strategy_hash, "mapping_hash": mapping_hash,
+                    "signal_snapshot_id": provider.manifest["snapshot_id"]}
+        else:
+            allocation = size_targets({r["industry_code"]: r["score"] for r in selected["slots"]})
+            if allocation.status.value != "READY":
                 raise GateError("ALLOCATION_CAPACITY_BLOCKER")
-            ledger["pending"] = {"intent_id": "INTENT_" + run_id, "persisted_at": now.isoformat(),
-                "signal_date": str(provider.cutoff), "execution_date": str(selected["execution_date"]), "members": current,
-                "targets": to_primitive(allocation.targets), "mapping_entries": to_primitive(selected["selected"]),
-                "strategy_hash": strategy_hash, "mapping_hash": registry.sha256,
-                "signal_snapshot_id": provider.manifest["snapshot_id"]}
-    phase = "RUNNING" if portfolio else "WAITING_FOR_T1_OPEN" if ledger["pending"] else "MAPPING_ADMISSION_BLOCKED"
+            weights = {r.asset_id: r.target_weight for r in allocation.targets}
+            slots = [{**r, "target_weight": weights[r["industry_code"]],
+                      "cash_retained_weight": weights[r["industry_code"]] if r["etf_code"] is None else 0.0}
+                     for r in selected["slots"]]
+            cash_weight = sum(r["cash_retained_weight"] for r in slots)
+            risk_weight = sum(weights[r["industry_code"]] for r in slots if r["etf_code"])
+            if abs(cash_weight + risk_weight - 1) > 1e-9:
+                raise GateError("CASH_ACCOUNTING_CONSERVATION_BLOCKER")
+            selected["slots"] = slots
+            selected["cash_weight"] = cash_weight
+            selected["risk_asset_weight"] = risk_weight
+            changed = rebalance_decision_v2(ledger["members"], current, execution_policy=execution_policy) is RebalanceStatus.REQUIRED
+            previous_slots = ledger.get("execution_slots", [])
+            transitions = _slot_transitions(previous_slots, slots)
+            ledger["last_signal_slots"] = slots
+            ledger["last_signal_date"] = str(provider.cutoff)
+            if changed:
+                targets = [TargetPosition(r["etf_code"], weights[r["industry_code"]]) for r in slots if r["etf_code"]]
+                ledger["pending"] = {"intent_id": "INTENT_" + run_id, "persisted_at": now.isoformat(),
+                    "signal_date": str(provider.cutoff), "execution_date": str(selected["execution_date"]), "members": current,
+                    "previous_members": list(ledger["members"]), "targets": to_primitive(targets),
+                    "mapping_entries": to_primitive(selected["selected"]), "slots": to_primitive(slots),
+                    "cash_target_weight": cash_weight, "transitions": transitions,
+                    "execution_policy": execution_policy, "strategy_hash": strategy_hash,
+                    "mapping_hash": mapping_hash, "signal_snapshot_id": provider.manifest["snapshot_id"]}
+    phase = "RUNNING" if portfolio else "WAITING_FOR_T1_OPEN" if ledger["pending"] else (
+        "CASH_ONLY_NO_EPOCH" if execution_policy == POLICY_B40_WITH_CASH and selected["status"] == "READY"
+        else "MAPPING_ADMISSION_BLOCKED")
     view["status"].update(phase=phase, reason=None if portfolio else phase, snapshot_id=provider.manifest["snapshot_id"],
         source_commit=provider.manifest["source_commit"], source_version=provider.manifest["source_version"], code_commit=code_commit,
         cutoff=str(provider.cutoff), updated_at=now.isoformat(), signal_date=str(provider.cutoff),
         execution_date=ledger["pending"]["execution_date"] if ledger["pending"] else None, epoch=ledger["epoch"],
-        mapping_hash=registry.sha256, strategy_hash=strategy_hash,
+        mapping_hash=mapping_hash, strategy_hash=strategy_hash,
         industry_level=selected["industry_level"])
     view["mappings"] = {"status": selected["status"], "reason": selected["reason"],
         "entries": to_primitive(selected["selected"]), "diagnostics": selected["diagnostics"],
         "industry_level": selected["industry_level"], "liquidity_sessions": selected["liquidity_sessions"],
         "liquidity_window": selected.get("liquidity_window", []),
         "taxonomy_identity": selected.get("taxonomy_identity")}
+    if execution_policy == POLICY_B40_WITH_CASH:
+        view["status"]["execution_policy"] = execution_policy
+        view["mappings"].update(slots=selected["slots"], cash_weight=selected["cash_weight"],
+            risk_asset_weight=selected["risk_asset_weight"], evidence_book_hash=selected["evidence_book_hash"])
     for h, model in models.items():
         view["models"].append({"horizon": int(h), "factor_names": list(model.spec.factor_names), "alpha": .01,
             "coefficients": list(model.coefficients), "intercept": model.intercept,
@@ -295,7 +414,7 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         coverage=latest_audit, source_snapshot=provider.manifest["snapshot_id"], source_schema="1.0.0")
     view["portfolio_summary"]["status"] = phase if portfolio is None else "RUNNING"
     manifest = {"status": "SUCCESSFUL_OBSERVATION", "phase": phase, "snapshot_id": provider.manifest["snapshot_id"],
-        "mapping_hash": registry.sha256, "strategy_hash": strategy_hash, "source_commit": provider.manifest["source_commit"],
+        "mapping_hash": mapping_hash, "strategy_hash": strategy_hash, "source_commit": provider.manifest["source_commit"],
         "code_commit": code_commit, "parent_run": parent_pointer, "created_at": now.isoformat(),
         "validation_opened": False, "final_oos_read": False}
     pointer = publish_generation(root / "runs", run_id,

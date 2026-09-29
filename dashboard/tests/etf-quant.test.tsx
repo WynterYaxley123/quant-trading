@@ -72,6 +72,31 @@ describe('ETF Quant independent product',()=>{
     expect(await screen.findByRole('heading',{name:'MAPPING_ADMISSION_BLOCKED'})).toBeInTheDocument();
     expect(screen.getByText('NO_VERIFIED_EVIDENCE')).toBeInTheDocument();
   });
+  it('explicit B40 mapping shows Cash as a slot, not an ETF or active Shadow',async()=>{
+    const data=etfFixture();
+    data.status.execution_policy='B40_WITH_CASH';
+    data.strategy.execution_policy='B40_WITH_CASH';
+    data.strategy.rebalance='EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1';
+    data.strategy.cash_semantics='UNALLOCATED_EXECUTION_CAPACITY';
+    const slots=[0,1,2,3,4].map(i=>({industry_code:`370${i+1}`,industry_name:`SYNTHETIC ${i}`,
+      industry_rank:i+1,score:5-i,mapping_type:(i===4?'CASH_UNEXECUTABLE_SIGNAL':i===0?'STRICT_MAPPING':'PROXY_EXPOSURE') as
+        'CASH_UNEXECUTABLE_SIGNAL'|'STRICT_MAPPING'|'PROXY_EXPOSURE',
+      etf_code:i===4?null:`51000${i}.SH`,etf_name:i===4?null:'SYNTHETIC ETF',
+      target_l2_exposure:i===4?null:60,target_is_largest_l2:i===4?null:true,
+      liquidity_status:i===4?null:'LIQUIDITY_ADMISSION_PASS',mean_amount_cny:i===4?null:1e7,
+      execution_reason:i===4?'NO_ORDER_UNEXECUTABLE_SIGNAL':'B40_ADMITTED',
+      target_weight:i===4?.35:.65/4,cash_retained_weight:i===4?.35:0}));
+    data.mappings={...data.mappings,status:'READY',reason:null,slots,entries:slots.slice(0,4),
+      cash_weight:.35,risk_asset_weight:.65,diagnostics:[]};
+    expect(snapshotSchema.safeParse(data).success).toBe(true);
+    const readiness=notReachedReadiness();
+    setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return readiness;}});
+    await renderApp('/etf-quant/mappings');
+    expect(await screen.findByRole('heading',{name:/B40_WITH_CASH/})).toBeInTheDocument();
+    expect(screen.getByText(/Cash 不是 ETF/)).toBeInTheDocument();
+    expect(screen.getByRole('table',{name:'PIT 执行槽（含 Cash）'})).toBeInTheDocument();
+    expect(screen.queryByText('Shadow 已启动')).not.toBeInTheDocument();
+  });
   it('missing mapping explanation never becomes a false admission claim',async()=>{
     const data=etfFixture();data.mappings.reason=null;
     const readiness=notReachedReadiness();
