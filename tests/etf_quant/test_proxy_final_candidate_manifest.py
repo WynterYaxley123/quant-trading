@@ -17,6 +17,9 @@ def test_final_proxy_candidate_integrity_reread():
     assert candidate["candidate_status"] == "POLICY_APPROVED_TECHNICAL_INTEGRATION_PENDING"
     assert candidate["policy_approved"] is True
     assert candidate["policy"] == "B40_WITH_CASH"
+    assert candidate["execution_policy"] == "B40_WITH_CASH"
+    assert candidate["ready_for_shadow"] is False
+    assert candidate["shadow_epoch_created"] is False
     assert candidate["production_ready_from"] is None
     assert candidate["technical_shadow_readiness"] == "PARTIAL"
     assert candidate["etf_quant_proxy_ready_for_shadow"] is False
@@ -30,6 +33,10 @@ def test_final_proxy_candidate_integrity_reread():
     assert candidate["cash_policy"]["redistributed_weight"] == 0
     assert candidate["cash_policy"]["return_model"] is None
     assert candidate["cash_policy"]["is_etf_member"] is False
+    assert candidate["cash_redistribution"] is False
+    assert candidate["pit_evidence_contract"]["historical_reference_may_not_be_backdated"] is True
+    assert candidate["dry_run_result"]["certified"] is True
+    assert candidate["dry_run_result"]["new_formal_business_records"] == 0
     rows = candidate["reference_mapping"]
     assert [row["l2_code"] for row in rows] == candidate["top5_signal"]
     assert rows[0]["etf_code"] is None and rows[0]["cash_retained_weight"] == 0.35
@@ -55,3 +62,18 @@ def test_final_proxy_candidate_integrity_reread():
         assert source["mapping_type"] == row["mapping_type"]
         assert source["weight"] == row["executed_etf_weight"]
         assert source["target_l2_exposure"] == row["target_exposure_percent"]
+
+
+def test_runtime_readiness_metadata_cannot_claim_unadmitted_production_evidence():
+    readiness = json.loads((ROOT / "reports/etf_quant/codex_b40_cash_runtime_readiness_v1.json")
+                           .read_text(encoding="utf-8"))
+    candidate = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    assert readiness["technical_shadow_readiness"] == candidate["technical_shadow_readiness"] == "PARTIAL"
+    assert readiness["etf_quant_proxy_ready_for_shadow"] is candidate["ready_for_shadow"] is False
+    assert readiness["shadow_epoch_created"] is candidate["shadow_epoch_created"] is False
+    assert readiness["formal_business_records_created"] == 0
+    assert readiness["production_ready_from"] is candidate["production_ready_from"] is None
+    assert readiness["gates"]["production_official_pit_evidence_pack"] == "BLOCKED_NOT_ADMITTED"
+    assert readiness["candidate_manifest"]["sha256"] == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
+    assert candidate["source_integrity"]["pit_adapter"]["sha256"] == hashlib.sha256(
+        (ROOT / "strategies/etf_quant/mapping/pit.py").read_bytes()).hexdigest()
