@@ -1,0 +1,417 @@
+{
+ "manifest_identity": "STRICT_L2_ETF_COVERAGE_AND_EXECUTABLE_SCAN_AUDIT_V1",
+ "schema_version": "1.0.0",
+ "observed_at": "2026-09-29T13:36:05+08:00",
+ "git_sha": "f6712647ca43a88d157bb405a8d7cd6ec7dc0ba2",
+ "primary_result": "STRICT_L2_ETF_EXECUTABILITY_AUDIT_COMPLETE",
+ "l2_universe_provenance": "PASS",
+ "production_policy_changed": false,
+ "shadow_epoch_created": false,
+ "taxonomy_sources": {
+  "official_level2_table": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls",
+  "official_stock_workbook": "https://www.swsresearch.com/swindex/pdf/SwClass2021/StockClassifyUse_stock.xls",
+  "sha256": {
+   "SwClassCode_2021.xls": "98bc0d15312f6a561b14f933571442d7a69da2070849f00c6fb1f5bb56a87c22",
+   "StockClassifyUse_stock.xls": "adcaa592fc2f84872004f98f263129c7e21d20de4c24752843ae9b6ea10b1643"
+  }
+ },
+ "l2_universe": {
+  "current_active_l2_count": 134,
+  "model_signal_l2_count": 162,
+  "model_signal_official_codes": 131,
+  "model_signal_legacy_only_codes": 31,
+  "historical_union_l2_count": 181,
+  "historical_union_official_codes": 131,
+  "historical_union_legacy_only_codes": 50,
+  "legacy_retired_l2_in_taxonomy": 63,
+  "unknown_or_invalid_codes": 0,
+  "legacy_attribution": {
+   "codes": 31,
+   "members": 67,
+   "members_delisted": 65,
+   "mean_delisted_ratio": 1.0,
+   "codes_where_majority_delisted": 29
+  },
+  "explanation": "162 is the stored-membership width-4 universe at 2026-09-24: 131 official Shenwan 2021 L2 industries plus 31 retired codes whose known members are delisted. 134 is the official current taxonomy. Neither number is a mistake; they answer different questions."
+ },
+ "etf_universe": {
+  "sse_etfs": 916,
+  "szse_etfs": 748,
+  "combined": 1664,
+  "a_share_equity_etfs": 1344,
+  "cross_border": 250,
+  "bond": 53,
+  "commodity": 17,
+  "distinct_a_share_benchmarks": 492,
+  "benchmarks_with_constituents": 364
+ },
+ "strict_executable_l2_count": 4,
+ "coverage_ratios": {
+  "current_active": {
+   "total": 134,
+   "executable": 4,
+   "ratio": 0.029850746268656716
+  },
+  "model_signal_at_2026_09_24": {
+   "total": 131,
+   "executable": 4,
+   "ratio": 0.030534351145038167
+  },
+  "historical_union_official": {
+   "total": 131,
+   "executable": 4
+  }
+ },
+ "etf_count_distribution": {
+  "0": 130,
+  "1": 0,
+  "2": 1,
+  "3_5": 1,
+  "gt_5": 2
+ },
+ "l1_coverage": {
+  "交通运输": {
+   "l2_total": 4,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "传媒": {
+   "l2_total": 7,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "公用事业": {
+   "l2_total": 2,
+   "l2_executable": 1,
+   "coverage": 0.5
+  },
+  "农林牧渔": {
+   "l2_total": 8,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "医药生物": {
+   "l2_total": 6,
+   "l2_executable": 1,
+   "coverage": 0.16666666666666666
+  },
+  "商贸零售": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "国防军工": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "基础化工": {
+   "l2_total": 7,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "家用电器": {
+   "l2_total": 7,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "建筑材料": {
+   "l2_total": 3,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "建筑装饰": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "房地产": {
+   "l2_total": 2,
+   "l2_executable": 1,
+   "coverage": 0.5
+  },
+  "有色金属": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "机械设备": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "汽车": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "煤炭": {
+   "l2_total": 2,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "环保": {
+   "l2_total": 2,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "电力设备": {
+   "l2_total": 6,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "电子": {
+   "l2_total": 6,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "石油石化": {
+   "l2_total": 3,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "社会服务": {
+   "l2_total": 6,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "纺织服饰": {
+   "l2_total": 3,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "综合": {
+   "l2_total": 1,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "美容护理": {
+   "l2_total": 3,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "计算机": {
+   "l2_total": 3,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "轻工制造": {
+   "l2_total": 4,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "通信": {
+   "l2_total": 2,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "钢铁": {
+   "l2_total": 3,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "银行": {
+   "l2_total": 5,
+   "l2_executable": 0,
+   "coverage": 0.0
+  },
+  "非银金融": {
+   "l2_total": 3,
+   "l2_executable": 1,
+   "coverage": 0.3333333333333333
+  },
+  "食品饮料": {
+   "l2_total": 6,
+   "l2_executable": 0,
+   "coverage": 0.0
+  }
+ },
+ "near_miss": {
+  "exact_subset_benchmarks": 10,
+  "one_constituent_outside": 1,
+  "two_to_three_outside": 3,
+  "industries_with_near_miss_at_most_3": 5
+ },
+ "liquidity": {
+  "window_start": "2026-08-28",
+  "window_end": "2026-09-24",
+  "evaluated": 49,
+  "pass": 48,
+  "fail": 0,
+  "insufficient": 1
+ },
+ "ranking_dates_analyzed": 1,
+ "ranking_source": "D:\\QuantForge\\runtime\\etf-quant-v1\\codex-final-completion\\reports\\etf_quant_engineering_ridge_20260928T123624Z_828fad6e.json",
+ "ranking_source_sha256": "75d21fd4f02e63df26f2be85f1b661f7ebed0965710f7f4d5e1cfe8c01610b68",
+ "ranking_classification": "HISTORICAL_ENGINEERING_VALIDATION_ONLY",
+ "current_top5": [
+  {
+   "rank": 1,
+   "l2_code": "3706",
+   "l2_name": "医疗服务",
+   "strictly_executable": false
+  },
+  {
+   "rank": 2,
+   "l2_code": "3703",
+   "l2_name": "生物制品",
+   "strictly_executable": false
+  },
+  {
+   "rank": 3,
+   "l2_code": "4901",
+   "l2_name": "证券Ⅱ",
+   "strictly_executable": true
+  },
+  {
+   "rank": 4,
+   "l2_code": "4803",
+   "l2_name": "股份制银行Ⅱ",
+   "strictly_executable": false
+  },
+  {
+   "rank": 5,
+   "l2_code": "3701",
+   "l2_name": "化学制药",
+   "strictly_executable": false
+  }
+ ],
+ "current_top5_executable_count": 1,
+ "scan": {
+  "contract": "HYPOTHETICAL_EXECUTABLE_SCAN_V1",
+  "status": "FEASIBILITY_ANALYSIS_ONLY",
+  "level_a": {
+   "selected": [
+    {
+     "rank": 3,
+     "l2_code": "4901",
+     "l2_name": "证券Ⅱ",
+     "etf_code": "159008.SZ",
+     "score": 1.2282859716780057
+    },
+    {
+     "rank": 9,
+     "l2_code": "3702",
+     "l2_name": "中药Ⅱ",
+     "etf_code": "159647.SZ",
+     "score": 1.0097499187878993
+    },
+    {
+     "rank": 32,
+     "l2_code": "4101",
+     "l2_name": "电力",
+     "etf_code": "159059.SZ",
+     "score": 0.3254881915802599
+    }
+   ],
+   "scan_depth": {
+    "1": 3,
+    "2": 9,
+    "3": 32
+   },
+   "five_found": false
+  },
+  "level_b": {
+   "selected": [
+    {
+     "rank": 3,
+     "l2_code": "4901",
+     "l2_name": "证券Ⅱ",
+     "etf_code": "159008.SZ",
+     "score": 1.2282859716780057
+    },
+    {
+     "rank": 9,
+     "l2_code": "3702",
+     "l2_name": "中药Ⅱ",
+     "etf_code": "159647.SZ",
+     "score": 1.0097499187878993
+    },
+    {
+     "rank": 32,
+     "l2_code": "4101",
+     "l2_name": "电力",
+     "etf_code": "159059.SZ",
+     "score": 0.3254881915802599
+    }
+   ],
+   "scan_depth": {
+    "1": 3,
+    "2": 9,
+    "3": 32
+   },
+   "five_found": false
+  },
+  "top_n_feasibility": {
+   "5": {
+    "executable_found": 2,
+    "five_found": false
+   },
+   "10": {
+    "executable_found": 3,
+    "five_found": false
+   },
+   "15": {
+    "executable_found": 3,
+    "five_found": false
+   },
+   "20": {
+    "executable_found": 3,
+    "five_found": false
+   },
+   "30": {
+    "executable_found": 3,
+    "five_found": false
+   },
+   "107": {
+    "executable_found": 3,
+    "five_found": false
+   }
+  }
+ },
+ "scan_success_rate": {
+  "dates": 1,
+  "dates_with_5_distinct": 0,
+  "success_rate": 0.0
+ },
+ "scan_depth_percentiles": null,
+ "top10_top20_top30_success": {
+  "top10": false,
+  "top20": false,
+  "top30": false,
+  "full_ranking": false
+ },
+ "industry_selection_concentration": {
+  "max_distinct_industries_reachable": 4,
+  "executable_industries": [
+   "3702",
+   "4101",
+   "4301",
+   "4901"
+  ],
+  "executable_l1_parents": [
+   "公用事业",
+   "医药生物",
+   "房地产",
+   "非银金融"
+  ],
+  "l1_parents_total": 31,
+  "note": "with only four executable industries a five-name portfolio is unreachable at any scan depth; the concentration is structural, not a ranking artefact"
+ },
+ "hypothetical_executable_top5_feasibility": "NOT_FEASIBLE",
+ "coverage_status": "VERY_LOW",
+ "evidence_hashes": {
+  "coverage_matrix.json": "8497c3981f4f5b4d3c56d5bb621e4d6a1f166e42db158fc5793b0f76a7ca8a44",
+  "bm_cache.json": "32657f622437dbc7f1c007155b087de8bda6edf25ca3811bc140cd618ae65e6e",
+  "combined_etf_universe.json": "3826fdb9d9eabaef09e0987ffce82e1971fe900d5340ed1c6de307ed22b19f76",
+  "executable_scan.json": "d05ae28a2acd373cf92a5ca428a9c574e7c06382f4492b81c5f539e3434fbf56",
+  "etf_liquidity_20d_v1.json": "97318c7d132851fd59b94e8af48efafbe74fc695ee1f84abc67c84694134ed45"
+ },
+ "known_limitations": [
+  "åªæœ‰ 1 ä¸ªåˆæ³•çš„å·¥ç¨‹ ranking æˆªé¢ï¼ˆ2026-09-24ï¼‰ï¼Œå› æ­¤æ— æ³•ç»™å‡ºè·¨æ—¥æœŸçš„æˆåŠŸçŽ‡ï¼›æœ¬è½®çš„å¯è¡Œæ€§ç»“è®ºæ¥è‡ªè¯¥æˆªé¢çš„å®Œæ•´ 107 åæŽ’åä¸Žå…¨åŸŸè¦†ç›–çŽ‡ï¼Œè€Œä¸æ˜¯æ—¶é—´åºåˆ—ç»Ÿè®¡ã€‚",
+  "è¦†ç›–çŽ‡çš„åˆ†æ¯æ˜¯ç”³ä¸‡ 2021 å®˜æ–¹äºŒçº§è¡Œä¸šï¼›162 çš„æ¨¡åž‹å®‡å®™å¦å« 31 ä¸ªä»…ç”±é€€å¸‚è‚¡ç¥¨æž„æˆçš„å·²åºŸæ­¢ä»£ç ï¼Œè¿™äº›ä»£ç ä¸å¯èƒ½æœ‰ ETFï¼Œå·²å•ç‹¬å½’ç±»ã€‚",
+  "ETF å¯æ‰§è¡Œæ€§åªä½¿ç”¨äº¤æ˜“æ‰€/æŒ‡æ•°å…¬å¸å£å¾„çš„å®˜æ–¹è¯æ®ï¼›æ·±äº¤æ‰€æ‹ŸåˆæŒ‡æ•°å­—æ®µåªæœ‰ä»£ç ã€åç§°å¸¸ä¸ºç©ºï¼Œä¸å½±å“æˆåˆ†æ ¸éªŒï¼Œä½†ä¼šé™ä½Žè¯¥è¡Œçš„äººç±»å¯è¯»æ€§ã€‚",
+  "åŸºå‡†æˆåˆ†æ— æ³•å–å¾—çš„å°‘æ•°åŸºå‡†ï¼ˆA è‚¡è‚¡ç¥¨ ETF éƒ¨åˆ†ï¼‰æŒ‰ fail-closed å¤„ç†ä¸ºä¸å¯å‡†å…¥ã€‚",
+  "è¿‘å¤±é…åˆ†æžæ˜¾ç¤ºæœ‰ 5 ä¸ªè¡Œä¸šçš„æœ€è¿‘åŸºå‡†åªå·® 1â€“3 åªæˆåˆ†è‚¡ï¼›è¿™æ˜¯å†»ç»“è§„åˆ™ä¸‹çš„çœŸå®žè¾¹ç•Œï¼Œæœ¬è½®æœªæ”¾å®½è§„åˆ™ã€‚"
+ ]
+}
