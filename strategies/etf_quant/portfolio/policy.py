@@ -152,16 +152,38 @@ class IndustryCandidate:
         official weights are short. Fail-closed means the predicate itself refuses.
         """
         return (self.executable
+                and self.mapping_type in ("STRICT_MAPPING", "PROXY_EXPOSURE")
+                and self.benchmark_code is not None
                 and self.weight_quality == "COMPLETE_WEIGHT_SET"
+                and self.liquidity_status == "LIQUIDITY_ADMISSION_PASS"
+                and self.mean_amount_cny is not None
+                and isinstance(self.mean_amount_cny, (int, float))
+                and not isinstance(self.mean_amount_cny, bool)
+                and math.isfinite(self.mean_amount_cny)
+                and self.mean_amount_cny > 0
+                and isinstance(self.target_l2_exposure, (int, float))
+                and not isinstance(self.target_l2_exposure, bool)
+                and math.isfinite(self.target_l2_exposure)
+                and self.target_l2_exposure <= 100
                 and self.target_l2_exposure >= MIN_TARGET_EXPOSURE_B40
                 and bool(self.target_is_largest_l2))
 
     def b40_rejection_reason(self) -> str | None:
         if not self.executable:
             return REASON_NO_CANDIDATE
-        if self.weight_quality not in (None, "COMPLETE_WEIGHT_SET"):
+        if self.weight_quality != "COMPLETE_WEIGHT_SET":
             return REASON_WEIGHT_SET_INCOMPLETE
-        if self.target_l2_exposure < MIN_TARGET_EXPOSURE_B40:
+        if (self.liquidity_status != "LIQUIDITY_ADMISSION_PASS"
+                or not isinstance(self.mean_amount_cny, (int, float))
+                or isinstance(self.mean_amount_cny, bool)
+                or not math.isfinite(self.mean_amount_cny)
+                or self.mean_amount_cny <= 0):
+            return REASON_NO_LIQUID_ETF
+        if (not isinstance(self.target_l2_exposure, (int, float))
+                or isinstance(self.target_l2_exposure, bool)
+                or not math.isfinite(self.target_l2_exposure)
+                or self.target_l2_exposure > 100
+                or self.target_l2_exposure < MIN_TARGET_EXPOSURE_B40):
             return REASON_TARGET_EXPOSURE_BELOW_THRESHOLD
         if not self.target_is_largest_l2:
             return REASON_TARGET_NOT_LARGEST_L2
@@ -461,8 +483,6 @@ def evaluate_policy(policy: str,
         survivors = [c for c in candidates if c.passes_b40]
         skipped = tuple((c, c.b40_rejection_reason() or REASON_NO_CANDIDATE)
                         for c in candidates if not c.passes_b40)
-        if not survivors:
-            raise PolicyError("B40_WITH_CASH_NO_SURVIVOR")
         # The reference sizing is the FULL signal set. Survivors keep exactly their reference weight;
         # the forfeited weight becomes cash and is never handed to anyone else.
         reference = base_target_weights(candidates, cap)
