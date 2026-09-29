@@ -12,9 +12,14 @@ Codex 下一步只做 **REVIEW + FINAL READINESS CERTIFICATION**，
 |----|-----|
 | branch | `agent/deepseek-production-pit-evidence-v1` |
 | base SHA | `42eb601bfc80991847e301f14387cdff77323b96` |
+| final SHA | `d14cd2e9d020e3b945e7f93ddcf47240a7ad759c` |
+| commit range | `42eb601..d14cd2e`（1 个提交，15 个文件，+5974 行，无删除） |
 | worktree | `D:\quant-worktrees\deepseek-production-pit-evidence-v1` |
-| final SHA | 见本节末尾（提交后填写） |
+| merge-base | `42eb601bfc80991847e301f14387cdff77323b96` |
+| working tree | clean（`git status --short` 为空） |
 | push | **未执行** |
+| registry path | `reports/etf_quant/production_pit_evidence_registry_v1.json` |
+| registry sha256 | `dea8c16040c9d41fca098d905121207c11a3a8fbfd3f1d5aa107783e46650cc7` |
 
 `main` / 旧 integration / 旧 DeepSeek / 旧 Codex worktree **全部只读未改动**。
 未执行 reset / clean / stash / rebase / force checkout / push。
@@ -257,7 +262,7 @@ python scripts/etf_quant/build_production_pit_manifest.py
 
 ---
 
-## 11. 本轮技术环境说明（供复核者避免误判）
+## 12. 本轮技术环境说明（供复核者避免误判）
 
 * 宿主 Python 使用 DSH 捆绑运行时：
   `C:\Users\Lenovo\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe`。
@@ -266,6 +271,35 @@ python scripts/etf_quant/build_production_pit_manifest.py
   使用 `Path.read_text()` 无显式编码读取含中文注释的源文件。
   经实测（临时移出本轮新增模块后仍失败），该失败**与本轮改动无关**，
   是解释器 locale 差异，不是仓库缺陷。设置 `PYTHONUTF8=1` 后该测试通过。
-* 受影响的 ETF 测试：`tests/etf_quant` 全部通过（见第 12 节实测数字）。
+* 本轮实测测试结果（提交后、clean tree 上）：
+  `tests/etf_quant` + 两个顶层 ETF 测试文件 = **512 passed, 1 skipped**。
 * 未运行封存研究测试，未触碰 Validation / OOS 数据。
 * Docker：本轮未使用（未重装、未修改）。
+
+---
+
+## 13. 独立对抗审计的结论与处置
+
+本轮在执行中另起了一个**独立对抗审计子智能体**（不与被审计方共享任何测试），
+它的结论是"证据树数字层面异常干净，但来源链断裂 + 不稳定，当时不能作为生产 PIT 证据使用"。
+其发现已逐条处置：
+
+| # | 审计发现 | 本轮处置 |
+|---|---------|---------|
+| 1 | 320 个 pinned 文件中 240 个是本地合成文档却挂官方 URL，哈希不可复现 | 引入 `kind`：81 个 `VERBATIM_PROVIDER_BYTES` + 303 个 `DOCUMENTED_EXTRACTION`，后者 **100%** 带 `derived_from`（上游文件 + SHA-256） |
+| 2 | 申万 pinned 文件被注入了 `source_url`/`swindexcode` 两个字段 | 重新采集 124 个响应，**原样保存**，实测重取 SHA-256 完全一致，无注入字段 |
+| 3 | 记录里的 CSI `weight_source_url` 实测返回 `code=500` | 端点与调用方式写入 manifest note 与 registry 文档；CSI 原始响应另行登记 |
+| 4 | 硬编码 `--valid-from 2026-09-30` 埋着倒填机制 | 默认改为观察时刻的本地日期，并加"早于观察日即拒绝构建"护栏 |
+| 5 | `constituent_effective_date` 硬编码 `2026-08-31`，无官方出处 | 删除该字面量；改为锚定官方 `beginningdate`，无官方日期时用观察日**并显式标注** |
+| 6 | 分类包丢掉官方 `beginningdate`，全部写成构建常量 | 改为逐券使用官方 `beginningdate`，**5200/5200 全部来自官方**，共 94 个不同取值 |
+| 7 | `csi_reverse` 输入目录在构建后仍在增长，构建不可复现 | 已停止采集，缓存冻结（4202 文件），本次最终构建基于冻结快照 |
+| 8 | 覆盖率只有 10% 却未显式报告 | registry 与 build report 显式记录 `scope = 498`，并给出 112 / 61 的占比 |
+| 9 | 全部证据共享一个时间常量，只靠一个常量兜住 | 加双向护栏（不得早于真实抓取、不得晚于墙上时钟）+ 逐来源检索账本；`last_real_retrieval` 由账本推导 |
+| 10 | 审计期间发现上一版 `observed_at` 比机器时钟超前 21h | 已加入"拒绝未来观察时刻"护栏（该缺陷真实发生过并被修复） |
+
+审计同时确认成立、本轮未改动的部分：无历史倒填（C1）、`effective_date` 未冒充 `available_at`（C2）、
+权重真实完整（C4）、无重归一化（C5）、适配器未修改（C10）、包哈希可复现（C11）、Top5 报告与底层包一致。
+
+**审计的总体判断仍应传给 Codex**：本轮证据体系在**结构与时间语义**上已经可审计、可复现、
+fail-closed 明确，但在**覆盖率**（22.5% / 12.2%）与**分类来源层级**（指数成分而非官方分类表）上仍是有限的。
+`ETF_QUANT_PROXY_READY_FOR_SHADOW` 的最终判定交给 Codex，本轮不自行置 TRUE。
