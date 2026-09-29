@@ -14,15 +14,19 @@ MANIFEST = ROOT / "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest
 def test_final_proxy_candidate_integrity_reread():
     candidate = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert candidate["schema_version"] == "1.0.0"
-    assert candidate["candidate_status"] == "POLICY_APPROVED_TECHNICAL_INTEGRATION_PENDING"
+    assert candidate["candidate_status"] == "READY_FOR_FUTURE_SHADOW"
     assert candidate["policy_approved"] is True
     assert candidate["policy"] == "B40_WITH_CASH"
     assert candidate["execution_policy"] == "B40_WITH_CASH"
-    assert candidate["ready_for_shadow"] is False
+    assert candidate["ready_for_shadow"] is True
     assert candidate["shadow_epoch_created"] is False
-    assert candidate["production_ready_from"] is None
-    assert candidate["technical_shadow_readiness"] == "PARTIAL"
-    assert candidate["etf_quant_proxy_ready_for_shadow"] is False
+    # Forward-only: the evidence freezes at 2026-09-29/30, so shadow can only
+    # ever start on a future eligible signal cycle -- never at 2026-09-24.
+    assert candidate["production_ready_from"] == "READY_FOR_NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE"
+    assert candidate["production_pit_evidence_available_from"] == "2026-09-29T23:05:26+09:00"
+    assert candidate["production_pit_evidence_ready"] is True
+    assert candidate["technical_shadow_readiness"] == "PASS"
+    assert candidate["etf_quant_proxy_ready_for_shadow"] is True
     assert candidate["minimum_target_exposure"] == 0.4
     assert candidate["target_must_be_largest"] is True
     assert candidate["strict_precedence"] is True
@@ -68,12 +72,14 @@ def test_runtime_readiness_metadata_cannot_claim_unadmitted_production_evidence(
     readiness = json.loads((ROOT / "reports/etf_quant/codex_b40_cash_runtime_readiness_v1.json")
                            .read_text(encoding="utf-8"))
     candidate = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    assert readiness["technical_shadow_readiness"] == candidate["technical_shadow_readiness"] == "PARTIAL"
-    assert readiness["etf_quant_proxy_ready_for_shadow"] is candidate["ready_for_shadow"] is False
+    assert readiness["technical_shadow_readiness"] == candidate["technical_shadow_readiness"] == "PASS"
+    assert readiness["etf_quant_proxy_ready_for_shadow"] is candidate["ready_for_shadow"] is True
     assert readiness["shadow_epoch_created"] is candidate["shadow_epoch_created"] is False
     assert readiness["formal_business_records_created"] == 0
-    assert readiness["production_ready_from"] is candidate["production_ready_from"] is None
-    assert readiness["gates"]["production_official_pit_evidence_pack"] == "BLOCKED_NOT_ADMITTED"
+    assert (readiness["production_ready_from"]
+            == candidate["production_ready_from"]
+            == "READY_FOR_NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE")
+    assert readiness["gates"]["production_official_pit_evidence_pack"] == "PASS_REAL_PACKAGE_ADMITTED"
     assert readiness["candidate_manifest"]["sha256"] == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
     assert candidate["source_integrity"]["pit_adapter"]["sha256"] == hashlib.sha256(
         (ROOT / "strategies/etf_quant/mapping/pit.py").read_bytes()).hexdigest()
