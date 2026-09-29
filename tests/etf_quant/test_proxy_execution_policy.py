@@ -385,6 +385,29 @@ def test_rebalance_trigger_names_executability_transitions():
     assert "EXECUTABILITY_TRANSITIONS" in REBALANCE_TRIGGER
 
 
+def test_rebalance_trigger_names_executability_transitions():
+    """A one-off data gap must not leave the account permanently under-invested.
+
+    The rule refines the frozen ``EXECUTABLE_ETF_SET_CHANGE_ONLY`` rather than replacing it, and is
+    deliberately implemented as a sibling function: the frozen ``rebalance_decision`` asserts an
+    exactly-five-member set, and that assertion is what validates identity on the strict path, so
+    relaxing it in place would trade an identity guarantee for a convenience.
+    """
+    assert REBALANCE_TRIGGER == "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1"
+    assert pol.REBALANCE_TRIGGER_FROZEN_PREDECESSOR == "EXECUTABLE_ETF_SET_CHANGE_ONLY"
+    assert pol.REBALANCE_SIBLING_FUNCTION == "rebalance_decision_v2"
+    assert pol.MAPPING_SELECTION_SIBLING_FUNCTION == "select_mappings_partial"
+
+
+def test_cash_contract_constants_match_the_cash_policy_contract():
+    assert pol.CASH_WEIGHT_FIELD == "unallocated_execution_capacity_weight"
+    assert pol.CASH_RETURN_MODEL == "UNDEFINED_NOT_MODELLED_THIS_ROUND"
+    assert pol.EXECUTION_REDISTRIBUTION_ENABLED is False
+    assert pol.RENORMALISATION_MODE == "NEVER_RENORMALISE_ACROSS_EXECUTION_FILTER"
+    assert pol.REDISTRIBUTED_WEIGHT_LITERAL == "0"
+    assert pol.CASH_ORDER_OUTCOME == "NO_ORDER_UNEXECUTABLE_SIGNAL"
+
+
 def test_an_industry_becoming_executable_changes_the_member_set():
     """Executability flip must be a member-set change, hence a rebalance."""
     before = ["L2", "L3", "L4", "L5"]

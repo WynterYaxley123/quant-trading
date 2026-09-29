@@ -1,10 +1,10 @@
 {
  "artifact": "DEEPSEEK_PROXY_POLICY_FINALIZATION_MANIFEST_V1",
  "task": "ETF_QUANT_PROXY_POLICY_FINALIZATION_V1",
- "created_at": "2026-09-29T18:17:20+09:00",
+ "created_at": "2026-09-29T18:23:56+09:00",
  "branch": "agent/deepseek-etf-quant-proxy-policy-finalization-v1",
  "base_git_sha": "c309f39ad80f43f6660dfbc30f87706890f6f846",
- "head_git_sha": "c309f39ad80f43f6660dfbc30f87706890f6f846",
+ "head_git_sha": "8bf97d5c85b1743f01f535fc7096eb9c19b752b6",
  "pushed": false,
  "mapping_type": "PROXY_EXPOSURE",
  "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
@@ -17,8 +17,8 @@
  "recommended_execution_policy": "B40_WITH_CASH",
  "policy_ranking_robust_to_instrument_rule": true,
  "subagent_evidence": {
-  "3706_exhaustive_verdict_present": false,
-  "3706_verdict": null,
+  "3706_exhaustive_verdict_present": true,
+  "3706_verdict": true,
   "top5_verification_present": true
  },
  "liquidity": {
@@ -30,16 +30,16 @@
  },
  "artifacts": {
   "proxy_execution_policy_v1.json": {
-   "sha256": "fcd5c7d330c5deb04ab681b84e35acb2b1b6fdfce8fb39f102bfdde4e385784c",
-   "bytes": 1211
+   "sha256": "8475a6de52662555196f7a5118474ba305c9a6ad5f1d608bf396898f20527415",
+   "bytes": 3551
   },
   "proxy_policy_comparison_v1.json": {
    "sha256": "f81e9109247cd002bbfec726e91030e2ce242cb40b66ab525bf403ab4ce4b2b5",
    "bytes": 21557
   },
   "proxy_execution_candidate_v1.json": {
-   "sha256": "c2f8fff3159fd7d3359d261b163013b299aca06dab808fb91127d0354092e2c4",
-   "bytes": 6119
+   "sha256": "4856d64a9775ac0eae9a7844ced840b2499bd50f8ab9db2a192a924533ac021f",
+   "bytes": 6110
   }
  },
  "runtime_only": {

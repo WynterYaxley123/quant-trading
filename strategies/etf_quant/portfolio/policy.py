@@ -64,6 +64,19 @@ REQUIRE_TARGET_IS_LARGEST_B40 = True
 CASH_INSTRUMENT_ID = "CASH"
 CASH_SEMANTICS = "UNALLOCATED_EXECUTION_CAPACITY"
 CASH_RETURN_DEFINITION = "UNDEFINED_IN_THIS_ROUND"
+#: The cash contract's own field name, so the two documents cannot drift apart.
+CASH_WEIGHT_FIELD = "unallocated_execution_capacity_weight"
+#: Using 0.0 as an implicit risk-free rate is not neutral: it silently changes NAV and every
+#: downstream ratio. The return is therefore explicitly unmodelled rather than defaulted.
+CASH_RETURN_MODEL = "UNDEFINED_NOT_MODELLED_THIS_ROUND"
+#: A single explicit switch, plus a string-typed zero so the "nothing was redistributed" claim can be
+#: compared literally instead of through a float tolerance that would hide a small leak.
+EXECUTION_REDISTRIBUTION_ENABLED = False
+RENORMALISATION_MODE = "NEVER_RENORMALISE_ACROSS_EXECUTION_FILTER"
+REDISTRIBUTED_WEIGHT_LITERAL = "0"
+#: Cash generates no order at all. A zero-quantity intent or a sentinel instrument would both leak
+#: cash into the member set and silently disable the executability rebalance trigger.
+CASH_ORDER_OUTCOME = "NO_ORDER_UNEXECUTABLE_SIGNAL"
 
 #: Redistribution behaviour. ``B40_WITH_CASH`` must use RETAIN_AS_CASH; the enum exists so that
 #: "cash happened to stay put" and "cash was contractually retained" are distinguishable.
@@ -80,8 +93,18 @@ REASON_NO_CANDIDATE = "NO_CANDIDATE"
 #: Rebalance trigger semantics. A change in *executability* is a change in the final executable
 #: member set: an industry that was cash yesterday and executable today must be traded into, and a
 #: policy that ignored this would leave the account permanently under-invested after a one-off data
-#: gap. The trigger is therefore named explicitly rather than left as an implied equality on ETFs.
-REBALANCE_TRIGGER = "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_TRANSITIONS"
+#: gap. Worse, it would let the ranking, the persisted intent and the actual holdings describe three
+#: different portfolios, and because a missed T+1 is blocking rather than back-filled, that
+#: divergence is not repairable after the fact.
+#:
+#: Implementation note: the frozen ``rebalance_decision`` asserts an exactly-five-member set and must
+#: NOT be relaxed to accept four -- that assertion is what validates identity on the strict path. The
+#: executability rule therefore belongs in a *sibling* function in a new module, selected by an
+#: explicit policy flag, with the frozen function left byte-identical and still the default.
+REBALANCE_TRIGGER = "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1"
+REBALANCE_TRIGGER_FROZEN_PREDECESSOR = "EXECUTABLE_ETF_SET_CHANGE_ONLY"
+REBALANCE_SIBLING_FUNCTION = "rebalance_decision_v2"
+MAPPING_SELECTION_SIBLING_FUNCTION = "select_mappings_partial"
 
 SINGLE_ETF_CAP = 0.35
 
@@ -505,8 +528,18 @@ __all__ = [
     "ALL_POLICIES",
     "BenchmarkExposureVector",
     "CASH_INSTRUMENT_ID",
+    "CASH_ORDER_OUTCOME",
     "CASH_RETURN_DEFINITION",
+    "CASH_RETURN_MODEL",
     "CASH_SEMANTICS",
+    "CASH_WEIGHT_FIELD",
+    "EXECUTION_REDISTRIBUTION_ENABLED",
+    "MAPPING_SELECTION_SIBLING_FUNCTION",
+    "RENORMALISATION_MODE",
+    "REDISTRIBUTED_WEIGHT_LITERAL",
+    "REBALANCE_SIBLING_FUNCTION",
+    "REBALANCE_TRIGGER",
+    "REBALANCE_TRIGGER_FROZEN_PREDECESSOR",
     "IndustryCandidate",
     "MIN_TARGET_EXPOSURE_B40",
     "POLICY_A40_FULLY_INVESTED",

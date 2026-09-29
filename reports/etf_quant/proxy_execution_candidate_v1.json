@@ -5,7 +5,7 @@
  "base_strategy": "ETF_QUANT_V1",
  "execution_variant": "PROXY_EXPOSURE_V1",
  "execution_policy": "B40_WITH_CASH",
- "created_at": "2026-09-29T18:17:20+09:00",
+ "created_at": "2026-09-29T18:23:56+09:00",
  "historical_reference_cutoff": "2026-09-24",
  "evidence_observed_at": "2026-09-29T09:15:41.211971+00:00",
  "production_ready_from": "2026-09-29T09:15:41.211971+00:00",
@@ -198,7 +198,7 @@
   "sum_risk_plus_cash": 1.0
  },
  "t1_contract": "DELAYED_T1_OPEN_ACCOUNTING",
- "rebalance_trigger": "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_TRANSITIONS",
+ "rebalance_trigger": "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1",
  "known_limitations": [
   "Cash return is undefined in this round; cash is unallocated execution capacity, not an asset.",
   "35% of the account is uninvested because the model's top-ranked industry has no faithful instrument.",
