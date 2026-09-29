@@ -1,0 +1,748 @@
+{
+ "artifact": "PROXY_EXECUTION_POLICY_COMPARISON_V1",
+ "mapping_type": "PROXY_EXPOSURE",
+ "historical_engineering_reference_date": "2026-09-24",
+ "classification": "EX_POST_ENGINEERING_PROXY_ANALYSIS",
+ "not_formal_signal": true,
+ "single_etf_cap": 0.35,
+ "b40_rule": {
+  "min_target_exposure": 40.0,
+  "target_must_be_largest": true
+ },
+ "current_top5": [
+  "3706",
+  "3703",
+  "4901",
+  "4803",
+  "3701"
+ ],
+ "current_top5_names": [
+  "医疗服务",
+  "生物制品",
+  "证券Ⅱ",
+  "股份制银行Ⅱ",
+  "化学制药"
+ ],
+ "reference_target_weights_full_signal": {
+  "3701": 0.121968601701,
+  "3703": 0.260436961183,
+  "3706": 0.35,
+  "4803": 0.125683987161,
+  "4901": 0.141910449955
+ },
+ "renormalization_distortion": {
+  "rows": {
+   "3701": {
+    "weight_reference": 0.121968601701,
+    "weight_renormalized": 0.203509017042,
+    "absolute_uplift": 0.081540415341,
+    "relative_uplift": 0.66853612
+   },
+   "3703": {
+    "weight_reference": 0.260436961183,
+    "weight_renormalized": 0.35,
+    "absolute_uplift": 0.089563038817,
+    "relative_uplift": 0.34389527
+   },
+   "4803": {
+    "weight_reference": 0.125683987161,
+    "weight_renormalized": 0.209708271869,
+    "absolute_uplift": 0.084024284708,
+    "relative_uplift": 0.66853612
+   },
+   "4901": {
+    "weight_reference": 0.141910449955,
+    "weight_renormalized": 0.236782711089,
+    "absolute_uplift": 0.094872261134,
+    "relative_uplift": 0.66853612
+   }
+  },
+  "max_absolute_uplift": 0.094872261134,
+  "max_relative_uplift": 0.66853612,
+  "total_uplift": 0.35
+ },
+ "evidence_observed_at": "2026-09-29T09:15:41.211971+00:00",
+ "liquidity_source": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-policy-finalization-v1\\subagents\\subagent-c-final-bars\\final_candidate_liquidity_v1.json",
+ "summary_table": {
+  "A40_FULLY_INVESTED": {
+   "risk_asset_count": 5,
+   "cash_weight": 0.0,
+   "minimum_individual_purity": 41.48,
+   "weighted_target_l2_purity": 52.787308,
+   "weighted_leakage": 47.212692,
+   "largest_unintended_l2_code": "3705",
+   "largest_unintended_l2_weight": 0.2008978,
+   "max_etf_weight": 0.35,
+   "actual_l2_hhi": 0.158474,
+   "etf_weight_hhi": 0.24113879,
+   "weighted_mean_amount_cny_20d": 450868719.13,
+   "min_etf_mean_amount_cny_20d": 7483183.8625,
+   "cap_respected": true,
+   "sum_risk_plus_cash": 1.0
+  },
+  "B40_RENORMALIZED": {
+   "risk_asset_count": 4,
+   "cash_weight": 0.0,
+   "minimum_individual_purity": 41.48,
+   "weighted_target_l2_purity": 57.974315,
+   "weighted_leakage": 42.025685,
+   "largest_unintended_l2_code": "4802",
+   "largest_unintended_l2_weight": 0.0616752,
+   "max_etf_weight": 0.35,
+   "actual_l2_hhi": 0.15927323,
+   "etf_weight_hhi": 0.26395953,
+   "weighted_mean_amount_cny_20d": 535904781.27,
+   "min_etf_mean_amount_cny_20d": 7483183.8625,
+   "cap_respected": true,
+   "sum_risk_plus_cash": 1.0
+  },
+  "B40_WITH_CASH": {
+   "risk_asset_count": 4,
+   "cash_weight": 0.35,
+   "minimum_individual_purity": 41.48,
+   "weighted_target_l2_purity": 57.072012,
+   "weighted_leakage": 42.927988,
+   "largest_unintended_l2_code": "4802",
+   "largest_unintended_l2_weight": 0.03696366,
+   "max_etf_weight": 0.260436961183,
+   "actual_l2_hhi": 0.16073276,
+   "etf_weight_hhi": 0.28080187,
+   "weighted_mean_amount_cny_20d": 494710457.85,
+   "min_etf_mean_amount_cny_20d": 7483183.8625,
+   "cap_respected": true,
+   "sum_risk_plus_cash": 1.0
+  }
+ },
+ "policies": {
+  "A40_FULLY_INVESTED": {
+   "policy": "A40_FULLY_INVESTED",
+   "cash_weight": 0.0,
+   "risk_asset_weight": 1.0,
+   "cash_instrument_id": "CASH",
+   "cash_semantics": "UNALLOCATED_EXECUTION_CAPACITY",
+   "cash_return_definition": "UNDEFINED_IN_THIS_ROUND",
+   "rebalance_trigger": "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_TRANSITIONS",
+   "executed": [
+    {
+     "l2_code": "3706",
+     "l2_name": "医疗服务",
+     "etf_code": "512170.SH",
+     "benchmark_code": "399989",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.35,
+     "nominal_weight": 0.35,
+     "target_l2_exposure": 44.83,
+     "second_largest_l2_exposure": 49.43,
+     "dominance_margin": -4.6,
+     "target_is_largest_l2": false,
+     "mean_amount_cny_20d": 369448347.2,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "3703",
+     "l2_name": "生物制品",
+     "etf_code": "159643.SZ",
+     "benchmark_code": "980015",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.260436961183,
+     "nominal_weight": 0.260436961183,
+     "target_l2_exposure": 46.4,
+     "second_largest_l2_exposure": 23.34,
+     "dominance_margin": 23.06,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 7483183.8625,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "4901",
+     "l2_name": "证券Ⅱ",
+     "etf_code": "512880.SH",
+     "benchmark_code": "399975",
+     "mapping_type": "STRICT_MAPPING",
+     "weight": 0.141910449955,
+     "nominal_weight": 0.141910449955,
+     "target_l2_exposure": 100.0,
+     "second_largest_l2_exposure": 0.0,
+     "dominance_margin": 100.0,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 1587489430.4,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "STRICT"
+    },
+    {
+     "l2_code": "4803",
+     "l2_name": "股份制银行Ⅱ",
+     "etf_code": "159887.SZ",
+     "benchmark_code": "H30022",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.125683987161,
+     "nominal_weight": 0.125683987161,
+     "target_l2_exposure": 41.48,
+     "second_largest_l2_exposure": 29.41,
+     "dominance_margin": 12.07,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 86955231.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "3701",
+     "l2_name": "化学制药",
+     "etf_code": "159992.SZ",
+     "benchmark_code": "931152",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.121968601701,
+     "nominal_weight": 0.121968601701,
+     "target_l2_exposure": 45.98,
+     "second_largest_l2_exposure": 27.99,
+     "dominance_margin": 17.99,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 683804513.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    }
+   ],
+   "skipped": [],
+   "actual_l2_exposure": {
+    "3706": 0.24034473,
+    "3705": 0.2008978,
+    "3703": 0.14554139,
+    "4901": 0.14191045,
+    "3701": 0.11686715,
+    "4803": 0.05213372,
+    "4802": 0.03696366,
+    "4804": 0.03206199,
+    "7703": 0.0119,
+    "3702": 0.00874098,
+    "7104": 0.00525,
+    "4805": 0.00453719,
+    "7701": 0.002905
+   },
+   "actual_target_exposure": {
+    "3701": 0.11686715,
+    "3703": 0.14554139,
+    "3706": 0.24034473,
+    "4803": 0.05213372,
+    "4901": 0.14191045
+   },
+   "fidelity_gap": {
+    "3701": -0.00510145,
+    "3703": -0.11489557,
+    "3706": -0.10965527,
+    "4803": -0.07355027,
+    "4901": 0.0
+   },
+   "metrics": {
+    "weighted_target_l2_purity": 52.787308,
+    "minimum_individual_purity": 41.48,
+    "maximum_individual_purity": 100.0,
+    "weighted_leakage": 47.212692,
+    "largest_unintended_l2_code": "3705",
+    "largest_unintended_l2_weight": 0.2008978,
+    "top5_unintended_l2s": [
+     {
+      "l2_code": "3705",
+      "weight": 0.2008978
+     },
+     {
+      "l2_code": "4802",
+      "weight": 0.03696366
+     },
+     {
+      "l2_code": "4804",
+      "weight": 0.03206199
+     },
+     {
+      "l2_code": "7703",
+      "weight": 0.0119
+     },
+     {
+      "l2_code": "3702",
+      "weight": 0.00874098
+     }
+    ],
+    "actual_l2_hhi": 0.158474,
+    "etf_weight_hhi": 0.24113879,
+    "incidental_target_exposure": {},
+    "incidental_target_weight_total": 0.0,
+    "weighted_mean_amount_cny_20d": 450868719.13,
+    "min_etf_mean_amount_cny_20d": 7483183.8625,
+    "thinnest_etf_code": "159643.SZ",
+    "cash_weight": 0.0,
+    "risk_asset_weight": 1.0,
+    "risk_asset_count": 5,
+    "max_etf_weight": 0.35,
+    "single_etf_cap": 0.35,
+    "cap_respected": true,
+    "sum_risk_plus_cash": 1.0
+   },
+   "notes": []
+  },
+  "B40_RENORMALIZED": {
+   "policy": "B40_RENORMALIZED",
+   "cash_weight": 0.0,
+   "risk_asset_weight": 1.0,
+   "cash_instrument_id": "CASH",
+   "cash_semantics": "UNALLOCATED_EXECUTION_CAPACITY",
+   "cash_return_definition": "UNDEFINED_IN_THIS_ROUND",
+   "rebalance_trigger": "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_TRANSITIONS",
+   "executed": [
+    {
+     "l2_code": "3703",
+     "l2_name": "生物制品",
+     "etf_code": "159643.SZ",
+     "benchmark_code": "980015",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.35,
+     "nominal_weight": 0.35,
+     "target_l2_exposure": 46.4,
+     "second_largest_l2_exposure": 23.34,
+     "dominance_margin": 23.06,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 7483183.8625,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "4901",
+     "l2_name": "证券Ⅱ",
+     "etf_code": "512880.SH",
+     "benchmark_code": "399975",
+     "mapping_type": "STRICT_MAPPING",
+     "weight": 0.236782711089,
+     "nominal_weight": 0.236782711089,
+     "target_l2_exposure": 100.0,
+     "second_largest_l2_exposure": 0.0,
+     "dominance_margin": 100.0,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 1587489430.4,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "STRICT"
+    },
+    {
+     "l2_code": "4803",
+     "l2_name": "股份制银行Ⅱ",
+     "etf_code": "159887.SZ",
+     "benchmark_code": "H30022",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.209708271869,
+     "nominal_weight": 0.209708271869,
+     "target_l2_exposure": 41.48,
+     "second_largest_l2_exposure": 29.41,
+     "dominance_margin": 12.07,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 86955231.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "3701",
+     "l2_name": "化学制药",
+     "etf_code": "159992.SZ",
+     "benchmark_code": "931152",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.203509017042,
+     "nominal_weight": 0.203509017042,
+     "target_l2_exposure": 45.98,
+     "second_largest_l2_exposure": 27.99,
+     "dominance_margin": 17.99,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 683804513.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    }
+   ],
+   "skipped": [
+    {
+     "l2_code": "3706",
+     "l2_name": "医疗服务",
+     "reason": "TARGET_NOT_LARGEST_L2",
+     "weight_forfeited": 0.35,
+     "target_l2_exposure": 44.83,
+     "target_is_largest_l2": false
+    }
+   ],
+   "actual_l2_exposure": {
+    "4901": 0.23678271,
+    "3703": 0.20361058,
+    "3701": 0.17526345,
+    "3706": 0.12321717,
+    "4803": 0.08698699,
+    "4802": 0.0616752,
+    "4804": 0.05349658,
+    "3705": 0.037485,
+    "3702": 0.01404352,
+    "4805": 0.00757047
+   },
+   "actual_target_exposure": {
+    "3701": 0.17526345,
+    "3703": 0.20361058,
+    "3706": 0.12321717,
+    "4803": 0.08698699,
+    "4901": 0.23678271
+   },
+   "fidelity_gap": {
+    "3701": -0.02824557,
+    "3703": -0.14638942,
+    "3706": 0.12321717,
+    "4803": -0.12272128,
+    "4901": 0.0
+   },
+   "metrics": {
+    "weighted_target_l2_purity": 57.974315,
+    "minimum_individual_purity": 41.48,
+    "maximum_individual_purity": 100.0,
+    "weighted_leakage": 42.025685,
+    "largest_unintended_l2_code": "4802",
+    "largest_unintended_l2_weight": 0.0616752,
+    "top5_unintended_l2s": [
+     {
+      "l2_code": "4802",
+      "weight": 0.0616752
+     },
+     {
+      "l2_code": "4804",
+      "weight": 0.05349658
+     },
+     {
+      "l2_code": "3705",
+      "weight": 0.037485
+     },
+     {
+      "l2_code": "3702",
+      "weight": 0.01404352
+     },
+     {
+      "l2_code": "4805",
+      "weight": 0.00757047
+     }
+    ],
+    "actual_l2_hhi": 0.15927323,
+    "etf_weight_hhi": 0.26395953,
+    "incidental_target_exposure": {
+     "3706": 0.12321717
+    },
+    "incidental_target_weight_total": 0.12321717,
+    "weighted_mean_amount_cny_20d": 535904781.27,
+    "min_etf_mean_amount_cny_20d": 7483183.8625,
+    "thinnest_etf_code": "159643.SZ",
+    "cash_weight": 0.0,
+    "risk_asset_weight": 1.0,
+    "risk_asset_count": 4,
+    "max_etf_weight": 0.35,
+    "single_etf_cap": 0.35,
+    "cap_respected": true,
+    "sum_risk_plus_cash": 1.0
+   },
+   "notes": [
+    "B40_RENORMALIZED: survivors re-softmaxed over the survivor set, so each survivor is sized larger than the model asked for. The deleted signal is gone entirely."
+   ]
+  },
+  "B40_WITH_CASH": {
+   "policy": "B40_WITH_CASH",
+   "cash_weight": 0.35,
+   "risk_asset_weight": 0.65,
+   "cash_instrument_id": "CASH",
+   "cash_semantics": "UNALLOCATED_EXECUTION_CAPACITY",
+   "cash_return_definition": "UNDEFINED_IN_THIS_ROUND",
+   "rebalance_trigger": "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_TRANSITIONS",
+   "executed": [
+    {
+     "l2_code": "3703",
+     "l2_name": "生物制品",
+     "etf_code": "159643.SZ",
+     "benchmark_code": "980015",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.260436961183,
+     "nominal_weight": 0.260436961183,
+     "target_l2_exposure": 46.4,
+     "second_largest_l2_exposure": 23.34,
+     "dominance_margin": 23.06,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 7483183.8625,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "4901",
+     "l2_name": "证券Ⅱ",
+     "etf_code": "512880.SH",
+     "benchmark_code": "399975",
+     "mapping_type": "STRICT_MAPPING",
+     "weight": 0.141910449955,
+     "nominal_weight": 0.141910449955,
+     "target_l2_exposure": 100.0,
+     "second_largest_l2_exposure": 0.0,
+     "dominance_margin": 100.0,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 1587489430.4,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "STRICT"
+    },
+    {
+     "l2_code": "4803",
+     "l2_name": "股份制银行Ⅱ",
+     "etf_code": "159887.SZ",
+     "benchmark_code": "H30022",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.125683987161,
+     "nominal_weight": 0.125683987161,
+     "target_l2_exposure": 41.48,
+     "second_largest_l2_exposure": 29.41,
+     "dominance_margin": 12.07,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 86955231.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    },
+    {
+     "l2_code": "3701",
+     "l2_name": "化学制药",
+     "etf_code": "159992.SZ",
+     "benchmark_code": "931152",
+     "mapping_type": "PROXY_EXPOSURE",
+     "weight": 0.121968601701,
+     "nominal_weight": 0.121968601701,
+     "target_l2_exposure": 45.98,
+     "second_largest_l2_exposure": 27.99,
+     "dominance_margin": 17.99,
+     "target_is_largest_l2": true,
+     "mean_amount_cny_20d": 683804513.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "grade": "UNSUITABLE"
+    }
+   ],
+   "skipped": [
+    {
+     "l2_code": "3706",
+     "l2_name": "医疗服务",
+     "reason": "TARGET_NOT_LARGEST_L2",
+     "weight_forfeited": 0.35,
+     "target_l2_exposure": 44.83,
+     "target_is_largest_l2": false
+    }
+   ],
+   "actual_l2_exposure": {
+    "3703": 0.14554139,
+    "4901": 0.14191045,
+    "3701": 0.11686715,
+    "3706": 0.08343973,
+    "4803": 0.05213372,
+    "4802": 0.03696366,
+    "4804": 0.03206199,
+    "3705": 0.0278928,
+    "3702": 0.00874098,
+    "4805": 0.00453719
+   },
+   "actual_target_exposure": {
+    "3701": 0.11686715,
+    "3703": 0.14554139,
+    "3706": 0.08343973,
+    "4803": 0.05213372,
+    "4901": 0.14191045
+   },
+   "fidelity_gap": {
+    "3701": -0.00510145,
+    "3703": -0.11489557,
+    "3706": 0.08343973,
+    "4803": -0.07355027,
+    "4901": 0.0
+   },
+   "metrics": {
+    "weighted_target_l2_purity": 57.072012,
+    "minimum_individual_purity": 41.48,
+    "maximum_individual_purity": 100.0,
+    "weighted_leakage": 42.927988,
+    "largest_unintended_l2_code": "4802",
+    "largest_unintended_l2_weight": 0.03696366,
+    "top5_unintended_l2s": [
+     {
+      "l2_code": "4802",
+      "weight": 0.03696366
+     },
+     {
+      "l2_code": "4804",
+      "weight": 0.03206199
+     },
+     {
+      "l2_code": "3705",
+      "weight": 0.0278928
+     },
+     {
+      "l2_code": "3702",
+      "weight": 0.00874098
+     },
+     {
+      "l2_code": "4805",
+      "weight": 0.00453719
+     }
+    ],
+    "actual_l2_hhi": 0.16073276,
+    "etf_weight_hhi": 0.28080187,
+    "incidental_target_exposure": {
+     "3706": 0.08343973
+    },
+    "incidental_target_weight_total": 0.08343973,
+    "weighted_mean_amount_cny_20d": 494710457.85,
+    "min_etf_mean_amount_cny_20d": 7483183.8625,
+    "thinnest_etf_code": "159643.SZ",
+    "cash_weight": 0.35,
+    "risk_asset_weight": 0.65,
+    "risk_asset_count": 4,
+    "max_etf_weight": 0.260436961183,
+    "single_etf_cap": 0.35,
+    "cap_respected": true,
+    "sum_risk_plus_cash": 1.0
+   },
+   "notes": [
+    "B40_WITH_CASH: survivor weights are the original target weights, unchanged. Cash equals the forfeited target weights exactly; redistribution is zero.",
+    "UNEXECUTED_SIGNAL_WEIGHT 3706=0.350000 retained as cash, not redistributed."
+   ]
+  }
+ },
+ "robustness_liquidity_first": {
+  "artifact": "PROXY_POLICY_INSTRUMENT_RULE_ROBUSTNESS_V1",
+  "policy_ranking_unchanged": true,
+  "summary_table": {
+   "A40_FULLY_INVESTED": {
+    "weighted_target_l2_purity": 52.599935,
+    "minimum_individual_purity": 40.3,
+    "maximum_individual_purity": 100.0,
+    "weighted_leakage": 47.400065,
+    "largest_unintended_l2_code": "3705",
+    "largest_unintended_l2_weight": 0.18131294,
+    "top5_unintended_l2s": [
+     {
+      "l2_code": "3705",
+      "weight": 0.18131294
+     },
+     {
+      "l2_code": "4802",
+      "weight": 0.03529206
+     },
+     {
+      "l2_code": "4804",
+      "weight": 0.03274068
+     },
+     {
+      "l2_code": "7703",
+      "weight": 0.02164034
+     },
+     {
+      "l2_code": "3702",
+      "weight": 0.00707418
+     }
+    ],
+    "actual_l2_hhi": 0.16847447,
+    "etf_weight_hhi": 0.24113879,
+    "incidental_target_exposure": {},
+    "incidental_target_weight_total": 0.0,
+    "weighted_mean_amount_cny_20d": 580642986.62,
+    "min_etf_mean_amount_cny_20d": 128310615.4,
+    "thinnest_etf_code": "159859.SZ",
+    "cash_weight": 0.0,
+    "risk_asset_weight": 1.0,
+    "risk_asset_count": 5,
+    "max_etf_weight": 0.35,
+    "single_etf_cap": 0.35,
+    "cap_respected": true,
+    "sum_risk_plus_cash": 1.0
+   },
+   "B40_RENORMALIZED": {
+    "weighted_target_l2_purity": 57.674359,
+    "minimum_individual_purity": 40.3,
+    "maximum_individual_purity": 100.0,
+    "weighted_leakage": 42.325641,
+    "largest_unintended_l2_code": "4802",
+    "largest_unintended_l2_weight": 0.05888608,
+    "top5_unintended_l2s": [
+     {
+      "l2_code": "4802",
+      "weight": 0.05888608
+     },
+     {
+      "l2_code": "4804",
+      "weight": 0.054629
+     },
+     {
+      "l2_code": "7703",
+      "weight": 0.01309
+     },
+     {
+      "l2_code": "3702",
+      "weight": 0.01180352
+     },
+     {
+      "l2_code": "4805",
+      "weight": 0.01170172
+     }
+    ],
+    "actual_l2_hhi": 0.1624575,
+    "etf_weight_hhi": 0.26395953,
+    "incidental_target_exposure": {
+     "3706": 0.18527217
+    },
+    "incidental_target_weight_total": 0.18527217,
+    "weighted_mean_amount_cny_20d": 742222058.43,
+    "min_etf_mean_amount_cny_20d": 128310615.4,
+    "thinnest_etf_code": "159859.SZ",
+    "cash_weight": 0.0,
+    "risk_asset_weight": 1.0,
+    "risk_asset_count": 4,
+    "max_etf_weight": 0.35,
+    "single_etf_cap": 0.35,
+    "cap_respected": true,
+    "sum_risk_plus_cash": 1.0
+   },
+   "B40_WITH_CASH": {
+    "weighted_target_l2_purity": 56.783747,
+    "minimum_individual_purity": 40.3,
+    "maximum_individual_purity": 100.0,
+    "weighted_leakage": 43.216253,
+    "largest_unintended_l2_code": "4802",
+    "largest_unintended_l2_weight": 0.03529206,
+    "top5_unintended_l2s": [
+     {
+      "l2_code": "4802",
+      "weight": 0.03529206
+     },
+     {
+      "l2_code": "4804",
+      "weight": 0.03274068
+     },
+     {
+      "l2_code": "7703",
+      "weight": 0.00974034
+     },
+     {
+      "l2_code": "3705",
+      "weight": 0.00830794
+     },
+     {
+      "l2_code": "3702",
+      "weight": 0.00707418
+     }
+    ],
+    "actual_l2_hhi": 0.16558263,
+    "etf_weight_hhi": 0.28080187,
+    "incidental_target_exposure": {
+     "3706": 0.1296152
+    },
+    "incidental_target_weight_total": 0.1296152,
+    "weighted_mean_amount_cny_20d": 694363177.08,
+    "min_etf_mean_amount_cny_20d": 128310615.4,
+    "thinnest_etf_code": "159859.SZ",
+    "cash_weight": 0.35,
+    "risk_asset_weight": 0.65,
+    "risk_asset_count": 4,
+    "max_etf_weight": 0.260436961183,
+    "single_etf_cap": 0.35,
+    "cap_respected": true,
+    "sum_risk_plus_cash": 1.0
+   }
+  }
+ },
+ "recommended_policy": "B40_WITH_CASH"
+}
