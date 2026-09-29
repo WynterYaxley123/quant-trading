@@ -12,14 +12,14 @@ Codex 下一步只做 **REVIEW + FINAL READINESS CERTIFICATION**，
 |----|-----|
 | branch | `agent/deepseek-production-pit-evidence-v1` |
 | base SHA | `42eb601bfc80991847e301f14387cdff77323b96` |
-| final SHA | `d14cd2e9d020e3b945e7f93ddcf47240a7ad759c` |
-| commit range | `42eb601..d14cd2e`（1 个提交，15 个文件，+5974 行，无删除） |
+| final SHA | `45241b12e27dce33c6fd8b3d4b4f2b6c2e030324` |
+| commit range | `42eb601..45241b1`（4 个提交） |
 | worktree | `D:\quant-worktrees\deepseek-production-pit-evidence-v1` |
 | merge-base | `42eb601bfc80991847e301f14387cdff77323b96` |
 | working tree | clean（`git status --short` 为空） |
 | push | **未执行** |
 | registry path | `reports/etf_quant/production_pit_evidence_registry_v1.json` |
-| registry sha256 | `dea8c16040c9d41fca098d905121207c11a3a8fbfd3f1d5aa107783e46650cc7` |
+| registry sha256 | `81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc` |
 
 `main` / 旧 integration / 旧 DeepSeek / 旧 Codex worktree **全部只读未改动**。
 未执行 reset / clean / stash / rebase / force checkout / push。
@@ -256,6 +256,34 @@ python scripts/etf_quant/build_production_pit_manifest.py
 5. 确认 `git diff --stat <base> -- strategies/etf_quant/{mapping,portfolio,runtime,models,factors}` 为空。
 6. 依 `Evidence Readiness` 定义（见 registry 文档第 1 节）决定
    `ETF_QUANT_PROXY_READY_FOR_SHADOW`。**本轮不自行把它改成 TRUE。**
+
+---
+
+## 11b. 与独立 155 次官方扫描的一致性核对
+
+另一个独立子智能体对官方 API 做了 **155 次**逐行业扫描（31 一级 + 124 二级），
+报告 L1 覆盖 5,220 只、L2 覆盖 5,200 只，并列出**恰好 20 只**"有 L1 无 L2"的证券。
+
+把本轮补收的 10 个二级行业加回去后核对：
+
+| 核对项 | 结果 |
+|--------|------|
+| 本轮 L2 并集证券数 | **5,220** |
+| 独立 L1 扫描并集证券数 | **5,220** —— **完全相等** |
+| 独立报告的 20 只"有 L1 无 L2" | **20/20 全部由这 10 个行业补回**，无遗漏、无多余 |
+| 同一证券落入多个 L2 | **0** |
+| 每个行业 `count == len(results)` | **134/134 通过** |
+
+**剩余 12 个 benchmark 的 fail closed 责任证券只有 2 只**：
+
+| 证券 | 名称 | 阻塞数 | 官方申万归属 |
+|------|------|--------|--------------|
+| `689009` | 九号公司 | 6 | **无**（134 个 L2 与 31 个 L1 响应中都不出现） |
+| `920982` | 锦波生物 | 7 | **无**（同上） |
+
+两只都是真实上市公司，且 **CSI CICS 与研究 sidecar 都在给它们归类**——
+只有申万官方行业指数不收它们。这是数据源覆盖差异，不是检索缺陷。
+已在审计模块中用测试锁死：官方若补收，测试立即失败并提示重跑构建。
 
 ---
 
