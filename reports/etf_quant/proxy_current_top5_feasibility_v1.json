@@ -1922,7 +1922,7 @@
     "pairs": [
      {
       "target_l2_code": "3701",
-      "etf_code": "159835.SZ"
+      "etf_code": "159992.SZ"
      },
      {
       "target_l2_code": "3703",
@@ -1930,7 +1930,7 @@
      },
      {
       "target_l2_code": "3706",
-      "etf_code": "159828.SZ"
+      "etf_code": "512170.SH"
      },
      {
       "target_l2_code": "4803",
@@ -1938,7 +1938,7 @@
      },
      {
       "target_l2_code": "4901",
-      "etf_code": "159008.SZ"
+      "etf_code": "512880.SH"
      }
     ],
     "total_target_exposure": 278.69,
@@ -1954,7 +1954,7 @@
      "pairs": [
       {
        "target_l2_code": "3701",
-       "etf_code": "159835.SZ"
+       "etf_code": "159992.SZ"
       },
       {
        "target_l2_code": "3703",
@@ -1962,7 +1962,7 @@
       },
       {
        "target_l2_code": "3706",
-       "etf_code": "159828.SZ"
+       "etf_code": "512170.SH"
       },
       {
        "target_l2_code": "4803",
@@ -1970,7 +1970,7 @@
       },
       {
        "target_l2_code": "4901",
-       "etf_code": "159008.SZ"
+       "etf_code": "512880.SH"
       }
      ],
      "total_target_exposure": 278.69,

@@ -540,7 +540,14 @@ def solve_distinct_assignment(targets, candidates_by_target, *, require_all_targ
       1. cover as many targets as possible;
       2. then maximise the *minimum* target exposure (nobody is carried by the average);
       3. then maximise the total target exposure;
-      4. then maximise the mean dominance margin.
+      4. then maximise the mean dominance margin;
+      5. then maximise traded amount.
+
+    Step 5 is not decoration. Several ETFs track the same benchmark and therefore carry *identical*
+    exposure for a target, so steps 1-4 tie exactly. Without a size term the tie falls to whatever
+    order the candidate codes happen to be in, which can select an ETF trading a few million yuan a
+    day over one trading more than a billion for the very same index -- a real, avoidable execution
+    defect that no exposure metric would ever reveal.
     """
     targets = list(targets)
     if not targets:
@@ -551,16 +558,14 @@ def solve_distinct_assignment(targets, candidates_by_target, *, require_all_targ
                 raise ProxyError(f"NO_CANDIDATE_FOR_TARGET:{target}")
 
     eligible = {t: sorted({e for e in candidates_by_target.get(t, {})}) for t in targets}
-    empty_only = [t for t in targets if not eligible[t]]
 
     full = (1 << len(targets)) - 1
-    NEG = float("-inf")
-    # best[mask] = (objective tuple) using the ETF assigned for each target in mask.
-    best: dict[int, tuple] = {0: (0, 0.0, 0.0, 0.0, ())}
+    # best[mask] = objective tuple using the ETF assigned for each target in mask.
+    best: dict[int, tuple] = {0: (0, 0.0, 0.0, 0.0, 0.0, ())}
     for mask in range(full + 1):
         if mask not in best:
             continue
-        covered, min_exp, total_exp, total_margin, pairs = best[mask]
+        covered, min_exp, total_exp, total_margin, total_liq, pairs = best[mask]
         used = {e for _, e in pairs}
         for index, target in enumerate(targets):
             if mask & (1 << index):
@@ -576,18 +581,19 @@ def solve_distinct_assignment(targets, candidates_by_target, *, require_all_targ
                     round(new_min, 9),
                     round(total_exp + cand.target_l2_exposure, 9),
                     round(total_margin + cand.dominance_margin, 9),
+                    round(total_liq + (cand.mean_amount_cny or 0.0), 6),
                 )
                 key = mask | (1 << index)
                 prior = best.get(key)
-                if prior is None or objective > prior[:4]:
-                    best[key] = (objective[0], objective[1], objective[2], objective[3], new_pairs)
+                if prior is None or objective > prior[:5]:
+                    best[key] = (*objective, new_pairs)
 
     if full in best:
-        chosen = best[full][4]
+        chosen = best[full][5]
         return _summarise(list(chosen), candidates_by_target, "exact_subset_dp", [])
 
-    reachable = max(best, key=lambda m: (best[m][0], best[m][1]))
-    chosen = best[reachable][4]
+    reachable = max(best, key=lambda m: (best[m][0], best[m][1], best[m][4]))
+    chosen = best[reachable][5]
     covered_targets = {t for t, _ in chosen}
     unmapped = [t for t in targets if t not in covered_targets]
     return _summarise(list(chosen), candidates_by_target, "exact_subset_dp_partial", unmapped)
@@ -604,10 +610,11 @@ def greedy_assignment(targets, candidates_by_target, *, require_all_targets=Fals
     edges = []
     for target in targets:
         for etf, cand in candidates_by_target.get(target, {}).items():
-            edges.append((cand.target_l2_exposure, cand.dominance_margin, target, etf))
-    edges.sort(key=lambda e: (-e[0], -e[1], e[2], e[3]))
+            edges.append((cand.target_l2_exposure, cand.dominance_margin,
+                          cand.mean_amount_cny or 0.0, target, etf))
+    edges.sort(key=lambda e: (-e[0], -e[1], -e[2], e[3], e[4]))
     used_etfs, chosen = set(), []
-    for _, _, target, etf in edges:
+    for _, _, _, target, etf in edges:
         if etf in used_etfs or any(t == target for t, _ in chosen):
             continue
         used_etfs.add(etf)

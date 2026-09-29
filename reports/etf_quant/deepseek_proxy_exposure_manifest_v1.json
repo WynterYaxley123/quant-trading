@@ -1,10 +1,10 @@
 {
  "artifact": "DEEPSEEK_PROXY_EXPOSURE_MANIFEST_V1",
  "task": "ETF_QUANT_PROXY_EXPOSURE_V1",
- "created_at": "2026-09-29T16:27:54+09:00",
+ "created_at": "2026-09-29T16:29:28+09:00",
  "branch": "agent/deepseek-etf-quant-proxy-exposure-v1",
  "base_git_sha": "681b2ccb52fdb5d28a8607d3255e81975b628d02",
- "head_git_sha": "0c953e3ca970ff6d7c6ce2a2076c3668aeb35de7",
+ "head_git_sha": "01bae27dbdd6569cd50286dc1485e5a6ebc7cb60",
  "mapping_type": "PROXY_EXPOSURE",
  "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
  "strict_mapping_modified": false,
@@ -298,12 +298,12 @@
    "bytes": 13222
   },
   "proxy_current_top5_feasibility_v1.json": {
-   "sha256": "822d46f9728c45479bd2d7d1de4f51f2d8a96662c2e8116edea84b5886f7f131",
+   "sha256": "45dea5898f31d0da00595e935c6a9411dfd55f77996c7faafa81d560325d40b0",
    "bytes": 73232
   },
   "proxy_execution_candidate_v1.json": {
-   "sha256": "9191776c1c37ed83e994560a3e5f1c6e942d993c1516944540203415b8e70755",
-   "bytes": 14071
+   "sha256": "abc24f76912a64101ea004b6bf65156ba3efa47fd0affcaa04f7d8fa925f8945",
+   "bytes": 14050
   }
  },
  "artifacts_runtime_only": {

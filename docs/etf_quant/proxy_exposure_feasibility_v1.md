@@ -1,7 +1,7 @@
 # ETF-Quant V1 —— PROXY EXPOSURE 可行性研究（V1）
 
-- 生成时间：2026-09-29T16:27:55+09:00
-- 分支：`agent/deepseek-etf-quant-proxy-exposure-v1` ／ HEAD：`0c953e3ca970ff6d7c6ce2a2076c3668aeb35de7`
+- 生成时间：2026-09-29T16:29:29+09:00
+- 分支：`agent/deepseek-etf-quant-proxy-exposure-v1` ／ HEAD：`01bae27dbdd6569cd50286dc1485e5a6ebc7cb60`
 - 历史工程参考日（HISTORICAL_ENGINEERING_REFERENCE_DATE）：`2026-09-24`
 - 分类：`EX_POST_ENGINEERING_PROXY_ANALYSIS`（**不是** 2026-09-24 的真实前向信号）
 - mapping_type：`PROXY_EXPOSURE`（**不是** `STRICT_MAPPING`）

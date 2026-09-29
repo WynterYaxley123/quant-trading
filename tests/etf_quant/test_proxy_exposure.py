@@ -359,6 +359,48 @@ def test_exact_assignment_beats_greedy_on_the_minimum():
     assert exact.minimum_target_exposure > greedy.minimum_target_exposure
 
 
+def test_assignment_prefers_the_more_liquid_etf_when_exposure_ties():
+    """Two ETFs on the same index carry identical exposure, so only size can separate them.
+
+    Without a size term the choice falls to code order, which in production picked a fund trading
+    a few million yuan a day over one trading more than a billion for the very same index.
+    """
+    pool = {}
+    for target in ("A", "B"):
+        pool[target] = {}
+        for etf, amount in (("1.SH", 1.6e9), ("2.SZ", 6.5e6)):
+            pool[target][etf] = ExecutionCandidate(
+                target_l2_code=target, etf_code=etf, benchmark_code="B",
+                mapping_type=MAPPING_TYPE_PROXY, target_l2_exposure=100.0,
+                second_largest_l2_exposure=0.0, dominance_margin=100.0,
+                target_is_largest_l2=True, weight_quality=COMPLETE_WEIGHT_SET,
+                weight_source_type=OFFICIAL_WEIGHT, mean_amount_cny=amount)
+    result = solve_distinct_assignment(["A", "B"], pool)
+    assert set(result.pairs) == {("A", "1.SH"), ("B", "2.SZ")} or \
+        {e for _, e in result.pairs} == {"1.SH", "2.SZ"}
+    # the tie is broken by size, so the larger fund must take the alphabetically-earlier target
+    assert dict(result.pairs)["A"] == "1.SH"
+
+
+def test_assignment_still_prefers_exposure_over_liquidity():
+    """Size is the last tie-break, never a substitute for mapping quality."""
+    pool = _pool([("A", "rich.SH", 90.0, 30.0), ("A", "poor.SZ", 55.0, 5.0)])
+    pool["A"]["rich.SH"] = ExecutionCandidate(
+        target_l2_code="A", etf_code="rich.SH", benchmark_code="B",
+        mapping_type=MAPPING_TYPE_PROXY, target_l2_exposure=90.0,
+        second_largest_l2_exposure=60.0, dominance_margin=30.0, target_is_largest_l2=True,
+        weight_quality=COMPLETE_WEIGHT_SET, weight_source_type=OFFICIAL_WEIGHT,
+        mean_amount_cny=1.0e6)
+    pool["A"]["poor.SZ"] = ExecutionCandidate(
+        target_l2_code="A", etf_code="poor.SZ", benchmark_code="B",
+        mapping_type=MAPPING_TYPE_PROXY, target_l2_exposure=55.0,
+        second_largest_l2_exposure=50.0, dominance_margin=5.0, target_is_largest_l2=True,
+        weight_quality=COMPLETE_WEIGHT_SET, weight_source_type=OFFICIAL_WEIGHT,
+        mean_amount_cny=5.0e9)
+    result = solve_distinct_assignment(["A"], pool)
+    assert dict(result.pairs)["A"] == "rich.SH"
+
+
 def test_assignment_maximises_coverage_first():
     pool = _pool([("A", "e1", 90.0, 30.0)])
     result = solve_distinct_assignment(["A", "B"], pool, require_all_targets=False)

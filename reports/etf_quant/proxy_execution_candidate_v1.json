@@ -9,7 +9,7 @@
  "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
  "historical_reference_cutoff": "2026-09-24",
  "proxy_evidence_observed_at": "2026-09-29T16:27:41+0900",
- "candidate_created_at": "2026-09-29T16:27:54+09:00",
+ "candidate_created_at": "2026-09-29T16:29:28+09:00",
  "production_ready_from": "2026-09-29T16:27:41+0900",
  "production_ready_from_note": "not earlier than the time every proxy weight and liquidity input became available",
  "not_formal_signal": true,
@@ -41,7 +41,7 @@
   "pairs": [
    {
     "target_l2_code": "3701",
-    "etf_code": "159835.SZ"
+    "etf_code": "159992.SZ"
    },
    {
     "target_l2_code": "3703",
@@ -49,7 +49,7 @@
    },
    {
     "target_l2_code": "3706",
-    "etf_code": "159828.SZ"
+    "etf_code": "512170.SH"
    },
    {
     "target_l2_code": "4803",
@@ -57,7 +57,7 @@
    },
    {
     "target_l2_code": "4901",
-    "etf_code": "159008.SZ"
+    "etf_code": "512880.SH"
    }
   ],
   "total_target_exposure": 278.69,
@@ -251,7 +251,7 @@
    "pairs": [
     {
      "target_l2_code": "3701",
-     "etf_code": "159835.SZ"
+     "etf_code": "159992.SZ"
     },
     {
      "target_l2_code": "3703",
@@ -259,7 +259,7 @@
     },
     {
      "target_l2_code": "3706",
-     "etf_code": "159828.SZ"
+     "etf_code": "512170.SH"
     },
     {
      "target_l2_code": "4803",
@@ -267,7 +267,7 @@
     },
     {
      "target_l2_code": "4901",
-     "etf_code": "159008.SZ"
+     "etf_code": "512880.SH"
     }
    ],
    "total_target_exposure": 278.69,
@@ -284,7 +284,7 @@
    "pairs": [
     {
      "target_l2_code": "3701",
-     "etf_code": "159835.SZ"
+     "etf_code": "159992.SZ"
     },
     {
      "target_l2_code": "3703",
@@ -292,7 +292,7 @@
     },
     {
      "target_l2_code": "3706",
-     "etf_code": "159828.SZ"
+     "etf_code": "512170.SH"
     },
     {
      "target_l2_code": "4803",
@@ -300,7 +300,7 @@
     },
     {
      "target_l2_code": "4901",
-     "etf_code": "159008.SZ"
+     "etf_code": "512880.SH"
     }
    ],
    "total_target_exposure": 278.69,
@@ -323,8 +323,8 @@
    {
     "target_l2_code": "3706",
     "l2_name": "医疗服务",
-    "etf_code": "159828.SZ",
-    "etf_name": "医疗ETF国泰",
+    "etf_code": "512170.SH",
+    "etf_name": "医疗ETF",
     "benchmark_code": "399989",
     "mapping_type": "PROXY_EXPOSURE",
     "final_score": 2.3767168362915063,
@@ -334,7 +334,7 @@
     "second_largest_l2_exposure": 49.43,
     "dominance_margin": -4.6,
     "target_is_largest_l2": false,
-    "mean_amount_cny_20d": 44494396.7,
+    "mean_amount_cny_20d": 369448347.2,
     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
     "grade": "UNSUITABLE"
    },
@@ -359,10 +359,10 @@
    {
     "target_l2_code": "4901",
     "l2_name": "证券Ⅱ",
-    "etf_code": "159008.SZ",
-    "etf_name": "证券ETF景顺",
+    "etf_code": "512880.SH",
+    "etf_name": "证券ETF",
     "benchmark_code": "399975",
-    "mapping_type": "PROXY_EXPOSURE",
+    "mapping_type": "STRICT_MAPPING",
     "final_score": 1.2282859716780057,
     "raw_softmax_weight": 0.129305978,
     "capped_weight": 0.145080144,
@@ -370,9 +370,9 @@
     "second_largest_l2_exposure": 0.0,
     "dominance_margin": 100.0,
     "target_is_largest_l2": true,
-    "mean_amount_cny_20d": 6482512.5375,
+    "mean_amount_cny_20d": 1587489430.4,
     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
-    "grade": "HIGH_PURITY_PROXY"
+    "grade": "STRICT"
    },
    {
     "target_l2_code": "4803",
@@ -395,8 +395,8 @@
    {
     "target_l2_code": "3701",
     "l2_name": "化学制药",
-    "etf_code": "159835.SZ",
-    "etf_name": "创新药ETF建信",
+    "etf_code": "159992.SZ",
+    "etf_name": "创新药ETF银华",
     "benchmark_code": "931152",
     "mapping_type": "PROXY_EXPOSURE",
     "final_score": 1.0768533956276514,
@@ -406,7 +406,7 @@
     "second_largest_l2_exposure": 27.99,
     "dominance_margin": 17.99,
     "target_is_largest_l2": true,
-    "mean_amount_cny_20d": 14520833.4,
+    "mean_amount_cny_20d": 683804513.6,
     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
     "grade": "UNSUITABLE"
    }
