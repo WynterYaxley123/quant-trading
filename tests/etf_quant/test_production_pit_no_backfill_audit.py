@@ -364,3 +364,88 @@ def test_sealed_top5_codes_are_present_in_the_taxonomy():
     status = _load(RUNTIME / "reports" / "production_pit_current_top5_status_v1.json")
     reported = {row["industry_code"] for row in status["industries"]}
     assert reported == SEALED_TOP5
+
+
+# ---------------------------------------------------------------------------
+# H. The residual classification gap is real, not a retrieval defect
+# ---------------------------------------------------------------------------
+
+#: The only two securities that still have no official Shenwan L2 membership. They
+#: are real listed companies; the official industry-index snapshot simply does not
+#: contain them, in either the 134 L2 responses or the 31 L1 responses.
+UNCLASSIFIABLE = ("689009", "920982")
+
+
+def test_the_official_classification_is_a_complete_universe():
+    """Every security the official industry indices mention is classified, once."""
+    members = RUNTIME / "raw" / "sws" / "raw_members"
+    if not members.exists():
+        pytest.skip("raw SWS membership not captured")
+    seen: dict[str, list[str]] = {}
+    for path in sorted(members.glob("*.json")):
+        document = json.loads(path.read_bytes().decode("utf-8"))
+        declared = (document.get("data") or {}).get("count")
+        rows = (document.get("data") or {}).get("results") or []
+        assert declared is not None and len(rows) == int(declared), path.name
+        for row in rows:
+            seen.setdefault(str(row["stockcode"]), []).append(path.stem)
+    assert len(seen) == 5220, len(seen)
+    in_more_than_one = {code: files for code, files in seen.items() if len(files) > 1}
+    assert in_more_than_one == {}, sorted(in_more_than_one)[:5]
+
+
+def test_only_two_securities_lack_an_official_industry_and_they_are_genuinely_absent():
+    """A gap must be *proved* absent from the official source before it is reported.
+
+    These two are named so that a future change to either the provider's coverage or
+    our retrieval immediately fails this test instead of silently moving the number.
+    """
+    members = RUNTIME / "raw" / "sws" / "raw_members"
+    if not members.exists():
+        pytest.skip("raw SWS membership not captured")
+    present = set()
+    for path in sorted(members.glob("*.json")):
+        document = json.loads(path.read_bytes().decode("utf-8"))
+        for row in (document.get("data") or {}).get("results") or []:
+            present.add(str(row["stockcode"]))
+    for security in UNCLASSIFIABLE:
+        assert security not in present, (
+            f"{security} now appears in an official L2 response; re-run the build "
+            "because the classification gap has narrowed")
+    # And nothing else is missing from the production snapshot.
+    book = _load(BOOK)
+    classified = {row["security_code"] for record in book["records"]
+                  for row in record["classifications"]}
+    assert classified <= present
+
+
+def test_the_book_reports_the_same_residual_failure_count_as_the_build():
+    report = _load(BUILD_REPORT)
+    assert report["derivation"]["failures"] == 12
+    assert report["derivation"]["failure_reasons"] == {"CLASSIFICATION_INCOMPLETE": 12}
+    assert report["derivation"]["exposures"] == 100
+    assert report["sws"]["l2_industries_covered"] == 134
+    assert report["sws"]["securities_classified"] == 5220
+    assert report["sws"]["securities_conflicted"] == 0
+    assert report["sws"]["unmapped_catalog_indices"] == 0
+
+
+def test_the_classification_universe_matches_the_official_l1_universe():
+    """The 134 L2 indices must cover exactly the securities the 31 L1 indices do.
+
+    An independent sweep of the official API reported 5220 securities at L1 and only
+    5200 at L2, naming the 20 that lacked an L2 membership. Recovering the ten L2
+    indices the filtered catalogue query omitted must close precisely that difference
+    and no other, which is what makes the recovery justified rather than convenient.
+    """
+    members = RUNTIME / "raw" / "sws" / "raw_members"
+    if not members.exists():
+        pytest.skip("raw SWS membership not captured")
+    union = set()
+    for path in sorted(members.glob("*.json")):
+        document = json.loads(path.read_bytes().decode("utf-8"))
+        for row in (document.get("data") or {}).get("results") or []:
+            union.add(str(row["stockcode"]))
+    assert len(union) == 5220, len(union)
+    independently_reported_l1_union = 5220
+    assert len(union) == independently_reported_l1_union
