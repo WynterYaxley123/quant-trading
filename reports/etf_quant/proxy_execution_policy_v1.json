@@ -1,7 +1,7 @@
 {
  "artifact": "ETF_QUANT_V1_PROXY_EXECUTION_POLICY_V1",
  "status": "PROPOSED",
- "created_at": "2026-09-29T18:23:56+09:00",
+ "created_at": "2026-09-29T18:25:30+09:00",
  "base_strategy": "ETF_QUANT_V1",
  "research_model_changed": false,
  "strict_mapping_changed": false,
