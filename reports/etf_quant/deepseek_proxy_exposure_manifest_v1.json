@@ -1,10 +1,10 @@
 {
  "artifact": "DEEPSEEK_PROXY_EXPOSURE_MANIFEST_V1",
  "task": "ETF_QUANT_PROXY_EXPOSURE_V1",
- "created_at": "2026-09-29T16:16:10+09:00",
+ "created_at": "2026-09-29T16:27:54+09:00",
  "branch": "agent/deepseek-etf-quant-proxy-exposure-v1",
  "base_git_sha": "681b2ccb52fdb5d28a8607d3255e81975b628d02",
- "head_git_sha": "b16abaaaf93d2a520f619deeda09b4a672c8e8ea",
+ "head_git_sha": "0c953e3ca970ff6d7c6ce2a2076c3668aeb35de7",
  "mapping_type": "PROXY_EXPOSURE",
  "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
  "strict_mapping_modified": false,
@@ -13,16 +13,16 @@
  "final_oos_read": false,
  "shadow_epoch_created": false,
  "historical_engineering_reference_date": "2026-09-24",
- "evidence_observed_at": "2026-09-29T16:13:56+0900",
+ "evidence_observed_at": "2026-09-29T16:27:41+0900",
  "official_weight_evidence": {
   "csi": {
    "provider": "中证指数有限公司 (China Securities Index Co., Ltd.)",
    "endpoint": "https://www.csindex.com.cn/csindex-home/indexInfo/index-sample-information",
    "weight_source_type": "OFFICIAL_WEIGHT",
    "level": "LEVEL_1",
-   "indices_covered": 1534,
+   "indices_covered": 1536,
    "securities_queried": 0,
-   "securities_with_data": 1332,
+   "securities_with_data": 1680,
    "securities_failed": null,
    "constituent_date": "20260831"
   },
@@ -35,10 +35,10 @@
   },
   "benchmarks_requested": 381,
   "benchmarks_with_official_weights": 355,
-  "benchmarks_complete_weight_set": 125,
+  "benchmarks_complete_weight_set": 128,
   "pcf_derived_count": 0,
   "constituents_only_count": 85,
-  "fail_closed_count": 256
+  "fail_closed_count": 253
  },
  "coverage": {
   "strict_l2": [
@@ -294,22 +294,22 @@
  },
  "artifacts": {
   "proxy_l2_coverage_sensitivity_v1.json": {
-   "sha256": "342f07d8fc7022e806817785fa81a06509f45e9b18967e4d6fdd3184d5bb6b82",
+   "sha256": "995549e4cccd8350e15ef2ab65f4bbc25ea7f663ec4721bb562258b282d715c6",
    "bytes": 13222
   },
   "proxy_current_top5_feasibility_v1.json": {
-   "sha256": "e2ee7677f5388d6906669260a3a36efbec1ad572476203c6732d49bf61adebf8",
+   "sha256": "822d46f9728c45479bd2d7d1de4f51f2d8a96662c2e8116edea84b5886f7f131",
    "bytes": 73232
   },
   "proxy_execution_candidate_v1.json": {
-   "sha256": "1621f8b75582bf405aa44f307f7a3a837e65e588cceaa1b92f693ef024cd4048",
+   "sha256": "9191776c1c37ed83e994560a3e5f1c6e942d993c1516944540203415b8e70755",
    "bytes": 14071
   }
  },
  "artifacts_runtime_only": {
   "benchmark_l2_exposure_matrix_v1.json": {
    "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-exposure-v1\\exposure-matrix\\benchmark_l2_exposure_matrix_v1.json",
-   "sha256": "40b25e60f7b024fa8ed6f4aeb379b0d8335e0d0ea36d23f7d44a620bfe0bdccd",
+   "sha256": "705bd7852926717e2e236214fccb4522f409ccc55e090d60ef06422f5bc63e36",
    "note": "full constituent-level weight rows; runtime only, never committed"
   },
   "note": "raw CSI/CNI payloads, full weight vectors and ETF bars stay in runtime"

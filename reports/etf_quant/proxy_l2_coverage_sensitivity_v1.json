@@ -4,7 +4,7 @@
  "weight_source_type": "OFFICIAL_WEIGHT",
  "provider": "中证指数有限公司 (China Securities Index Co., Ltd.)",
  "constituent_date": "20260831",
- "evidence_observed_at": "2026-09-29T16:13:56+0900",
+ "evidence_observed_at": "2026-09-29T16:27:41+0900",
  "historical_engineering_reference_date": "2026-09-24",
  "classification": "EX_POST_ENGINEERING_PROXY_ANALYSIS",
  "not_formal_signal": true,
@@ -445,7 +445,7 @@
  ],
  "inputs": {
   "purity_artifact": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-exposure-v1\\exposure-matrix\\benchmark_l2_purity_v1.json",
-  "purity_sha256": "978c3488a782e5217a9502d08e1f4e4226888690e389480bda3f3396390e665c",
+  "purity_sha256": "39d7ce2dad9ec20a3b4f98475ebbc292881f359d79f45bbb27455ae5ed2b6ff7",
   "liquidity_artifact": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-exposure-v1\\subagents\\subagent-f-liquidity\\etf_liquidity_20d_v2.json",
   "liquidity_sha256": "e7b851d06bbe5e6983688d59bf0ad3072a1ad59ea4401e000b8804ac18db5eec"
  }

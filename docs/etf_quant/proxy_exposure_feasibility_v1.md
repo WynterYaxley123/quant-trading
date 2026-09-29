@@ -1,7 +1,7 @@
 # ETF-Quant V1 —— PROXY EXPOSURE 可行性研究（V1）
 
-- 生成时间：2026-09-29T16:16:29+09:00
-- 分支：`agent/deepseek-etf-quant-proxy-exposure-v1` ／ HEAD：`b16abaaaf93d2a520f619deeda09b4a672c8e8ea`
+- 生成时间：2026-09-29T16:27:55+09:00
+- 分支：`agent/deepseek-etf-quant-proxy-exposure-v1` ／ HEAD：`0c953e3ca970ff6d7c6ce2a2076c3668aeb35de7`
 - 历史工程参考日（HISTORICAL_ENGINEERING_REFERENCE_DATE）：`2026-09-24`
 - 分类：`EX_POST_ENGINEERING_PROXY_ANALYSIS`（**不是** 2026-09-24 的真实前向信号）
 - mapping_type：`PROXY_EXPOSURE`（**不是** `STRICT_MAPPING`）
@@ -35,9 +35,9 @@ Proxy 层的做法是：**信号仍然是申万二级行业，只放宽执行工
 | 中证指数有限公司 | `POST /csindex-home/indexInfo/index-sample-information` | 逐证券反查：该证券所属全部中证指数 + 官方权重 `weightPct` | LEVEL 1 `OFFICIAL_WEIGHT` |
 | 深圳证券信息／国证指数 | `GET /sample-detail/download-history?indexcode=&dateStr=` | 官方权重工作簿（全成分真实权重） | LEVEL 1 `OFFICIAL_WEIGHT` |
 
-- 中证成分日期（官方）：`20260831`；证据观察时间：`2026-09-29T16:13:56+0900`
-- 中证：查询证券 0 只，命中 1332 只，
-  失败 None 只，覆盖指数 1534 个
+- 中证成分日期（官方）：`20260831`；证据观察时间：`2026-09-29T16:27:41+0900`
+- 中证：查询证券 0 只，命中 1680 只，
+  失败 None 只，覆盖指数 1536 个
 - 国证：59 个指数 / 8336 行
 - 两来源**发布机构互斥**：中证反查与国证工作簿的交集为 `[]`，
   不存在同一指数被两个机构重复计权
@@ -50,9 +50,9 @@ Proxy 层的做法是：**信号仍然是申万二级行业，只放宽执行工
 
 - 在册 A 股股票型 ETF 基准：**381** 个
 - 取得官方权重的基准：**355** 个
-- 权重集完整（成分数吻合且权重和在容差带内）：**125** 个
-- 权重集不完整／缺失（fail-closed，**不可准入**）：**256** 个
-- 矩阵长表行数：7322
+- 权重集完整（成分数吻合且权重和在容差带内）：**128** 个
+- 权重集不完整／缺失（fail-closed，**不可准入**）：**253** 个
+- 矩阵长表行数：7510
 
 股票→申万二级归属来自 CNEquity 冻结湖 `industry_members`（as-of 规则，快照日 `2026-09-24`），
 覆盖 5930 只股票，裸码歧义 0 条。
@@ -199,7 +199,7 @@ dominance margin = **−4.60pp**（负值）。
 1. **Proxy 纯度是执行质量指标，不是收益预测。** 它只回答"这只 ETF 里有多少钱真正买在目标行业"。
 2. **不把 purity 混入 alpha。** 组合权重完全来自冻结 `final_score` 的 softmax；purity 只参与准入与选券。
 3. **证据观察时间不回填。** 所有本轮证据的 `evidence_observed_at` 为真实观察时刻
-   （`2026-09-29T16:13:56+0900`），**不得**被当作 2026-09-24 当时可获得的信息。
+   （`2026-09-29T16:27:41+0900`），**不得**被当作 2026-09-24 当时可获得的信息。
 4. **基准覆盖不完整会 fail-closed。** 权重集不完整的基准一律不可准入，因此第 4 节的覆盖数是**下界**。
 5. **成员归属为单一来源。** 股票→申万二级序列来自 CNEquity 冻结 sidecar，缺第二独立来源交叉验证
    （`SOURCE_LICENSING_UNRESOLVED`）；且 `as_of_date` 为月度生效日戳记，

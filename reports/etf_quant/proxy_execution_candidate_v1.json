@@ -8,9 +8,9 @@
  "strict_mapping_changed": false,
  "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
  "historical_reference_cutoff": "2026-09-24",
- "proxy_evidence_observed_at": "2026-09-29T16:13:56+0900",
- "candidate_created_at": "2026-09-29T16:16:10+09:00",
- "production_ready_from": "2026-09-29T16:13:56+0900",
+ "proxy_evidence_observed_at": "2026-09-29T16:27:41+0900",
+ "candidate_created_at": "2026-09-29T16:27:54+09:00",
+ "production_ready_from": "2026-09-29T16:27:41+0900",
  "production_ready_from_note": "not earlier than the time every proxy weight and liquidity input became available",
  "not_formal_signal": true,
  "shadow_epoch_created": false,
@@ -432,9 +432,9 @@
   }
  },
  "integrity": {
-  "exposure_matrix_sha256": "40b25e60f7b024fa8ed6f4aeb379b0d8335e0d0ea36d23f7d44a620bfe0bdccd",
-  "benchmark_l2_purity_sha256": "978c3488a782e5217a9502d08e1f4e4226888690e389480bda3f3396390e665c",
-  "csi_weights_sha256": "4b22e83312189368689312c4b9c7eea24883e1e0954e7c04ebd32dcbcdfe7b50",
+  "exposure_matrix_sha256": "705bd7852926717e2e236214fccb4522f409ccc55e090d60ef06422f5bc63e36",
+  "benchmark_l2_purity_sha256": "39d7ce2dad9ec20a3b4f98475ebbc292881f359d79f45bbb27455ae5ed2b6ff7",
+  "csi_weights_sha256": "b4ea742f4a4139628fe414c75a193b80993db5f97612131f2d56f093f3527b25",
   "cni_weights_sha256": "4955b7549e3c495b091849e79140528cbed8c8cc41f4de121468db773eb68f2c",
   "stock_to_l2_sha256": "483758af388e57806c6c741d0613c1b832d9730b458bc5b5a453149b546f0c02",
   "liquidity_sha256": "e7b851d06bbe5e6983688d59bf0ad3072a1ad59ea4401e000b8804ac18db5eec"

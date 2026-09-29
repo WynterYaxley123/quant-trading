@@ -1,6 +1,6 @@
 # DEEPSEEK PROXY EXPOSURE —— CODEX 交接单（V1）
 
-生成时间：2026-09-29T16:16:29+09:00
+生成时间：2026-09-29T16:27:55+09:00
 
 ## 1. Git
 
@@ -8,7 +8,7 @@
 |---|---|
 | branch | `agent/deepseek-etf-quant-proxy-exposure-v1` |
 | base SHA | `681b2ccb52fdb5d28a8607d3255e81975b628d02` |
-| final SHA | `b16abaaaf93d2a520f619deeda09b4a672c8e8ea` |
+| final SHA | `0c953e3ca970ff6d7c6ce2a2076c3668aeb35de7` |
 | worktree | `D:\quant-worktrees\deepseek-etf-quant-proxy-exposure` |
 | push | **未推送**（本地） |
 
