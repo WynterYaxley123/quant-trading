@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "artifact": "ETF_QUANT_V1_PROXY_FINAL_CANDIDATE_MANIFEST",
+  "candidate_id": "ETF_QUANT_V1_PROXY_EXECUTION_CANDIDATE_20260929_01",
+  "candidate_status": "POLICY_APPROVED_TECHNICAL_INTEGRATION_PENDING",
+  "candidate_created_at": "2026-09-29T18:56:27+09:00",
+  "production_ready_from": null,
+  "historical_reference_cutoff": "2026-09-24",
+  "historical_reference_only": true,
+  "base_strategy": "ETF_QUANT_V1",
+  "execution_variant": "PROXY_EXPOSURE_V1",
+  "policy": "B40_WITH_CASH",
+  "policy_approved": true,
+  "research_model_changed": false,
+  "strict_mapping_changed": false,
+  "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
+  "minimum_target_exposure": 0.4,
+  "target_must_be_largest": true,
+  "strict_precedence": true,
+  "cash_policy": {
+    "semantics": "UNALLOCATED_EXECUTION_CAPACITY",
+    "no_order": "NO_ORDER_UNEXECUTABLE_SIGNAL",
+    "redistributed_weight": 0,
+    "return_model": null,
+    "is_etf_member": false
+  },
+  "h30463": {
+    "benchmark": "H30463",
+    "etf": "517990.SH",
+    "evidence_status": "UNRESOLVED_FAIL_CLOSED",
+    "reason": "No complete official current constituent weights with auditable Shenwan L2 classification for Hong Kong constituents",
+    "admitted": false
+  },
+  "top5_signal": ["3706", "3703", "4901", "4803", "3701"],
+  "3706_execution_result": "CASH_UNEXECUTABLE_SIGNAL",
+  "reference_mapping": [
+    {"l2_code": "3706", "mapping_type": "CASH_UNEXECUTABLE_SIGNAL", "etf_code": null, "target_exposure_percent": null, "liquidity_status": null, "model_target_weight": 0.35, "executed_etf_weight": 0, "cash_retained_weight": 0.35},
+    {"l2_code": "3703", "mapping_type": "PROXY_EXPOSURE", "etf_code": "159643.SZ", "target_exposure_percent": 46.4, "liquidity_status": "LIQUIDITY_ADMISSION_PASS", "model_target_weight": 0.260436961183, "executed_etf_weight": 0.260436961183, "cash_retained_weight": 0},
+    {"l2_code": "4901", "mapping_type": "STRICT_MAPPING", "etf_code": "512880.SH", "target_exposure_percent": 100.0, "liquidity_status": "LIQUIDITY_ADMISSION_PASS", "model_target_weight": 0.141910449955, "executed_etf_weight": 0.141910449955, "cash_retained_weight": 0},
+    {"l2_code": "4803", "mapping_type": "PROXY_EXPOSURE", "etf_code": "159887.SZ", "target_exposure_percent": 41.48, "liquidity_status": "LIQUIDITY_ADMISSION_PASS", "model_target_weight": 0.125683987161, "executed_etf_weight": 0.125683987161, "cash_retained_weight": 0},
+    {"l2_code": "3701", "mapping_type": "PROXY_EXPOSURE", "etf_code": "159992.SZ", "target_exposure_percent": 45.98, "liquidity_status": "LIQUIDITY_ADMISSION_PASS", "model_target_weight": 0.121968601701, "executed_etf_weight": 0.121968601701, "cash_retained_weight": 0}
+  ],
+  "risk_asset_weight": 0.65,
+  "cash_weight": 0.35,
+  "weighted_target_l2_purity_percent": 57.072012,
+  "weighted_leakage_percent": 42.927988,
+  "largest_unintended_l2": {"l2_code": "4802", "account_weight": 0.03696366},
+  "lineage": {
+    "base_integration_sha": "7e1931627aa3d5061ec78e43c14dec63ed682ee2",
+    "deepseek_final_sha": "465c83139e6e1593b981aaabf8dadab592d9abc9",
+    "codex_integration_code_sha": "18106b84d05c8bc8693af198ceb08b93d71d46ee",
+    "integration_method": "FAST_FORWARD"
+  },
+  "source_integrity": {
+    "cnequity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "strict_mapping_registry_sha256": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+    "proxy_evidence_manifest": {"path": "reports/etf_quant/deepseek_proxy_exposure_manifest_v1.json", "sha256": "b9c59985c1b5f551ca056be21280e1b947dfdeb933a491e6c3764411d0bf63e9"},
+    "execution_policy": {"path": "reports/etf_quant/proxy_execution_policy_v1.json", "sha256": "8c210b3fe99cf1e9518ebeb6bcea2014c4e2ac154eb7905d051045ba5a4b3b20"},
+    "policy_comparison": {"path": "reports/etf_quant/proxy_policy_comparison_v1.json", "sha256": "f81e9109247cd002bbfec726e91030e2ce242cb40b66ab525bf403ab4ce4b2b5"},
+    "reference_portfolio": {"path": "reports/etf_quant/proxy_execution_candidate_v1.json", "sha256": "98d81313a047d685d85d3a8371f4cf6cb00bf6a623f28e43c551331958345186"},
+    "actual_l2_exposure": {"path": "reports/etf_quant/proxy_execution_candidate_v1.json", "json_pointer": "/actual_l2_exposure", "containing_file_sha256": "98d81313a047d685d85d3a8371f4cf6cb00bf6a623f28e43c551331958345186"},
+    "liquidity_evidence": {"external_runtime_file": "final_candidate_liquidity_v1.json", "sha256": "5fd4482d877b89af80ad080a1c6c7ad6bc769c6f7bc7b6097ad6e4db13d08284"}
+  },
+  "technical_shadow_readiness": "PARTIAL",
+  "etf_quant_proxy_ready_for_shadow": false,
+  "known_limitations": [
+    "B40 partial selector and rebalance sibling are pure opt-in contracts but are not wired to runtime daily_cycle; the live Shadow path remains strict-only.",
+    "Future-dated, point-in-time official benchmark weights and ETF liquidity must be independently re-admitted before any future Shadow signal; the historical reference candidate is not a live mapping.",
+    "H30463 official weight and Shenwan L2 attribution are unresolved; 3706 deterministically remains Cash.",
+    "Cash interest/return model is deliberately undefined; no risk-free proxy is assumed.",
+    "SOURCE_LICENSING_UNRESOLVED.",
+    "Docker daemon was unavailable; regression used an existing isolated Python runtime without installation."
+  ],
+  "tests": {"etf_python": "395 passed, 1 skipped", "readonly_api": "57 passed", "frontend": "95 passed, 3 skipped", "typecheck": "PASS", "lint": "PASS", "build": "PASS"},
+  "security_assertions": {"shadow_epoch_created": false, "formal_signal_created": false, "order_created": false, "fill_created": false, "nav_created": false, "validation_performance_read": false, "final_oos_read": false, "third_party_market_data_spliced": false, "secrets_committed": false, "raw_market_rows_committed": false, "git_push_performed": false}
+}
