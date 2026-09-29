@@ -1,0 +1,2460 @@
+{
+ "artifact": "PROXY_CURRENT_TOP5_FEASIBILITY_V1",
+ "mapping_type": "PROXY_EXPOSURE",
+ "constituent_date": "20260831",
+ "evidence_observed_at": "2026-09-29T16:13:56+0900",
+ "current_top5": [
+  "3706",
+  "3703",
+  "4901",
+  "4803",
+  "3701"
+ ],
+ "current_top5_names": [
+  "医疗服务",
+  "生物制品",
+  "证券Ⅱ",
+  "股份制银行Ⅱ",
+  "化学制药"
+ ],
+ "by_rule": {
+  "A90": {
+   "name": "A90",
+   "threshold": 90.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "B90": {
+   "name": "B90",
+   "threshold": 90.0,
+   "require_largest": true,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "C90": {
+   "name": "C90",
+   "threshold": 90.0,
+   "require_largest": true,
+   "min_dominance_margin": 10.0,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "D90": {
+   "name": "D90",
+   "threshold": 90.0,
+   "require_largest": true,
+   "min_dominance_margin": 20.0,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "A80": {
+   "name": "A80",
+   "threshold": 80.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "B80": {
+   "name": "B80",
+   "threshold": 80.0,
+   "require_largest": true,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "C80": {
+   "name": "C80",
+   "threshold": 80.0,
+   "require_largest": true,
+   "min_dominance_margin": 10.0,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "D80": {
+   "name": "D80",
+   "threshold": 80.0,
+   "require_largest": true,
+   "min_dominance_margin": 20.0,
+   "proxy_covered_l2": 2,
+   "strict_plus_proxy_l2": 6,
+   "coverage_ratio": 0.044776,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 23,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 23,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "A70": {
+   "name": "A70",
+   "threshold": 70.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 24,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 24,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "B70": {
+   "name": "B70",
+   "threshold": 70.0,
+   "require_largest": true,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 24,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 24,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "C70": {
+   "name": "C70",
+   "threshold": 70.0,
+   "require_largest": true,
+   "min_dominance_margin": 10.0,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 24,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 24,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "D70": {
+   "name": "D70",
+   "threshold": 70.0,
+   "require_largest": true,
+   "min_dominance_margin": 20.0,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 24,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 24,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "A60": {
+   "name": "A60",
+   "threshold": 60.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 25,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "B60": {
+   "name": "B60",
+   "threshold": 60.0,
+   "require_largest": true,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 25,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "C60": {
+   "name": "C60",
+   "threshold": 60.0,
+   "require_largest": true,
+   "min_dominance_margin": 10.0,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 25,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "D60": {
+   "name": "D60",
+   "threshold": 60.0,
+   "require_largest": true,
+   "min_dominance_margin": 20.0,
+   "proxy_covered_l2": 3,
+   "strict_plus_proxy_l2": 7,
+   "coverage_ratio": 0.052239,
+   "current_top5_mapped_count": 1,
+   "current_top5_distinct_etf_count": 25,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "A50": {
+   "name": "A50",
+   "threshold": 50.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 8,
+   "strict_plus_proxy_l2": 12,
+   "coverage_ratio": 0.089552,
+   "current_top5_mapped_count": 2,
+   "current_top5_distinct_etf_count": 26,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 1,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "562050.SH",
+      "benchmark_code": "932217",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 58.14,
+      "second_largest_l2_exposure": 23.12,
+      "dominance_margin": 35.02,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": null,
+      "liquidity_status": "DATA_UNAVAILABLE",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "LOW_PURITY_PROXY"
+     },
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "B50": {
+   "name": "B50",
+   "threshold": 50.0,
+   "require_largest": true,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 8,
+   "strict_plus_proxy_l2": 12,
+   "coverage_ratio": 0.089552,
+   "current_top5_mapped_count": 2,
+   "current_top5_distinct_etf_count": 26,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 1,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "562050.SH",
+      "benchmark_code": "932217",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 58.14,
+      "second_largest_l2_exposure": 23.12,
+      "dominance_margin": 35.02,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": null,
+      "liquidity_status": "DATA_UNAVAILABLE",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "LOW_PURITY_PROXY"
+     },
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "C50": {
+   "name": "C50",
+   "threshold": 50.0,
+   "require_largest": true,
+   "min_dominance_margin": 10.0,
+   "proxy_covered_l2": 8,
+   "strict_plus_proxy_l2": 12,
+   "coverage_ratio": 0.089552,
+   "current_top5_mapped_count": 2,
+   "current_top5_distinct_etf_count": 26,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 1,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "562050.SH",
+      "benchmark_code": "932217",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 58.14,
+      "second_largest_l2_exposure": 23.12,
+      "dominance_margin": 35.02,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": null,
+      "liquidity_status": "DATA_UNAVAILABLE",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "LOW_PURITY_PROXY"
+     },
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "D50": {
+   "name": "D50",
+   "threshold": 50.0,
+   "require_largest": true,
+   "min_dominance_margin": 20.0,
+   "proxy_covered_l2": 8,
+   "strict_plus_proxy_l2": 12,
+   "coverage_ratio": 0.089552,
+   "current_top5_mapped_count": 2,
+   "current_top5_distinct_etf_count": 26,
+   "current_top5_executable_count": 1,
+   "current_top5_5of5_distinct": false,
+   "notes": "",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 1,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "562050.SH",
+      "benchmark_code": "932217",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 58.14,
+      "second_largest_l2_exposure": 23.12,
+      "dominance_margin": 35.02,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": null,
+      "liquidity_status": "DATA_UNAVAILABLE",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "LOW_PURITY_PROXY"
+     },
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  },
+  "A40": {
+   "name": "A40",
+   "threshold": 40.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 15,
+   "strict_plus_proxy_l2": 19,
+   "coverage_ratio": 0.141791,
+   "current_top5_mapped_count": 5,
+   "current_top5_distinct_etf_count": 57,
+   "current_top5_executable_count": 5,
+   "current_top5_5of5_distinct": true,
+   "notes": "5/5 distinct ETFs achievable under this rule with liquidity gate",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 5,
+     "best": {
+      "target_l2_code": "3706",
+      "etf_code": "512170.SH",
+      "benchmark_code": "399989",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 44.83,
+      "second_largest_l2_exposure": 49.43,
+      "dominance_margin": -4.6,
+      "target_is_largest_l2": false,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 369448347.2,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3706",
+      "etf_code": "512170.SH",
+      "benchmark_code": "399989",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 44.83,
+      "second_largest_l2_exposure": 49.43,
+      "dominance_margin": -4.6,
+      "target_is_largest_l2": false,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 369448347.2,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 6,
+     "best": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 13,
+     "best": {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ",
+      "benchmark_code": "H30022",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 41.48,
+      "second_largest_l2_exposure": 29.41,
+      "dominance_margin": 12.07,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 86955231.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ",
+      "benchmark_code": "H30022",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 41.48,
+      "second_largest_l2_exposure": 29.41,
+      "dominance_margin": 12.07,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 86955231.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 8,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "159992.SZ",
+      "benchmark_code": "931152",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 45.98,
+      "second_largest_l2_exposure": 27.99,
+      "dominance_margin": 17.99,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 683804513.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3701",
+      "etf_code": "159992.SZ",
+      "benchmark_code": "931152",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 45.98,
+      "second_largest_l2_exposure": 27.99,
+      "dominance_margin": 17.99,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 683804513.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    }
+   },
+   "assignment_executable": {
+    "pairs": [
+     {
+      "target_l2_code": "3701",
+      "etf_code": "159835.SZ"
+     },
+     {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ"
+     },
+     {
+      "target_l2_code": "3706",
+      "etf_code": "159828.SZ"
+     },
+     {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ"
+     },
+     {
+      "target_l2_code": "4901",
+      "etf_code": "159008.SZ"
+     }
+    ],
+    "total_target_exposure": 278.69,
+    "minimum_target_exposure": 41.48,
+    "mean_target_exposure": 55.738,
+    "mean_dominance_margin": 29.704,
+    "distinct_etfs": 5,
+    "targets_covered": 5,
+    "solver": "exact_subset_dp",
+    "collisions_avoided": 0,
+    "unmapped_targets": [],
+    "greedy": {
+     "pairs": [
+      {
+       "target_l2_code": "3701",
+       "etf_code": "159835.SZ"
+      },
+      {
+       "target_l2_code": "3703",
+       "etf_code": "159643.SZ"
+      },
+      {
+       "target_l2_code": "3706",
+       "etf_code": "159828.SZ"
+      },
+      {
+       "target_l2_code": "4803",
+       "etf_code": "159887.SZ"
+      },
+      {
+       "target_l2_code": "4901",
+       "etf_code": "159008.SZ"
+      }
+     ],
+     "total_target_exposure": 278.69,
+     "minimum_target_exposure": 41.48,
+     "mean_target_exposure": 55.738,
+     "mean_dominance_margin": 29.704,
+     "distinct_etfs": 5,
+     "targets_covered": 5,
+     "solver": "greedy",
+     "collisions_avoided": 5,
+     "unmapped_targets": []
+    }
+   }
+  },
+  "B40": {
+   "name": "B40",
+   "threshold": 40.0,
+   "require_largest": true,
+   "min_dominance_margin": null,
+   "proxy_covered_l2": 14,
+   "strict_plus_proxy_l2": 18,
+   "coverage_ratio": 0.134328,
+   "current_top5_mapped_count": 4,
+   "current_top5_distinct_etf_count": 52,
+   "current_top5_executable_count": 4,
+   "current_top5_5of5_distinct": false,
+   "notes": "even at the 40% research floor a 5/5 distinct liquid set is not reachable",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 6,
+     "best": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 13,
+     "best": {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ",
+      "benchmark_code": "H30022",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 41.48,
+      "second_largest_l2_exposure": 29.41,
+      "dominance_margin": 12.07,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 86955231.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ",
+      "benchmark_code": "H30022",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 41.48,
+      "second_largest_l2_exposure": 29.41,
+      "dominance_margin": 12.07,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 86955231.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 8,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "159992.SZ",
+      "benchmark_code": "931152",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 45.98,
+      "second_largest_l2_exposure": 27.99,
+      "dominance_margin": 17.99,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 683804513.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3701",
+      "etf_code": "159992.SZ",
+      "benchmark_code": "931152",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 45.98,
+      "second_largest_l2_exposure": 27.99,
+      "dominance_margin": 17.99,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 683804513.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    }
+   },
+   "assignment_executable": null
+  },
+  "C40": {
+   "name": "C40",
+   "threshold": 40.0,
+   "require_largest": true,
+   "min_dominance_margin": 10.0,
+   "proxy_covered_l2": 14,
+   "strict_plus_proxy_l2": 18,
+   "coverage_ratio": 0.134328,
+   "current_top5_mapped_count": 4,
+   "current_top5_distinct_etf_count": 49,
+   "current_top5_executable_count": 4,
+   "current_top5_5of5_distinct": false,
+   "notes": "even at the 40% research floor a 5/5 distinct liquid set is not reachable",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 3,
+     "best": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 13,
+     "best": {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ",
+      "benchmark_code": "H30022",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 41.48,
+      "second_largest_l2_exposure": 29.41,
+      "dominance_margin": 12.07,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 86955231.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "4803",
+      "etf_code": "159887.SZ",
+      "benchmark_code": "H30022",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 41.48,
+      "second_largest_l2_exposure": 29.41,
+      "dominance_margin": 12.07,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 86955231.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 8,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "159992.SZ",
+      "benchmark_code": "931152",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 45.98,
+      "second_largest_l2_exposure": 27.99,
+      "dominance_margin": 17.99,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 683804513.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3701",
+      "etf_code": "159992.SZ",
+      "benchmark_code": "931152",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 45.98,
+      "second_largest_l2_exposure": 27.99,
+      "dominance_margin": 17.99,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 683804513.6,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    }
+   },
+   "assignment_executable": null
+  },
+  "D40": {
+   "name": "D40",
+   "threshold": 40.0,
+   "require_largest": true,
+   "min_dominance_margin": 20.0,
+   "proxy_covered_l2": 11,
+   "strict_plus_proxy_l2": 15,
+   "coverage_ratio": 0.11194,
+   "current_top5_mapped_count": 3,
+   "current_top5_distinct_etf_count": 29,
+   "current_top5_executable_count": 2,
+   "current_top5_5of5_distinct": false,
+   "notes": "even at the 40% research floor a 5/5 distinct liquid set is not reachable",
+   "top5_detail": {
+    "3706": {
+     "l2_name": "医疗服务",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3703": {
+     "l2_name": "生物制品",
+     "strict": false,
+     "candidate_etfs": 3,
+     "best": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     },
+     "best_liquid": {
+      "target_l2_code": "3703",
+      "etf_code": "159643.SZ",
+      "benchmark_code": "980015",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 46.4,
+      "second_largest_l2_exposure": 23.34,
+      "dominance_margin": 23.06,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 7483183.8625,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "UNSUITABLE"
+     }
+    },
+    "4901": {
+     "l2_name": "证券Ⅱ",
+     "strict": true,
+     "candidate_etfs": 25,
+     "best": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     },
+     "best_liquid": {
+      "target_l2_code": "4901",
+      "etf_code": "512880.SH",
+      "benchmark_code": "399975",
+      "mapping_type": "STRICT_MAPPING",
+      "target_l2_exposure": 100.0,
+      "second_largest_l2_exposure": 0.0,
+      "dominance_margin": 100.0,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": 1587489430.4,
+      "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+      "evidence_source": "STRICT_REGISTRY",
+      "grade": "STRICT"
+     }
+    },
+    "4803": {
+     "l2_name": "股份制银行Ⅱ",
+     "strict": false,
+     "candidate_etfs": 0,
+     "best": null,
+     "best_liquid": null
+    },
+    "3701": {
+     "l2_name": "化学制药",
+     "strict": false,
+     "candidate_etfs": 1,
+     "best": {
+      "target_l2_code": "3701",
+      "etf_code": "562050.SH",
+      "benchmark_code": "932217",
+      "mapping_type": "PROXY_EXPOSURE",
+      "target_l2_exposure": 58.14,
+      "second_largest_l2_exposure": 23.12,
+      "dominance_margin": 35.02,
+      "target_is_largest_l2": true,
+      "weight_quality": "COMPLETE_WEIGHT_SET",
+      "weight_source_type": "OFFICIAL_WEIGHT",
+      "mean_amount_cny": null,
+      "liquidity_status": "DATA_UNAVAILABLE",
+      "evidence_source": "CSI_OFFICIAL_WEIGHT",
+      "grade": "LOW_PURITY_PROXY"
+     },
+     "best_liquid": null
+    }
+   },
+   "assignment_executable": null
+  }
+ }
+}

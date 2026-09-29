@@ -1,0 +1,442 @@
+{
+ "artifact": "PROPOSED_PROXY_EXECUTION_CANDIDATE_V1",
+ "candidate_id": "ETF_QUANT_V1_PROXY_EXECUTION_CANDIDATE",
+ "status": "PROPOSED_PROXY_EXECUTION_CANDIDATE",
+ "base_strategy": "ETF_QUANT_V1",
+ "execution_mapping_variant": "PROXY_EXPOSURE_V1",
+ "research_model_changed": false,
+ "strict_mapping_changed": false,
+ "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
+ "historical_reference_cutoff": "2026-09-24",
+ "proxy_evidence_observed_at": "2026-09-29T16:13:56+0900",
+ "candidate_created_at": "2026-09-29T16:16:10+09:00",
+ "production_ready_from": "2026-09-29T16:13:56+0900",
+ "production_ready_from_note": "not earlier than the time every proxy weight and liquidity input became available",
+ "not_formal_signal": true,
+ "shadow_epoch_created": false,
+ "recommended_rule": {
+  "name": "A40",
+  "threshold": 40.0,
+  "require_largest": false,
+  "min_dominance_margin": null,
+  "selection_basis": "highest target-exposure threshold that still yields 5/5 distinct; then prefer requiring target-is-largest; then the larger dominance margin. NOTE: no rule that requires target-is-largest reaches 5/5, so this selection necessarily fell through to the threshold-only shape.",
+  "distinct_etfs": 5,
+  "fidelity_class": "TECHNICALLY_FEASIBLE_BUT_LOW_FIDELITY"
+ },
+ "top5": [
+  "3706",
+  "3703",
+  "4901",
+  "4803",
+  "3701"
+ ],
+ "top5_names": [
+  "医疗服务",
+  "生物制品",
+  "证券Ⅱ",
+  "股份制银行Ⅱ",
+  "化学制药"
+ ],
+ "assignment": {
+  "pairs": [
+   {
+    "target_l2_code": "3701",
+    "etf_code": "159835.SZ"
+   },
+   {
+    "target_l2_code": "3703",
+    "etf_code": "159643.SZ"
+   },
+   {
+    "target_l2_code": "3706",
+    "etf_code": "159828.SZ"
+   },
+   {
+    "target_l2_code": "4803",
+    "etf_code": "159887.SZ"
+   },
+   {
+    "target_l2_code": "4901",
+    "etf_code": "159008.SZ"
+   }
+  ],
+  "total_target_exposure": 278.69,
+  "minimum_target_exposure": 41.48,
+  "mean_target_exposure": 55.738,
+  "mean_dominance_margin": 29.704,
+  "distinct_etfs": 5,
+  "targets_covered": 5,
+  "solver": "exact_subset_dp",
+  "collisions_avoided": 0,
+  "unmapped_targets": []
+ },
+ "representative_selection": {
+  "PURITY_FIRST": {
+   "picks": {
+    "3706": {
+     "target_l2_code": "3706",
+     "etf_code": "512170.SH",
+     "benchmark_code": "399989",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 44.83,
+     "second_largest_l2_exposure": 49.43,
+     "dominance_margin": -4.6,
+     "target_is_largest_l2": false,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 369448347.2,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    },
+    "3703": {
+     "target_l2_code": "3703",
+     "etf_code": "159643.SZ",
+     "benchmark_code": "980015",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 46.4,
+     "second_largest_l2_exposure": 23.34,
+     "dominance_margin": 23.06,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 7483183.8625,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    },
+    "4901": {
+     "target_l2_code": "4901",
+     "etf_code": "512880.SH",
+     "benchmark_code": "399975",
+     "mapping_type": "STRICT_MAPPING",
+     "target_l2_exposure": 100.0,
+     "second_largest_l2_exposure": 0.0,
+     "dominance_margin": 100.0,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 1587489430.4,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "STRICT_REGISTRY_V1",
+     "grade": "STRICT"
+    },
+    "4803": {
+     "target_l2_code": "4803",
+     "etf_code": "159887.SZ",
+     "benchmark_code": "H30022",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 41.48,
+     "second_largest_l2_exposure": 29.41,
+     "dominance_margin": 12.07,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 86955231.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    },
+    "3701": {
+     "target_l2_code": "3701",
+     "etf_code": "159992.SZ",
+     "benchmark_code": "931152",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 45.98,
+     "second_largest_l2_exposure": 27.99,
+     "dominance_margin": 17.99,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 683804513.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    }
+   },
+   "distinct_etfs": 5,
+   "collisions": 0,
+   "minimum_target_exposure": 41.48
+  },
+  "LIQUIDITY_FIRST": {
+   "picks": {
+    "3706": {
+     "target_l2_code": "3706",
+     "etf_code": "512170.SH",
+     "benchmark_code": "399989",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 44.83,
+     "second_largest_l2_exposure": 49.43,
+     "dominance_margin": -4.6,
+     "target_is_largest_l2": false,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 369448347.2,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    },
+    "3703": {
+     "target_l2_code": "3703",
+     "etf_code": "159859.SZ",
+     "benchmark_code": "399441",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 46.25,
+     "second_largest_l2_exposure": 36.66,
+     "dominance_margin": 9.59,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 128310615.4,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    },
+    "4901": {
+     "target_l2_code": "4901",
+     "etf_code": "512880.SH",
+     "benchmark_code": "399975",
+     "mapping_type": "STRICT_MAPPING",
+     "target_l2_exposure": 100.0,
+     "second_largest_l2_exposure": 0.0,
+     "dominance_margin": 100.0,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 1587489430.4,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "STRICT_REGISTRY_V1",
+     "grade": "STRICT"
+    },
+    "4803": {
+     "target_l2_code": "4803",
+     "etf_code": "512800.SH",
+     "benchmark_code": "399986",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 40.3,
+     "second_largest_l2_exposure": 28.08,
+     "dominance_margin": 12.22,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 869125980.8,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    },
+    "3701": {
+     "target_l2_code": "3701",
+     "etf_code": "159992.SZ",
+     "benchmark_code": "931152",
+     "mapping_type": "PROXY_EXPOSURE",
+     "target_l2_exposure": 45.98,
+     "second_largest_l2_exposure": 27.99,
+     "dominance_margin": 17.99,
+     "target_is_largest_l2": true,
+     "weight_quality": "COMPLETE_WEIGHT_SET",
+     "weight_source_type": "OFFICIAL_WEIGHT",
+     "mean_amount_cny": 683804513.6,
+     "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+     "evidence_source": "CSI/CNI official index constituent weights",
+     "grade": "UNSUITABLE"
+    }
+   },
+   "distinct_etfs": 5,
+   "collisions": 0,
+   "minimum_target_exposure": 40.3
+  }
+ },
+ "greedy_comparison": {
+  "greedy": {
+   "pairs": [
+    {
+     "target_l2_code": "3701",
+     "etf_code": "159835.SZ"
+    },
+    {
+     "target_l2_code": "3703",
+     "etf_code": "159643.SZ"
+    },
+    {
+     "target_l2_code": "3706",
+     "etf_code": "159828.SZ"
+    },
+    {
+     "target_l2_code": "4803",
+     "etf_code": "159887.SZ"
+    },
+    {
+     "target_l2_code": "4901",
+     "etf_code": "159008.SZ"
+    }
+   ],
+   "total_target_exposure": 278.69,
+   "minimum_target_exposure": 41.48,
+   "mean_target_exposure": 55.738,
+   "mean_dominance_margin": 29.704,
+   "distinct_etfs": 5,
+   "targets_covered": 5,
+   "solver": "greedy",
+   "collisions_avoided": 5,
+   "unmapped_targets": []
+  },
+  "exact": {
+   "pairs": [
+    {
+     "target_l2_code": "3701",
+     "etf_code": "159835.SZ"
+    },
+    {
+     "target_l2_code": "3703",
+     "etf_code": "159643.SZ"
+    },
+    {
+     "target_l2_code": "3706",
+     "etf_code": "159828.SZ"
+    },
+    {
+     "target_l2_code": "4803",
+     "etf_code": "159887.SZ"
+    },
+    {
+     "target_l2_code": "4901",
+     "etf_code": "159008.SZ"
+    }
+   ],
+   "total_target_exposure": 278.69,
+   "minimum_target_exposure": 41.48,
+   "mean_target_exposure": 55.738,
+   "mean_dominance_margin": 29.704,
+   "distinct_etfs": 5,
+   "targets_covered": 5,
+   "solver": "exact_subset_dp",
+   "collisions_avoided": 0,
+   "unmapped_targets": []
+  },
+  "greedy_matches_exact": true
+ },
+ "portfolio": {
+  "construction": "softmax(final_score) then 35% single-ETF cap with redistribution",
+  "alpha_score_used": "frozen_engineering_fused_score",
+  "proxy_purity_used_in_weights": false,
+  "names": [
+   {
+    "target_l2_code": "3706",
+    "l2_name": "医疗服务",
+    "etf_code": "159828.SZ",
+    "etf_name": "医疗ETF国泰",
+    "benchmark_code": "399989",
+    "mapping_type": "PROXY_EXPOSURE",
+    "final_score": 2.3767168362915063,
+    "raw_softmax_weight": 0.407732933,
+    "capped_weight": 0.35,
+    "target_l2_exposure": 44.83,
+    "second_largest_l2_exposure": 49.43,
+    "dominance_margin": -4.6,
+    "target_is_largest_l2": false,
+    "mean_amount_cny_20d": 44494396.7,
+    "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+    "grade": "UNSUITABLE"
+   },
+   {
+    "target_l2_code": "3703",
+    "l2_name": "生物制品",
+    "etf_code": "159643.SZ",
+    "etf_name": "疫苗ETF国泰",
+    "benchmark_code": "980015",
+    "mapping_type": "PROXY_EXPOSURE",
+    "final_score": 1.83545058741489,
+    "raw_softmax_weight": 0.237304977,
+    "capped_weight": 0.245359885,
+    "target_l2_exposure": 46.4,
+    "second_largest_l2_exposure": 23.34,
+    "dominance_margin": 23.06,
+    "target_is_largest_l2": true,
+    "mean_amount_cny_20d": 7483183.8625,
+    "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+    "grade": "UNSUITABLE"
+   },
+   {
+    "target_l2_code": "4901",
+    "l2_name": "证券Ⅱ",
+    "etf_code": "159008.SZ",
+    "etf_name": "证券ETF景顺",
+    "benchmark_code": "399975",
+    "mapping_type": "PROXY_EXPOSURE",
+    "final_score": 1.2282859716780057,
+    "raw_softmax_weight": 0.129305978,
+    "capped_weight": 0.145080144,
+    "target_l2_exposure": 100.0,
+    "second_largest_l2_exposure": 0.0,
+    "dominance_margin": 100.0,
+    "target_is_largest_l2": true,
+    "mean_amount_cny_20d": 6482512.5375,
+    "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+    "grade": "HIGH_PURITY_PROXY"
+   },
+   {
+    "target_l2_code": "4803",
+    "l2_name": "股份制银行Ⅱ",
+    "etf_code": "159887.SZ",
+    "etf_name": "银行ETF富国",
+    "benchmark_code": "H30022",
+    "mapping_type": "PROXY_EXPOSURE",
+    "final_score": 1.1068604652745437,
+    "raw_softmax_weight": 0.114520748,
+    "capped_weight": 0.131351693,
+    "target_l2_exposure": 41.48,
+    "second_largest_l2_exposure": 29.41,
+    "dominance_margin": 12.07,
+    "target_is_largest_l2": true,
+    "mean_amount_cny_20d": 86955231.6,
+    "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+    "grade": "UNSUITABLE"
+   },
+   {
+    "target_l2_code": "3701",
+    "l2_name": "化学制药",
+    "etf_code": "159835.SZ",
+    "etf_name": "创新药ETF建信",
+    "benchmark_code": "931152",
+    "mapping_type": "PROXY_EXPOSURE",
+    "final_score": 1.0768533956276514,
+    "raw_softmax_weight": 0.111135363,
+    "capped_weight": 0.128208279,
+    "target_l2_exposure": 45.98,
+    "second_largest_l2_exposure": 27.99,
+    "dominance_margin": 17.99,
+    "target_is_largest_l2": true,
+    "mean_amount_cny_20d": 14520833.4,
+    "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+    "grade": "UNSUITABLE"
+   }
+  ],
+  "metrics": {
+   "weighted_average_target_l2_purity": 52.926698,
+   "minimum_target_l2_purity": 41.48,
+   "weighted_proxy_leakage": 47.073302,
+   "max_weight": 0.35,
+   "weight_sum": 1.0,
+   "name_count": 5
+  },
+  "constraints": {
+   "distinct_etfs": 5,
+   "all_weights_positive": true,
+   "all_weights_finite": true,
+   "sum_to_one": 1.0,
+   "max_weight": 0.35,
+   "cap": 0.35,
+   "cap_respected": true,
+   "leverage": false,
+   "short_positions": false
+  }
+ },
+ "integrity": {
+  "exposure_matrix_sha256": "40b25e60f7b024fa8ed6f4aeb379b0d8335e0d0ea36d23f7d44a620bfe0bdccd",
+  "benchmark_l2_purity_sha256": "978c3488a782e5217a9502d08e1f4e4226888690e389480bda3f3396390e665c",
+  "csi_weights_sha256": "4b22e83312189368689312c4b9c7eea24883e1e0954e7c04ebd32dcbcdfe7b50",
+  "cni_weights_sha256": "4955b7549e3c495b091849e79140528cbed8c8cc41f4de121468db773eb68f2c",
+  "stock_to_l2_sha256": "483758af388e57806c6c741d0613c1b832d9730b458bc5b5a453149b546f0c02",
+  "liquidity_sha256": "e7b851d06bbe5e6983688d59bf0ad3072a1ad59ea4401e000b8804ac18db5eec"
+ }
+}

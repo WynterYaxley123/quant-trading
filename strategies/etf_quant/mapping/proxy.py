@@ -348,13 +348,21 @@ def research_grade(purity: ProxyPurity) -> str:
 class ProxyRule:
     """One point in the threshold-sensitivity grid.
 
-    ``min_dominance_margin`` is in percentage points. Plan D of the round uses 20.0.
+    ``min_dominance_margin`` is in percentage points, or ``None`` when the rule does not
+    constrain dominance at all.
+
+    That ``None`` matters more than it looks. ``dominance_margin >= 0`` is *equivalent* to the
+    target being the largest industry, so a rule that asks only for a threshold but passes
+    ``0.0`` here is silently identical to the "target must be largest" rule and the two decision
+    shapes collapse into one. Scheme A is therefore genuinely threshold-only: it imposes no
+    dominance constraint, and its lower fidelity is reported through the grade rather than
+    hidden behind a constraint nobody asked for.
     """
 
     name: str
     threshold: float
     require_largest: bool = False
-    min_dominance_margin: float = 0.0
+    min_dominance_margin: float | None = None
 
     def __post_init__(self):
         if self.threshold < RESEARCH_MIN_THRESHOLD:
@@ -373,8 +381,8 @@ def rule_grid(thresholds=(90.0, 80.0, 70.0, 60.0, 50.0, 40.0)) -> list[ProxyRule
     rules: list[ProxyRule] = []
     for threshold in thresholds:
         tag = f"{threshold:.0f}"
-        rules.append(ProxyRule(f"A{tag}", threshold, False, 0.0))
-        rules.append(ProxyRule(f"B{tag}", threshold, True, 0.0))
+        rules.append(ProxyRule(f"A{tag}", threshold, False, None))
+        rules.append(ProxyRule(f"B{tag}", threshold, True, None))
         rules.append(ProxyRule(f"C{tag}", threshold, True, 10.0))
         rules.append(ProxyRule(f"D{tag}", threshold, True, 20.0))
     return rules
@@ -394,7 +402,7 @@ def admit_proxy(purity: ProxyPurity, rule: ProxyRule) -> tuple[bool, str | None]
         return False, "TARGET_EXPOSURE_BELOW_THRESHOLD"
     if rule.require_largest and not purity.target_is_largest_l2:
         return False, "TARGET_NOT_LARGEST_L2"
-    if purity.dominance_margin < rule.min_dominance_margin:
+    if rule.min_dominance_margin is not None and purity.dominance_margin < rule.min_dominance_margin:
         return False, "DOMINANCE_MARGIN_BELOW_MINIMUM"
     return True, None
 

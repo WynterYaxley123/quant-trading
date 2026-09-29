@@ -232,8 +232,34 @@ def test_rule_grid_covers_the_four_decision_shapes_at_every_threshold():
     rules = rule_grid()
     assert len(rules) == 24
     shapes = {(r.require_largest, r.min_dominance_margin) for r in rules}
-    assert shapes == {(False, 0.0), (True, 0.0), (True, 10.0), (True, 20.0)}
+    assert shapes == {(False, None), (True, None), (True, 10.0), (True, 20.0)}
     assert {r.threshold for r in rules} == {90.0, 80.0, 70.0, 60.0, 50.0, 40.0}
+
+
+def test_scheme_a_is_genuinely_threshold_only():
+    """A dominance floor of 0.0 would silently equal the largest-L2 rule; scheme A must not.
+
+    `dominance_margin >= 0` holds exactly when the target IS the largest industry, so a
+    threshold-only rule that passed 0.0 would collapse schemes A and B into one decision shape
+    and hide a fidelity loss the round is supposed to expose.
+    """
+    not_largest = ProxyPurity("3706", 44.83, "3705", 49.43, False, 2, "399989",
+                              COMPLETE_WEIGHT_SET, OFFICIAL_WEIGHT)
+    threshold_only = ProxyRule("A40", 40.0)
+    largest_required = ProxyRule("B40", 40.0, True, None)
+    assert admit_proxy(not_largest, threshold_only)[0] is True
+    ok, reason = admit_proxy(not_largest, largest_required)
+    assert ok is False and reason == "TARGET_NOT_LARGEST_L2"
+    assert not_largest.dominance_margin < 0
+
+
+def test_scheme_a_still_respects_the_threshold_and_the_evidence_gate():
+    incomplete = ProxyPurity("3706", 95.0, "3705", 10.0, True, 1, "X",
+                             INCOMPLETE_WEIGHT_SET, OFFICIAL_WEIGHT)
+    assert admit_proxy(incomplete, ProxyRule("A40", 40.0))[0] is False
+    low = ProxyPurity("3706", 39.0, "3705", 5.0, True, 1, "X",
+                      COMPLETE_WEIGHT_SET, OFFICIAL_WEIGHT)
+    assert admit_proxy(low, ProxyRule("A40", 40.0))[0] is False
 
 
 def test_research_grade_is_descriptive_only():
