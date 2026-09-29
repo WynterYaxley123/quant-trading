@@ -1,0 +1,201 @@
+{
+ "schema_version": "1.0.0",
+ "artifact": "MIMO_FINAL_PIT_READINESS_V1",
+ "generated_at": "2026-09-30T03:51:12+09:00",
+ "certifier": "MiMo",
+ "branch": "agent/mimo-final-pit-readiness-certification-v1",
+ "source_branch": "agent/deepseek-production-pit-evidence-v1",
+ "source_sha": "78562bd575d78db875296e34871a52ec977f1483",
+ "primary": "MIMO_FINAL_PIT_READINESS_CERTIFICATION_COMPLETE",
+ "verdicts": {
+  "PRODUCTION_PIT_EVIDENCE_REGISTRY": "PASS",
+  "SWS_MEMBERSHIP_EVIDENCE": "PASS_WITH_KNOWN_LIMITATION",
+  "PRODUCTION_STRICT_EVIDENCE": "PASS",
+  "PIT_ADAPTER_COMPATIBILITY": "PASS",
+  "NO_BACKFILL_AUDIT": "PASS",
+  "FAIL_CLOSED_CASH": "PASS",
+  "TECHNICAL_SHADOW_READINESS": "PASS",
+  "ETF_QUANT_PROXY_READY_FOR_SHADOW": true,
+  "SHADOW_EPOCH_CREATED": false
+ },
+ "execution_policy": "B40_WITH_CASH",
+ "policy_approved": true,
+ "candidate": {
+  "candidate_status": "READY_FOR_FUTURE_SHADOW",
+  "ready_for_shadow": true,
+  "production_pit_evidence_ready": true,
+  "production_ready_from": "READY_FOR_NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE",
+  "production_pit_evidence_available_from": "2026-09-29T23:05:26+09:00",
+  "manifest_path": "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json",
+  "manifest_sha256": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89"
+ },
+ "registry": {
+  "registry_id": "PRODUCTION_PIT_EVIDENCE_REGISTRY_V1::2026-09-29",
+  "availability_semantics": "FORWARD_ONLY",
+  "production_available_from": "2026-09-29T23:05:26+09:00",
+  "historical_reference_cutoff": "2026-09-24",
+  "visible_at_2026_09_24": 0,
+  "adapter_book_records": 8133,
+  "earliest_available_at": "2026-09-29T23:05:26+09:00",
+  "available_at_minus_1s_rejects": true
+ },
+ "strict_evidence": {
+  "identity": "PRODUCTION_STRICT_CONSTITUENT_CONTAINMENT_V1",
+  "summary_path": "reports/etf_quant/production_strict_pit_evidence_summary_v1.json",
+  "containment_proven": 9,
+  "verified_strict_rows_matched": 2,
+  "top5_strict_view": [
+   {
+    "industry_code": "3706",
+    "industry_name": "医疗服务",
+    "strict_status": "NO_VERIFIED_STRICT_ROW",
+    "containment_proven_benchmarks": [],
+    "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+   },
+   {
+    "industry_code": "3703",
+    "industry_name": "生物制品",
+    "strict_status": "NO_VERIFIED_STRICT_ROW",
+    "containment_proven_benchmarks": [],
+    "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+   },
+   {
+    "industry_code": "4901",
+    "industry_name": "证券Ⅱ",
+    "strict_status": "STRICT_PIT_AVAILABLE_VIA_VERIFIED_REGISTRY",
+    "containment_proven_benchmarks": [
+     "399975",
+     "931402",
+     "931412",
+     "950105"
+    ],
+    "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+   },
+   {
+    "industry_code": "4803",
+    "industry_name": "股份制银行Ⅱ",
+    "strict_status": "NO_VERIFIED_STRICT_ROW",
+    "containment_proven_benchmarks": [],
+    "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+   },
+   {
+    "industry_code": "3701",
+    "industry_name": "化学制药",
+    "strict_status": "NO_VERIFIED_STRICT_ROW",
+    "containment_proven_benchmarks": [],
+    "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+   }
+  ]
+ },
+ "smoke_test": {
+  "kind": "PRODUCTION_EVIDENCE_SMOKE_TEST",
+  "simulated_future_decision_cutoff": "2026-11-02",
+  "formal_signal": false,
+  "market_microstructure": "SYNTHETIC_COMPATIBILITY_FIXTURE",
+  "admission_evidence": "REAL_PRODUCTION_PACKAGES",
+  "slots": [
+   {
+    "l2_code": "3706",
+    "mapping_type": "CASH_UNEXECUTABLE_SIGNAL",
+    "instrument": null,
+    "target_exposure_percent": null,
+    "is_largest": null,
+    "evidence_package_id": null,
+    "available_at": null,
+    "reason": "TARGET_EXPOSURE_BELOW_THRESHOLD",
+    "cash_retained_weight": "FULL_SLOT"
+   },
+   {
+    "l2_code": "3703",
+    "mapping_type": "CASH_UNEXECUTABLE_SIGNAL",
+    "instrument": null,
+    "target_exposure_percent": null,
+    "is_largest": null,
+    "evidence_package_id": null,
+    "available_at": null,
+    "reason": "TARGET_EXPOSURE_BELOW_THRESHOLD",
+    "cash_retained_weight": "FULL_SLOT"
+   },
+   {
+    "l2_code": "4901",
+    "mapping_type": "STRICT_MAPPING",
+    "instrument": "159848.SZ",
+    "target_exposure_percent": 100.0,
+    "is_largest": true,
+    "evidence_package_id": "d68b7eca37d4838628afa25006d3744ca99f0dba2e801cee90d54fbfa528cdf6",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "reason": "B40_ADMITTED",
+    "cash_retained_weight": 0.0,
+    "strict_alternate": "512880.SH"
+   },
+   {
+    "l2_code": "4803",
+    "mapping_type": "PROXY_EXPOSURE",
+    "instrument": "159887.SZ",
+    "target_exposure_percent": 41.48,
+    "is_largest": true,
+    "evidence_package_id": "18df79d4419dc2e55287db8b",
+    "available_at": "2026-09-29T23:05:26+09:00",
+    "reason": "B40_ADMITTED",
+    "cash_retained_weight": 0.0
+   },
+   {
+    "l2_code": "3701",
+    "mapping_type": "PROXY_EXPOSURE",
+    "instrument": "562050.SH",
+    "target_exposure_percent": 58.14,
+    "is_largest": true,
+    "evidence_package_id": "da743bed49c3fafc9ab2d250",
+    "available_at": "2026-09-29T23:05:26+09:00",
+    "reason": "B40_ADMITTED",
+    "cash_retained_weight": 0.0
+   }
+  ]
+ },
+ "coverage": {
+  "benchmarks_referenced_by_etfs": 498,
+  "benchmarks_with_complete_official_weights": 112,
+  "derived_exposures": 100,
+  "weight_coverage_percent": 22.5,
+  "exposure_coverage_percent": 20.1,
+  "fail_closed_classification_incomplete": 12,
+  "rejected_count_mismatch": 186,
+  "classification_securities": 5220,
+  "classification_l2_industries_resolved": 134,
+  "classification_conflicts": 0,
+  "verdict": "NORMAL_FAIL_CLOSED_COVERAGE_LIMITATION_NOT_TECHNICAL_FAILURE"
+ },
+ "known_limitations": [
+  "SOURCE_LICENSING_UNRESOLVED",
+  "CLASSIFICATION_FROM_OFFICIAL_INDEX_MEMBERSHIP_NOT_FROM_OFFICIAL_STOCK_CLASSIFICATION_TABLE",
+  "HISTORICAL_PUBLICATION_TIME_NOT_PROVIDED_BY_ANY_OFFICIAL_SOURCE",
+  "CSI_FULL_WEIGHT_VECTORS_AVAILABLE_ONLY_AS_XLS_OR_VIA_REVERSE_JSON",
+  "PRODUCTION_EVIDENCE_COVERAGE_LOW_EXPECT_HIGH_CASH_RATIO",
+  "H30463_UNRESOLVED_FAIL_CLOSED_TO_CASH",
+  "SWS_LIVE_REFETCH_NOT_AVAILABLE_AT_REVIEW_TIME_LOCAL_HASH_CHAIN_VERIFIED"
+ ],
+ "tests": {
+  "deepseek_baseline": "512 passed, 1 skipped (tests/etf_quant + top-level ETF)",
+  "baseline_met": true,
+  "mimo_strict_evidence": "22 passed",
+  "candidate_manifest_guards": "2 passed",
+  "full_repository_python": "NOT_RUN_TO_AVOID_SEALED_ARTIFACT_ACCESS"
+ },
+ "security_assertions": {
+  "shadow_epoch_created": false,
+  "formal_signal_created": false,
+  "order_created": false,
+  "fill_created": false,
+  "nav_created": false,
+  "validation_performance_read": false,
+  "final_oos_read": false,
+  "secrets_committed": false,
+  "raw_market_rows_committed": false,
+  "git_push_performed": false
+ },
+ "docs": {
+  "review": "docs/etf_quant/mimo_final_pit_readiness_review_v1.md",
+  "certification": "docs/etf_quant/mimo_shadow_readiness_certification_v1.md"
+ },
+ "shadow_start_semantics": "NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE"
+}
