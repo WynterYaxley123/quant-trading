@@ -46,6 +46,7 @@ REPORTS = RUNTIME / "reports"
 CSI_REVERSE = PRIOR / "official-sources" / "raw" / "csi_reverse"
 SWS_RAW_L2 = RAW / "sws" / "raw_members"
 SWS_CATALOG = RAW / "sws" / "catalog"
+SWS_FULL_CATALOG = RAW / "sws" / "raw_catalog" / "sws_index_name_all.json"
 
 #: The provider endpoint that actually produced the benchmark weight evidence.
 #: The first build recorded a sibling path that answers `code=500` when called
@@ -195,16 +196,25 @@ def sws_catalog_name_map() -> dict[str, str]:
     for code in taxonomy.named_industry_codes:
         by_name.setdefault(taxonomy.name_of(code), []).append(code)
     mapping = {}
-    for path in sorted(SWS_CATALOG.glob("*.json")):
-        doc = load_json(path)
-        for row in (doc.get("data") or {}).get("results") or []:
-            index_code = str(row.get("swindexcode") or "").strip()
-            name = str(row.get("swindexname") or "").strip()
-            if not index_code or not name:
-                continue
-            matches = by_name.get(name, [])
-            if len(matches) == 1:
-                mapping[index_code] = matches[0]
+    # The mapping is read from the UNFILTERED official index-name catalogue, not from
+    # the ``indextype=二级行业`` query. That query is the provider's own tagging and it
+    # omits ten of the 134 industries the sealed taxonomy names, which silently starved
+    # the classification and failed benchmarks closed for no real reason. The
+    # unfiltered catalogue resolves all 134, each with exactly one name match.
+    rows = []
+    if SWS_FULL_CATALOG.exists():
+        rows = load_json(SWS_FULL_CATALOG).get("data") or []
+    else:
+        for path in sorted(SWS_CATALOG.glob("*.json")):
+            rows.extend((load_json(path).get("data") or {}).get("results") or [])
+    for row in rows:
+        index_code = str(row.get("swindexcode") or "").strip()
+        name = str(row.get("swindexname") or "").strip()
+        if not index_code or not name:
+            continue
+        matches = by_name.get(name, [])
+        if len(matches) == 1:
+            mapping[index_code] = matches[0]
     return mapping
 
 

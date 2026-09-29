@@ -55,7 +55,7 @@ docs/etf_quant/deepseek_production_pit_evidence_handoff_v1.md
 |----|----------|
 | runtime 根 | `D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1\` |
 | pinned 官方原始源（repo 外） | `...\adapter-sources\` |
-| 原始采集（repo 外） | `...\raw\`（含 `raw\sws\l2_members\` 124 个文件、`raw\sws\catalog\`） |
+| 原始采集（repo 外） | `...\raw\`（`raw\sws\raw_members\` **134** 个逐券成员响应、`raw\sws\raw_catalog\` 未过滤行业目录、`raw\sws\catalog\` 过滤目录） |
 | immutable packages | `...\packages\{weights,exposure,classification}\` |
 | 适配器证据簿 | `...\adapter-tests\production_evidence_book_v1.json` |
 | 报告 | `...\reports\` |
@@ -67,8 +67,8 @@ registry 元数据（见 `production_pit_evidence_registry_v1.json`）：
 {
   "registry_id": "PRODUCTION_PIT_EVIDENCE_REGISTRY_V1::2026-09-29",
   "schema_version": "1.0.0",
-  "created_at": "2026-09-29T22:50:56+09:00",
-  "production_available_from": "2026-09-29T22:50:56+09:00",
+  "created_at": "2026-09-29T23:05:26+09:00",
+  "production_available_from": "2026-09-29T23:05:26+09:00",
   "availability_semantics": "FORWARD_ONLY",
   "classification_snapshot_id": "SWS_L2_CURRENT_SNAPSHOT_20260929",
   "cneqity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27"
@@ -81,12 +81,12 @@ registry 元数据（见 `production_pit_evidence_registry_v1.json`）：
 |------|------|------------------------------------------|
 | 被 ETF 引用的 benchmark | 498 | 100% |
 | 有完整官方权重向量 | 112 | 22.5% |
-| 成功派生 L2 暴露 | 61 | 12.2% |
-| 因分类不完整 fail closed | 51 | 10.2% |
+| 成功派生 L2 暴露 | 100 | 20.1% |
+| 因分类不完整 fail closed | 12 | 2.4% |
 | 因成分计数不符被拒 | 186 | 37.3% |
-| 分类覆盖证券 | 5200 | —（124 个二级行业，0 冲突） |
-| 适配器证据簿记录 | 1816 | — |
-| pinned 来源 | 384（81 verbatim + 303 documented extraction） | — |
+| 分类覆盖证券 | 5220 | —（**134 个二级行业全部覆盖**，0 冲突） |
+| 适配器证据簿记录 | 8133 | — |
+| pinned 来源 | 427（81 verbatim + 346 documented extraction） | — |
 
 ---
 
@@ -172,11 +172,11 @@ python scripts/etf_quant/build_production_pit_manifest.py
 ## 7. 当前 Top5 生产证据状态
 
 **这是"未来可用证据状态"，不是 `2026-09-24` 的运行结果。**
-所有 package 的 `production_available_at = 2026-09-29T22:50:56+09:00`，因此 `2026-09-24` 一条都用不了。
+所有 package 的 `production_available_at = 2026-09-29T23:05:26+09:00`，因此 `2026-09-24` 一条都用不了。
 
 | 行业 | 名称 | 状态 | 最佳 benchmark | 目标暴露 | 目标最大 | 可用 ETF |
 |------|------|------|----------------|----------|----------|----------|
-| 3706 | 医疗服务 | B40 拒绝（证据存在） | 000814 | 28.04% | 否 | 1 |
+| 3706 | 医疗服务 | B40 拒绝（证据存在） | 000913 | **37.16%** | **是** | 1 |
 | 3703 | 生物制品 | B40 拒绝（证据存在） | 930743 | 33.06% | 是 | 4 |
 | 4901 | 证券Ⅱ | **PRODUCTION_PIT_PROXY_AVAILABLE** | 399975 | 100.00% | 是 | 17 |
 | 4803 | 股份制银行Ⅱ | **PRODUCTION_PIT_PROXY_AVAILABLE** | H30022 | 41.48% | 是 | 1 |
@@ -185,7 +185,7 @@ python scripts/etf_quant/build_production_pit_manifest.py
 即：**3 个可 Proxy，2 个因 B40 阈值/最大性不足而 fail closed 到 Cash**。
 本轮**没有**用旧研究 evidence 去补齐这两个槽位。
 
-`strict_pit_records = 170` 指的是适配器证据簿中行业码落在 Top5 内的记录条数，
+`strict_pit_records = 617` 指的是适配器证据簿中行业码落在 Top5 内的记录条数，
 **不等于** STRICT 映射准入数（STRICT 需要独立 VERIFIED registry 条目）。
 
 ---
@@ -196,27 +196,24 @@ python scripts/etf_quant/build_production_pit_manifest.py
    `StockClassifyUse_stock.xls` 是 XLS，适配器无法消费；本轮改用申万官方 JSON
    二级行业指数成分（`component_stocks`）。差别已写入 registry `known_limitations`。
 
-2. **6 只证券无官方二级行业归属**（`CLASSIFICATION_INCOMPLETE` 导致 51 个 benchmark fail closed）：
+2. **分类缺口已基本关闭（前一轮报告有误，已自行纠正）。**
+   早期版本用 `indextype=二级行业` 查询取行业目录，只拿到 **124** 个条目，
+   我据此错误地认为 10 个封印二级行业没有官方指数。改用**未过滤**的
+   `index_name/` 目录（1,014 条）后，**134 个封印二级行业全部可解析**，每个恰好唯一匹配。
+   补齐后：分类证券 5200 → **5220**，派生暴露 61 → **100**，fail closed 51 → **12**。
 
-   | 证券 | 研究 sidecar 归类 | 官方行业指数 |
-   |------|------------------|--------------|
-   | 600938 | 7501 油气开采Ⅱ | 官方无此指数 |
-   | 300896 / 920982 / 688363 | 7703 医疗美容 | 官方无此指数 |
-   | 601888 | 4507 旅游零售Ⅱ | 官方无此指数 |
-   | 689009 | 2804 摩托车及其他 | 有指数（801881，16 成员）但该证券不在其中 |
-
-   另有 10 个封印二级行业官方不发布对应行业指数：
-   `1103, 1109, 3307, 4507, 4606, 4607, 4806, 7208, 7501, 7703`。
-
-   这 6 只在研究 sidecar 里都有归类 —— 这是**真实的官方 vs 研究分歧**，
-   已按 `CROSS_CHECK_ONLY` 报告，**研究 sidecar 未被提升为生产证据，也未被用来补洞**。
+   仍有 2 只证券（`920982`、`689009`）不在任何官方二级行业指数成分中，
+   导致 **12** 个 benchmark fail closed。这是**真实的官方来源缺口**，
+   两套独立采集都未在任何官方二级行业指数里找到它们。
+   研究 sidecar 对它们有归类，但**未被提升为生产证据**。
 
 3. **中证不提供"全量成分+逐股权重"的官方 JSON**（已穷举官网 200+ 接口路径）。
    全量只有 XLS。本轮走通官方 JSON 反向查询并重建，用"权重和 ∈ [99.0, 100.5] 且计数相符"
    作为独立算术交叉证明；186 个 benchmark 因计数不符被拒，**没有一个是因和不在带内被拒**。
 
-4. **覆盖率只有 22.5%（权重）/ 12.2%（暴露）**，见第 2 节表格。
-   最高优先级的后续工作是把 186 个 `count_mismatch` 的 benchmark 补齐成分（继续增量抓取即可）。
+4. **覆盖率 22.5%（权重）/ 20.1%（暴露）**，见第 2 节表格。
+   **瓶颈已从分类转移到权重**：186 个 benchmark 的成分向量不完整（`count_mismatch`），
+   继续增量抓取即可改善，不需要方法学变更。
 
 5. **交易所目录不提供上市状态字段**（已对原始字节做 token 扫描，0 命中）。
    `listing_status` 仅表示"出现在交易所自己维护的在市基金目录中"。
@@ -224,10 +221,10 @@ python scripts/etf_quant/build_production_pit_manifest.py
 6. **所有官方来源都不提供发布时间**，因此 `source_publication_at = null`，
    adapter book 中取本系统首次观察时刻作为诚实下界。历史 PIT **不可证明** → 全量 FORWARD_ONLY。
 
-7. **来源可复现性已区分两类并全部标注**：384 个 pinned 来源中，
+7. **来源可复现性已区分两类并全部标注**：427 个 pinned 来源中，
    81 个是 `VERBATIM_PROVIDER_BYTES`（官方字节原样保存，可重取复现 SHA-256），
-   303 个是 `DOCUMENTED_EXTRACTION`（本系统聚合文档，**100% 携带上游 `derived_from` 文件与哈希**）。
-   申万 124 个原始响应实测重新抓取 SHA-256 完全一致，且原始字节中无注入字段。
+   346 个是 `DOCUMENTED_EXTRACTION`（本系统聚合文档，**100% 携带上游 `derived_from` 文件与哈希**）。
+   申万 134 个原始响应实测重新抓取 SHA-256 完全一致，且原始字节中无注入字段。
 
 8. `SOURCE_LICENSING_UNRESOLVED`（保持，未做法律判断）。
 
@@ -272,7 +269,7 @@ python scripts/etf_quant/build_production_pit_manifest.py
   经实测（临时移出本轮新增模块后仍失败），该失败**与本轮改动无关**，
   是解释器 locale 差异，不是仓库缺陷。设置 `PYTHONUTF8=1` 后该测试通过。
 * 本轮实测测试结果（提交后、clean tree 上）：
-  `tests/etf_quant` + 两个顶层 ETF 测试文件 = **512 passed, 1 skipped**。
+  `tests/etf_quant` + 两个顶层 ETF 测试文件 = **见本轮最终实测**（下方第 14 节）。
 * 未运行封存研究测试，未触碰 Validation / OOS 数据。
 * Docker：本轮未使用（未重装、未修改）。
 
@@ -287,12 +284,13 @@ python scripts/etf_quant/build_production_pit_manifest.py
 | # | 审计发现 | 本轮处置 |
 |---|---------|---------|
 | 1 | 320 个 pinned 文件中 240 个是本地合成文档却挂官方 URL，哈希不可复现 | 引入 `kind`：81 个 `VERBATIM_PROVIDER_BYTES` + 303 个 `DOCUMENTED_EXTRACTION`，后者 **100%** 带 `derived_from`（上游文件 + SHA-256） |
-| 2 | 申万 pinned 文件被注入了 `source_url`/`swindexcode` 两个字段 | 重新采集 124 个响应，**原样保存**，实测重取 SHA-256 完全一致，无注入字段 |
+| 2 | 申万 pinned 文件被注入了 `source_url`/`swindexcode` 两个字段 | 重新采集 **134** 个响应，**原样保存**，实测重取 SHA-256 完全一致，无注入字段 |
 | 3 | 记录里的 CSI `weight_source_url` 实测返回 `code=500` | 端点与调用方式写入 manifest note 与 registry 文档；CSI 原始响应另行登记 |
 | 4 | 硬编码 `--valid-from 2026-09-30` 埋着倒填机制 | 默认改为观察时刻的本地日期，并加"早于观察日即拒绝构建"护栏 |
 | 5 | `constituent_effective_date` 硬编码 `2026-08-31`，无官方出处 | 删除该字面量；改为锚定官方 `beginningdate`，无官方日期时用观察日**并显式标注** |
-| 6 | 分类包丢掉官方 `beginningdate`，全部写成构建常量 | 改为逐券使用官方 `beginningdate`，**5200/5200 全部来自官方**，共 94 个不同取值 |
+| 6 | 分类包丢掉官方 `beginningdate`，全部写成构建常量 | 改为逐券使用官方 `beginningdate`，**5220/5220 全部来自官方**，共 521 个不同取值 |
 | 7 | `csi_reverse` 输入目录在构建后仍在增长，构建不可复现 | 已停止采集，缓存冻结（4202 文件），本次最终构建基于冻结快照 |
+| 11 | 分类目录取自 `indextype=二级行业` 过滤查询，漏掉 10 个官方二级行业 | 改用**未过滤**的 `index_name/` 目录（1,014 条）按官方名称精确匹配，**134 个二级行业全部覆盖**；分类证券 5200→**5220**，派生暴露 61→**100**，fail closed 51→**12** |
 | 8 | 覆盖率只有 10% 却未显式报告 | registry 与 build report 显式记录 `scope = 498`，并给出 112 / 61 的占比 |
 | 9 | 全部证据共享一个时间常量，只靠一个常量兜住 | 加双向护栏（不得早于真实抓取、不得晚于墙上时钟）+ 逐来源检索账本；`last_real_retrieval` 由账本推导 |
 | 10 | 审计期间发现上一版 `observed_at` 比机器时钟超前 21h | 已加入"拒绝未来观察时刻"护栏（该缺陷真实发生过并被修复） |
@@ -301,5 +299,5 @@ python scripts/etf_quant/build_production_pit_manifest.py
 权重真实完整（C4）、无重归一化（C5）、适配器未修改（C10）、包哈希可复现（C11）、Top5 报告与底层包一致。
 
 **审计的总体判断仍应传给 Codex**：本轮证据体系在**结构与时间语义**上已经可审计、可复现、
-fail-closed 明确，但在**覆盖率**（22.5% / 12.2%）与**分类来源层级**（指数成分而非官方分类表）上仍是有限的。
+fail-closed 明确，但在**覆盖率**（22.5% 权重 / 20.1% 暴露）与**分类来源层级**（指数成分而非官方分类表）上仍是有限的。
 `ETF_QUANT_PROXY_READY_FOR_SHADOW` 的最终判定交给 Codex，本轮不自行置 TRUE。

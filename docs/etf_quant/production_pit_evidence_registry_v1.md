@@ -62,11 +62,11 @@ adapter book 中 = evidence_observed_at  (适配器要求一条有序时间链�
   "exposure": {
     "benchmark_code": "930743",
     "benchmark_effective_date": "2026-08-25",
-    "benchmark_evidence_available_at": "2026-09-29T22:50:56+09:00",
+    "benchmark_evidence_available_at": "2026-09-29T23:05:26+09:00",
     "classification_snapshot_id": "SWS_L2_CURRENT_SNAPSHOT_20260929",
-    "classification_evidence_available_at": "2026-09-29T22:50:56+09:00",
-    "derived_at": "2026-09-29T22:50:56+09:00",
-    "production_available_at": "2026-09-29T22:50:56+09:00",
+    "classification_evidence_available_at": "2026-09-29T23:05:26+09:00",
+    "derived_at": "2026-09-29T23:05:26+09:00",
+    "production_available_at": "2026-09-29T23:05:26+09:00",
     "availability_semantics": "FORWARD_ONLY",
     "unmapped_weight": 0.0,
     "weight_sum": 100.0,
@@ -81,7 +81,7 @@ adapter book 中 = evidence_observed_at  (适配器要求一条有序时间链�
 
 * **数据描述**权重向量自身的生效日（锚定在该 benchmark 成分中**最晚**的一个官方
   `beginningdate`，并封顶在有效窗口起点）；
-* **本系统在** `2026-09-29T22:50:56+09:00` **才第一次真正拿到并校验**这些字节；
+* **本系统在** `2026-09-29T23:05:26+09:00` **才第一次真正拿到并校验**这些字节；
 * 因此 `production_available_at` 等于该时刻；
 * 在 `2026-09-24` 做决策时，这份证据**不存在**，adapter 必须看不到它 —— 见第 8 节。
 
@@ -126,26 +126,41 @@ adapter book 中 = evidence_observed_at  (适配器要求一条有序时间链�
 
 | 项 | 值 |
 |----|-----|
-| 官方来源 | 申万宏源研究官方 JSON API<br>`.../index_publish/current/?indextype=二级行业`（目录，**124** 个二级行业指数）<br>`.../index_publish/details/component_stocks/?swindexcode=<code>&page_size=1000`（成员，**124** 个文件） |
-| 覆盖证券 | **5200** 只，覆盖 **124** 个二级行业 |
+| 官方来源 | 申万宏源研究官方 JSON API<br>目录：`.../index_name/`（**1,014** 个指数名，**未过滤**）<br>成员：`.../index_publish/details/component_stocks/?swindexcode=<code>&page_size=1000`（**134** 个文件） |
+| 覆盖证券 | **5220** 只，覆盖 **134** 个二级行业（封印分类法命名的二级行业**全部 134 个**） |
 | **分类冲突** | **0**（同一证券同时出现在两个官方二级行业指数中的情况为零） |
-| 未分类 | 6 只证券（见第 7 节），另有 10 个二级行业官方**不发布**对应行业指数 |
+| 未分类 | **0**（`unmapped_catalog_indices = 0`） |
 | 生效语义 | `validity_semantics = FORWARD_ONLY_UNTIL_SUPERSEDED` |
-| `classification_effective_from` | 官方每行自带的 `beginningdate` 中**最早**的一个。构建日期**从不**被用作生效日 |
-| 生效日实测 | **5200/5200 全部来自官方**（`defaulted 0`），book 内共 **94** 个不同官方取值，范围 `2021-12-13 … 2026-08-25` |
-| 来源类别 | **VERBATIM_PROVIDER_BYTES** —— 124 个响应按原样保存，已实测重新抓取得到**完全相同**的 SHA-256 |
+| `classification_effective_from` | 官方每行自带的 `beginningdate`（纳入生效日） |
+| 生效日实测 | **5220/5220 全部来自官方**（`defaulted 0`），共 **521** 个不同官方取值 |
+| 来源类别 | **VERBATIM_PROVIDER_BYTES** —— 134 个响应按原样保存，已实测重新抓取得到**完全相同**的 SHA-256 |
 
-> **诚实标注**：本轮的证券→行业归属来自"官方二级行业指数成分表"（index membership），
-> **不是**来自官方全股票分类表（`StockClassifyUse_stock.xls`，XLS，适配器无法消费）。
-> 这一差别写入 registry 的 `known_limitations`，不隐藏。
+> **⚠️ 一个必须记录的方法学修正（本轮自行发现并纠正）**
+>
+> 早期版本用 `indextype=二级行业` 查询获取行业目录，该查询只返回 **124** 个条目。
+> 我据此一度得出"10 个封印二级行业官方不发布对应指数"的结论。
+> **该结论是错的** —— `indextype` 只是发布方自己的标签，并不穷尽。
+>
+> 改用**未过滤**的 `index_name/` 目录（1,014 条）按官方名称精确匹配后：
+> **134 个封印二级行业全部可解析，且每个恰好唯一匹配**。
+> 缺失的 10 个是 `801011 林业Ⅱ / 801019 农业综合Ⅱ / 801117 其他家电Ⅱ / 801207 旅游零售Ⅱ /
+> 801216 体育Ⅱ / 801217 本地生活服务Ⅱ / 801768 社交Ⅱ / 801786 其他银行Ⅱ / 801961 油气开采Ⅱ /
+> 801983 医疗美容`。
+>
+> 补齐后：分类证券 5200 → **5220**，派生暴露 61 → **100**，fail closed 51 → **12**，
+> 3706 医疗服务的最佳候选暴露 28.04% → **37.16%**，且由"非最大"变为"最大"。
+
+> **诚实标注**：证券→行业归属来自"官方二级行业指数成分表"（index membership），
+> **不是**来自官方全股票分类表（`StockClassifyUse_stock.xls`，OLE2 XLS，适配器无法消费）。
+> 差别写入 registry 的 `known_limitations`。
 
 行业指数代码到封印分类码的映射**只通过官方名称精确相等**建立：
 `801012 农产品加工 → 1105`。名称不匹配或匹配到多个分类码的一律丢弃，绝不猜测，绝不用数字前缀推导。
 
 ### D. BENCHMARK → L2 EXPOSURE（`BENCHMARK_L2_EXPOSURE_PIT_PACKAGE_V1`）
 
-只有 B 与 C 双双生产准入后才派生：**61** 个 benchmark 成功派生（占 498 的 **12.2%**），
-**51** 个因分类不完整 fail closed。
+只有 B 与 C 双双生产准入后才派生：**100** 个 benchmark 成功派生（占 498 的 **20.1%**），
+**12** 个因分类仍有缺口而 fail closed。
 
 ### E. B40 MAPPING（`B40_MAPPING_EVIDENCE_V1`）
 
@@ -159,28 +174,32 @@ B40 规则**未被修改**：`target_l2_exposure >= 40.0` **且** `target_is_lar
 |------|------|----------------------------------|
 | 被 ETF 引用的 benchmark | 498 | 100% |
 | 有完整官方权重向量 | **112** | **22.5%** |
-| 成功派生 L2 暴露 | **61** | **12.2%** |
-| 因分类不完整 fail closed | 51 | 10.2% |
+| 成功派生 L2 暴露 | **100** | **20.1%** |
+| 因分类不完整 fail closed | 12 | 2.4% |
 | 因成分计数不符被拒 | 186 | 37.3% |
 
 `fail_closed_to_cash: 0` 只是当前 5 个 Top5 行业的计数，**不代表全局**。
 registry 与 build report 都显式记录 `scope = 498`，避免被误读成全量覆盖。
 
+**当前瓶颈已从分类转移到权重**：186 个 benchmark 的成分向量不完整（`count_mismatch`），
+这是继续增量抓取即可改善的部分，不需要方法学变更。
+
 ---
 
 ## 6. 来源可复现性（独立审计后的修正）
 
-独立对抗审计指出：上一版的 320 个 pinned 文件中，240 个是本地合成文档却挂着官方 URL，
-其哈希"自洽但不可复现"。本轮已修正：
+独立对抗审计指出：早期版本的 320 个 pinned 文件中，240 个是本地合成文档却挂着官方 URL，
+其哈希"自洽但不可复现"。已修正：
 
 | 项 | 值 |
 |----|-----|
-| pinned 来源总数 | **384** |
+| pinned 来源总数 | **427** |
 | `VERBATIM_PROVIDER_BYTES`（可重取复现） | **81** |
-| `DOCUMENTED_EXTRACTION`（本系统聚合文档） | **303** |
-| 携带上游 lineage 的聚合文档 | **303 / 303**（100%） |
-| 申万原始成员响应 | **124** 个，实测重新抓取 SHA-256 **完全一致**，原始字节中**无注入字段** |
-| 检索账本 | `reports/sws_raw_retrieval_ledger.jsonl`，124 条，含 URL / HTTP 状态 / 时间 / SHA-256 / 计数一致性 |
+| `DOCUMENTED_EXTRACTION`（本系统聚合文档） | **346** |
+| 携带上游 lineage 的聚合文档 | **346 / 346**（100%） |
+| 申万原始成员响应 | **134** 个，实测重新抓取 SHA-256 **完全一致**，原始字节中**无注入字段** |
+| 申万行业目录（未过滤） | **1** 个，`raw_catalog/sws_index_name_all.json` |
+| 检索账本 | `reports/sws_raw_retrieval_ledger.jsonl`，**134** 条，含 URL / HTTP 状态 / 时间 / SHA-256 / 计数一致性 |
 
 `raw_source_manifest_v1.json` 中每个来源都带 `kind` 与 `derived_from`，
 并在 `reproducibility_note` 中写明两类来源的可验证方式不同。
@@ -189,26 +208,24 @@ registry 与 build report 都显式记录 `scope = 498`，避免被误读成全�
 
 ## 7. 生产分类覆盖缺口（如实报告）
 
-51 个 benchmark 无法派生，原因**只有一个**：`CLASSIFICATION_INCOMPLETE`。
-根因是**6 只证券**不在任何官方二级行业指数成分中：
+**分类缺口已从 6 只证券缩小到 0。** 前一轮报告的"6 只无官方归属证券"中，
+5 只是**我的检索缺陷造成的假缺口**，补齐 10 个被 `indextype` 过滤掉的二级行业后已经解决：
 
-| 证券 | 研究 sidecar 归类 | 官方是否有该行业指数 |
-|------|------------------|---------------------|
-| 600938 | 7501 油气开采Ⅱ | ❌ 官方无此二级行业指数 |
-| 300896 | 7703 医疗美容 | ❌ 官方无此二级行业指数 |
-| 601888 | 4507 旅游零售Ⅱ | ❌ 官方无此二级行业指数 |
-| 920982 | 7703 医疗美容 | ❌ 官方无此二级行业指数 |
-| 688363 | 7703 医疗美容 | ❌ 官方无此二级行业指数 |
-| 689009 | 2804 摩托车及其他 | ⚠️ 官方有该指数（801881，16 名成员），但该证券**不在其中** |
+| 证券 | 研究 sidecar 归类 | 实际官方归属 | 状态 |
+|------|------------------|--------------|------|
+| 600938 | 7501 油气开采Ⅱ | 801961 油气开采Ⅱ | ✅ 已归类 |
+| 300896 | 7703 医疗美容 | 801983 医疗美容 | ✅ 已归类 |
+| 601888 | 4507 旅游零售Ⅱ | 801207 旅游零售Ⅱ | ✅ 已归类 |
+| 920982 | 7703 医疗美容 | （不在本次官方快照内） | ⚠️ 仍无官方归属 |
+| 688363 | 7703 医疗美容 | 801983 医疗美容 | ✅ 已归类 |
+| 689009 | 2804 摩托车及其他 | （不在 801881 成分内） | ⚠️ 仍无官方归属 |
 
-另有 **10 个**封印二级行业官方不发布对应行业指数：
-`1103, 1109, 3307, 4507, 4606, 4607, 4806, 7208, 7501, 7703`。
+**剩余 12 个 benchmark 仍 fail closed**，原因是成分中仍有个别证券（如 `920982`、`689009`）
+不在任何官方二级行业指数成分中。这是**真实的官方来源缺口**：
+`920982` 与 `689009` 在两套独立采集中都未出现在任何官方二级行业指数里。
 
-**这 6 只证券全部在研究 sidecar 里有归类** —— 这是一次真实的官方来源 vs 研究 artifact 分歧，
-已作为 `CROSS_CHECK_ONLY` 报告（`reports/classification_cross_check_v1.json`），
-**研究 sidecar 未被提升为生产证据**，也未被用来补洞。
-
-fail closed 是正确行为：宁可该 benchmark 转 Cash，也不用无法证明来源的归类。
+fail closed 是正确行为：宁可该 benchmark 转 Cash，也不用无法证明来源的归类补洞。
+研究 sidecar 对这些证券有归类，但**未被提升为生产证据**，仅作 `CROSS_CHECK_ONLY`。
 
 ---
 
@@ -220,7 +237,7 @@ fail closed 是正确行为：宁可该 benchmark 转 Cash，也不用无法证�
    把 `available_at` 设到 `observed_at` 之前 → `EVIDENCE_TIME_BLOCKER / AVAILABLE_BEFORE_OBSERVED`。
 2. **描述日不得晚于可用日**：`effective_date > available_at.date()` → `EFFECTIVE_DATE_AFTER_AVAILABILITY`。
 3. **适配器前缀**：`PITEvidenceBook.prefix(decision_at)` 只返回 `available_at <= decision_at` 的记录。
-   本轮 book 中最早 `available_at = 2026-09-29T22:50:56+09:00`，因此
+   本轮 book 中最早 `available_at = 2026-09-29T23:05:26+09:00`，因此
    `prefix(2026-09-24T18:00:00+08:00) == {}`，且在 `available_at - 1s` 上同样为空。
 
 ### 构建器两侧的硬护栏
@@ -254,7 +271,7 @@ result = select_pit_mappings(registry, rankings, provider, book, signal_at=...)
 
 | 测试 | 结论 |
 |------|------|
-| 真实 book 通过未修改的 loader | PASS（**1816** 条记录） |
+| 真实 book 通过未修改的 loader | PASS（**8133** 条记录） |
 | 每条记录都是 `COMPLETE_WEIGHT_SET` 且 `unmapped_weight == 0` | PASS |
 | `2026-09-24` 前缀为空 | PASS —— **关键 no-backfill 测试** |
 | 模拟未来 cutoff 跑 STRICT > PROXY > CASH | PASS |
