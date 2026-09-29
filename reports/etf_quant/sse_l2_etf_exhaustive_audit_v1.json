@@ -1,0 +1,125 @@
+{
+ "manifest_identity": "SSE_L2_ETF_EXHAUSTIVE_AUDIT_V1",
+ "schema_version": "1.0.0",
+ "observed_at": "2026-09-29T09:00:00+08:00",
+ "primary_result": "SSE_L2_ETF_AUDIT_COMPLETE",
+ "git_sha": "016f0192371fc775f17be61bf4fc9784d7dbbb85",
+ "industry_level": "SHENWAN_L2",
+ "sse_universe_source": "https://query.sse.com.cn/commonSoaQuery.do?sqlId=FUND_LIST&fundType=00&subClass=01,02,03,04,06,08,09,31,32,33,34,35,36,37,38",
+ "sse_universe_secondary_source": "https://query.sse.com.cn/commonQuery.do?sqlId=COMMON_SSE_ZQPZ_ETFZL_XXPL_ETFGM_SEARCH_L",
+ "sse_universe_count": 916,
+ "sse_universe_definition": "上交所 FUND_LIST 返回的全部 ETF（截至 2026-09-29 观察日仍在列）",
+ "cross_validation": {
+  "codes_in_both_lists": 916,
+  "only_in_scale_list": [],
+  "only_in_fund_list": [],
+  "scale_list_stat_date": "2026-09-28"
+ },
+ "enumeration_confidence": "FULL_EXHAUSTIVE",
+ "enumeration_confidence_basis": [
+  "两个相互独立的上交所官方接口给出完全相同的 916 只 ETF 代码集合（交集 916，无单边遗漏）。",
+  "916 只中 908 只带官方 INDEX_CODE/INDEX_NAME；其余 8 只全部是 subClass=06 黄金ETF，按产品类别无标的指数。",
+  "产品类别字段（subClass）来自上交所自己的页面脚本，可直接区分 A 股股票 / 跨境 / 债券 / 商品。"
+ ],
+ "subclass_histogram": {
+  "01": 53,
+  "02": 22,
+  "03": 512,
+  "06": 8,
+  "08": 32,
+  "09": 124,
+  "31": 26,
+  "32": 8,
+  "33": 127,
+  "37": 4
+ },
+ "a_share_equity_etfs": 747,
+ "a_share_equity_benchmarks": 273,
+ "a_share_equity_benchmarks_constituents_verified": 260,
+ "method_A_index_constituent_containment": {
+  "benchmarks_tested": 356,
+  "contained_subset": 0,
+  "spans_outside": 300,
+  "constituents_unavailable": 56,
+  "source": "官方指数成分资料（中证指数有限公司/上海证券交易所指数）"
+ },
+ "method_B_exchange_pcf_basket_containment": {
+  "etfs_tested": 747,
+  "contained_subset": 0,
+  "spans_outside": 747,
+  "source": "https://query.sse.com.cn/commonQuery.do?sqlId=COMMON_SSE_CP_JJLB_ETFJJGK_GGSGSHQD_COMPONENT_C",
+  "note": "上交所自己发布的申购赎回清单成分，完全不依赖指数公司数据或基金名称"
+ },
+ "positive_control": {
+  "index_code": "399975",
+  "index_name": "中证全指证券公司指数",
+  "target_l2": "4901",
+  "constituents": 49,
+  "off_target_constituents": 0,
+  "verdict": "CONTAINED_SUBSET",
+  "why": "同一检验对真实行业指数必须给出 CONTAINED_SUBSET，否则 0 命中可能只是检验失灵"
+ },
+ "negative_control": {
+  "index_code": "399986",
+  "index_name": "中证银行指数",
+  "target_l2": "4803",
+  "constituents": 42,
+  "off_target_constituents": 33,
+  "verdict": "SPANS_OUTSIDE_INDUSTRY"
+ },
+ "target_industries": {
+  "3706": {
+   "industry_name": "医疗服务",
+   "result": "NO_PASS_FOUND",
+   "verified_pass": 0,
+   "candidate_etfs": 25
+  },
+  "3703": {
+   "industry_name": "生物制品",
+   "result": "NO_PASS_FOUND",
+   "verified_pass": 0,
+   "candidate_etfs": 14
+  },
+  "4803": {
+   "industry_name": "股份制银行Ⅱ",
+   "result": "NO_PASS_FOUND",
+   "verified_pass": 0,
+   "candidate_etfs": 26
+  },
+  "3701": {
+   "industry_name": "化学制药",
+   "result": "NO_PASS_FOUND",
+   "verified_pass": 0,
+   "candidate_etfs": 34
+  }
+ },
+ "candidate_count": 99,
+ "verified_pass_count": 0,
+ "verified_rejected_count": 99,
+ "insufficient_evidence_count": 0,
+ "not_relevant_count": 0,
+ "evidence_hashes": {
+  "sse_fund_list_etf.json": "1f0eae06f1b653498e2dadd09fba97450abf5aa3e7fecd4cee1322edf276af79",
+  "etf_scale_list.json": "6c24379b0fe9bc689f156eb225ce812905abdc7959e9ce0e9a283d0e763ef62d",
+  "current_sse_etf_universe.json": "2eca5183b8235a31a89318fe16db31819e4d037b33f383ff9fb80adc962ffc36",
+  "sse_containment.json": "0bb92eecc7ba07ec3fb514a25d91409a6965c950747bc68e381f5d5565448939",
+  "sse_pcf_containment.json": "d043bee7f4be7e2710c0d44e97f5e489cb24cca040943b035cc7f8a14bb34e39",
+  "SwClassCode_2021.xls": "98bc0d15312f6a561b14f933571442d7a69da2070849f00c6fb1f5bb56a87c22",
+  "StockClassifyUse_stock.xls": "adcaa592fc2f84872004f98f263129c7e21d20de4c24752843ae9b6ea10b1643"
+ },
+ "strict_l2_etf_supply_gap_confirmed": true,
+ "gap_is": "ETF_PRODUCT_SUPPLY",
+ "gap_is_not": [
+  "CNEQUITY_MARKET_DATA",
+  "MAPPING_CODE_BUG",
+  "L2_L3_CONTRACT_BUG",
+  "LIQUIDITY"
+ ],
+ "known_limitations": [
+  "本轮只覆盖上交所；深交所一侧沿用此前的 747 只官方 ETF 列表（含拟合指数字段）穷举证据。",
+  "方法 A 有 56 个基准的成分资料无法取得；其中 13 个属于 A 股股票 ETF，已由方法 B（上交所 PCF 成分篮）以交易所自有数据闭合（如 MSCI 中国A股系列篮子 220–419 只、标普中国A股红利机会 100 只）。",
+  "其余 43 个不可得基准全部属于跨境(subClass 33/04/34/35)、债券(02/32/36/37)或商品(06/38) 产品类别，按产品类别即不可能成为 A 股申万二级行业指数。",
+  "PCF 成分篮是申购赎回清单，与指数成分是两个不同的官方对象；本轮把它当作交易所口径的持仓暴露证据。",
+  "8 只无标的指数的 ETF 全部是黄金 ETF（subClass=06），与四个目标行业无关。"
+ ]
+}
