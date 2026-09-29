@@ -1,6 +1,6 @@
 # DEEPSEEK PROXY POLICY FINALIZATION —— CODEX 交接单（V1）
 
-生成时间：2026-09-29T18:25:31+09:00
+生成时间：2026-09-29T18:28:04+09:00
 
 ## 1. Git
 
@@ -8,7 +8,7 @@
 |---|---|
 | branch | `agent/deepseek-etf-quant-proxy-policy-finalization-v1` |
 | base SHA | `c309f39ad80f43f6660dfbc30f87706890f6f846` |
-| final SHA | `c55ac759483b37014c22be32ccca30e4ae744699` |
+| final SHA | `6885bb6c7509b564629be98252caba7a363994da` |
 | worktree | `D:\quant-worktrees\deepseek-etf-quant-proxy-policy-finalization` |
 | push | **未推送** |
 
