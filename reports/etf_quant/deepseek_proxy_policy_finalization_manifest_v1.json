@@ -1,0 +1,124 @@
+{
+ "artifact": "DEEPSEEK_PROXY_POLICY_FINALIZATION_MANIFEST_V1",
+ "task": "ETF_QUANT_PROXY_POLICY_FINALIZATION_V1",
+ "created_at": "2026-09-29T18:28:04+09:00",
+ "branch": "agent/deepseek-etf-quant-proxy-policy-finalization-v1",
+ "base_git_sha": "c309f39ad80f43f6660dfbc30f87706890f6f846",
+ "head_git_sha": "6885bb6c7509b564629be98252caba7a363994da",
+ "pushed": false,
+ "mapping_type": "PROXY_EXPOSURE",
+ "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
+ "strict_mapping_modified": false,
+ "frozen_model_modified": false,
+ "sealed_validation_read": false,
+ "final_oos_read": false,
+ "shadow_epoch_created": false,
+ "historical_engineering_reference_date": "2026-09-24",
+ "recommended_execution_policy": "B40_WITH_CASH",
+ "policy_ranking_robust_to_instrument_rule": true,
+ "subagent_evidence": {
+  "3706_exhaustive_verdict_present": true,
+  "3706_verdict": true,
+  "3706_scanned_etf_count": 1344,
+  "3706_scanned_benchmark_count": 381,
+  "3706_bucket_accounting": {
+   "resolved_complete": 129,
+   "excluded_by_arithmetic_bound": 201,
+   "undetermined_with_reason": 51,
+   "total": 381,
+   "matches_scanned_benchmark_count": true
+  },
+  "3706_complete_weight_benchmarks": 129,
+  "3706_undetermined_benchmarks": 51,
+  "3706_undetermined_health_related": [
+   "931409",
+   "H30463",
+   "HSSSHID"
+  ],
+  "3706_open_cross_border_exception": [
+   "H30463"
+  ],
+  "3706_reversal_paths": [
+   "HSSSHID official weights show 3706 >= 40 percent and dominant",
+   "931409 / H30463 Hong Kong constituents contribute >= 23pp of Shenwan 3706",
+   "000913 next rebalance pushes 3706 past 40 percent (needs +2.84pp)",
+   "a new ETF starts tracking H50006 (51.84 percent, complete vector) or L11515 (43.48 percent, complete vector)",
+   "one of the 51 undetermined non-health benchmarks is shown to reach 3706 >= 40 percent"
+  ],
+  "3706_structural_blindspot_proven_for": [
+   "950580",
+   "931591",
+   "000699",
+   "000693",
+   "000692"
+  ],
+  "top5_verification_present": true,
+  "top5_verification_verdicts": null,
+  "final_bars_present": true,
+  "cash_contract_present": true,
+  "tests_security_present": true
+ },
+ "subagent_artifact_hashes": {
+  "3706_exhaustive_verdict_v1.json": {
+   "sha256": "8725f291fe87ab368da5e656d70a22fd79b439fe970da087346d0d98f5fe588c",
+   "bytes": 164640
+  },
+  "top5_verification_v1.json": {
+   "sha256": "1e3924cf8109b54f471765c03740854d22b41bd7d70e1b13d78c0a77704784bd",
+   "bytes": 47645
+  },
+  "final_candidate_liquidity_v1.json": {
+   "sha256": "5fd4482d877b89af80ad080a1c6c7ad6bc769c6f7bc7b6097ad6e4db13d08284",
+   "bytes": 388514
+  },
+  "cash_policy_contract_v1.json": {
+   "sha256": "145278516696e07cbc71417191342eb91620460f9ed3c54cc638af4ad2d9541f",
+   "bytes": 45772
+  },
+  "result.json": {
+   "sha256": "5cff100d4f454ec3addb8a8957487c4734838ec4448c9233a8508f043e4a1a7c",
+   "bytes": 11414
+  }
+ },
+ "shadow_readiness": {
+  "pass": 19,
+  "partial": 1,
+  "fail": 0,
+  "blocking_items": [],
+  "partial_items": [
+   "3706_dominant_proxy_exhaustive"
+  ]
+ },
+ "liquidity": {
+  "rule": "TWENTY_SESSION_REQUIRED_AMOUNT_NO_SUBSTITUTION",
+  "sessions_required": 20,
+  "evaluated": 1344,
+  "pass": 111,
+  "source": "CNEquity curated lake, pinned 1650e384a3fd1f67a70144a489acc91432f1df27"
+ },
+ "artifacts": {
+  "proxy_execution_policy_v1.json": {
+   "sha256": "8c210b3fe99cf1e9518ebeb6bcea2014c4e2ac154eb7905d051045ba5a4b3b20",
+   "bytes": 3551
+  },
+  "proxy_policy_comparison_v1.json": {
+   "sha256": "f81e9109247cd002bbfec726e91030e2ce242cb40b66ab525bf403ab4ce4b2b5",
+   "bytes": 21557
+  },
+  "proxy_execution_candidate_v1.json": {
+   "sha256": "98d81313a047d685d85d3a8371f4cf6cb00bf6a623f28e43c551331958345186",
+   "bytes": 6110
+  }
+ },
+ "runtime_only": {
+  "policy_comparison_full": {
+   "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-policy-finalization-v1\\policies\\policy_comparison_v1.json",
+   "sha256": "be7fb0b2378787889f77a4bd2b0f72db4dcd6e2d0ceb3e70be59204978c5853f"
+  },
+  "instrument_set_sensitivity": {
+   "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-policy-finalization-v1\\policies\\instrument_set_sensitivity_v1.json",
+   "sha256": "86639b2bfc8989a0927cac01bdf9be875ee78741fcbfc6784a12189e66d85bb1"
+  },
+  "note": "full weight vectors, ETF bars and per-security payloads are runtime only"
+ }
+}

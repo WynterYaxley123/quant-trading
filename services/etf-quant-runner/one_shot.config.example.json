@@ -1,0 +1,14 @@
+{
+  "sidecar_root": "",
+  "source_config": "",
+  "export_config": "",
+  "export_root": "",
+  "snapshot": "",
+  "runtime_root": "",
+  "control_root": "",
+  "profile": "",
+  "evidence_root": "",
+  "pit_evidence": "",
+  "pit_source_root": "",
+  "docker_executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe"
+}

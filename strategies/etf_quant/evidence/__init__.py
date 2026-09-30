@@ -1,0 +1,67 @@
+"""Production PIT evidence packages for ETF-Quant V1.
+
+This package turns official provider responses into immutable, hash-pinned,
+forward-only evidence packages, and hands them to the *existing* runtime PIT
+adapter. It does not contain strategy logic, does not re-rank industries and does
+not change any frozen contract.
+"""
+from .builder import (ADAPTER_BOOK_IDENTITY, ADAPTER_SCHEMA_VERSION, TAXONOMY_VERSION,
+                      adapter_book_document,
+                      adapter_classification_source_document, adapter_record,
+                      adapter_weight_source_document, build_classification_rows,
+                      build_classification_snapshot, build_tracking_relations_from_sse_catalog,
+                      build_tracking_relations_from_szse_catalog,
+                      build_weight_vector_from_constituent_rows, classification_package,
+                      envelope, exposure_package, mapping_package, package_hash,
+                      tracking_package, weight_package, write_package)
+from .schema import (AVAILABILITY_FORWARD_ONLY, AVAILABILITY_HISTORICAL_PIT,
+                     AVAILABILITY_STATES, AVAILABILITY_UNUSABLE, B40MappingEvidence,
+                     B40_MIN_TARGET_EXPOSURE, BenchmarkL2Exposure,
+                     CLASSIFICATION_CONFLICT, CLASSIFICATION_IDENTITY,
+                     CLASSIFICATION_OFFICIAL, CLASSIFICATION_QUALITY_STATES,
+                     CLASSIFICATION_UNCLASSIFIED, ClassificationRow, ClassificationSnapshot,
+                     ConstituentRow, EVIDENCE_SCHEMA_VERSION, EXPOSURE_IDENTITY,
+                     EvidenceError, MAPPING_IDENTITY, OFFICIAL_HOST_SUFFIXES, PinnedSource,
+                     REGISTRY_IDENTITY, REJECTION_BELOW_THRESHOLD,
+                     REJECTION_CLASSIFICATION_CONFLICT, REJECTION_CLASSIFICATION_INCOMPLETE,
+                     REJECTION_NOT_LARGEST, REJECTION_NOT_YET_AVAILABLE,
+                     REJECTION_NO_OFFICIAL_WEIGHT, REJECTION_NO_TRACKING, TRACKING_IDENTITY,
+                     TRACKING_STATUSES, TrackingRelation,
+                     VALIDITY_FORWARD_ONLY_UNTIL_SUPERSEDED, WEIGHT_COMPLETE, WEIGHT_IDENTITY,
+                     WEIGHT_INCOMPLETE, WEIGHT_QUALITY_STATES, WEIGHT_SUM_BAND, WeightVector,
+                     bare_code, canonical_bytes, decide_b40_mapping, derive_l2_exposure,
+                     optional_day, optional_instant, parse_day, parse_instant,
+                     parse_weight_pct, require_official_url, require_safe_name, require_sha256,
+                     require_text, sha256_bytes, sha256_json)
+from .sources import (DEFAULT_RUNTIME_ROOT, KIND_DOCUMENTED_EXTRACTION,
+                      KIND_VERBATIM_PROVIDER_BYTES, SOURCE_KINDS, RawSourceRecord, SourcePin,
+                      copy_tree)
+
+__all__ = [
+    "ADAPTER_BOOK_IDENTITY", "ADAPTER_SCHEMA_VERSION", "AVAILABILITY_FORWARD_ONLY",
+    "AVAILABILITY_HISTORICAL_PIT", "AVAILABILITY_STATES", "AVAILABILITY_UNUSABLE",
+    "B40MappingEvidence", "B40_MIN_TARGET_EXPOSURE", "BenchmarkL2Exposure",
+    "CLASSIFICATION_CONFLICT", "CLASSIFICATION_IDENTITY", "CLASSIFICATION_OFFICIAL",
+    "CLASSIFICATION_QUALITY_STATES", "CLASSIFICATION_UNCLASSIFIED", "ClassificationRow",
+    "ClassificationSnapshot", "ConstituentRow", "DEFAULT_RUNTIME_ROOT",
+    "EVIDENCE_SCHEMA_VERSION", "EXPOSURE_IDENTITY", "EvidenceError", "MAPPING_IDENTITY",
+    "OFFICIAL_HOST_SUFFIXES", "PinnedSource", "REGISTRY_IDENTITY",
+    "REJECTION_BELOW_THRESHOLD", "REJECTION_CLASSIFICATION_CONFLICT",
+    "REJECTION_CLASSIFICATION_INCOMPLETE", "REJECTION_NOT_LARGEST",
+    "REJECTION_NOT_YET_AVAILABLE", "REJECTION_NO_OFFICIAL_WEIGHT", "REJECTION_NO_TRACKING",
+    "KIND_DOCUMENTED_EXTRACTION", "KIND_VERBATIM_PROVIDER_BYTES", "RawSourceRecord",
+    "SOURCE_KINDS", "SourcePin",
+    "TAXONOMY_VERSION", "TRACKING_IDENTITY", "TRACKING_STATUSES", "TrackingRelation",
+    "VALIDITY_FORWARD_ONLY_UNTIL_SUPERSEDED", "WEIGHT_COMPLETE", "WEIGHT_IDENTITY",
+    "WEIGHT_INCOMPLETE", "WEIGHT_QUALITY_STATES", "WEIGHT_SUM_BAND", "WeightVector",
+    "adapter_book_document", "adapter_classification_source_document", "adapter_record",
+    "adapter_weight_source_document", "bare_code", "build_classification_rows",
+    "build_classification_snapshot", "build_tracking_relations_from_sse_catalog",
+    "build_tracking_relations_from_szse_catalog",
+    "build_weight_vector_from_constituent_rows", "canonical_bytes", "classification_package",
+    "copy_tree", "decide_b40_mapping", "derive_l2_exposure", "envelope", "exposure_package",
+    "mapping_package", "optional_day", "optional_instant", "package_hash", "parse_day",
+    "parse_instant", "parse_weight_pct", "require_official_url", "require_safe_name",
+    "require_sha256", "require_text", "sha256_bytes", "sha256_json", "tracking_package",
+    "weight_package", "write_package",
+]

@@ -1,0 +1,10 @@
+{
+  "sidecar_root": "",
+  "sidecar_config": "",
+  "export_root": "",
+  "runtime_root": "",
+  "profile": "",
+  "registry": "",
+  "evidence_root": "",
+  "docker_executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe"
+}

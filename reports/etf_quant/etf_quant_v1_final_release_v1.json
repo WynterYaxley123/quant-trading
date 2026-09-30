@@ -1,0 +1,178 @@
+{
+  "project": "ETF-Quant V1",
+  "release_status": "SHADOW_READY_PRODUCTION_USABLE",
+  "generated_at": "2026-09-30T17:55:06.082Z",
+  "as_of": "2026-10-01",
+  "code_sha": "00e675b51e1732ef8e922fd8edcfdbd9992bd896",
+  "code_sha_scope": "Tested operations-console implementation commit; later documentation commit does not alter runtime code. Final remote HEAD is obtained from the branch/PR.",
+  "candidate_hash": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
+  "pit_registry_hash": "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc",
+  "strict_registry_hash": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+  "cnequity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "engineering_complete": true,
+  "production_usable": true,
+  "factual_pipeline": "PASS",
+  "mode": "SIMULATION_ONLY",
+  "shadow_runtime_armed": true,
+  "broker_enabled": false,
+  "real_order_path": false,
+  "model_readiness": {
+    "status": "PASS",
+    "as_of": "2026-09-30",
+    "horizons": {
+      "10": {
+        "horizon": 10,
+        "valid_observations": 13589,
+        "unique_valid_dates": 127,
+        "valid_sectors": 107,
+        "mature_cutoff": "2026-09-15",
+        "window_start": "2026-03-15",
+        "minimum_valid_dates": 30,
+        "status": "PASS"
+      },
+      "40": {
+        "horizon": 40,
+        "valid_observations": 12733,
+        "unique_valid_dates": 119,
+        "valid_sectors": 107,
+        "mature_cutoff": "2026-08-04",
+        "window_start": "2026-02-04",
+        "minimum_valid_dates": 30,
+        "status": "PASS"
+      },
+      "120": {
+        "horizon": 120,
+        "valid_observations": 12947,
+        "unique_valid_dates": 121,
+        "valid_sectors": 107,
+        "mature_cutoff": "2026-04-08",
+        "window_start": "2025-10-08",
+        "minimum_valid_dates": 30,
+        "status": "PASS"
+      }
+    }
+  },
+  "evidence": {
+    "production_pit": "PASS",
+    "strict_registry": "PASS",
+    "sws": "PASS_WITH_KNOWN_LIMITATION",
+    "known_limitation": "OFFICIAL_L2_INDEX_CONSTITUENTS_NOT_MASTER_CLASSIFICATION_TABLE"
+  },
+  "certified_files": {
+    "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
+    "reports/etf_quant/production_pit_evidence_registry_v1.json": "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc",
+    "strategies/etf_quant/config/verified_mappings_v1.json": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+    "strategies/etf_quant/config/common_model_universe_v1.json": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5",
+    "services/etf-quant-api/server.mjs": "00b0523631d0ef13ac178133710a3c6d96bc1266b4ebd672b931d2d502999501",
+    "services/etf-quant-api/current.mjs": "7c0de1051f780df0fe954615afc2ce84b73338f39cb3505ffc668cb6d2a3d638"
+  },
+  "one_shot_command": "& D:/QuantForge/external/cnequity-etf-quant-v1/venv/Scripts/python.exe -B D:/quant-worktrees/etf-quant-v1-shadow-autonomous-final/services/etf-quant-runner/one_shot.py --config D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json",
+  "latest_finalized_factual_date": "2026-09-30",
+  "formal_epoch_count": 0,
+  "github": {
+    "repository": "WynterYaxley123/quant-trading",
+    "branch": "integration/etf-quant-v1-shadow-autonomous-final",
+    "commit": "00e675b51e1732ef8e922fd8edcfdbd9992bd896",
+    "default_branch": "main",
+    "status": "READY_FOR_STANDARD_PR_SYNCHRONIZATION_AS_OF_CERTIFICATE",
+    "final_head_semantics": "Certificate commit cannot self-reference its SHA; actual final integration/merge SHA is recorded in external final_delivery_state_v1.json and GitHub."
+  },
+  "readme": {
+    "version": "ETF_QUANT_V1_FINAL_PROJECT_CLOSURE",
+    "updated_at": "2026-09-30T17:55:06.082Z",
+    "sha256_scope": "README content verified in the same final documentation commit"
+  },
+  "dashboard": "PASS",
+  "api": "PASS",
+  "tests": {
+    "previous_certified": {
+      "targeted": {
+        "passed": 128,
+        "skipped": 0,
+        "failed": 0,
+        "log_sha256": "48f8d15a3c68b635fe576c68028e32f61aece9eeed6ab1728166e8436259568b"
+      },
+      "full_etf": {
+        "passed": 610,
+        "skipped": 1,
+        "failed": 0,
+        "log_sha256": "57e2a4f733f0e980f6695c37f27d960853aeec21fed6c4b28f4dbec64d24cdc1"
+      },
+      "api_security": {
+        "passed": 68,
+        "skipped": 0,
+        "failed": 0,
+        "log_sha256": "20aad33af42acd2f7a7040f7ada5ab11cbb000be3bf4a87b3c702db437a37b8c"
+      }
+    },
+    "current_closure": {
+      "targeted": {
+        "passed": 128,
+        "skipped": 0,
+        "failed": 0
+      },
+      "api_security": {
+        "passed": 77,
+        "skipped": 0,
+        "failed": 0
+      },
+      "research_api_unit": {
+        "passed": 18,
+        "skipped": 0,
+        "failed": 0
+      },
+      "frontend_unit": {
+        "passed": 104,
+        "skipped": 3,
+        "failed": 0
+      },
+      "typecheck": "PASS",
+      "research_api_typecheck": "PASS",
+      "lint": "PASS",
+      "build": "PASS",
+      "full_etf": {
+        "passed": 610,
+        "skipped": 1,
+        "failed": 0
+      }
+    }
+  },
+  "authority": {
+    "model": "codex_frozen_model_contract_reconciliation_v1",
+    "historical_superseded": [
+      "codex_final_data_pipeline_closure_v1:model_contract_conclusion"
+    ]
+  },
+  "dynamic_status_endpoint": "/api/etf-quant/v1/current",
+  "static_status_notice": "Release certificate as_of only. Live calendar, finalized pointer and formal namespace come from the read-only current API.",
+  "superseded_failure_codes": [
+    "MODEL_WARMUP_INCOMPLETE"
+  ],
+  "superseded_before": "2026-10-01T00:45:20.176687+08:00",
+  "console_contract": "CURRENT_ETF_QUANT_STATUS_V1",
+  "console_read_only": true,
+  "console_smoke": {
+    "http_status": 200,
+    "statuses": {
+      "status": 200,
+      "current": 200,
+      "readiness": 200,
+      "portfolio/summary": 200,
+      "portfolio/holdings": 200,
+      "trades": 200,
+      "mappings": 200,
+      "health": 200
+    },
+    "browser_errors": 0,
+    "browser_warnings": 0,
+    "routes": [
+      "overview",
+      "readiness",
+      "portfolio",
+      "trades",
+      "mappings"
+    ],
+    "formal_namespace_empty_is_normal": true
+  },
+  "remaining_engineering_work": "NONE"
+}

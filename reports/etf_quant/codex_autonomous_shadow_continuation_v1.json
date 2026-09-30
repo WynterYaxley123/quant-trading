@@ -1,0 +1,230 @@
+{
+  "artifact": "CODEX_AUTONOMOUS_SHADOW_CONTINUATION_V1",
+  "primary": "CODEX_AUTONOMOUS_SHADOW_CONTINUATION_COMPLETE",
+  "audited_at_shanghai": "2026-09-30T17:22:52.406880+08:00",
+  "final_branch": "integration/etf-quant-v1-shadow-autonomous-final",
+  "continuation_base_sha": "9886451c12fb28c537773ba8710d509a8634d3c5",
+  "verified_executable_code_sha": "9886451c12fb28c537773ba8710d509a8634d3c5",
+  "final_sha_resolution": "git rev-parse HEAD; final local commit adds delivery metadata only",
+  "engineering_complete": true,
+  "data_lake_identity": "PASS",
+  "windows_path_compatibility": "PASS",
+  "one_shot_shadow_runner": "PASS",
+  "t0_epoch_lifecycle": "PASS",
+  "production_pit_evidence": "PASS",
+  "final_candidate_integrity": "PASS",
+  "latest_finalized_market_date": "2026-09-24",
+  "finalized_date_semantics": "Latest admitted complete immutable factual export; partial lake publications are not this gate",
+  "shadow_runtime_armed": true,
+  "shadow_start_gate": "ARMED_FOR_NEXT_ELIGIBLE_T",
+  "last_runner_status": "WAITING_FOR_DATA",
+  "first_shadow_epoch_created": false,
+  "shadow_epoch_created": false,
+  "formal_shadow_signal_created": false,
+  "t1_intent_created": false,
+  "broker_enabled": false,
+  "real_order_path": false,
+  "engineering_blocker": null,
+  "hard_blocker": null,
+  "data_lake_verification": {
+    "artifact": "CONTINUATION_DATA_LAKE_IDENTITY_V1",
+    "audited_at": "2026-09-30T08:54:36.908211+00:00",
+    "status": "PASS",
+    "relocation_expected_count": 160072,
+    "relocation_actual_count": 160072,
+    "relocation_inventory_unchanged": true,
+    "relocation_published_byte_fingerprint": "520f175faf951c7758fe6a96f291390163a06bdc6021ccabbaac516440ab5422",
+    "relocation_published_byte_fingerprint_unchanged": true,
+    "expected_count": 162701,
+    "actual_count": 162701,
+    "missing_count": 0,
+    "extra_count": 0,
+    "identity_mismatch_count": 0,
+    "root_file_id": 1407374883938004,
+    "volume_identity": 16315591276170813369,
+    "alias_volume_identity": 16315591276170813369,
+    "physical_logical_samefile": true,
+    "root_file_id_preserved": true,
+    "current_inventory_sha256": "2349c396f1ad37357a8ebca6d6e6e5d509aa69ce25b6464fc70da1ef4d9c3097",
+    "post_verified_relocation_file_count_delta": 2629,
+    "immutable_export_byte_hashes": "PASS",
+    "immutable_export_file_count": 7,
+    "immutable_export_date": "2026-09-24",
+    "immutable_export_snapshot": "4c82b062149dd4aa49b97b932fe3314b662154d046f15b45a87391d13dd0e071",
+    "anomalies": []
+  },
+  "windows_path_probe": {
+    "status": "PASS",
+    "lexical_utf16_units": 240,
+    "resolved_utf16_units": 240,
+    "extended_prefix": false,
+    "sdk_guard_passed": true,
+    "writes": 0
+  },
+  "immutable_inputs": {
+    "status": "PASS",
+    "candidate_hash": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
+    "pit_registry_hash": "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc",
+    "candidate_status": "READY_FOR_FUTURE_SHADOW",
+    "production_pit_evidence_ready": true,
+    "execution_policy": "B40_WITH_CASH",
+    "formal_shadow_root_exists": false,
+    "cnequity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "code_integrity_manifest_pass": true
+  },
+  "data_refresh": {
+    "bounded_invocations_this_continuation": 2,
+    "last_receipt_id": "20260930T091624_cd01e8e72a7a",
+    "refresh": {
+      "reason": "UPSTREAM_PUBLISH_NOT_READY",
+      "receipts": [
+        {
+          "action": "REUSED_VERIFIED_JOB",
+          "run_id": "631bb5eb-f4e9-4c6c-b5f5-b04ccd1e52da",
+          "session": "2026-09-28",
+          "status": "success"
+        },
+        {
+          "action": "UPSTREAM_FAILED_BATCH_RECOVERY",
+          "run_id": "00d7df3f-e1ca-40bc-9d37-b60ebed42aed",
+          "session": "2026-09-29",
+          "status": "failed",
+          "unready_stages": [
+            {
+              "criticality": "core",
+              "dataset": "compact",
+              "error_code": null,
+              "stage": "compact",
+              "status": "warning"
+            },
+            {
+              "criticality": "core",
+              "dataset": "daily_bars",
+              "error_code": "incomplete_batches",
+              "stage": "compact",
+              "status": "blocked"
+            },
+            {
+              "criticality": "core",
+              "dataset": "daily_bars",
+              "error_code": "RuntimeError",
+              "stage": "fetch",
+              "status": "failed"
+            },
+            {
+              "criticality": "core",
+              "dataset": "daily_bars",
+              "error_code": "RuntimeError",
+              "stage": "stage",
+              "status": "failed"
+            },
+            {
+              "criticality": "core",
+              "dataset": "instruments",
+              "error_code": "RuntimeError",
+              "stage": "fetch",
+              "status": "failed"
+            },
+            {
+              "criticality": "core",
+              "dataset": "instruments",
+              "error_code": "RuntimeError",
+              "stage": "stage",
+              "status": "failed"
+            }
+          ]
+        }
+      ],
+      "refresh_attempted": true,
+      "status": "WAITING_FOR_DATA"
+    },
+    "corporate_actions": "PASS",
+    "sdk_containment_and_windows_path_failures": 0,
+    "final_provider_conditions": [
+      "BSE active BJ instrument set unavailable; complete market scope remains fail-closed",
+      "TDX daily rows unavailable for 9 requested securities; incomplete batches cannot compact"
+    ],
+    "successful_daily_batches_reused": 105,
+    "provider_scope_reduced": false,
+    "third_party_fallback_added": false
+  },
+  "official_calendar": {
+    "completed_session": "2026-09-30",
+    "2026-09-25_is_trading": false,
+    "next_session": "2026-10-08"
+  },
+  "deployment": {
+    "one_shot_entry": "services/etf-quant-runner/one_shot.py",
+    "config": "D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json",
+    "interpreter": "D:/QuantForge/external/cnequity-etf-quant-v1/venv/Scripts/python.exe",
+    "formal_runtime": "D:/QuantForge/runtime/etf-quant-v1/shadow",
+    "formal_runtime_exists": false,
+    "transport_lock_left": false,
+    "no_daemon": true,
+    "docker_image": "quant-research:py3.12",
+    "docker_image_id": "sha256:57858238189364c652cf673d64917d365afd5508ee464ed9c142d5d4e1b002e5"
+  },
+  "tests": {
+    "targeted": {
+      "passed": 73,
+      "skipped": 0,
+      "failed": 0,
+      "components": {
+        "lifecycle_shadow_b40_candidate_forward_oneshot": 59,
+        "transport": 14
+      }
+    },
+    "api_security": {
+      "passed": 68,
+      "skipped": 0,
+      "failed": 0,
+      "components": {
+        "api": 64,
+        "security": 4
+      }
+    },
+    "full_etf": {
+      "passed": 566,
+      "skipped": 1,
+      "failed": 0,
+      "seconds": 698.68
+    },
+    "verified_executable_code_sha": "9886451c12fb28c537773ba8710d509a8634d3c5",
+    "environment": "existing quant-research:py3.12; checkout and external evidence read-only",
+    "logs": [
+      "continuation_full_etf_tests.log",
+      "continuation_api_security_tests.log",
+      "continuation_security_unit_tests.log",
+      "continuation_targeted_transport_tests.log"
+    ]
+  },
+  "safety": {
+    "main_and_old_branch_refs_unchanged": true,
+    "f1_19_factors_ridge_horizons_fusion_source_c_ranking_unchanged": true,
+    "strict_b40_40pct_target_largest_cash_35pct_cap_20d_liquidity_unchanged": true,
+    "priority": "Strict > Proxy > Cash",
+    "simulation_only": true,
+    "no_broker": true,
+    "no_real_order_path": true,
+    "no_real_money_operation": true,
+    "no_leverage": true,
+    "no_short": true,
+    "cnequity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "sdk_modified": false,
+    "validation_performance_read": false,
+    "final_oos_read": false,
+    "historical_evidence_backfilled": false,
+    "engineering_top5_used_as_formal_signal": false,
+    "cash_disguised_as_etf": false,
+    "cash_redistributed": false,
+    "retroactive_intent": false,
+    "destructive_git": false,
+    "large_raw_data_committed": false,
+    "secrets_committed": false,
+    "push_performed": false,
+    "global_windows_settings_changed": false,
+    "dependency_install_or_upgrade": false
+  },
+  "known_pit_limitation": "OFFICIAL_L2_INDEX_CONSTITUENTS_NOT_MASTER_CLASSIFICATION_TABLE",
+  "next_action": "Only rerun the existing one-shot entry; no engineering work remains. A real current eligible finalized factual export is required; never replay historical formal signal dates."
+}

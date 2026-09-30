@@ -1,0 +1,22 @@
+{
+  "mode": "SIMULATION_ONLY",
+  "provider_identity": {
+    "provider": "CNEQUITY_PINNED_SIDECAR",
+    "source_repo": "https://github.com/rootSunc/CNEquity",
+    "source_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "source_version": "0.11.0",
+    "cnequity_version": "0.11.0",
+    "source_identity": "CNEQUITY_LOCAL_LAKE_V1",
+    "classification_version": "SWCLASS2021"
+  },
+  "classification_version": "SWCLASS2021",
+  "lot_size": 100,
+  "min_valid_constituents": 5,
+  "min_constituent_coverage_ratio": 0.8,
+  "costs": {
+    "commission_bps": "3",
+    "slippage_bps": "5",
+    "stamp_duty_bps": "0",
+    "minimum_commission": "0"
+  }
+}

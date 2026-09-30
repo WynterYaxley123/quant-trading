@@ -1,0 +1,4693 @@
+{
+ "schema_version": "1.0.0",
+ "artifact": "PRODUCTION_STRICT_PIT_EVIDENCE_SUMMARY_V1",
+ "identity": "PRODUCTION_STRICT_CONSTITUENT_CONTAINMENT_V1",
+ "generated_at": "2026-09-30T03:35:46+09:00",
+ "historical_reference_cutoff": "2026-09-24",
+ "historical_reference_note": "Forward-only like every other production package: nothing here may be used at 2026-09-24. This summary is a derived review artifact over already-built immutable packages; it performs no collection and changes no package.",
+ "strict_semantics": "benchmark constituent set is contained in the target L2 membership set (every constituent classified, every classification equal to the target, on a complete official weight vector with zero unmapped weight). Runtime STRICT admission still flows through VERIFIED_MAPPING_REGISTRY_V1 unchanged; this summary is evidence-layer proof, not a new admission path.",
+ "counts": {
+  "exposure_packages_scanned": 100,
+  "containment_proven": 9,
+  "containment_rejected": 91,
+  "verified_strict_rows_total": 2,
+  "verified_strict_rows_matched": 2
+ },
+ "verified_registry": {
+  "identity": "VERIFIED_MAPPING_REGISTRY_V1",
+  "path": "strategies/etf_quant/config/verified_mappings_v1.json",
+  "sha256": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+  "rows": [
+   {
+    "industry_code": "4901",
+    "etf_code": "512880.SH",
+    "tracking_index_code": "399975",
+    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+    "source_sha256": "7f6b85839cadadb3135e981fd18fe746e5658a76c9daece90ff50d5b92873a09",
+    "source_file": "512880_gtfund_listing_announcement_2016.pdf",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "effective_from": "2026-09-28",
+    "verification_status": "VERIFIED"
+   },
+   {
+    "industry_code": "4901",
+    "etf_code": "159848.SZ",
+    "tracking_index_code": "399975",
+    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+    "source_sha256": "d68b7eca37d4838628afa25006d3744ca99f0dba2e801cee90d54fbfa528cdf6",
+    "source_file": "159848_cninfo_prospectus_2021.pdf",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "effective_from": "2026-09-28",
+    "verification_status": "VERIFIED"
+   },
+   {
+    "industry_code": "3701",
+    "etf_code": "512290.SH",
+    "tracking_index_code": "931152",
+    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+    "source_sha256": "",
+    "source_file": "",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "effective_from": "",
+    "verification_status": "REJECTED"
+   },
+   {
+    "industry_code": "3703",
+    "etf_code": "512290.SH",
+    "tracking_index_code": "930726",
+    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+    "source_sha256": "",
+    "source_file": "",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "effective_from": "",
+    "verification_status": "REJECTED"
+   },
+   {
+    "industry_code": "3706",
+    "etf_code": "512170.SH",
+    "tracking_index_code": "399989",
+    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+    "source_sha256": "",
+    "source_file": "",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "effective_from": "",
+    "verification_status": "REJECTED"
+   },
+   {
+    "industry_code": "4803",
+    "etf_code": "512800.SH",
+    "tracking_index_code": "399986",
+    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+    "source_sha256": "",
+    "source_file": "",
+    "available_at": "2026-09-28T23:30:00+08:00",
+    "effective_from": "",
+    "verification_status": "REJECTED"
+   }
+  ]
+ },
+ "classification_snapshot": {
+  "snapshot_id": "SWS_L2_CURRENT_SNAPSHOT_20260929",
+  "package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245",
+  "security_count": 5220,
+  "conflict_count": 0,
+  "evidence_available_at": "2026-09-29T23:05:26+09:00"
+ },
+ "entries": [
+  {
+   "benchmark_code": "000010",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 180,
+    "classified_count": 180,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 163
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 180,
+   "weight_sum": 100.08,
+   "target_l2_exposure": 15.1,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000010_weights_v1",
+    "exposure": "000010_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "06669ab7ea75a960f01fe87ae409907f2b83c8cec34c0ac6644d568d5700c4ef",
+    "exposure_package_hash": "4cc40166c5b40f7e2a47aeb67e65518a0b067f7d91d730da9d383d93c89712c1",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "b2fd1902ed85f833996a3204a0f5ed7d5dc60c833b27cf67939808d2ac99367b"
+   ],
+   "tracked_etf_codes": [
+    "510040.SH",
+    "510180.SH",
+    "510670.SH",
+    "530080.SH",
+    "530180.SH",
+    "530280.SH",
+    "530300.SH",
+    "530580.SH",
+    "530680.SH",
+    "530800.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000015",
+   "target_l2_code": "7401",
+   "target_l2_name": "煤炭开采",
+   "containment": {
+    "target_l2_code": "7401",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 39
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 26.3,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000015_weights_v1",
+    "exposure": "000015_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "5a37d402c21302fe63ac15913715ba0c845a242b47ae26dd4bcc6ec286ea7890",
+    "exposure_package_hash": "77cafa337271e861f938cb79994a1b8719a7fc42ae00506bf557d38fe9c0d481",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "6d86273069aca013c1d44387d3025bf42970e23eabef343c0db045214c4047fa"
+   ],
+   "tracked_etf_codes": [
+    "510880.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000016",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 43
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 17.87,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-07-16",
+   "package_ids": {
+    "weights": "000016_weights_v1",
+    "exposure": "000016_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "f69919ca3520e146cecfc6fcab3ae598aa8b904519823c79e330c6049b5ae624",
+    "exposure_package_hash": "07f9acc32b4322aab97323d07e6bc46292f63a5ea2443786f39f878a14634599",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "3c5fbfc8e0539a956e563c9fa309d242c7e72cb56eeede3d452a51e2a7ca5349"
+   ],
+   "tracked_etf_codes": [
+    "510050.SH",
+    "510100.SH",
+    "510600.SH",
+    "510680.SH",
+    "510710.SH",
+    "510800.SH",
+    "510850.SH",
+    "510950.SH",
+    "530000.SH",
+    "530050.SH",
+    "563090.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000018",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 39,
+    "classified_count": 39,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 31
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 39,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 26.45,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-02-01",
+   "package_ids": {
+    "weights": "000018_weights_v1",
+    "exposure": "000018_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "7b210a2081de77c9140ee01edd025d9830c53e4bfb2dc3491f478c6756668c47",
+    "exposure_package_hash": "908dec42a247c4b42b4f4274daad00a225fc11f854c04b6c6a607e44d5288dbd",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "7a45923a95efa79a0853b9725780cd2c3d180a91f6811a92be756d22a858cfd9"
+   ],
+   "tracked_etf_codes": [
+    "510230.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000021",
+   "target_l2_code": "3405",
+   "target_l2_name": "白酒Ⅱ",
+   "containment": {
+    "target_l2_code": "3405",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 98
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 10.11,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000021_weights_v1",
+    "exposure": "000021_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "4968ad916a6d4d1599c14a5f407e0c1e7c99bba02fd52e4882f8fc7f310ec935",
+    "exposure_package_hash": "ba30cacf525ee9fa3248610f4ede2f4d5a1c686860b3f8815bb2ebcbdcccaf3e",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "d645afda5b8fb676aa4c888dbb8d5eef7500285144bfaf2cd816d5ecdc9153f5"
+   ],
+   "tracked_etf_codes": [
+    "510010.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000029",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 60,
+    "classified_count": 60,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 52
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 60,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 20.8,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-04-21",
+   "package_ids": {
+    "weights": "000029_weights_v1",
+    "exposure": "000029_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "000c70b3580f2ae2b6cfdb43a0cc7222f26bd28e73b20b0bb787f2dbdb29b0ff",
+    "exposure_package_hash": "10435bc48d40ad98a2f76ec71e4b0462c94fb743c4f731a094e89f5d1230f096",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "d21f425d26d44a28e002e2743d455614c20cb3e26fe5e7113dac27cf38d60b1a"
+   ],
+   "tracked_etf_codes": [
+    "510030.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000037",
+   "target_l2_code": "3701",
+   "target_l2_name": "化学制药",
+   "containment": {
+    "target_l2_code": "3701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 37
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 32.17,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000037_weights_v1",
+    "exposure": "000037_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "ac644e64d84457dc8a6fbf643ecc1f83f7991d695ef05c2073bcbb6e26a9ba0e",
+    "exposure_package_hash": "bc9fc7f664ec686c3713e979c5ee2e10a092d91466cc90b33b1d39846ecce03d",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "6e9017485f34d16f4dfb8eac47df689ef451d4f07748019b78e7b0e405656ad6"
+   ],
+   "tracked_etf_codes": [
+    "510660.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000038",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 30,
+    "classified_count": 30,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 23
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 30,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 27.58,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2021-12-13",
+   "package_ids": {
+    "weights": "000038_weights_v1",
+    "exposure": "000038_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "1cd30fb89c759c89ecdc9f52657566ff2d0e7731a2440bcc84a2e8073883d2f5",
+    "exposure_package_hash": "8c2752311908f09e4640e006f1eea0a064667a783066b85347c54c83ea853d50",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "120294ad628d67abf4c9fc0ae7565f611b1296441cb44f182a91d2934450a7e9"
+   ],
+   "tracked_etf_codes": [
+    "510650.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000042",
+   "target_l2_code": "4802",
+   "target_l2_name": "国有大型银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4802",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 44
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 18.19,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-07-16",
+   "package_ids": {
+    "weights": "000042_weights_v1",
+    "exposure": "000042_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "6f990239f177d4ee0afbc6db78c74d260a63033766dc7f4ab3d8fce774d594f4",
+    "exposure_package_hash": "e03a05949df6ca3a3435260a1a8e6626366952c9bcb51bb4597e52f89775fbb1",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "352f6444a6fc83c3e3b314c1904e886c0e495222d4f53e5fff1cf0d7ef22e414"
+   ],
+   "tracked_etf_codes": [
+    "510060.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000043",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 20,
+    "classified_count": 20,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 17
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 20,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 14.06,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-11-19",
+   "package_ids": {
+    "weights": "000043_weights_v1",
+    "exposure": "000043_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a5d979135883e897d10a2b251ed574ae0aa9dcd00adc9d712f9d9d092ff4f9e1",
+    "exposure_package_hash": "9d79f6956af8914ccc518856613f1ec959e9ac23f88d518e11793f4259beaa31",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "bd689b93c52dcef26527cd628f0d3f2d917896170ed37745c8c63cc990ffc253"
+   ],
+   "tracked_etf_codes": [
+    "510020.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000044",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 130,
+    "classified_count": 130,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 120
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 130,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 10.0,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000044_weights_v1",
+    "exposure": "000044_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "7c0c4edf15c229bf1edc779da230dbe0f5e577dc3b0a9d75154ace8fb8f2a547",
+    "exposure_package_hash": "96864c448f742f98b6864a2d8f43611232bc8108192e0432ac2a7dcef5f4b0e8",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "a23d9cf54f8bbab1ecc77692c434dd580dd79d3f71f1edc3ab7e7dcf22490ada"
+   ],
+   "tracked_etf_codes": [
+    "510130.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000056",
+   "target_l2_code": "3405",
+   "target_l2_name": "白酒Ⅱ",
+   "containment": {
+    "target_l2_code": "3405",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 97
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 10.65,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-07-31",
+   "package_ids": {
+    "weights": "000056_weights_v1",
+    "exposure": "000056_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "312842ffd57319ca9654f106e6c082eccd3893b912fdf79017b8a4ae50347aa5",
+    "exposure_package_hash": "209661f99086f80daa98f08d6c8127330005d21a987cca24d4aed3cdfe850c9a",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "22ba841920919477fe96cacad0e71d3526134ecb7eb58b5c647547dd37312a57"
+   ],
+   "tracked_etf_codes": [
+    "510270.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000065",
+   "target_l2_code": "4902",
+   "target_l2_name": "保险Ⅱ",
+   "containment": {
+    "target_l2_code": "4902",
+    "constituent_count": 92,
+    "classified_count": 92,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 89
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 92,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 3.61,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000065_weights_v1",
+    "exposure": "000065_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "6f481c3bf57e88daedb682aa146d4b0860869580baf7512a65efc25d380a1502",
+    "exposure_package_hash": "d5981306666911883535a507d4f2d8edb576e080eba178a246356e4aa277aff3",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "080eb003277ad70cf39adb748d95d227b80279a4ca319d07977d8fe8b9dedc14",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "510190.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000066",
+   "target_l2_code": "2403",
+   "target_l2_name": "工业金属",
+   "containment": {
+    "target_l2_code": "2403",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 39
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 23.75,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000066_weights_v1",
+    "exposure": "000066_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "9ce57d4c7c53d112d0c46eda6247caf6d4c48cc93bf36ae93c2689b9065777da",
+    "exposure_package_hash": "07fdd6805c55bf664b91c4c65212c3e7d3fd74db3ba299291ea5ee736c9c68c7",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "242f23619abba4e38925f8f8709129828429fc0186c2ff438fddc3b5577bab3c"
+   ],
+   "tracked_etf_codes": [
+    "510170.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000068",
+   "target_l2_code": "2403",
+   "target_l2_name": "工业金属",
+   "containment": {
+    "target_l2_code": "2403",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 38
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 28.73,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000068_weights_v1",
+    "exposure": "000068_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "3ccc49984e816702c6b2cbe337f2255ec9dd5ab1a27fc4491a5fbc11b61a948a",
+    "exposure_package_hash": "7132c1dd1ccbb18169501a3edc37b725b2be3ac45f14790b14aa15d2e134c514",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "8cb914fcb4b3bdece8ad3e910637ad8bc6b7e07dbc8f66cea438bd3190b550a6"
+   ],
+   "tracked_etf_codes": [
+    "510410.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000151",
+   "target_l2_code": "7401",
+   "target_l2_name": "煤炭开采",
+   "containment": {
+    "target_l2_code": "7401",
+    "constituent_count": 30,
+    "classified_count": 30,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 20
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 30,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 42.7,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000151_weights_v1",
+    "exposure": "000151_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "b36a5bbf8462677b979b466ce5324c5e6ea7b2847c110e9a61107fa7ac723e98",
+    "exposure_package_hash": "f3eda0c6255367b4387fa28db2b992c3bc0c0d92bf5f258be9089b1d76dfe099",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "0c59b5b97fc864167287595a830dc68207279c4034742cda4f63f13ebca058b1",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "510720.SH",
+    "530880.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000300",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 300,
+    "classified_count": 300,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 280
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 300,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 10.41,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "000300_weights_v1",
+    "exposure": "000300_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "91ef64d6e7be9ade2f21a3d802a65708c9d7b70fa62072721b375660c481b7da",
+    "exposure_package_hash": "d7cd53f83b4fed07673016f25941e70d4b62a966ed0713e8cb2afbc2d27314b6",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "5e024a4d26252e7ef95043030d81978b148ed393f60acab1b6a3585341f3e311"
+   ],
+   "tracked_etf_codes": [
+    "159238.SZ",
+    "159300.SZ",
+    "159330.SZ",
+    "159393.SZ",
+    "510300.SH",
+    "510310.SH",
+    "510320.SH",
+    "510330.SH",
+    "510350.SH",
+    "510360.SH",
+    "510370.SH",
+    "510380.SH",
+    "510390.SH",
+    "515130.SH",
+    "515310.SH",
+    "515330.SH",
+    "515350.SH",
+    "515360.SH",
+    "515380.SH",
+    "515390.SH",
+    "515660.SH",
+    "561000.SH",
+    "561300.SH",
+    "561930.SH",
+    "561990.SH",
+    "562070.SH",
+    "563520.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000806",
+   "target_l2_code": "3405",
+   "target_l2_name": "白酒Ⅱ",
+   "containment": {
+    "target_l2_code": "3405",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 93
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 99.95,
+   "target_l2_exposure": 10.77,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000806_weights_v1",
+    "exposure": "000806_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "938a183d6416d66dffff407cd64c24e902f41a5a71f5aa221495b92f661d2d8b",
+    "exposure_package_hash": "a2c0d39e32d550e7833c244bd11e218385d038d632f55ca41f1710f5626b583d",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "4c01037998ef9f8d44d3524142cd264cfb3a49bf709c77c7a3f7bac23f4a1444"
+   ],
+   "tracked_etf_codes": [
+    "516600.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000812",
+   "target_l2_code": "6307",
+   "target_l2_name": "电池",
+   "containment": {
+    "target_l2_code": "6307",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 39
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 28.02,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-07-06",
+   "package_ids": {
+    "weights": "000812_weights_v1",
+    "exposure": "000812_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "b7eff34e1e4bd04f9fa2be763a2c488fb9d5af1b6c7ca3b6d50bdafd638fa4aa",
+    "exposure_package_hash": "dbcc7c2c5166aaacb51b8f8af0fcdbcbf0f898ca4f112d08f437c61c80c03ba4",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "c27a5e18e181414dbcec06394908abcb60eda6c9a42b8c6b53a92a8566dbb0b6"
+   ],
+   "tracked_etf_codes": [
+    "159886.SZ",
+    "516960.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000813",
+   "target_l2_code": "2208",
+   "target_l2_name": "农化制品",
+   "containment": {
+    "target_l2_code": "2208",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 36
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 25.9,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000813_weights_v1",
+    "exposure": "000813_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "df2e7f421a9e6ebc7232dd7dbcef64f8fdd910808680dc692b7e7a7b298c8a2f",
+    "exposure_package_hash": "f4c2ccc1aea74a351895526831d04bdcb90e3b49200f7f42e55f9099f2474de3",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "25499565b1ec59a7cf9a4fc189e5dc9da767592711854660fd0545287d9a9560"
+   ],
+   "tracked_etf_codes": [
+    "158006.SZ",
+    "158017.SZ",
+    "158032.SZ",
+    "159082.SZ",
+    "159087.SZ",
+    "159093.SZ",
+    "159129.SZ",
+    "159133.SZ",
+    "159870.SZ",
+    "516020.SH",
+    "516120.SH",
+    "516220.SH",
+    "561620.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000814",
+   "target_l2_code": "3701",
+   "target_l2_name": "化学制药",
+   "containment": {
+    "target_l2_code": "3701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 33
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 36.13,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000814_weights_v1",
+    "exposure": "000814_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "394de167844cfb2b2ea58b7eb5e4dbd3c2ee9bc3b9138da57cf86be79e622e2f",
+    "exposure_package_hash": "0dde7be6d42e2e9ba2600d5d901ffb7521ff3b09a8e27204a83fdf093584955c",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "7c13e8f9963ba6638eb5882eff2dccdce0f318a3aee5add67cd0a6a046b11b36"
+   ],
+   "tracked_etf_codes": [
+    "512120.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000821",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 41
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 17.4,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000821_weights_v1",
+    "exposure": "000821_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a217e91c9fe5c4ba1874416afaa49e2e94646949f7e838e64f4987e435c93438",
+    "exposure_package_hash": "15b9ada3febfffce224da806a44724140e6736a39ccb1e9e87d7cbbe509a138c",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "02b43ea9a61618e2346da365e03c869bc1a35ecd0f3ed19caf3380dd05bdf5bb",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "512530.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000825",
+   "target_l2_code": "4211",
+   "target_l2_name": "航运港口",
+   "containment": {
+    "target_l2_code": "4211",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 46
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 15.16,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000825_weights_v1",
+    "exposure": "000825_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "2ab261ec801ae3a99c2b781b23257baa20df5db6247eabc30801c7649b8db816",
+    "exposure_package_hash": "43dfa9ebb5a127adac964f08a905cbf6e58eaf96d05cee20b886b6ae158655ed",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "64a25e98475aa7c16ad8636a7b33cb6e778060878bbb924594ba0bfb65cfbf39"
+   ],
+   "tracked_etf_codes": [
+    "159332.SZ",
+    "561580.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000859",
+   "target_l2_code": "2403",
+   "target_l2_name": "工业金属",
+   "containment": {
+    "target_l2_code": "2403",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 95
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 8.77,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-08-01",
+   "package_ids": {
+    "weights": "000859_weights_v1",
+    "exposure": "000859_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "c3ee02085c2dbbd82527b26c8e9b1468d86f04fa405415f62c7532f667dacb8d",
+    "exposure_package_hash": "433b5bb1fd1dfb550b5798b6456bdd8a554e30301fd16d84ac607f3a7756e453",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "c9e80d601275671ba9f0a3ba3d9e3904ed83e4f52276af5ad5812c6b3bb58b16"
+   ],
+   "tracked_etf_codes": [
+    "515110.SH",
+    "515150.SH",
+    "515990.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000861",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 93
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 7.4,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "000861_weights_v1",
+    "exposure": "000861_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "633ca91f4e30c997f0d9bf7e65662868967e21ea7ebba643566777ea432b8073",
+    "exposure_package_hash": "0a143329816b9d5b553b23352f3be21876984bb7a8f368c2244df4911a57f447",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "0373a7df7bf3a623db1483eeee3024eec46e7b3b71fda5f5c377e4850fe4ad30",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "159974.SZ",
+    "515600.SH",
+    "515680.SH",
+    "515900.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000901",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 92
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 99.95,
+   "target_l2_exposure": 7.66,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-07-16",
+   "package_ids": {
+    "weights": "000901_weights_v1",
+    "exposure": "000901_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a845d45b723a772c7b5fd744456c2c2c0c9ad481fb6d8a38a0c1015dabd36917",
+    "exposure_package_hash": "2b8e6a78cd7136a680937a235a800b118dbd9c4cf5cbb6ac00d8a36d52cb1a30",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "a66bbeece8ae6bd62b4669435a57b7ecb9a3fd69ba75bfa60cdaeba2fb43c7c4"
+   ],
+   "tracked_etf_codes": [
+    "510160.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000903",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 92
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 12.83,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-11-19",
+   "package_ids": {
+    "weights": "000903_weights_v1",
+    "exposure": "000903_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "aa31f7740b46df691865ef725f658881e5f91a45e30859c00ed191f65d22281f",
+    "exposure_package_hash": "883eddbb1b255b4063130e32e4626781c81ed2709073fbfae3d5b5997e1db2aa",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "510d0d6077d0176d962f0222aee7da0040e75f7cc86d92a7a9bfd40f3658bd1c"
+   ],
+   "tracked_etf_codes": [
+    "159627.SZ",
+    "159630.SZ",
+    "159631.SZ",
+    "159661.SZ",
+    "159686.SZ",
+    "512060.SH",
+    "512910.SH",
+    "560380.SH",
+    "561180.SH",
+    "561770.SH",
+    "561880.SH",
+    "562000.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000913",
+   "target_l2_code": "3706",
+   "target_l2_name": "医疗服务",
+   "containment": {
+    "target_l2_code": "3706",
+    "constituent_count": 19,
+    "classified_count": 19,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 17
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 19,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 37.16,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000913_weights_v1",
+    "exposure": "000913_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "c187a7146cf67afe0a49c0b9b83038542eee91afe89f4a5e6ac5c06877a56850",
+    "exposure_package_hash": "e507cafa4dced814a1a7a2dfb8313e406517ee3f310eddac916788be3c84087a",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "d83ca69f35b825f820a47aa615b23c99c1dfd0e1283355f37494143c8fd23e0b"
+   ],
+   "tracked_etf_codes": [
+    "512010.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000914",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 54,
+    "classified_count": 54,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 33
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 54,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 26.42,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "000914_weights_v1",
+    "exposure": "000914_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "1b0266e5fc3af94d6660f695da65f5399aaef72cdb162eb123a62a8013ef9f06",
+    "exposure_package_hash": "ba0691dcda93d0a72d806127bb86827a9cfc061e58598b2aef605613b3477e88",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "7d85afb61584a88ba1c30a57d5ee5c80e1ee35f87ffa9cfc97da6c6b67c91bae"
+   ],
+   "tracked_etf_codes": [
+    "159933.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000918",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 87
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 17.6,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "000918_weights_v1",
+    "exposure": "000918_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "36cb0dd8f03f6705f4710f94e50582fcf98ead5c49bb290bddc11f362fa9d33f",
+    "exposure_package_hash": "a96fb04697ef7bcf734ac0e94675b373d79e8c28109f49a1ba66fb4dfdeaec3a",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "cc077363d0708e483af8dc1c39218e9062b2c9506071597c08d38d8ac339d805"
+   ],
+   "tracked_etf_codes": [
+    "159656.SZ",
+    "562310.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000919",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 91
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 15.22,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "000919_weights_v1",
+    "exposure": "000919_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a3d818475e529ebbb824c2567769d643fb9fd810b2f8df09875fb47339426f37",
+    "exposure_package_hash": "47447b67dd45121232e977d73090e85881dcdf3dd1c523cecb56d4816e3158bd",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "ec8d6053b5643b2f4d3969bf5ecbf259094bb42317bec9248466973afa4fa821"
+   ],
+   "tracked_etf_codes": [
+    "560330.SH",
+    "562320.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000925",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 42
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 20.39,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2021-12-13",
+   "package_ids": {
+    "weights": "000925_weights_v1",
+    "exposure": "000925_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "88966877088277a0f0ec300f87310679ba66beebc79c3995dd91e1144c6fee21",
+    "exposure_package_hash": "bc67c6105702bb1105b6d4e206dcdb40527f07fc06cf26d47a22770dad0527c3",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "8b5b8fdd11e404e232f3abb501f225bf14338fe323fd96305dfa3e09c05a0252"
+   ],
+   "tracked_etf_codes": [
+    "512750.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000928",
+   "target_l2_code": "7401",
+   "target_l2_name": "煤炭开采",
+   "containment": {
+    "target_l2_code": "7401",
+    "constituent_count": 24,
+    "classified_count": 24,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 12
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 24,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 47.89,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-04-21",
+   "package_ids": {
+    "weights": "000928_weights_v1",
+    "exposure": "000928_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "cb01237edd9d3c1f09971a9b32de85779b22d4f7a810aa1a5283152a10080157",
+    "exposure_package_hash": "eecbdf134c3159063ddfdfdbccca0f19c28c57bb067b3571f8b08a4cf44e2242",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "e08c9a38c742083aaf67639e5dfe1ab81572d471eac140a5ed2750f0c719c88e"
+   ],
+   "tracked_etf_codes": [
+    "159930.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000932",
+   "target_l2_code": "3405",
+   "target_l2_name": "白酒Ⅱ",
+   "containment": {
+    "target_l2_code": "3405",
+    "constituent_count": 36,
+    "classified_count": 36,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 28
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 36,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 35.14,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-08-16",
+   "package_ids": {
+    "weights": "000932_weights_v1",
+    "exposure": "000932_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "b5903b121ac45a21a1589e766636a27e1b44cbb22e9d740bbdfa4b1d8e88da5f",
+    "exposure_package_hash": "82a77e2fee99bed803f62a43e1bab5982c6fee46d5100c650bb8a737c06b0842",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "a5ac97d887190a80f7aba3d2976f9a39b5db67328c2067899dacc5fc21a2867c"
+   ],
+   "tracked_etf_codes": [
+    "159672.SZ",
+    "159689.SZ",
+    "159928.SZ",
+    "512600.SH",
+    "560680.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000933",
+   "target_l2_code": "3701",
+   "target_l2_name": "化学制药",
+   "containment": {
+    "target_l2_code": "3701",
+    "constituent_count": 70,
+    "classified_count": 70,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 52
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 70,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 26.76,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "000933_weights_v1",
+    "exposure": "000933_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "89646d23e410a2ab1ee7017db34b7b145de4d34c1665401a11d9185c91c49499",
+    "exposure_package_hash": "e953bc42268a3ba8ad554277d01556b6c312744146f779a6c89cedc43f894260",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "0db81daa3cd63cce3b1cc86765dc6111d1e5f2d88a26f068ec4f564102d89030",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "159929.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000934",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 94,
+    "classified_count": 94,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 50
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 94,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 30.67,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "000934_weights_v1",
+    "exposure": "000934_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "92ecff22bb3c52cf6a874a65ca74a820c0ac168599bf88617518680e435ea1db",
+    "exposure_package_hash": "87561ea4a28547a0893e2eb1166bd9b9b13b552b3e9643334f6c5a167186f324",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "de7f4f748d61bddb62e78b42e9d95258d669773ed077b770657b6b6670583b6a"
+   ],
+   "tracked_etf_codes": [
+    "159931.SZ",
+    "512640.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000936",
+   "target_l2_code": "7302",
+   "target_l2_name": "通信设备",
+   "containment": {
+    "target_l2_code": "7302",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 30
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 60.53,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-07-06",
+   "package_ids": {
+    "weights": "000936_weights_v1",
+    "exposure": "000936_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "eb25ab5a8966ee6acfadfdb7b4998b8cf32e0a8f250cdc33761f4b8416e47818",
+    "exposure_package_hash": "5a5a1c3797a01869d28ee8ff6664c824fe6c104491b45c739ff9d3443524776a",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "df7dd932e5ce4f0987b3fe34d2809c013f762103cc17550db8303d545da79ab1"
+   ],
+   "tracked_etf_codes": [
+    "159511.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000945",
+   "target_l2_code": "4211",
+   "target_l2_name": "航运港口",
+   "containment": {
+    "target_l2_code": "4211",
+    "constituent_count": 34,
+    "classified_count": 34,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 22
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 34,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 33.77,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-01-07",
+   "package_ids": {
+    "weights": "000945_weights_v1",
+    "exposure": "000945_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "30d122d41f0e94d5b49dde3764b95ea6b57dec25aad4856fb66b2b7cad9e8f74",
+    "exposure_package_hash": "ec4d0ec89facaffe4d8740ae94302188ea26eceb29687ca28c5447245e3cbf48",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "c4ae392ade290b27ecaa1f07118f9af65b01911ba034e15b8a08d76ea9cd2d24"
+   ],
+   "tracked_etf_codes": [
+    "561320.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000948",
+   "target_l2_code": "4301",
+   "target_l2_name": "房地产开发",
+   "containment": {
+    "target_l2_code": "4301",
+    "constituent_count": 9,
+    "classified_count": 9,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 9,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 100.01,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2021-12-13",
+   "package_ids": {
+    "weights": "000948_weights_v1",
+    "exposure": "000948_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "19750d46fc8472dcd77ce1f32930ba80ac1eb2a28d0a05c410b9f380bd9af76c",
+    "exposure_package_hash": "7a0baf96f72e2f1a32c3eed7393ea782ee2af32edce457d821a619f983cccebc",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "8f1000d40535972769a65197144eff13941acdb8f3ca8993f3dfe9aca88642c3"
+   ],
+   "tracked_etf_codes": [
+    "159768.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "000992",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 129,
+    "classified_count": 129,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 80
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 129,
+   "weight_sum": 100.04,
+   "target_l2_exposure": 29.93,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "000992_weights_v1",
+    "exposure": "000992_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "9009ec6d6d8e44d66c9c1aaf78f24d45a8ac0fbb0406f08504fd7ae41ca9ffd4",
+    "exposure_package_hash": "499eb319144a244a05ddfda79333fe3e14ff8a1d3b833ab8481e8466de257968",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "b0bb9b0c7de2662d5527bfe7150457be0e364d085e3bbb0340555c20efc98a49"
+   ],
+   "tracked_etf_codes": [
+    "159940.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "399701",
+   "target_l2_code": "3301",
+   "target_l2_name": "白色家电",
+   "containment": {
+    "target_l2_code": "3301",
+    "constituent_count": 60,
+    "classified_count": 60,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 58
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 60,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 15.55,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-08-09",
+   "package_ids": {
+    "weights": "399701_weights_v1",
+    "exposure": "399701_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "914e70bb0036e3bb9ede9555690f31b054016a429dc9ba5bd42d0d37a3398e22",
+    "exposure_package_hash": "f92c1ecd8d5f067499498954065466d57c75070a47e7ccc245f92db791e0cb64",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "4ccdbb19c1826fd0faaf6255077fb20f05be18025a0b9ea673e04c40ab8ec93d"
+   ],
+   "tracked_etf_codes": [
+    "159916.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "399702",
+   "target_l2_code": "3301",
+   "target_l2_name": "白色家电",
+   "containment": {
+    "target_l2_code": "3301",
+    "constituent_count": 120,
+    "classified_count": 120,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 117
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 120,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 12.19,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "399702_weights_v1",
+    "exposure": "399702_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "03a7e919ca04093a0ddbdd8efae01c71a45f2afda6e851e14c9c116e673d3c9a",
+    "exposure_package_hash": "7362ca1f21aa616534a69cfb4ef174a093e05ca874aac35dca6f10e1dd6b5f92",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "b74c36395ebcad805bfd03c0a96206fbb54ce56a7d75d7a71cb1e85bf471bb8f"
+   ],
+   "tracked_etf_codes": [
+    "159910.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "399965",
+   "target_l2_code": "4301",
+   "target_l2_name": "房地产开发",
+   "containment": {
+    "target_l2_code": "4301",
+    "constituent_count": 9,
+    "classified_count": 9,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 9,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 100.01,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2021-12-13",
+   "package_ids": {
+    "weights": "399965_weights_v1",
+    "exposure": "399965_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "08a06e291c34ed749d0e8d9dc46c7e18c16da9b01b19be351d9ac8abc2bb3d69",
+    "exposure_package_hash": "2c10503b4f740bdeb5c766ee4bf100923443c89d296ecea2ab132b992a63a305",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "0c3cb65670c70f8947351764dea45d958bb3ebd1cdeb32c3e6290c2f606009b8",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "159707.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "399966",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 49,
+    "classified_count": 49,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 5
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 49,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 75.03,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "399966_weights_v1",
+    "exposure": "399966_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "94aea9b186fdc36f015a582ca434d111aaf764c0202a349e727edb85c318849f",
+    "exposure_package_hash": "8f6fe14467c427e20a11df9316dc4b3b4dba772ac52f37d08408fee8ca6d0858",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "2d0a5676efc8feba1d8bd73ea49e0c45f7560c297d3ab46604a7b978df087f45"
+   ],
+   "tracked_etf_codes": [
+    "515630.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "399975",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 49,
+    "classified_count": 49,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 49,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 100.0,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "399975_weights_v1",
+    "exposure": "399975_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "dbb2bc05c85d6852d745245bbd6fd486e8465665c9ff9b24afaed485a3e5f619",
+    "exposure_package_hash": "bf5632438827c40331f91db361abc92c2bca62d2cc1a571af7a71f2ea9960a9c",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "79b8892e4dc91b310ae06a816b2c5dae0e7be1ae00e77cc600b097afd41b424d"
+   ],
+   "tracked_etf_codes": [
+    "159008.SZ",
+    "159058.SZ",
+    "159260.SZ",
+    "159841.SZ",
+    "159842.SZ",
+    "159848.SZ",
+    "512000.SH",
+    "512570.SH",
+    "512880.SH",
+    "512900.SH",
+    "515010.SH",
+    "515560.SH",
+    "515850.SH",
+    "516200.SH",
+    "560090.SH",
+    "560400.SH",
+    "562870.SH"
+   ],
+   "verified_strict_rows": [
+    {
+     "etf_code": "512880.SH",
+     "etf_name": "证券ETF",
+     "tracking_index_code": "399975",
+     "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+     "source_sha256": "7f6b85839cadadb3135e981fd18fe746e5658a76c9daece90ff50d5b92873a09",
+     "source_retrieved_at": "2026-09-28T23:20:00+08:00",
+     "evidence_observed_at": "2026-09-28T23:20:00+08:00",
+     "verified_at": "2026-09-28T23:30:00+08:00",
+     "available_at": "2026-09-28T23:30:00+08:00",
+     "effective_from": "2026-09-28"
+    },
+    {
+     "etf_code": "159848.SZ",
+     "etf_name": "证券公司",
+     "tracking_index_code": "399975",
+     "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+     "source_sha256": "d68b7eca37d4838628afa25006d3744ca99f0dba2e801cee90d54fbfa528cdf6",
+     "source_retrieved_at": "2026-09-28T23:20:00+08:00",
+     "evidence_observed_at": "2026-09-28T23:20:00+08:00",
+     "verified_at": "2026-09-28T23:30:00+08:00",
+     "available_at": "2026-09-28T23:30:00+08:00",
+     "effective_from": "2026-09-28"
+    }
+   ]
+  },
+  {
+   "benchmark_code": "399986",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 42,
+    "classified_count": 42,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 33
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 42,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 40.3,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-01-17",
+   "package_ids": {
+    "weights": "399986_weights_v1",
+    "exposure": "399986_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "d4181ddfb58c1325d7f2fcf99a75531733f8f062e3e48f4b0e7ff3ee5734e562",
+    "exposure_package_hash": "fabc89c905aea4ebd5cd1eb372b978309fc8830be3cff3428a55198a981e01d1",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "9366c575cc88ee1c625dcc8f89ccd7d11d0ea9c030b5dbc9d3f6eae084365812"
+   ],
+   "tracked_etf_codes": [
+    "159253.SZ",
+    "512410.SH",
+    "512700.SH",
+    "512730.SH",
+    "512800.SH",
+    "512820.SH",
+    "515020.SH",
+    "515290.SH",
+    "516210.SH",
+    "516310.SH",
+    "560670.SH",
+    "561530.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "399998",
+   "target_l2_code": "7401",
+   "target_l2_name": "煤炭开采",
+   "containment": {
+    "target_l2_code": "7401",
+    "constituent_count": 31,
+    "classified_count": 31,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 7
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 31,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 85.14,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-07-06",
+   "package_ids": {
+    "weights": "399998_weights_v1",
+    "exposure": "399998_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a08ae1029110236053e45c09bf3301c1594c01c4e1cb57141e3793a2f343cfd2",
+    "exposure_package_hash": "9132cbb4aefcc8cace2e363b2c026d15dce148317cc7f1574406f621fcc7f7fd",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "d1b2406695b7dbb8716aa5dc885df35f5341b896b7757c67152c740de3115b85"
+   ],
+   "tracked_etf_codes": [
+    "515220.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930050",
+   "target_l2_code": "6307",
+   "target_l2_name": "电池",
+   "containment": {
+    "target_l2_code": "6307",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 49
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 9.37,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-11-19",
+   "package_ids": {
+    "weights": "930050_weights_v1",
+    "exposure": "930050_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a9becd57f32d597abf6a63e9d550b580e908235144c70e8485c8ff1507eaa3a7",
+    "exposure_package_hash": "94c46c6aa9135d4ca6d6159aa98427b9cdb7d4fbd520e6a0ba93a54e37377859",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "fa93772d4d6e154ac1b54daeea498ca00fa7b06c67cee312c3baa4fb71c40c27"
+   ],
+   "tracked_etf_codes": [
+    "159136.SZ",
+    "159390.SZ",
+    "159591.SZ",
+    "159592.SZ",
+    "159593.SZ",
+    "159595.SZ",
+    "159596.SZ",
+    "512030.SH",
+    "512240.SH",
+    "512250.SH",
+    "560350.SH",
+    "560820.SH",
+    "561230.SH",
+    "561750.SH",
+    "562890.SH",
+    "563080.SH",
+    "563350.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930601",
+   "target_l2_code": "7104",
+   "target_l2_name": "软件开发",
+   "containment": {
+    "target_l2_code": "7104",
+    "constituent_count": 30,
+    "classified_count": 30,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 13
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 30,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 70.02,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-11-18",
+   "package_ids": {
+    "weights": "930601_weights_v1",
+    "exposure": "930601_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "62505719f33730bff3e2514d7514a04a5c4caa836e80f9f90c4dcfa7dcbf061b",
+    "exposure_package_hash": "f844c0c67bc4856a5e1e4d6fc2c7ced1902c617ced13ac2052cc566896994071",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "d8b4828ca17dec591740a719738ce81b992e3562df82443a6bd0f4a7f29d40f0"
+   ],
+   "tracked_etf_codes": [
+    "159035.SZ",
+    "159852.SZ",
+    "560360.SH",
+    "560790.SH",
+    "562930.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930641",
+   "target_l2_code": "3702",
+   "target_l2_name": "中药Ⅱ",
+   "containment": {
+    "target_l2_code": "3702",
+    "constituent_count": 39,
+    "classified_count": 39,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 39,
+   "weight_sum": 100.04,
+   "target_l2_exposure": 100.04,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-08-01",
+   "package_ids": {
+    "weights": "930641_weights_v1",
+    "exposure": "930641_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "43f7ec036bd95ef2f65697bf99e346ac4db701a2b1dbc7d776cb475df8b9a8b5",
+    "exposure_package_hash": "e755c79b6e5606fb179ebbd5bdb38f538f7e74229961d81383d96f8167274766",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "f1d9febc22d571f146b4efa65797e933297a5e14c7316e4738c636ab46061dd7"
+   ],
+   "tracked_etf_codes": [
+    "159647.SZ",
+    "560080.SH",
+    "561510.SH",
+    "562390.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930652",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 51
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 54.2,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "930652_weights_v1",
+    "exposure": "930652_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "4f73767bfad16064d015d2c4463009b2c0fc02c7766aac11222e13df5c4be413",
+    "exposure_package_hash": "307e9c3528e402608620e6709cf3b1714eedb963b76a187f994f093fff5c6e26",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "6ee852fb883a12af2683b13e3f865c60ecd868b037912e3cfe0925ab508a44f2"
+   ],
+   "tracked_etf_codes": [
+    "159997.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930713",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 37
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 37.07,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "930713_weights_v1",
+    "exposure": "930713_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "51365f5b1e6183b0f496bfe57fb443c979388c9d95fe33695beb2ac12f3c8879",
+    "exposure_package_hash": "6666e4009aa291ab688d3755e5e52c245f0437253ed9ff84e638a0cbdf8e60af",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "6045d597245acb0f454d74bbb52fff97a443b4b3e3d0b9ec8c6ff7b7ff4bc8de"
+   ],
+   "tracked_etf_codes": [
+    "159248.SZ",
+    "159819.SZ",
+    "512930.SH",
+    "515070.SH",
+    "515470.SH",
+    "561460.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930726",
+   "target_l2_code": "3701",
+   "target_l2_name": "化学制药",
+   "containment": {
+    "target_l2_code": "3701",
+    "constituent_count": 30,
+    "classified_count": 30,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 23
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 30,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 28.29,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "930726_weights_v1",
+    "exposure": "930726_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "c9e7f169cb48a28e6a43aa5d2636b99c888da11d6eed9f9c0a68e75c865ec23b",
+    "exposure_package_hash": "830f2736a4bfdeefce6913b52dc298fa33e4ae3ae4c316309ce24e3c58ed1914",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "f666f907c7ef9ab6afcab036cce932b4aa3d148fb99677251d7916bf3aa30af6"
+   ],
+   "tracked_etf_codes": [
+    "512290.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930740",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 43
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 14.88,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-01-05",
+   "package_ids": {
+    "weights": "930740_weights_v1",
+    "exposure": "930740_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "5a294ee95405de639449bb0fdf659b35bd4e1606ee2f6b34d335bb61e78c6a26",
+    "exposure_package_hash": "226cfbf1c8c6491b1ecae7e0ccce64ef6fb9f18b2b66d014e98337351a034342",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "822a03f86bd51d4c55b6a29207d92011d2d42c4b6148484ddcfdd399af957233"
+   ],
+   "tracked_etf_codes": [
+    "515300.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930743",
+   "target_l2_code": "3703",
+   "target_l2_name": "生物制品",
+   "containment": {
+    "target_l2_code": "3703",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 24
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 33.06,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "930743_weights_v1",
+    "exposure": "930743_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "f63139f93c5c455d8549a2403a51d223cedfe130af1a7eeadff62e9ce9316569",
+    "exposure_package_hash": "e451c6b9610e882001e623d9cb5d0146cf1c9e3a620b6343924d39df4a3eebc6",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "872e76715cbdad150f5014930a2a4988d539190abb60e20a28f6c426ab3b8bce"
+   ],
+   "tracked_etf_codes": [
+    "159837.SZ",
+    "159849.SZ",
+    "516500.SH",
+    "516930.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930782",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 150,
+    "classified_count": 150,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 139
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 150,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 14.08,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "930782_weights_v1",
+    "exposure": "930782_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "c6dd3c0e30a056bd345521c47b8fd389e1c406b30ff00097284cd70d8631cb9e",
+    "exposure_package_hash": "09fab4a9dd5b42b3cfed132f2fe8f3abdc8e4822fa5ff6386c24196384b4f48d",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "80d8ad77cacedeb12f19306faaa98fb4252f21f42f8fcc654eb649dcb50cbe1b"
+   ],
+   "tracked_etf_codes": [
+    "512260.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930901",
+   "target_l2_code": "7204",
+   "target_l2_name": "游戏Ⅱ",
+   "containment": {
+    "target_l2_code": "7204",
+    "constituent_count": 28,
+    "classified_count": 28,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 8
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 28,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 86.59,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-09-29",
+   "package_ids": {
+    "weights": "930901_weights_v1",
+    "exposure": "930901_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "3ec7a69198050a7443ec8df3699e4dca1b245ae48eef43f51de4ea5977daf2fc",
+    "exposure_package_hash": "ef6c3683f93963e748ee2847cd174918fcbab7cf096370aa9727d492fd5f8eeb",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "85df51089c726dadd689db150050b3db132effc8c268946e2c4fe09de5a2ca75"
+   ],
+   "tracked_etf_codes": [
+    "159869.SZ",
+    "516010.SH",
+    "516770.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "930939",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 93
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 11.74,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "930939_weights_v1",
+    "exposure": "930939_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "5ea5417327c286ba75ae9fb145427e82e1154f72bdf0bd5c630c41b4c5ee6205",
+    "exposure_package_hash": "23aaa90ace02c8214508febf7f859f707fab0c7465bb866fa3daf8b0b00c38a3",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "c7171e131a1a24c2023583815b965b07fc9f9ac1ff03ab4c200d2b26e3ad32a4"
+   ],
+   "tracked_etf_codes": [
+    "159606.SZ",
+    "560500.SH",
+    "562340.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931008",
+   "target_l2_code": "2805",
+   "target_l2_name": "乘用车",
+   "containment": {
+    "target_l2_code": "2805",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 42
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 56.87,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-09-25",
+   "package_ids": {
+    "weights": "931008_weights_v1",
+    "exposure": "931008_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "62c80ba1dd00ea2be7675e016c11a50fbbe744475dea4328d28e09bd9b749baa",
+    "exposure_package_hash": "6e722b907e44f5e74a1e973d9ad4d58bcaaeceaa2b402a005ab7b210329f1db2",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "68d13e4fb3f33db312fda1e0875fc31abefa3415c9585ae4d8f9591936e50b09"
+   ],
+   "tracked_etf_codes": [
+    "159512.SZ",
+    "516840.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931087",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 29
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 45.11,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-11-18",
+   "package_ids": {
+    "weights": "931087_weights_v1",
+    "exposure": "931087_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "4deda4cafa113387c6d783cdd3c47ce6b7bfcdb35ea70859a0a7f25fb02bda9d",
+    "exposure_package_hash": "557d8d0876e6d03786a12cebcb4ff089d7f0e95f776b8b58e1b164216ca012fb",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "52525784aa28ad3e0f1ac40b77a112af016583b90a5ff543914c0e38c308c601"
+   ],
+   "tracked_etf_codes": [
+    "515000.SH",
+    "516050.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931088",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 143,
+    "classified_count": 143,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 135
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 143,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 11.54,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-11-19",
+   "package_ids": {
+    "weights": "931088_weights_v1",
+    "exposure": "931088_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "b04a776d725a097e0ad660b2a025d304c61ccc28aa738dd3a9e51bea34b20d2c",
+    "exposure_package_hash": "132cfaf8b68142b708ecac43ef09b562b980f1b0cfc985b852979a2e34de0f6d",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "33c7902ff1976e700f9edea606d9be10f4d030792a560b17c0abe273251313f5"
+   ],
+   "tracked_etf_codes": [
+    "510990.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931132",
+   "target_l2_code": "4211",
+   "target_l2_name": "航运港口",
+   "containment": {
+    "target_l2_code": "4211",
+    "constituent_count": 49,
+    "classified_count": 49,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 44
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 49,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 17.81,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-04-21",
+   "package_ids": {
+    "weights": "931132_weights_v1",
+    "exposure": "931132_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "178dce6c65bb5b9029ff859f24aa74d5a57dab9a87003108d9386de91f89a1b8",
+    "exposure_package_hash": "b50e4215e3486e36cb0ba5085fbecaf3b5095095f2f0184f17be574a091ed869",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "061a9f90d5fe00418cd15fb4b4f72dff85317668b51e113d8a458df3423aef17",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "159336.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931141",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 180,
+    "classified_count": 180,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 167
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 180,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 12.85,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-09-25",
+   "package_ids": {
+    "weights": "931141_weights_v1",
+    "exposure": "931141_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "f2b33a53b8f4b8f4158487071bd57441f69701b81e97bbc98817429c6f1277af",
+    "exposure_package_hash": "b4f3633f9bae005b1ba9498a2444d392aa8694cb57747b5e23b9fbd38f7812bb",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "0fd1588efc906172419bfa22a03e0fac701d0cf08cb9eabf8e8f6b076f0d0a47",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "512650.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931152",
+   "target_l2_code": "3701",
+   "target_l2_name": "化学制药",
+   "containment": {
+    "target_l2_code": "3701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 27
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 45.98,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-07-31",
+   "package_ids": {
+    "weights": "931152_weights_v1",
+    "exposure": "931152_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "3f225ca39ac1a517ae5826940d0f4e62c39736a2c0f6990dd21f1868f9efd038",
+    "exposure_package_hash": "2eb333c28c920220d585784b912114072d95fdc729091c5d87afe3d07032d120",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "656099a601211b3b643c117585b9ac809081e3304e9e7efd711ddf5a2f58e259"
+   ],
+   "tracked_etf_codes": [
+    "159835.SZ",
+    "159858.SZ",
+    "159992.SZ",
+    "515120.SH",
+    "516060.SH",
+    "516080.SH",
+    "560900.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931186",
+   "target_l2_code": "7104",
+   "target_l2_name": "软件开发",
+   "containment": {
+    "target_l2_code": "7104",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 43
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.96,
+   "target_l2_exposure": 14.84,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "931186_weights_v1",
+    "exposure": "931186_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "4b410d22974209f6b22b412d96d1a84991f20ecda9664bba785565aaa612cac0",
+    "exposure_package_hash": "a35c26d61818528cddbcdd0b1cfb57e6151d4cb5708462899db454c9b902b097",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "b639a45816daa6652ca27bfcfe5908d6b76bb78e1b26322d141bf7c985513488"
+   ],
+   "tracked_etf_codes": [
+    "515750.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931268",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 88
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 14.54,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-11-19",
+   "package_ids": {
+    "weights": "931268_weights_v1",
+    "exposure": "931268_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "cbe47d77ec7308df33f9decd4420501971c86046e677dbaa948a27f3d9e914d2",
+    "exposure_package_hash": "310906ea05a0d7e081815a7740f49f077fcbc2caef1aeae0376181cf35d08775",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "46142b302c3d6a420119407b8938ce3a317499755660a1cfe5f10615c187282c"
+   ],
+   "tracked_etf_codes": [
+    "515090.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931380",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 34
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 41.03,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-01-06",
+   "package_ids": {
+    "weights": "931380_weights_v1",
+    "exposure": "931380_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "968f7dfcbd3ce20068a0c317612c0391eeffe25ec2d42d286772c79a09d0d0c8",
+    "exposure_package_hash": "b2b9e0a072c8f1e91831f49562c2cdde2cdcddb0106633c857da357859e5ee56",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "432bb039c5e21a3c6537d072c7ae4e480c561464598a0567f0b526c200a4a3df"
+   ],
+   "tracked_etf_codes": [
+    "159807.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931402",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 46,
+    "classified_count": 46,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 46,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 99.97,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "931402_weights_v1",
+    "exposure": "931402_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "3b7291d1358627472ee04d78b2c9c0e37784a523ec060a888dadfe510a4693ad",
+    "exposure_package_hash": "8dc8fa8b3364981237917614beca7927d723a50b18c9525b2c6b05a6acd4072f",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "846f4abeaecc656ac6954bea62bc25947c9fef468c8a8774cab34b8b179aa192"
+   ],
+   "tracked_etf_codes": [
+    "516980.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931406",
+   "target_l2_code": "7302",
+   "target_l2_name": "通信设备",
+   "containment": {
+    "target_l2_code": "7302",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 37
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 34.55,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "931406_weights_v1",
+    "exposure": "931406_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "85ae566c32638f8fc8fe34496859e051434c0e58569553270ed511d28d7a7d84",
+    "exposure_package_hash": "f95829134ffaf92c52ba8a4102617c0061a4b6abfe232fa5eee9748fb8b82f70",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "696a122c01275e664a1990c1dec57b869a48b1a7799c6eeee1dbbbb99dd2b1be"
+   ],
+   "tracked_etf_codes": [
+    "159811.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931412",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 30,
+    "classified_count": 30,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 30,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 100.0,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "931412_weights_v1",
+    "exposure": "931412_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "2faaeaa9d6d702538aae1bb6294047493861689774d681d184102ac67364eb50",
+    "exposure_package_hash": "27a471e71a8a4254b748530e212b3f99b473ef809a9871acfd4e60f74aa7415e",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "01149cfe32cd4c5c885525fe55fe8cc64d905f15c9c2b5f347fa90d785a83708",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "159016.SZ",
+    "159692.SZ",
+    "516730.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931447",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 43
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 25.1,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-08-08",
+   "package_ids": {
+    "weights": "931447_weights_v1",
+    "exposure": "931447_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "027a9ac4b39871dbfd877fe64d64842a9f8627d546626f359bf595c757ed4221",
+    "exposure_package_hash": "3b5aa968a9afee17d84c3b22bc73eee81fb1e47a766d67182579d01a000c2bcd",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "ae81746b2e100a20a8ee4c5b415adb9df343d9cc39ddb2dd27802c1dbc78d6ce"
+   ],
+   "tracked_etf_codes": [
+    "560990.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931461",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 28
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.95,
+   "target_l2_exposure": 49.49,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2023-08-08",
+   "package_ids": {
+    "weights": "931461_weights_v1",
+    "exposure": "931461_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "b2d49f43339b38c3b9a909435703769058f8b2c5f8df4d2b91109dfb94d506be",
+    "exposure_package_hash": "b5b14e41a18011d77a8ce3a2f8c5dee4c1af1c8ec2379774ec93cc92d03691a2",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "bbe21d201c451a22fb573833c3683d8246681857b8222a5d35780bb185268732"
+   ],
+   "tracked_etf_codes": [
+    "515260.SH",
+    "515320.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931463",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 233,
+    "classified_count": 233,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 217
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 233,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 12.13,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "931463_weights_v1",
+    "exposure": "931463_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "fd8c6b3dd03010ee592748788f824e506a3f3f4c5358cc7119a5e2b085854ddb",
+    "exposure_package_hash": "882ec1d667ed94dc20652006e689613d582ca1784e7cb0bb3c498cb9e21d8cef",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "8134154f33c38e5b94584dda01b22afcd06f90dfe3c4aa70f6a8028827897b1b"
+   ],
+   "tracked_etf_codes": [
+    "159791.SZ",
+    "516830.SH",
+    "560180.SH",
+    "561900.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931476",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 120,
+    "classified_count": 120,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 110
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 120,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 10.82,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "931476_weights_v1",
+    "exposure": "931476_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "0349cfd7d5b9c2d9860a0b5c472bea77555dec5ff333bbc549ccff8d873b24fb",
+    "exposure_package_hash": "8b2efcab941eefa34092630032fe7adc20fce6da2267a1816e3c673b9efafdc4",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "a6ac1fb1579894a673f7ebe0558c4689e84510a725af6d01815b09d7400d7a9d"
+   ],
+   "tracked_etf_codes": [
+    "516720.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931494",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 29
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 44.38,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-07-26",
+   "package_ids": {
+    "weights": "931494_weights_v1",
+    "exposure": "931494_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "f90bd0b3737a5767f32c902e435bd73d924e12125e7d9bdcf23797efeecf4495",
+    "exposure_package_hash": "1154ee62d9b5ec2170c126b19b4ee06e985c3a46c88ba31368fefa8df73780a8",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "8c21e472405e105c8b748812adecc4396f3d15d11bb032a366dbf01b0e5ab42a"
+   ],
+   "tracked_etf_codes": [
+    "159779.SZ",
+    "561100.SH",
+    "561310.SH",
+    "561600.SH",
+    "562950.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931526",
+   "target_l2_code": "6307",
+   "target_l2_name": "电池",
+   "containment": {
+    "target_l2_code": "6307",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 49
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 14.11,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "931526_weights_v1",
+    "exposure": "931526_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "55e7b304a8c5dc731fab3eed20bf9b1e1616262bf2cb3acce8110c3605e1b5ac",
+    "exposure_package_hash": "5ba029e5abed851a92e15bc90e569bb1a8df823c1b56040561fa0ce1b49d93db",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "716e5903ef25222e7af795af2fabe5ba4ac59853ba8ca35b9105789e5f2a2b1e"
+   ],
+   "tracked_etf_codes": [
+    "561500.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931529",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 35
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 45.9,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-02-07",
+   "package_ids": {
+    "weights": "931529_weights_v1",
+    "exposure": "931529_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "bd80bee56a0f573bfe8fab69ebe4ba3341397f17772889f36379397b8a7135d5",
+    "exposure_package_hash": "ede7b68b180801daeda5c7b0ac856f9783e5ac17ac0aaea1253012d19afe0b43",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "5bef857f6dbdb88c96a107d921ccdbfc8cc9293a6fb87a88efb9adf05fb1f41a"
+   ],
+   "tracked_etf_codes": [
+    "159385.SZ",
+    "159389.SZ",
+    "561220.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931582",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 30
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 61.08,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-11-18",
+   "package_ids": {
+    "weights": "931582_weights_v1",
+    "exposure": "931582_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "c2d6fc9d3bbfcb438c946eae536b6191b00b304cd54c8b4a398ecf49924d7085",
+    "exposure_package_hash": "d9520ab25de117ea3cf16bb6d7ab3a0eef8807bc92a4c1635e523aba8102a3da",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "1836a3040430856c0ad6884bfd8167febd30f587b1a5eefe188e0ebb2dcd37ba"
+   ],
+   "tracked_etf_codes": [
+    "159311.SZ",
+    "159658.SZ",
+    "560800.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931823",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 45
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 14.72,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "931823_weights_v1",
+    "exposure": "931823_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "b4a8853ce654c41c97f02293475a6d734aebfd3edf6a48d9af0cb9536760e83f",
+    "exposure_package_hash": "70c9b25119d683bcc1592c155df73d09dc3666c76a786a2b879f5e0692e0778a",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "c4425d8e7d3d23852a95683143e17642ba124262cd551c2e09bec8b205cf4053"
+   ],
+   "tracked_etf_codes": [
+    "563060.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931848",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 100,
+    "classified_count": 100,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 87
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 100,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 11.98,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "931848_weights_v1",
+    "exposure": "931848_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a842b8b97351a1bd3aef8f3b92ad0a058b7ff45fd8fb1d3435bbaea0f42ea3a4",
+    "exposure_package_hash": "c736efc4ba59e166c8c63bf4a0d02852bcf4d1dc7cceea081042fe540c4ceef6",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "0c92e4158fed9a9766846fa12db0ec2a91fb5d5e32658adf3969b21763a351dd",
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f"
+   ],
+   "tracked_etf_codes": [
+    "158023.SZ",
+    "159355.SZ",
+    "563980.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931892",
+   "target_l2_code": "2403",
+   "target_l2_name": "工业金属",
+   "containment": {
+    "target_l2_code": "2403",
+    "constituent_count": 38,
+    "classified_count": 38,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 24
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 38,
+   "weight_sum": 99.98,
+   "target_l2_exposure": 47.48,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "931892_weights_v1",
+    "exposure": "931892_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "43ac8865afc5b504eafd96bceeb0363b9bd5ece37e85ec49d476b2a5ab922f5d",
+    "exposure_package_hash": "f2d4eb80f6eac561bb0a1a462372eb8423118cf085ef55b969be42c431e04430",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "a6a6ab195ae5a7705cd6d82d83283e01b9eb8b9274510d591221102a08da5b59"
+   ],
+   "tracked_etf_codes": [
+    "159029.SZ",
+    "159049.SZ",
+    "159163.SZ",
+    "159690.SZ",
+    "512940.SH",
+    "560290.SH",
+    "561330.SH",
+    "561830.SH",
+    "562450.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "931897",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 99.99,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "931897_weights_v1",
+    "exposure": "931897_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "0b8c39a98ae623b48b0335350dac5f0e3b7d107a986b3a564c7f0137d751a08e",
+    "exposure_package_hash": "ccdef0df85ca16d1d44817ca4a295d56d86897786dc405375e54616e0d32a612",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "229fe8f86fd98a5e3e9758340e62d856679d89324025df084f817cf156db602b"
+   ],
+   "tracked_etf_codes": [
+    "561170.SH",
+    "561610.SH",
+    "562550.SH",
+    "562960.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "932037",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 30
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 40.68,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "932037_weights_v1",
+    "exposure": "932037_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "1d8de4fd7bac87ab070f910f84eb8e3b5b6c0ff676f5ef0157c23647ef98f787",
+    "exposure_package_hash": "ee354d042df8b04abaddc95b46401553788e3e18909c0f8621e8f6128e350dbf",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "b2a557c6c67c5355b88fd05510cf37e6c836c2b9ffc5b2e6039971242ed81bf2"
+   ],
+   "tracked_etf_codes": [
+    "561260.SH",
+    "561790.SH",
+    "562850.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "932039",
+   "target_l2_code": "4211",
+   "target_l2_name": "航运港口",
+   "containment": {
+    "target_l2_code": "4211",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 46
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 17.04,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-04-21",
+   "package_ids": {
+    "weights": "932039_weights_v1",
+    "exposure": "932039_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "49996214baa452751de5379b36ab85e1c68142917c248e575f9a16b49aa1236f",
+    "exposure_package_hash": "0642980ac01a0ac5a9b5a6a3db45f9424f498a6c92ce009235a3a7b23e0a74e6",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "c4d04d280023b4deb9be3d9191f322cbcf71ef5f881d1ae216136409596947f8"
+   ],
+   "tracked_etf_codes": [
+    "560070.SH",
+    "560700.SH",
+    "561960.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "932217",
+   "target_l2_code": "3701",
+   "target_l2_name": "化学制药",
+   "containment": {
+    "target_l2_code": "3701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 23
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 58.14,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-08-09",
+   "package_ids": {
+    "weights": "932217_weights_v1",
+    "exposure": "932217_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "a0d4ab6c9f85018abce78fbee55281565c50a83e882941984736256ef927b4df",
+    "exposure_package_hash": "a950d775eb8a91edadfc11005ba1a415f5a104813b429ca538c77aabc91bc710",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "fff6c5c1c3cecb621b56be01a441c83e4be3365c05bc9fbbc8a8f23bf372aa3a"
+   ],
+   "tracked_etf_codes": [
+    "562050.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "932422",
+   "target_l2_code": "4802",
+   "target_l2_name": "国有大型银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4802",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 46
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 11.46,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2022-08-01",
+   "package_ids": {
+    "weights": "932422_weights_v1",
+    "exposure": "932422_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "5480428edfb45635951a119ae8fddf311607ecd310972b99559025f90ab2e9b2",
+    "exposure_package_hash": "5d266152f552a521f0a1fc361d1d24f38090fe052880c470fcd73962755278d0",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "23f560178e19ab9991eec695bdbf1842da1e891a74f7edf9333b6beda1e9d7f1"
+   ],
+   "tracked_etf_codes": [
+    "159296.SZ",
+    "560570.SH",
+    "561680.SH",
+    "562180.SH",
+    "563510.SH",
+    "563590.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "932431",
+   "target_l2_code": "4802",
+   "target_l2_name": "国有大型银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4802",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 45
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.96,
+   "target_l2_exposure": 15.97,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-08-09",
+   "package_ids": {
+    "weights": "932431_weights_v1",
+    "exposure": "932431_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "18c22a8cc0df433de883b49fff49b99522b2b138e309b98ada92451af92c4226",
+    "exposure_package_hash": "1f91500668aed00dcc1f057f76cb9bfca66932e2194f47af6a60c0d780e57ac7",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "1eca69bbea7f799c0a24c6aa62a48c04053014e8fc25eb34d362960a96f12339"
+   ],
+   "tracked_etf_codes": [
+    "561690.SH",
+    "563960.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "950105",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 33,
+    "classified_count": 33,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 33,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 99.99,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "950105_weights_v1",
+    "exposure": "950105_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "093dfc6e652a0ad2624ff5765ab8965c1ecaed5dbc513a3b5c2679f421adb77b",
+    "exposure_package_hash": "9256eafbac73dc19aade3ba72257e8517da91643709f05d044d22edcd827e39e",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "22fcfa435ac37e7e74182d58f3a729196c59804a1f38bbb3616d60e0c3047f0b"
+   ],
+   "tracked_etf_codes": [
+    "510200.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "990001",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 4
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 96.81,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "990001_weights_v1",
+    "exposure": "990001_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "d94c84344ee110559fde56959734acc6db131b1eb1e589aed23e8cf1edb96228",
+    "exposure_package_hash": "eb168534c5a6d73a1d8d7540ab412862af12c09adf8f50b9927ae5fc0f5c493a",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "550149355872acdc64ac46e54fa5cb3f767378122c31c7d56d39623ab8f37d85"
+   ],
+   "tracked_etf_codes": [
+    "512760.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H11054",
+   "target_l2_code": "6307",
+   "target_l2_name": "电池",
+   "containment": {
+    "target_l2_code": "6307",
+    "constituent_count": 129,
+    "classified_count": 129,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 109
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 129,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 22.67,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "H11054_weights_v1",
+    "exposure": "H11054_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "48d7c9b6267a1825fcf417543d4a0ae093dbd90b788713a8bfd6570a44f6ff77",
+    "exposure_package_hash": "5e6aefb84dbe5fe3d7c80d575c32ef8a62c58909d8518bfeed065f01775ceaae",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "84b519a1965b40016064216f69c4463003513ad029fde5fef0651903a02c16dd"
+   ],
+   "tracked_etf_codes": [
+    "516320.SH",
+    "562910.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H11057",
+   "target_l2_code": "7503",
+   "target_l2_name": "炼化及贸易",
+   "containment": {
+    "target_l2_code": "7503",
+    "constituent_count": 39,
+    "classified_count": 39,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 31
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 39,
+   "weight_sum": 99.99,
+   "target_l2_exposure": 29.98,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "H11057_weights_v1",
+    "exposure": "H11057_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "060c46a5c3f7c566beacea2b4066ff8473b402cfe4a18ee0bc3577b6c1c8dc2d",
+    "exposure_package_hash": "7e32860099331144d0c7100f349ebb27a9960e5f52c9c6595445bc24c7ec3348",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "66bffd617e8d1ab78b3c6e6343b43379bf697c8ae15798e85ac2e8327aca7075"
+   ],
+   "tracked_etf_codes": [
+    "159731.SZ",
+    "516570.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H11059",
+   "target_l2_code": "2403",
+   "target_l2_name": "工业金属",
+   "containment": {
+    "target_l2_code": "2403",
+    "constituent_count": 30,
+    "classified_count": 30,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 14
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 30,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 59.05,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "H11059_weights_v1",
+    "exposure": "H11059_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "0d148a9b3ca8c3c03b5a4c0ad4c7a80ef6ff245fe840349337a835551ac75c26",
+    "exposure_package_hash": "252671e2de971f1f2d4783b1e1f8666e2ca82a41f1b729c8d05386636422e609",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "9231821420e07f38e25b3f0ac4a2708f24c9c01338bb296a7b8ff820678619c2"
+   ],
+   "tracked_etf_codes": [
+    "159032.SZ",
+    "159157.SZ",
+    "159162.SZ",
+    "159168.SZ",
+    "159171.SZ",
+    "512470.SH",
+    "515040.SH",
+    "560490.SH",
+    "560860.SH",
+    "560870.SH",
+    "560970.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30007",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 5
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 100.02,
+   "target_l2_exposure": 95.94,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-08-16",
+   "package_ids": {
+    "weights": "H30007_weights_v1",
+    "exposure": "H30007_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "d2f1835bbc0571d0a8eb1596d143539276fc4d8139dedfbbf6a5324a38d1fa66",
+    "exposure_package_hash": "606051aa639829576871830f3fe49ceb53001ebe3365f9f9f684f573dc764f64",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "b47884d317a291ce95cfb9dfa7350759a533d255b0c3b2119e48c8f1661776e0"
+   ],
+   "tracked_etf_codes": [
+    "159310.SZ",
+    "159560.SZ",
+    "159599.SZ",
+    "516350.SH",
+    "516640.SH",
+    "516920.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30022",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 29,
+    "classified_count": 29,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 20
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 29,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 41.48,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2021-12-13",
+   "package_ids": {
+    "weights": "H30022_weights_v1",
+    "exposure": "H30022_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "05591ad393e0e5ec219f18c08e9d8490dac5eec0046272c9f44df4eda12d0902",
+    "exposure_package_hash": "2347e189d06bb79d64a3685cd999fa734b27f21665f571c7d918c6c6920edac2",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "e7933d03383a197232a0cf4108cd16c63577f3195c7662a7520274af161f22d5"
+   ],
+   "tracked_etf_codes": [
+    "159887.SZ"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30035",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 27,
+    "classified_count": 27,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 6
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 27,
+   "weight_sum": 100.0,
+   "target_l2_exposure": 61.91,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2025-08-13",
+   "package_ids": {
+    "weights": "H30035_weights_v1",
+    "exposure": "H30035_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "14f5216dac96a9d3aeaac1f8a19e415a6390668bd69a7f2911d0aa8a68b3a15b",
+    "exposure_package_hash": "f4fd956244fcf2e362e05dcf03e9573ceecb189d784c7094c72b715c82a1dadc",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "1538eaf18b7369c8a7b5074f79e7fb4622aba294822dfba1e8b188eed1837ed7"
+   ],
+   "tracked_etf_codes": [
+    "512070.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30199",
+   "target_l2_code": "4101",
+   "target_l2_name": "电力",
+   "containment": {
+    "target_l2_code": "4101",
+    "constituent_count": 59,
+    "classified_count": 59,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 0
+   },
+   "containment_proven": true,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 59,
+   "weight_sum": 100.03,
+   "target_l2_exposure": 100.03,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "ADMITTED",
+   "rejection_reason": null,
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "H30199_weights_v1",
+    "exposure": "H30199_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "2dca7b2f686016053793f7bc13fbc2fa5c499b944893712e5f579c9a1cb33711",
+    "exposure_package_hash": "79da48c1ccc3be6bc03a04908c77cc9b8d55bb6766ae0dd478700b8acbd8610b",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "1498049572e452544d2341bb0ca18e99634d503af4110a2741545fadd0b4ddd5"
+   ],
+   "tracked_etf_codes": [
+    "159059.SZ",
+    "159146.SZ",
+    "159158.SZ",
+    "159611.SZ",
+    "512140.SH",
+    "516370.SH",
+    "560270.SH",
+    "560450.SH",
+    "560460.SH",
+    "560480.SH",
+    "560580.SH",
+    "560830.SH",
+    "560930.SH",
+    "561560.SH",
+    "561700.SH",
+    "562350.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30257",
+   "target_l2_code": "2701",
+   "target_l2_name": "半导体",
+   "containment": {
+    "target_l2_code": "2701",
+    "constituent_count": 84,
+    "classified_count": 84,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 48
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 84,
+   "weight_sum": 100.01,
+   "target_l2_exposure": 58.25,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-08-25",
+   "package_ids": {
+    "weights": "H30257_weights_v1",
+    "exposure": "H30257_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "f4a27a46b98512b1b8d7e3145d47acf14c5fbb75868a33bc70e5c4a2b06f924b",
+    "exposure_package_hash": "206c9212b20e7ef7af0d48235291bdb2a490af23e5192c58ea4862f104f69ad1",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "615f4e360bfcad0dcc7707401d284e10a6848b8cdd3a4096e6706e2d84702ce1"
+   ],
+   "tracked_etf_codes": [
+    "512330.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30269",
+   "target_l2_code": "4804",
+   "target_l2_name": "城商行Ⅱ",
+   "containment": {
+    "target_l2_code": "4804",
+    "constituent_count": 50,
+    "classified_count": 50,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 40
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 50,
+   "weight_sum": 99.96,
+   "target_l2_exposure": 22.86,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2024-07-31",
+   "package_ids": {
+    "weights": "H30269_weights_v1",
+    "exposure": "H30269_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "407baed95a635c769c5f86b232092528888f02e01175ad5fee3b155f41b2c7dd",
+    "exposure_package_hash": "7318f436711fafafcf1143530c515ae3c9651026eea2a53c68cabe3da8eec248",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "603a306101e1c7ecbfc124043eaf455c1e1a206e825f363003e43273e151ba0a"
+   ],
+   "tracked_etf_codes": [
+    "159525.SZ",
+    "159547.SZ",
+    "512890.SH",
+    "560150.SH",
+    "560730.SH",
+    "563020.SH",
+    "563690.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30352",
+   "target_l2_code": "4901",
+   "target_l2_name": "证券Ⅱ",
+   "containment": {
+    "target_l2_code": "4901",
+    "constituent_count": 150,
+    "classified_count": 150,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 137
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 150,
+   "weight_sum": 100.06,
+   "target_l2_exposure": 12.95,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "H30352_weights_v1",
+    "exposure": "H30352_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "8cd6f60dc91d7716ff4851b6814af74e4929f560102a1b3868fb726889ce5a1f",
+    "exposure_package_hash": "65627a29ff274b7ff300b32e9850cafaaa135bccd055923922e50f693382efde",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "ff63bd716b5fd0fc63d5c32669c0cd6c10c98a31da0b419c9c25cdc1a9828e0b"
+   ],
+   "tracked_etf_codes": [
+    "562330.SH"
+   ],
+   "verified_strict_rows": []
+  },
+  {
+   "benchmark_code": "H30356",
+   "target_l2_code": "4803",
+   "target_l2_name": "股份制银行Ⅱ",
+   "containment": {
+    "target_l2_code": "4803",
+    "constituent_count": 250,
+    "classified_count": 250,
+    "unclassified_count": 0,
+    "out_of_bounds_count": 241
+   },
+   "containment_proven": false,
+   "weight_quality": "COMPLETE",
+   "weight_quality_recomputed": true,
+   "declared_constituent_count": 250,
+   "weight_sum": 99.97,
+   "target_l2_exposure": 11.49,
+   "target_is_largest": true,
+   "unmapped_weight": 0.0,
+   "mapping_type": "STRICT_MAPPING",
+   "admission_status": "REJECTED",
+   "rejection_reason": "CONSTITUENT_SET_NOT_CONTAINED_IN_TARGET_L2",
+   "production_available_at": "2026-09-29T23:05:26+09:00",
+   "constituent_effective_date": "2026-07-02",
+   "package_ids": {
+    "weights": "H30356_weights_v1",
+    "exposure": "H30356_l2_exposure_v1",
+    "classification_snapshot": "SWS_L2_CURRENT_SNAPSHOT_20260929"
+   },
+   "package_hashes": {
+    "weights_package_hash": "4cf7f284a30d64657d1060851c21ca3209794139e3f12255894837e60a6a1c39",
+    "exposure_package_hash": "c45cbe12b2f8b04498e1a908941aede77f2683b0e401fa9657b4aa9003e4e592",
+    "classification_package_hash": "a6b8e5ab766367046f9aed096eb3196ef050537d1447a0f546bfc1dea0881245"
+   },
+   "input_package_hashes": [
+    "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+    "22f638b7a928707f9d314a68510efa563f9ade341dbbd1993e511965e2189dda"
+   ],
+   "tracked_etf_codes": [
+    "560030.SH"
+   ],
+   "verified_strict_rows": []
+  }
+ ],
+ "top5_strict_view": [
+  {
+   "industry_code": "3706",
+   "industry_name": "医疗服务",
+   "strict_status": "NO_VERIFIED_STRICT_ROW",
+   "containment_proven_benchmarks": [],
+   "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+  },
+  {
+   "industry_code": "3703",
+   "industry_name": "生物制品",
+   "strict_status": "NO_VERIFIED_STRICT_ROW",
+   "containment_proven_benchmarks": [],
+   "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+  },
+  {
+   "industry_code": "4901",
+   "industry_name": "证券Ⅱ",
+   "strict_status": "STRICT_PIT_AVAILABLE_VIA_VERIFIED_REGISTRY",
+   "containment_proven_benchmarks": [
+    "399975",
+    "931402",
+    "931412",
+    "950105"
+   ],
+   "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+  },
+  {
+   "industry_code": "4803",
+   "industry_name": "股份制银行Ⅱ",
+   "strict_status": "NO_VERIFIED_STRICT_ROW",
+   "containment_proven_benchmarks": [],
+   "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+  },
+  {
+   "industry_code": "3701",
+   "industry_name": "化学制药",
+   "strict_status": "NO_VERIFIED_STRICT_ROW",
+   "containment_proven_benchmarks": [],
+   "production_exposure_label_note": "DeepSeek's production_pit_current_top5_status_v1.json labels this industry from the exposure-derived (proxy) channel only; the runtime resolves STRICT first from the verified registry."
+  }
+ ]
+}

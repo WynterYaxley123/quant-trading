@@ -1,0 +1,317 @@
+{
+ "artifact": "DEEPSEEK_PROXY_EXPOSURE_MANIFEST_V1",
+ "task": "ETF_QUANT_PROXY_EXPOSURE_V1",
+ "created_at": "2026-09-29T16:29:28+09:00",
+ "branch": "agent/deepseek-etf-quant-proxy-exposure-v1",
+ "base_git_sha": "681b2ccb52fdb5d28a8607d3255e81975b628d02",
+ "head_git_sha": "01bae27dbdd6569cd50286dc1485e5a6ebc7cb60",
+ "mapping_type": "PROXY_EXPOSURE",
+ "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
+ "strict_mapping_modified": false,
+ "frozen_model_modified": false,
+ "sealed_validation_read": false,
+ "final_oos_read": false,
+ "shadow_epoch_created": false,
+ "historical_engineering_reference_date": "2026-09-24",
+ "evidence_observed_at": "2026-09-29T16:27:41+0900",
+ "official_weight_evidence": {
+  "csi": {
+   "provider": "中证指数有限公司 (China Securities Index Co., Ltd.)",
+   "endpoint": "https://www.csindex.com.cn/csindex-home/indexInfo/index-sample-information",
+   "weight_source_type": "OFFICIAL_WEIGHT",
+   "level": "LEVEL_1",
+   "indices_covered": 1536,
+   "securities_queried": 0,
+   "securities_with_data": 1680,
+   "securities_failed": null,
+   "constituent_date": "20260831"
+  },
+  "cni": {
+   "provider": "深圳证券信息有限公司/国证指数 (cnindex.com.cn)",
+   "indices_covered": 59,
+   "rows": 8336,
+   "weight_source_type": "OFFICIAL_WEIGHT",
+   "level": "LEVEL_1"
+  },
+  "benchmarks_requested": 381,
+  "benchmarks_with_official_weights": 355,
+  "benchmarks_complete_weight_set": 128,
+  "pcf_derived_count": 0,
+  "constituents_only_count": 85,
+  "fail_closed_count": 253
+ },
+ "coverage": {
+  "strict_l2": [
+   "3702",
+   "4101",
+   "4301",
+   "4901"
+  ],
+  "strict_coverage": 0.029851,
+  "by_rule": {
+   "A90": {
+    "threshold": 90.0,
+    "require_largest": false,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "B90": {
+    "threshold": 90.0,
+    "require_largest": true,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "C90": {
+    "threshold": 90.0,
+    "require_largest": true,
+    "min_dominance_margin": 10.0,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "D90": {
+    "threshold": 90.0,
+    "require_largest": true,
+    "min_dominance_margin": 20.0,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "A80": {
+    "threshold": 80.0,
+    "require_largest": false,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "B80": {
+    "threshold": 80.0,
+    "require_largest": true,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "C80": {
+    "threshold": 80.0,
+    "require_largest": true,
+    "min_dominance_margin": 10.0,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "D80": {
+    "threshold": 80.0,
+    "require_largest": true,
+    "min_dominance_margin": 20.0,
+    "proxy_covered_l2": 2,
+    "strict_plus_proxy_l2": 6,
+    "coverage_ratio": 0.044776,
+    "current_top5_5of5_distinct": false
+   },
+   "A70": {
+    "threshold": 70.0,
+    "require_largest": false,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "B70": {
+    "threshold": 70.0,
+    "require_largest": true,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "C70": {
+    "threshold": 70.0,
+    "require_largest": true,
+    "min_dominance_margin": 10.0,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "D70": {
+    "threshold": 70.0,
+    "require_largest": true,
+    "min_dominance_margin": 20.0,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "A60": {
+    "threshold": 60.0,
+    "require_largest": false,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "B60": {
+    "threshold": 60.0,
+    "require_largest": true,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "C60": {
+    "threshold": 60.0,
+    "require_largest": true,
+    "min_dominance_margin": 10.0,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "D60": {
+    "threshold": 60.0,
+    "require_largest": true,
+    "min_dominance_margin": 20.0,
+    "proxy_covered_l2": 3,
+    "strict_plus_proxy_l2": 7,
+    "coverage_ratio": 0.052239,
+    "current_top5_5of5_distinct": false
+   },
+   "A50": {
+    "threshold": 50.0,
+    "require_largest": false,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 8,
+    "strict_plus_proxy_l2": 12,
+    "coverage_ratio": 0.089552,
+    "current_top5_5of5_distinct": false
+   },
+   "B50": {
+    "threshold": 50.0,
+    "require_largest": true,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 8,
+    "strict_plus_proxy_l2": 12,
+    "coverage_ratio": 0.089552,
+    "current_top5_5of5_distinct": false
+   },
+   "C50": {
+    "threshold": 50.0,
+    "require_largest": true,
+    "min_dominance_margin": 10.0,
+    "proxy_covered_l2": 8,
+    "strict_plus_proxy_l2": 12,
+    "coverage_ratio": 0.089552,
+    "current_top5_5of5_distinct": false
+   },
+   "D50": {
+    "threshold": 50.0,
+    "require_largest": true,
+    "min_dominance_margin": 20.0,
+    "proxy_covered_l2": 8,
+    "strict_plus_proxy_l2": 12,
+    "coverage_ratio": 0.089552,
+    "current_top5_5of5_distinct": false
+   },
+   "A40": {
+    "threshold": 40.0,
+    "require_largest": false,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 15,
+    "strict_plus_proxy_l2": 19,
+    "coverage_ratio": 0.141791,
+    "current_top5_5of5_distinct": true
+   },
+   "B40": {
+    "threshold": 40.0,
+    "require_largest": true,
+    "min_dominance_margin": null,
+    "proxy_covered_l2": 14,
+    "strict_plus_proxy_l2": 18,
+    "coverage_ratio": 0.134328,
+    "current_top5_5of5_distinct": false
+   },
+   "C40": {
+    "threshold": 40.0,
+    "require_largest": true,
+    "min_dominance_margin": 10.0,
+    "proxy_covered_l2": 14,
+    "strict_plus_proxy_l2": 18,
+    "coverage_ratio": 0.134328,
+    "current_top5_5of5_distinct": false
+   },
+   "D40": {
+    "threshold": 40.0,
+    "require_largest": true,
+    "min_dominance_margin": 20.0,
+    "proxy_covered_l2": 11,
+    "strict_plus_proxy_l2": 15,
+    "coverage_ratio": 0.11194,
+    "current_top5_5of5_distinct": false
+   }
+  }
+ },
+ "liquidity": {
+  "rule": "TWENTY_SESSION_REQUIRED_AMOUNT_NO_SUBSTITUTION",
+  "sessions_required": 20,
+  "window_start": "2026-08-28",
+  "window_end": "2026-09-24",
+  "evaluated": 1344,
+  "pass": 111,
+  "fail": 0,
+  "insufficient": 1,
+  "data_unavailable": 1232,
+  "source": "CNEquity curated lake, pinned commit 1650e384a3fd1f67a70144a489acc91432f1df27"
+ },
+ "decision": {
+  "proxy_execution_feasibility": null,
+  "recommended_proxy_rule": {
+   "name": "A40",
+   "threshold": 40.0,
+   "require_largest": false,
+   "min_dominance_margin": null,
+   "selection_basis": "highest target-exposure threshold that still yields 5/5 distinct; then prefer requiring target-is-largest; then the larger dominance margin. NOTE: no rule that requires target-is-largest reaches 5/5, so this selection necessarily fell through to the threshold-only shape.",
+   "distinct_etfs": 5,
+   "fidelity_class": "TECHNICALLY_FEASIBLE_BUT_LOW_FIDELITY"
+  },
+  "proposed_proxy_candidate_created": true
+ },
+ "artifacts": {
+  "proxy_l2_coverage_sensitivity_v1.json": {
+   "sha256": "995549e4cccd8350e15ef2ab65f4bbc25ea7f663ec4721bb562258b282d715c6",
+   "bytes": 13222
+  },
+  "proxy_current_top5_feasibility_v1.json": {
+   "sha256": "45dea5898f31d0da00595e935c6a9411dfd55f77996c7faafa81d560325d40b0",
+   "bytes": 73232
+  },
+  "proxy_execution_candidate_v1.json": {
+   "sha256": "abc24f76912a64101ea004b6bf65156ba3efa47fd0affcaa04f7d8fa925f8945",
+   "bytes": 14050
+  }
+ },
+ "artifacts_runtime_only": {
+  "benchmark_l2_exposure_matrix_v1.json": {
+   "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\proxy-exposure-v1\\exposure-matrix\\benchmark_l2_exposure_matrix_v1.json",
+   "sha256": "705bd7852926717e2e236214fccb4522f409ccc55e090d60ef06422f5bc63e36",
+   "note": "full constituent-level weight rows; runtime only, never committed"
+  },
+  "note": "raw CSI/CNI payloads, full weight vectors and ETF bars stay in runtime"
+ }
+}

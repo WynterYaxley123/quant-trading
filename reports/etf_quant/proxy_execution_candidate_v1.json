@@ -1,0 +1,209 @@
+{
+ "artifact": "ETF_QUANT_V1_PROXY_EXECUTION_CANDIDATE",
+ "candidate_id": "ETF_QUANT_V1_PROXY_EXECUTION_CANDIDATE",
+ "status": "PROPOSED_AWAITING_POLICY_APPROVAL",
+ "base_strategy": "ETF_QUANT_V1",
+ "execution_variant": "PROXY_EXPOSURE_V1",
+ "execution_policy": "B40_WITH_CASH",
+ "created_at": "2026-09-29T18:28:04+09:00",
+ "historical_reference_cutoff": "2026-09-24",
+ "evidence_observed_at": "2026-09-29T09:15:41.211971+00:00",
+ "production_ready_from": "2026-09-29T09:15:41.211971+00:00",
+ "production_ready_from_rule": "not earlier than the latest of: mapping evidence, official weights, liquidity readiness, and this candidate",
+ "cnequity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+ "research_model_changed": false,
+ "strict_mapping_changed": false,
+ "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
+ "proxy_policy_approved": false,
+ "shadow_epoch_created": false,
+ "formal_signal_created": false,
+ "top5_signal": [
+  "3706",
+  "3703",
+  "4901",
+  "4803",
+  "3701"
+ ],
+ "top5_names": [
+  "医疗服务",
+  "生物制品",
+  "证券Ⅱ",
+  "股份制银行Ⅱ",
+  "化学制药"
+ ],
+ "per_industry_mapping": [
+  {
+   "l2_code": "3703",
+   "l2_name": "生物制品",
+   "etf_code": "159643.SZ",
+   "benchmark_code": "980015",
+   "mapping_type": "PROXY_EXPOSURE",
+   "weight": 0.260436961183,
+   "nominal_weight": 0.260436961183,
+   "target_l2_exposure": 46.4,
+   "second_largest_l2_exposure": 23.34,
+   "dominance_margin": 23.06,
+   "target_is_largest_l2": true,
+   "mean_amount_cny_20d": 7483183.8625,
+   "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+   "grade": "UNSUITABLE"
+  },
+  {
+   "l2_code": "4901",
+   "l2_name": "证券Ⅱ",
+   "etf_code": "512880.SH",
+   "benchmark_code": "399975",
+   "mapping_type": "STRICT_MAPPING",
+   "weight": 0.141910449955,
+   "nominal_weight": 0.141910449955,
+   "target_l2_exposure": 100.0,
+   "second_largest_l2_exposure": 0.0,
+   "dominance_margin": 100.0,
+   "target_is_largest_l2": true,
+   "mean_amount_cny_20d": 1587489430.4,
+   "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+   "grade": "STRICT"
+  },
+  {
+   "l2_code": "4803",
+   "l2_name": "股份制银行Ⅱ",
+   "etf_code": "159887.SZ",
+   "benchmark_code": "H30022",
+   "mapping_type": "PROXY_EXPOSURE",
+   "weight": 0.125683987161,
+   "nominal_weight": 0.125683987161,
+   "target_l2_exposure": 41.48,
+   "second_largest_l2_exposure": 29.41,
+   "dominance_margin": 12.07,
+   "target_is_largest_l2": true,
+   "mean_amount_cny_20d": 86955231.6,
+   "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+   "grade": "UNSUITABLE"
+  },
+  {
+   "l2_code": "3701",
+   "l2_name": "化学制药",
+   "etf_code": "159992.SZ",
+   "benchmark_code": "931152",
+   "mapping_type": "PROXY_EXPOSURE",
+   "weight": 0.121968601701,
+   "nominal_weight": 0.121968601701,
+   "target_l2_exposure": 45.98,
+   "second_largest_l2_exposure": 27.99,
+   "dominance_margin": 17.99,
+   "target_is_largest_l2": true,
+   "mean_amount_cny_20d": 683804513.6,
+   "liquidity_status": "LIQUIDITY_ADMISSION_PASS",
+   "grade": "UNSUITABLE"
+  }
+ ],
+ "skipped_industries": [
+  {
+   "l2_code": "3706",
+   "l2_name": "医疗服务",
+   "reason": "TARGET_NOT_LARGEST_L2",
+   "weight_forfeited": 0.35,
+   "target_l2_exposure": 44.83,
+   "target_is_largest_l2": false
+  }
+ ],
+ "etf_weights": {
+  "3703": 0.260436961183,
+  "4901": 0.141910449955,
+  "4803": 0.125683987161,
+  "3701": 0.121968601701
+ },
+ "nominal_weights": {
+  "3703": 0.260436961183,
+  "4901": 0.141910449955,
+  "4803": 0.125683987161,
+  "3701": 0.121968601701,
+  "3706": 0.0
+ },
+ "forfeited_weights": {
+  "3706": 0.35
+ },
+ "cash_weight": 0.35,
+ "risk_asset_weight": 0.65,
+ "actual_l2_exposure": {
+  "3703": 0.14554139,
+  "4901": 0.14191045,
+  "3701": 0.11686715,
+  "3706": 0.08343973,
+  "4803": 0.05213372,
+  "4802": 0.03696366,
+  "4804": 0.03206199,
+  "3705": 0.0278928,
+  "3702": 0.00874098,
+  "4805": 0.00453719
+ },
+ "actual_target_exposure": {
+  "3701": 0.11686715,
+  "3703": 0.14554139,
+  "3706": 0.08343973,
+  "4803": 0.05213372,
+  "4901": 0.14191045
+ },
+ "fidelity_gap": {
+  "3701": -0.00510145,
+  "3703": -0.11489557,
+  "3706": 0.08343973,
+  "4803": -0.07355027,
+  "4901": 0.0
+ },
+ "proxy_leakage_metrics": {
+  "weighted_target_l2_purity": 57.072012,
+  "minimum_individual_purity": 41.48,
+  "maximum_individual_purity": 100.0,
+  "weighted_leakage": 42.927988,
+  "largest_unintended_l2_code": "4802",
+  "largest_unintended_l2_weight": 0.03696366,
+  "top5_unintended_l2s": [
+   {
+    "l2_code": "4802",
+    "weight": 0.03696366
+   },
+   {
+    "l2_code": "4804",
+    "weight": 0.03206199
+   },
+   {
+    "l2_code": "3705",
+    "weight": 0.0278928
+   },
+   {
+    "l2_code": "3702",
+    "weight": 0.00874098
+   },
+   {
+    "l2_code": "4805",
+    "weight": 0.00453719
+   }
+  ],
+  "actual_l2_hhi": 0.16073276,
+  "etf_weight_hhi": 0.28080187,
+  "incidental_target_exposure": {
+   "3706": 0.08343973
+  },
+  "incidental_target_weight_total": 0.08343973,
+  "weighted_mean_amount_cny_20d": 494710457.85,
+  "min_etf_mean_amount_cny_20d": 7483183.8625,
+  "thinnest_etf_code": "159643.SZ",
+  "cash_weight": 0.35,
+  "risk_asset_weight": 0.65,
+  "risk_asset_count": 4,
+  "max_etf_weight": 0.260436961183,
+  "single_etf_cap": 0.35,
+  "cap_respected": true,
+  "sum_risk_plus_cash": 1.0
+ },
+ "t1_contract": "DELAYED_T1_OPEN_ACCOUNTING",
+ "rebalance_trigger": "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_V1",
+ "known_limitations": [
+  "Cash return is undefined in this round; cash is unallocated execution capacity, not an asset.",
+  "35% of the account is uninvested because the model's top-ranked industry has no faithful instrument.",
+  "The unexecuted signal still arrives incidentally: 3706 actual exposure is 8.34% from leakage in the instruments held.",
+  "Tier-2 security coverage is partial, so the 3706 negative result is bounded by the stated evidence scope.",
+  "Benchmarks whose official weight set is incomplete are fail-closed and never admitted."
+ ]
+}

@@ -1,0 +1,18 @@
+{
+  "_comment": "metadata.json 模板。所有值为空字符串，禁止填入虚构数据。运行后由代码填充。",
+  "strategy": "",
+  "version": "",
+  "framework": "",
+  "run_id": "",
+  "started_at": "",
+  "finished_at": "",
+  "specification": "",
+  "git_commit": "",
+  "data_range": {
+    "start": "",
+    "end": ""
+  },
+  "universe": "",
+  "benchmark": "",
+  "status": ""
+}

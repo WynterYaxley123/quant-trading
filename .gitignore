@@ -1,9 +1,44 @@
 # .gitignore — quant-trading
 
 # 数据与日志（永不进 Git）
-data/
-logs/
-secrets/
+# 注意：必须用前导斜杠限定为**项目根目录**下的同名目录。
+# 否则 `data/` 会匹配任意层级的 data 目录，误伤源码（src/data/）、
+# 脚本（scripts/data/）与文档（docs/data/）—— 本项目已实际踩过此坑。
+/data/
+/logs/
+/secrets/
+
+# Prevent accidental vendoring of external ETF runtime, sidecar and market data.
+/runtime/
+/external/
+/lake/
+/exports/
+/cache/
+**/.cnequity/
+**/cnequity_cache/
+services/etf-quant*/state/
+services/etf-quant*/runtime/
+services/cnequity-sidecar/lake/
+services/cnequity-sidecar/exports/
+services/cnequity-sidecar/logs/
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db-wal
+*.db-shm
+*.h5
+*.hdf5
+*.parquet
+*.p12
+*.pfx
+id_rsa*
+node_modules/
+
+# 回测产物（每次运行生成，体积大且不可复现，不进 Git）
+/reports/backtests/
+# 非执行研究运行产物（可由冻结输入重新生成）
+/reports/research/
 
 # 环境变量
 .env
@@ -28,6 +63,7 @@ ENV/
 env/
 
 # 测试与检查缓存
+dashboard/.cache/
 .pytest_cache/
 .coverage
 htmlcov/

@@ -1,0 +1,555 @@
+{
+ "schema_version": "1.0.0",
+ "artifact": "PRODUCTION_PIT_CURRENT_TOP5_STATUS_V1",
+ "generated_at": "2026-09-29T23:14:23+09:00",
+ "reference_note": "This is the FUTURE-AVAILABLE evidence state, not a 2026-09-24 run result. Every package is forward-only with production_available_at on or after 2026-09-30, so none of it may be used at 2026-09-24.",
+ "historical_engineering_top5": [
+  "3706",
+  "3703",
+  "4901",
+  "4803",
+  "3701"
+ ],
+ "production_available_from": "2026-09-29T23:05:26+09:00",
+ "classification_snapshot_id": "SWS_L2_CURRENT_SNAPSHOT_20260929",
+ "registry_id": "PRODUCTION_PIT_EVIDENCE_REGISTRY_V1::2026-09-29",
+ "industries": [
+  {
+   "industry_code": "3706",
+   "industry_name": "医疗服务",
+   "status": "PRODUCTION_EVIDENCE_PRESENT_BUT_B40_REJECTED",
+   "admitted_proxy_benchmarks": 0,
+   "candidate_benchmarks": 26,
+   "best_candidate": {
+    "benchmark_code": "000913",
+    "target_l2_exposure": 37.16,
+    "target_is_largest": true,
+    "dominance_margin": 8.46,
+    "production_available_at": "2026-09-29T23:05:26+09:00",
+    "input_package_hashes": [
+     "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+     "d83ca69f35b825f820a47aa615b23c99c1dfd0e1283355f37494143c8fd23e0b"
+    ],
+    "etf_candidates": [
+     "512010.SH"
+    ],
+    "passes_b40": false
+   },
+   "candidates": [
+    {
+     "benchmark_code": "000913",
+     "target_l2_exposure": 37.16,
+     "target_is_largest": true,
+     "dominance_margin": 8.46,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512010.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000814",
+     "target_l2_exposure": 28.04,
+     "target_is_largest": false,
+     "dominance_margin": -8.09,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512120.SH"
+     ]
+    },
+    {
+     "benchmark_code": "931152",
+     "target_l2_exposure": 27.99,
+     "target_is_largest": false,
+     "dominance_margin": -17.99,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 7,
+     "etf_codes": [
+      "159835.SZ",
+      "159858.SZ",
+      "159992.SZ",
+      "515120.SH",
+      "516060.SH"
+     ]
+    },
+    {
+     "benchmark_code": "930743",
+     "target_l2_exposure": 27.55,
+     "target_is_largest": false,
+     "dominance_margin": -5.51,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 4,
+     "etf_codes": [
+      "159837.SZ",
+      "159849.SZ",
+      "516500.SH",
+      "516930.SH"
+     ]
+    },
+    {
+     "benchmark_code": "930726",
+     "target_l2_exposure": 25.33,
+     "target_is_largest": false,
+     "dominance_margin": -2.96,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512290.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000037",
+     "target_l2_exposure": 24.73,
+     "target_is_largest": false,
+     "dominance_margin": -7.44,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "510660.SH"
+     ]
+    }
+   ]
+  },
+  {
+   "industry_code": "3703",
+   "industry_name": "生物制品",
+   "status": "PRODUCTION_EVIDENCE_PRESENT_BUT_B40_REJECTED",
+   "admitted_proxy_benchmarks": 0,
+   "candidate_benchmarks": 18,
+   "best_candidate": {
+    "benchmark_code": "930743",
+    "target_l2_exposure": 33.06,
+    "target_is_largest": true,
+    "dominance_margin": 5.51,
+    "production_available_at": "2026-09-29T23:05:26+09:00",
+    "input_package_hashes": [
+     "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+     "872e76715cbdad150f5014930a2a4988d539190abb60e20a28f6c426ab3b8bce"
+    ],
+    "etf_candidates": [
+     "159837.SZ",
+     "159849.SZ",
+     "516500.SH",
+     "516930.SH"
+    ],
+    "passes_b40": false
+   },
+   "candidates": [
+    {
+     "benchmark_code": "930743",
+     "target_l2_exposure": 33.06,
+     "target_is_largest": true,
+     "dominance_margin": 5.51,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 4,
+     "etf_codes": [
+      "159837.SZ",
+      "159849.SZ",
+      "516500.SH",
+      "516930.SH"
+     ]
+    },
+    {
+     "benchmark_code": "930726",
+     "target_l2_exposure": 27.54,
+     "target_is_largest": false,
+     "dominance_margin": -0.75,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512290.SH"
+     ]
+    },
+    {
+     "benchmark_code": "931152",
+     "target_l2_exposure": 20.25,
+     "target_is_largest": false,
+     "dominance_margin": -25.73,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 7,
+     "etf_codes": [
+      "159835.SZ",
+      "159858.SZ",
+      "159992.SZ",
+      "515120.SH",
+      "516060.SH"
+     ]
+    },
+    {
+     "benchmark_code": "932217",
+     "target_l2_exposure": 14.37,
+     "target_is_largest": false,
+     "dominance_margin": -43.77,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "562050.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000814",
+     "target_l2_exposure": 12.91,
+     "target_is_largest": false,
+     "dominance_margin": -23.22,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512120.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000933",
+     "target_l2_exposure": 11.74,
+     "target_is_largest": false,
+     "dominance_margin": -15.02,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "159929.SZ"
+     ]
+    }
+   ]
+  },
+  {
+   "industry_code": "4901",
+   "industry_name": "证券Ⅱ",
+   "status": "PRODUCTION_PIT_PROXY_AVAILABLE",
+   "admitted_proxy_benchmarks": 6,
+   "candidate_benchmarks": 47,
+   "best_candidate": {
+    "benchmark_code": "399975",
+    "target_l2_exposure": 100.0,
+    "target_is_largest": true,
+    "dominance_margin": 100.0,
+    "production_available_at": "2026-09-29T23:05:26+09:00",
+    "input_package_hashes": [
+     "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+     "79b8892e4dc91b310ae06a816b2c5dae0e7be1ae00e77cc600b097afd41b424d"
+    ],
+    "etf_candidates": [
+     "159008.SZ",
+     "159058.SZ",
+     "159260.SZ",
+     "159841.SZ",
+     "159842.SZ",
+     "159848.SZ",
+     "512000.SH",
+     "512570.SH",
+     "512880.SH",
+     "512900.SH",
+     "515010.SH",
+     "515560.SH",
+     "515850.SH",
+     "516200.SH",
+     "560090.SH",
+     "560400.SH",
+     "562870.SH"
+    ],
+    "passes_b40": true
+   },
+   "candidates": [
+    {
+     "benchmark_code": "399975",
+     "target_l2_exposure": 100.0,
+     "target_is_largest": true,
+     "dominance_margin": 100.0,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 17,
+     "etf_codes": [
+      "159008.SZ",
+      "159058.SZ",
+      "159260.SZ",
+      "159841.SZ",
+      "159842.SZ"
+     ]
+    },
+    {
+     "benchmark_code": "931412",
+     "target_l2_exposure": 100.0,
+     "target_is_largest": true,
+     "dominance_margin": 100.0,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 3,
+     "etf_codes": [
+      "159016.SZ",
+      "159692.SZ",
+      "516730.SH"
+     ]
+    },
+    {
+     "benchmark_code": "950105",
+     "target_l2_exposure": 99.99,
+     "target_is_largest": true,
+     "dominance_margin": 99.99,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 1,
+     "etf_codes": [
+      "510200.SH"
+     ]
+    },
+    {
+     "benchmark_code": "931402",
+     "target_l2_exposure": 99.97,
+     "target_is_largest": true,
+     "dominance_margin": 99.97,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 1,
+     "etf_codes": [
+      "516980.SH"
+     ]
+    },
+    {
+     "benchmark_code": "399966",
+     "target_l2_exposure": 75.03,
+     "target_is_largest": true,
+     "dominance_margin": 50.06,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 1,
+     "etf_codes": [
+      "515630.SH"
+     ]
+    },
+    {
+     "benchmark_code": "H30035",
+     "target_l2_exposure": 61.91,
+     "target_is_largest": true,
+     "dominance_margin": 24.64,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 1,
+     "etf_codes": [
+      "512070.SH"
+     ]
+    }
+   ]
+  },
+  {
+   "industry_code": "4803",
+   "industry_name": "股份制银行Ⅱ",
+   "status": "PRODUCTION_PIT_PROXY_AVAILABLE",
+   "admitted_proxy_benchmarks": 2,
+   "candidate_benchmarks": 43,
+   "best_candidate": {
+    "benchmark_code": "H30022",
+    "target_l2_exposure": 41.48,
+    "target_is_largest": true,
+    "dominance_margin": 12.07,
+    "production_available_at": "2026-09-29T23:05:26+09:00",
+    "input_package_hashes": [
+     "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+     "e7933d03383a197232a0cf4108cd16c63577f3195c7662a7520274af161f22d5"
+    ],
+    "etf_candidates": [
+     "159887.SZ"
+    ],
+    "passes_b40": true
+   },
+   "candidates": [
+    {
+     "benchmark_code": "H30022",
+     "target_l2_exposure": 41.48,
+     "target_is_largest": true,
+     "dominance_margin": 12.07,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 1,
+     "etf_codes": [
+      "159887.SZ"
+     ]
+    },
+    {
+     "benchmark_code": "399986",
+     "target_l2_exposure": 40.3,
+     "target_is_largest": true,
+     "dominance_margin": 12.22,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 12,
+     "etf_codes": [
+      "159253.SZ",
+      "512410.SH",
+      "512700.SH",
+      "512730.SH",
+      "512800.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000038",
+     "target_l2_exposure": 27.58,
+     "target_is_largest": true,
+     "dominance_margin": 5.96,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "510650.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000018",
+     "target_l2_exposure": 26.45,
+     "target_is_largest": true,
+     "dominance_margin": 5.97,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "510230.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000914",
+     "target_l2_exposure": 24.59,
+     "target_is_largest": false,
+     "dominance_margin": -1.83,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "159933.SZ"
+     ]
+    },
+    {
+     "benchmark_code": "000934",
+     "target_l2_exposure": 21.75,
+     "target_is_largest": false,
+     "dominance_margin": -8.92,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 2,
+     "etf_codes": [
+      "159931.SZ",
+      "512640.SH"
+     ]
+    }
+   ]
+  },
+  {
+   "industry_code": "3701",
+   "industry_name": "化学制药",
+   "status": "PRODUCTION_PIT_PROXY_AVAILABLE",
+   "admitted_proxy_benchmarks": 2,
+   "candidate_benchmarks": 38,
+   "best_candidate": {
+    "benchmark_code": "932217",
+    "target_l2_exposure": 58.14,
+    "target_is_largest": true,
+    "dominance_margin": 35.02,
+    "production_available_at": "2026-09-29T23:05:26+09:00",
+    "input_package_hashes": [
+     "1185703bf24828792b68ab145342451b37a74c220baa7d535470dd067f2e955f",
+     "fff6c5c1c3cecb621b56be01a441c83e4be3365c05bc9fbbc8a8f23bf372aa3a"
+    ],
+    "etf_candidates": [
+     "562050.SH"
+    ],
+    "passes_b40": true
+   },
+   "candidates": [
+    {
+     "benchmark_code": "932217",
+     "target_l2_exposure": 58.14,
+     "target_is_largest": true,
+     "dominance_margin": 35.02,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 1,
+     "etf_codes": [
+      "562050.SH"
+     ]
+    },
+    {
+     "benchmark_code": "931152",
+     "target_l2_exposure": 45.98,
+     "target_is_largest": true,
+     "dominance_margin": 17.99,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": true,
+     "etf_count": 7,
+     "etf_codes": [
+      "159835.SZ",
+      "159858.SZ",
+      "159992.SZ",
+      "515120.SH",
+      "516060.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000814",
+     "target_l2_exposure": 36.13,
+     "target_is_largest": true,
+     "dominance_margin": 8.09,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512120.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000037",
+     "target_l2_exposure": 32.17,
+     "target_is_largest": true,
+     "dominance_margin": 7.44,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "510660.SH"
+     ]
+    },
+    {
+     "benchmark_code": "000913",
+     "target_l2_exposure": 28.7,
+     "target_is_largest": false,
+     "dominance_margin": -8.46,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512010.SH"
+     ]
+    },
+    {
+     "benchmark_code": "930726",
+     "target_l2_exposure": 28.29,
+     "target_is_largest": true,
+     "dominance_margin": 0.75,
+     "production_available_at": "2026-09-29T23:05:26+09:00",
+     "passes_b40": false,
+     "etf_count": 1,
+     "etf_codes": [
+      "512290.SH"
+     ]
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "proxy_available": 3,
+  "rejected_by_b40": 2,
+  "fail_closed_to_cash": 0,
+  "strict_pit_records": 617
+ },
+ "known_gaps": {
+  "CLASSIFICATION_INCOMPLETE": 12
+ }
+}

@@ -1,0 +1,78 @@
+{
+ "schema_version": "1.0.0",
+ "artifact": "CODEX_B40_CASH_RUNTIME_READINESS_V1",
+ "generated_at": "2026-09-29T21:20:22+09:00",
+ "integration_branch": "integration/etf-quant-v1-proxy-runtime-final",
+ "base_sha": "51e6d7b5ca49c3e22edb6cd3ede123f701fcd4d9",
+ "runtime_code_sha": "cc745354062dea809ca4a5ce5ec294c1f5b8b7c7",
+ "user_approved_execution_policy": "B40_WITH_CASH",
+ "strict_v1_status": "NOT_EXECUTABLE_UNDER_CURRENT_ETF_SUPPLY",
+ "pit_evidence_adapter": "PASS",
+ "daily_cycle_proxy_wiring": "PASS",
+ "cash_rebalance_state_machine": "PASS",
+ "t1_delayed_accounting": "PASS",
+ "shadow_dry_run": "PASS",
+ "dry_run_certified": true,
+ "dry_run_scope": "SYNTHETIC_TEST_FIXTURES_AND_TEMPORARY_DIRECTORIES_ONLY",
+ "technical_shadow_readiness": "PASS",
+ "etf_quant_proxy_ready_for_shadow": true,
+ "shadow_epoch_created": false,
+ "formal_business_records_created": 0,
+ "candidate_status": "READY_FOR_FUTURE_SHADOW",
+ "production_ready_from": "READY_FOR_NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE",
+ "candidate_manifest": {
+  "path": "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json",
+  "sha256": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89"
+ },
+ "gates": {
+  "frozen_model_source_c_horizons_fusion_l2": "PASS_UNCHANGED",
+  "strict_default_preserved": "PASS",
+  "b40_threshold_target_largest_strict_precedence": "PASS_SYNTHETIC",
+  "cash_no_redistribution_no_order": "PASS_SYNTHETIC",
+  "point_in_time_timestamp_and_prefix_logic": "PASS_SYNTHETIC",
+  "production_official_pit_evidence_pack": "PASS_REAL_PACKAGE_ADMITTED",
+  "etf_listing_gate": "PASS_SYNTHETIC",
+  "twenty_session_liquidity_pit": "PASS_SYNTHETIC",
+  "member_set_transitions": "PASS_SYNTHETIC",
+  "authoritative_cap": "PASS_UNCHANGED",
+  "t1_persisted_intent_raw_open": "PASS_SYNTHETIC",
+  "delayed_processing_no_t2_or_retroactive_fill": "PASS_SYNTHETIC",
+  "candidate_integrity": "PASS",
+  "read_only_api_dashboard": "PASS",
+  "tests": "PASS",
+  "security": "PASS"
+ },
+ "blocking_evidence": [],
+ "known_limitations_not_technical_failure": [
+  "H30463_UNRESOLVED_FAIL_CLOSED_TO_CASH",
+  "SOURCE_LICENSING_UNRESOLVED",
+  "Docker daemon unavailable; no dependency or image changes"
+ ],
+ "tests": {
+  "etf_python": "413 passed, 1 skipped",
+  "api": "58 passed",
+  "frontend": "96 passed, 3 skipped",
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "build": "PASS",
+  "full_repository_python": "NOT_RUN_TO_AVOID_SEALED_ARTIFACT_ACCESS"
+ },
+ "security_assertions": {
+  "formal_shadow_started": false,
+  "validation_performance_read": false,
+  "final_oos_read": false,
+  "git_push_performed": false,
+  "raw_market_rows_committed": false,
+  "secrets_committed": false,
+  "broker_connected": false
+ },
+ "production_pit_evidence_ready": true,
+ "resolved_evidence": [
+  "PRODUCTION_PIT_EVIDENCE_REGISTRY_V1::2026-09-29 admitted through the unmodified adapter: 8133 records, 12/12 real-package tests.",
+  "Constituent-set containment proven mechanically for 4901 over 399975/931402/931412/950105 (production_strict_pit_evidence_summary_v1.json).",
+  "SWS membership evidence sufficient with source-form known limitation; two unclassified securities fail closed."
+ ],
+ "blocking_evidence_resolved_at": "2026-09-30T03:47:56+09:00",
+ "blocking_evidence_resolved_by": "agent/mimo-final-pit-readiness-certification-v1 final production pit evidence review",
+ "production_pit_evidence_ready_at": "2026-09-30T03:47:56+09:00"
+}

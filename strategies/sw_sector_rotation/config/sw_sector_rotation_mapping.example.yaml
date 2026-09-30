@@ -1,0 +1,145 @@
+# SW Sector Rotation Core —— 行业 → ETF 映射（示例）
+#
+# !!! LEGACY REFERENCE ONLY — REQUIRES REVALIDATION !!!
+#
+# 本文件来自 Legacy china-market-data v5 的映射快照，仅供**算法测试与结构示例**。
+# 不得作为生产配置：ETF 代码 / 名称 / 关系标注均未重新验证。
+# 详见 docs/legacy/sector_etf_mapping_reference.md
+#
+# relation 取值:
+#   direct    该 ETF 直接跟踪对应行业指数
+#   composite 该 ETF 覆盖多个行业，目标行业是成分之一
+#   proxy     无直接对应，用相近 ETF 代理
+#
+# sector_weights (可选): 一个 ETF 穿透多个行业时的权重分配，未给出则等权。
+#                        注意同一 ETF 在组合层面会被去重。
+
+mapping:
+  半导体:
+    code: "512480"
+    name: 国联安中证全指半导体ETF
+    relation: direct
+
+  航天装备Ⅱ:
+    code: "512660"
+    name: 国泰中证军工ETF
+    relation: composite
+    sector_weights:
+      航天装备Ⅱ: 0.4
+      军工电子Ⅱ: 0.3
+      航空装备Ⅱ: 0.3
+
+  军工电子Ⅱ:
+    code: "512660"
+    name: 国泰中证军工ETF
+    relation: composite
+
+  航空装备Ⅱ:
+    code: "512660"
+    name: 国泰中证军工ETF
+    relation: composite
+
+  通信设备:
+    code: "515050"
+    name: 华夏中证5G通信ETF
+    relation: direct
+
+  消费电子:
+    code: "159997"
+    name: 天弘中证电子ETF
+    relation: composite
+
+  光学光电子:
+    code: "159997"
+    name: 天弘中证电子ETF
+    relation: composite
+
+  元件:
+    code: "159997"
+    name: 天弘中证电子ETF
+    relation: composite
+
+  软件开发:
+    code: "159852"
+    name: 嘉实中证软件服务ETF
+    relation: direct
+
+  计算机设备:
+    code: "159852"
+    name: 嘉实中证软件服务ETF
+    relation: composite
+
+  IT服务Ⅱ:
+    code: "159852"
+    name: 嘉实中证软件服务ETF
+    relation: composite
+
+  电池:
+    code: "159840"
+    name: 工银瑞信中证电池ETF
+    relation: direct
+
+  光伏设备:
+    code: "515790"
+    name: 华泰柏瑞中证光伏ETF
+    relation: direct
+
+  工业金属:
+    code: "512400"
+    name: 南方中证申万有色金属ETF
+    relation: direct
+
+  贵金属:
+    code: "512400"
+    name: 南方中证申万有色金属ETF
+    relation: composite
+
+  小金属:
+    code: "512400"
+    name: 南方中证申万有色金属ETF
+    relation: composite
+
+  煤炭开采:
+    code: "515220"
+    name: 国泰中证煤炭ETF
+    relation: direct
+
+  银行:
+    code: "512800"
+    name: 华宝中证银行ETF
+    relation: direct
+
+  证券Ⅱ:
+    code: "512880"
+    name: 国泰中证全指证券公司ETF
+    relation: direct
+
+  白酒Ⅱ:
+    code: "512690"
+    name: 鹏华中证酒ETF
+    relation: direct
+
+  医疗器械:
+    code: "159883"
+    name: 永赢中证医疗器械ETF
+    relation: direct
+
+  乘用车:
+    code: "515030"
+    name: 华夏中证新能源汽车ETF
+    relation: direct
+
+  房地产开发:
+    code: "512200"
+    name: 南方中证房地产ETF
+    relation: direct
+
+  装修建材:
+    code: "159745"
+    name: 易方达中证建筑材料ETF
+    relation: direct
+
+  电网设备:
+    code: "159616"
+    name: 建信中证智能电网ETF
+    relation: direct
