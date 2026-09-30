@@ -23,9 +23,10 @@ def forward(tmp_path,monkeypatch):
     module("proxy_policy",proxy_policy=lambda p:nullcontext())
     module("export_streaming",export_lake_streaming=lambda *a,**k:(events.append("EXPORT") or {"snapshot_id":"a"*64}))
     dates=[date(2026,9,25),date(2026,9,28),date(2026,9,29)]
-    package=module("cnequity",load=lambda *a,**k:SimpleNamespace(to_dicts=lambda:
-        [{"trade_date":d,"is_trading":True} for d in dates]))
+    package=module("cnequity")
     package.__path__=[]
+    module("cnequity.query",load=lambda *a,**k:SimpleNamespace(to_dicts=lambda:
+        [{"trade_date":d,"is_trading":True} for d in dates]))
     module("cnequity.config",load_config=lambda p:SimpleNamespace(data_root=tmp_path/"lake"))
     job_status={"status":"success"}
     class Engine:

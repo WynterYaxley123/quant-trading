@@ -135,4 +135,3 @@ def test_candidate_readonly_hash_and_fail_closed(tmp_path):
     with pytest.raises(GateError, match="CERTIFIED_INPUT_HASH"):
         formal.load_formal_contract(candidate, registry, reg, book)
     assert candidate.read_bytes() == before
-

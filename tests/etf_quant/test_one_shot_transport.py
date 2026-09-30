@@ -88,4 +88,3 @@ def test_uncertified_hash_blocks_before_any_refresh(tmp_path, runner, monkeypatc
     with pytest.raises(runner.transport.GateError,match="CERTIFIED_INPUT_HASH"):
         runner.run_once(cfg)
     assert not Path(cfg["runtime_root"]).exists()
-

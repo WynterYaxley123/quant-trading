@@ -22,7 +22,7 @@ STEPS = ["trading_calendar", "instruments", "industry_members", "daily_bars",
 
 def forward(root, source_config, export_config, target, after, *, now=None):
     verify_install(root)
-    from cnequity import load
+    from cnequity.query import load
     from cnequity.config import load_config
     from cnequity.orchestrator.engine import JobEngine
     import cnequity.steps  # The pinned CLI registers these before constructing its engine.
@@ -65,7 +65,8 @@ def main():
         result = forward(args.root, args.source_config, args.export_config, args.target, args.after)
     except Exception as error:
         # Provider readiness failure cannot produce a signal or invented cutoff.
-        integrity = getattr(error, "code", "") in ("PINNED_SOURCE_BLOCKER", "ISOLATED_SIDECAR_REQUIRED")
+        integrity = (getattr(error, "code", "") in ("PINNED_SOURCE_BLOCKER", "ISOLATED_SIDECAR_REQUIRED")
+                     or isinstance(error, (ImportError, AttributeError, TypeError, NameError, ValueError)))
         result = {"status": "BLOCKED_INTEGRITY" if integrity else "WAITING_FOR_DATA", "reason": "UPSTREAM_REFRESH_NOT_READY",
                   "exception_class": type(error).__name__, "refresh_attempted": True}
     print(json.dumps(result, sort_keys=True))
