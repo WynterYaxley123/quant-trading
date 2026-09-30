@@ -144,7 +144,8 @@ def _run_once(config, control, *, now=None):
     evidence_root = transport.external_directory(config["evidence_root"])
     source_root = transport.external_directory(config["pit_source_root"])
     docker = config["docker_executable"]
-    mounts = [(REPO,"/workspace",True), (snapshot,"/snapshot",True), (runtime,"/shadow",False),
+    snapshot_target = "/snapshot/" + snapshot.name
+    mounts = [(REPO,"/workspace",True), (snapshot,snapshot_target,True), (runtime,"/shadow",False),
               (evidence_root,"/strict-evidence",True), (source_root,"/pit-sources",True),
               (profile,"/profile.json",True), (Path(config["pit_evidence"]),"/pit-book.json",True)]
     argv = [docker,"run","--rm"]
@@ -152,7 +153,7 @@ def _run_once(config, control, *, now=None):
         argv += ["--mount", f"type=bind,source={src},target={dest}" + (",readonly" if readonly else "")]
     argv += ["-e","PYTHONDONTWRITEBYTECODE=1","-w","/workspace","quant-research:py3.12",
         "python","-B","-m","strategies.etf_quant.runtime.cli","one-shot",
-        "--snapshot","/snapshot","--runtime","/shadow","--profile","/profile.json",
+        "--snapshot",snapshot_target,"--runtime","/shadow","--profile","/profile.json",
         "--registry","/workspace/strategies/etf_quant/config/verified_mappings_v1.json",
         "--evidence-root","/strict-evidence","--commit",commit,"--execution-policy","B40_WITH_CASH",
         "--pit-evidence","/pit-book.json","--pit-source-root","/pit-sources",

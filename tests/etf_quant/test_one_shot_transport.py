@@ -90,6 +90,28 @@ def test_uncertified_hash_blocks_before_any_refresh(tmp_path, runner, monkeypatc
     assert not Path(cfg["runtime_root"]).exists()
 
 
+def test_formal_docker_transport_preserves_immutable_snapshot_hash_directory(tmp_path,runner,monkeypatch):
+    cfg=config(tmp_path,runner)
+    original=Path(cfg["snapshot"]);snapshot=tmp_path/("a"*64);original.rename(snapshot)
+    cfg["snapshot"]=str(snapshot)
+    cfg.update(profile=str(tmp_path/"profile.json"),evidence_root=str(tmp_path/"evidence"),
+        pit_source_root=str(tmp_path/"pit-sources"),pit_evidence=str(tmp_path/"pit-book.json"),docker_executable="SYNTHETIC_DOCKER")
+    Path(cfg["profile"]).write_text(json.dumps({"mode":"SIMULATION_ONLY","provider_identity":runner.transport.POLICY}))
+    Path(cfg["pit_evidence"]).write_text("{}")
+    Path(cfg["evidence_root"]).mkdir();Path(cfg["pit_source_root"]).mkdir()
+    calls=[]
+    def call(argv,**kw):
+        calls.append(argv)
+        return SimpleNamespace(returncode=0,stdout="integration/etf-quant-v1-shadow-autonomous-final" if argv[0]=="git"
+            else json.dumps({"status":"STARTED","shadow_epoch_created":True}))
+    monkeypatch.setattr(runner.transport,"call",call)
+    result=runner.run_once(cfg,now=datetime.fromisoformat("2026-09-30T14:00:00+00:00"))
+    assert result["status"]=="STARTED" and result["shadow_start_gate"]=="STARTED"
+    command=calls[-1];target=command[command.index("--snapshot")+1]
+    assert Path(target).name==snapshot.name and target=="/snapshot/"+snapshot.name
+    assert any("source="+str(snapshot) in str(a) and "target="+target+",readonly" in str(a) for a in command)
+
+
 def test_partial_finalization_is_adopted_despite_next_session_failure_and_resume_uses_it(tmp_path,runner,monkeypatch):
     cfg=config(tmp_path,runner,cutoff="2026-09-24")
     cfg.update(source_config=str(tmp_path/"source.toml"),export_config=str(tmp_path/"export.toml"),export_root=str(tmp_path/"exports"))

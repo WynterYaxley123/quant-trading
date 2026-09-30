@@ -42,7 +42,7 @@
     "strategies/etf_quant/schemas/__init__.py": "71f64c180a8d42a18325a2624e77d69050d90e89dad9b5d349219eb4882fdedb",
     "strategies/etf_quant/simulation/__init__.py": "f9d051a3b6acf85fd5a3a5d1e067f848b423069986f876bb9e678d14cf302346",
     "strategies/etf_quant/simulation/lots.py": "b555f2a8f2ecea7e022d53230815ee73bb693102ea299ceb9e6674f6947d611e",
-    "services/etf-quant-runner/one_shot.py": "ec284a94ee75fb3cccc72a37f81fdaaaef0bb25fba391b0493e2c36674f72aa4",
+    "services/etf-quant-runner/one_shot.py": "d0e8c3e221847e6e078b6b75e4ab4afcbbd7f94fadbd1f02bb350356f1eac2e9",
     "services/etf-quant-runner/run.py": "b1c51de77be5401865e5de1ac415a9e21dad05ebbbbe3d6ef480e36170e5ab64",
     "services/cnequity-sidecar/forward.py": "cfb14a2fdce64de31c197971e7182c11ba3d7fded04ff6c5780d76558ac6aee4",
     "services/etf-quant-api/server.mjs": "fb50b32a9d2f2f02cb013a800820ea6f109b1bd45c7ae99db8edb40468ba1231",
