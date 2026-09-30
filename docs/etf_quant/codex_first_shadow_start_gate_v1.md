@@ -16,6 +16,8 @@ DeepSeek 后置 `45241b1`、`60de605` **INTENTIONALLY_OMITTED**：MiMo 已独立
 
 下一必要条件：未来合法 A 股交易日 T 收盘后，现有 **CNEquity-only** 正式 pipeline 发布覆盖 T 的完整、finalized、不可变导出；再核对代码/候选/证据哈希、T 时点可得性、上市、20/20 日流动性与模拟专用配置。届时必须用冻结模型基于真实 T 数据重新排名，先得 Top5，再逐槽 Strict > Proxy > Cash；不可复用历史工程 Top5，不可补造过去意图。仅在全部门槛通过时允许一次手动的 simulation-only 首轮，不启用 broker、真实订单或常驻任务。
 
+**首轮 Epoch 生命周期尚未在正式路径实测**：现有合成 runtime 把内部账户 `epoch` 建在 T+1 延迟记账时，T 日仅持久化信号视图和意图；本任务要求的正式 T0 Epoch manifest（引用冻结 Candidate hash）是更严格的启动契约。本轮没有合法 T，故没有运行或宣称该门槛通过。在任何后续正式首轮之前，必须先核对并在必要时最小修正这项 T0/T+1 语义差异，验收 Epoch 对 Candidate 的哈希引用，不能把现有 T+1 账户 Epoch 冒称为 T0 正式 Epoch。
+
 ## 回归与安全
 
 现有 `quant-research:py3.12` 镜像内，checkout 与仓外真实证据均只读挂载：目标 PIT/Strict/B40/候选 **130 passed、0 failed**；完整 ETF + 顶层两文件 **534 passed、1 skipped、0 failed**，达到 MiMo 基线。为可重复在 Docker 中运行，仅给 5 个测试文件增加仓外 runtime 根的环境配置，并把一项交叉核对测试的输出改到 pytest 临时目录；未改业务门槛、未弱化断言，生产 package 未被测试写入。API、前端没有变化且正式状态未创建，本轮未重复运行。没有读取 Validation performance 或 Final OOS；没有推送、市场大表入 Git、真实账户、杠杆或做空。

@@ -59,6 +59,8 @@
   "formal_intent_count": 0,
   "formal_fill_count": 0,
   "formal_runtime_path_exists": false,
+  "formal_t0_epoch_manifest_gate": "NOT_EXERCISED_NO_LEGAL_T",
+  "existing_accounting_epoch_created_on": "T1_DELAYED_ACCOUNTING",
   "simulation_only": true,
   "initial_cash_cny": 10000,
   "broker_enabled": false,
@@ -70,7 +72,7 @@
     "api": "NOT_RUN_UNCHANGED_AND_NO_FORMAL_RUNTIME",
     "frontend": "NOT_RUN_UNCHANGED_AND_NO_FORMAL_RUNTIME"
   },
-  "next_required_condition": "After a future legal A-share T closes, the existing CNEquity-only pipeline must publish a complete finalized immutable export through T; then recheck candidate/code/registry hashes and T-time PIT, listing, and 20-session liquidity gates before a single manual simulation-only first cycle.",
+  "next_required_condition": "After a future legal A-share T closes, the existing CNEquity-only pipeline must publish a complete finalized immutable export through T; then reconcile the formal T0 Epoch manifest/candidate-hash contract with the existing T1 accounting-epoch lifecycle, and recheck candidate/code/registry hashes and T-time PIT, listing, and 20-session liquidity gates before a single manual simulation-only first cycle.",
   "validation_performance_read": false,
   "final_oos_read": false,
   "git_push_performed": false
