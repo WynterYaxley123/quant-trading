@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { LoadingState } from '@/components/ui/states';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RotateCw } from 'lucide-react';
+import { CurrentStatusResource } from '../components/CurrentStatus';
 
 /**
  * Shadow 启动准备状态（SHADOW_START_READINESS_V1）。
  * 独立的 getReadiness() 读取：不依赖快照，快照接口异常时本页仍可用。
  */
-export function ReadinessPage() {
+function LegacyReadinessPage() {
   const port = getEtfQuantPort();
   const resource = useResource((signal) => port.getReadiness(signal), [port]);
   const readiness = resource.data;
@@ -52,4 +53,12 @@ export function ReadinessPage() {
       ) : null}
     </div>
   );
+}
+
+export function ReadinessPage() {
+  if(!getEtfQuantPort().getCurrentStatus) return <LegacyReadinessPage />;
+  return <div className="flex flex-col gap-5">
+    <EtfPageHeader title="Shadow 启动准备状态" description="Current ETF-Quant Status：当前控制状态优先；历史 readiness artifact 保留审计，不覆盖最新认证。" />
+    <CurrentStatusResource />
+  </div>;
 }

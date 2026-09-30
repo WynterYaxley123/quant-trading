@@ -1,5 +1,7 @@
 # ETF-Quant V1 最终数据流水线闭环核验
 
+> **SUPERSEDED BY [codex_frozen_model_contract_reconciliation_v1](codex_frozen_model_contract_reconciliation_v1.md)**：下文模型合同不兼容、PRODUCTION_USABLE=FALSE 与 BLOCKED_HARD 结论已被后续真实 reference parity 推翻。事实层 PASS 有效，原审计正文保留。
+
 事实流水线的本地工程根因已闭环，正式 finalized cutoff 已连续推进至 **2026-09-30**。定向、API/security 和完整 ETF 测试均无失败。第一 Formal Shadow 没有创建。
 
 **生产可用性结论：FALSE。** 不能将冻结模型的输入障碍包装成供应端临时错误，也不能声称只等下一个交易日就会启动。此次交付保留 runner 的 fail-closed 能力；当前源输入与冻结 Source-C 全横截面要求存在实际不兼容，继续启动需要触及用户禁止修改的核心合同。普通本地工程 blocker 为 0，Formal Shadow 交付评估为 `BLOCKED_HARD`。

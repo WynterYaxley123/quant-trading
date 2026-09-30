@@ -8,6 +8,7 @@ import { SectionCard } from '../components/Section';
 import { ReadinessBanner } from '../components/ReadinessGates';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fmtMoney, fmtText } from '../format';
+import { CurrentStatusResource } from '../components/CurrentStatus';
 
 function readinessTone(readiness: EtfQuantReadiness): 'success' | 'destructive' | 'muted' {
   return readiness.overall === 'PASS' ? 'success' : readiness.overall === 'BLOCKED' ? 'destructive' : 'muted';
@@ -59,7 +60,7 @@ export function OverviewSection({ data }: { data: EtfQuantSnapshot }) {
   const readiness = useResource((signal) => port.getReadiness(signal), [port]);
   return (
     <>
-      <MetricGrid>
+      {port.getCurrentStatus ? <CurrentStatusResource /> : <><MetricGrid>
         <MetricCard label="运行阶段" value={<PhaseBadge phase={data.status.phase} />} hint={fmtText(data.status.reason)} />
         <MetricCard label="数据截止日" value={fmtText(data.status.cutoff)} hint={`最近更新 ${fmtText(data.status.updated_at)}`} />
         <MetricCard
@@ -90,7 +91,7 @@ export function OverviewSection({ data }: { data: EtfQuantSnapshot }) {
 
       <SectionCard title="Shadow 启动准备" description="只读评估：本界面不能启动 Shadow，也不能创建 epoch。">
         <ReadinessSummary readiness={readiness} />
-      </SectionCard>
+      </SectionCard></>}
 
       <SectionCard title="冻结策略参数 · ETF-Quant V1" description="初始预算 CNY 10,000 · 三个独立 Ridge 模型 · Top 5 行业 · 35% 目标权重上限 · 仅在可执行 ETF 集合变化时重平衡。">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-3 xl:grid-cols-5">

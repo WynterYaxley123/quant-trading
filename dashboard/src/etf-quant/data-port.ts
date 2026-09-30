@@ -1,9 +1,10 @@
-import { endpointSchemas,envelopeSchema,readinessSchema,snapshotSchema,statusSchema,type EtfEndpoint,type EtfQuantReadiness,type EtfQuantSnapshot,type EtfQuantStatus } from './contracts';
+import { currentStatusSchema,endpointSchemas,envelopeSchema,readinessSchema,snapshotSchema,statusSchema,type EtfEndpoint,type EtfQuantCurrentStatus,type EtfQuantReadiness,type EtfQuantSnapshot,type EtfQuantStatus } from './contracts';
 
 export interface EtfQuantDataPort {
   getStatus(signal?:AbortSignal):Promise<EtfQuantStatus>;
   getSnapshot(signal?:AbortSignal):Promise<EtfQuantSnapshot>;
   getReadiness(signal?:AbortSignal):Promise<EtfQuantReadiness>;
+  getCurrentStatus?(signal?:AbortSignal):Promise<EtfQuantCurrentStatus>;
 }
 export class EtfQuantDataError extends Error {
   constructor(readonly code:'UNREACHABLE'|'INVALID_RESPONSE'|'GENERATION_CHANGED'|'INTEGRITY_BLOCKED') {
@@ -27,6 +28,18 @@ export function createEtfQuantApi(base='http://127.0.0.1:3312',transport:typeof 
     }
   }
   return {
+    async getCurrentStatus(signal) {
+      try {
+        const timed=AbortSignal.timeout(10000);
+        const response=await transport(`${origin.origin}/api/etf-quant/v1/current`,{method:'GET',
+          signal:signal?AbortSignal.any([signal,timed]):timed,credentials:'omit'});
+        if(!response.ok) throw new EtfQuantDataError('INTEGRITY_BLOCKED');
+        return currentStatusSchema.parse(envelopeSchema.parse(await response.json()).data);
+      } catch(error) {
+        if(error instanceof EtfQuantDataError) throw error;
+        throw new EtfQuantDataError(error instanceof TypeError?'UNREACHABLE':'INVALID_RESPONSE');
+      }
+    },
     async getStatus(signal) {return statusSchema.parse((await read('status',signal)).data);},
     async getReadiness(signal) {
       try {

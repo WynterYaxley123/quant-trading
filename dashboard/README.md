@@ -1,5 +1,18 @@
 # 申万研究仪表盘（Shenwan Research Dashboard）
 
+## ETF-Quant V1 current operations console
+
+`/etf-quant/overview` and `/etf-quant/readiness` read the independent
+CURRENT_ETF_QUANT_STATUS_V1 API: usability, model readiness/as_of, latest finalized
+cutoff, dynamic next session, armed/start gate, Formal T0 epoch, T+1 state and
+provenance. Zero epochs is normal; Cash slots show CASH / FAIL-CLOSED.
+Superseded failures are HISTORICAL; new failures are not hidden.
+
+From the checkout run `./scripts/Start-EtfQuantConsole.ps1` in PowerShell and open
+http://127.0.0.1:5173/etf-quant/overview. Existing dependencies/lockfile are reused.
+No runner trigger, runtime edit or broker control exists. ETF routes do not open
+Research artifacts; Research pages retain their separate read-only contract.
+
 **Sector Index Research** — a read-only, modern React research dashboard for the Shenwan
 sector-index rotation research programme.
 

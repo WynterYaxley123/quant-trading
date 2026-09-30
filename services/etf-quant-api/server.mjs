@@ -6,6 +6,7 @@ import { readFile, realpath, stat, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
+import { aggregateCurrent, projectCurrent } from './current.mjs';
 
 export const strategy = JSON.parse(await readFile(new URL('./strategy.json', import.meta.url), 'utf8'));
 export const PREFIX = '/api/etf-quant/v1/';
@@ -16,6 +17,7 @@ export const ENDPOINTS = Object.freeze({
   'portfolio/summary': 'portfolio_summary', 'portfolio/holdings': 'holdings', 'portfolio/nav': 'nav',
   trades: 'trades', mappings: 'mappings', 'benchmark/csi300': 'benchmark', health: 'health',
   readiness: 'readiness',
+  current: 'current',
 });
 export const READINESS_DEFAULT = Object.freeze({contract:'SHADOW_START_READINESS_V1',generated_at:null,
   data_cutoff:null,overall:'NOT_REACHED',gates:[],shadow_epoch_created:false,shadow_started:false,notes:[]});
@@ -278,7 +280,7 @@ export async function observeReadiness(root, now = Date.now()) {
   return doc;
 }
 
-export function createApi({runtimeRoot='',now=()=>Date.now()}={}) {
+export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.now()}={}) {
   return http.createServer(async (req,res)=>{
     res.setHeader('Content-Type','application/json; charset=utf-8');
     res.setHeader('Cache-Control','no-store');
@@ -301,8 +303,11 @@ export function createApi({runtimeRoot='',now=()=>Date.now()}={}) {
     if (req.method==='OPTIONS') {res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return respond(204);}
     try {
       const {view,pointer,attemptPointer}=await observe(runtimeRoot,now());
+      const current=(controlRoot || resource==='current')
+        ? await aggregateCurrent({controlRoot,repoRoot,view,pointer,now:now()}) : null;
+      if(current && controlRoot) projectCurrent(view,current);
       const route=ENDPOINTS[resource];
-      const data=resource==='readiness'?await observeReadiness(runtimeRoot,now())
+      const data=resource==='current'?current:resource==='readiness'?await observeReadiness(runtimeRoot,now())
         :Array.isArray(route)?view[route[0]][route[1]]:view[route];
       return respond(200,data,null,{runId:pointer?.run_id ?? null,manifestSha256:pointer?.manifest_sha256 ?? null,
         attemptRunId:attemptPointer?.run_id ?? null,attemptManifestSha256:attemptPointer?.manifest_sha256 ?? null,etfQuant:true});
@@ -313,6 +318,7 @@ export function createApi({runtimeRoot='',now=()=>Date.now()}={}) {
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   const port=Number(process.env.ETF_QUANT_API_PORT || 3312);
   if (!Number.isInteger(port) || port<1024 || port>65535) throw new Error('INVALID_LOCAL_PORT');
-  const server=createApi({runtimeRoot:process.env.ETF_QUANT_RUNTIME_ROOT || ''});
+  const server=createApi({runtimeRoot:process.env.ETF_QUANT_RUNTIME_ROOT || '',
+    controlRoot:process.env.ETF_QUANT_CONTROL_ROOT || ''});
   server.listen(port,'127.0.0.1',()=>process.stdout.write(`ETF_QUANT_READ_ONLY_API 127.0.0.1:${port}\n`));
 }

@@ -1,191 +1,161 @@
-# Quant Research + ETF Quant V1
+# ETF-Quant V1
 
-Two independent product lines share a repository, not a strategy or data source.
+**A-share industry/theme ETF research + forward Shadow simulation system。**
+使用真实、forward-only finalized factual data 运行内部模拟，提供只读操作控制台。
 
-| Product | Purpose | Boundary |
-|---|---|---|
-| Shenwan Research | Frozen Development research / read-only dashboard | Official canonical data; F1 unchanged; Validation and Final OOS SEALED |
-| ETF Quant V1 | Current-snapshot models + forward-only SIMULATION_ONLY account observer | Pinned CNEquity sidecar → immutable export → existing Docker → external runtime → separate API |
+**SIMULATION_ONLY · NO_BROKER · NO_REAL_ORDER_PATH · NO_LEVERAGE · NO_SHORT**
 
-Not a broker terminal, official Shenwan index, historical performance report or
-investment advice. No real order, broker connection, leverage or shorting path.
-Historical warmup is not forward performance. Source C never replaces the
-official F1 Research series.
+Shadow 是向前运行的内部模拟，不是历史回测，也不是券商 paper account。
+模型信号、模拟意图和延迟账务全部仓外保存；控制台不能下单、连接券商或编辑持仓。
 
-## Integration and Research firewall
+## 当前交付状态
 
-Work is on `integration/etf-quant-v1` in
-`D:/quant-worktrees/etf-quant-integration`, based on
-`integration/research-dashboard-v1` at
-`457b432056ebc894992de330a3b480c062e90bcc`. It includes the committed Research
-API and Dashboard heads, intentionally not later main Research changes.
-Main `D:/quant-trading` remains read-only at
-`bd13d278b25eace66a7eae287307413f930effd9`.
+以下为 **as of 2026-10-01（Asia/Shanghai）** 的认证。静态 README 不是永久实时状态；
+动态日历、latest finalized cutoff、runner receipt 与正式 Epoch 以 `/api/etf-quant/v1/current` 为准。
 
-`strategies/sw_sector_rotation/`, `research/`, F1 protocols/seals, the official
-updater and canonical/raw data/snapshots are unchanged. F1 readiness 23/60 is
-user-provided context, not recalculated here. Validation performance and Final
-OOS are never read. `AGENTS.md` remains the historical policy; the explicit
-ETF task permits only this independent simulation product, external sidecar,
-read-only UI/API and conditional integration-branch sync. It does not authorize
-general research execution, global quant installation or Docker changes.
+| 项目 | 状态 |
+|---|---|
+| Engineering / Factual Pipeline | PASS / PASS |
+| Data-lake identity / Windows path | PASS / PASS |
+| Frozen F1 / Source-C parity | PASS |
+| Production model adapter / H10/H40/H120 readiness | PASS |
+| Production PIT evidence | PASS |
+| Production usable for Shadow | TRUE |
+| Shadow Runtime | ARMED_FOR_NEXT_ELIGIBLE_T |
+| First Formal Shadow Epoch | 尚未创建；正常初始状态 |
+| Broker / real orders | DISABLED / DISABLED |
 
-## Frozen ETF model
+最新已认证 finalized factual cutoff 为 **2026-09-30**。当前处于休市周期，READY_NO_SIGNAL 是正常输出；
+下一 eligible 日期由正式交易日历动态计算。不得历史补造 Formal Shadow，也不能仅凭收盘时间判断 finalized。
 
-`ETF_QUANT_V1`: CNY10,000 configured budget, **not current account equity**.
-Three independent Ridge models, alpha .01, raw X without scaling, six calendar
-months anchored at each horizon's label cutoff, minimum 30 valid training dates.
-Target: same-date full-universe cross-sectional excess forward return.
+当前权威为 [Frozen model reconciliation](docs/etf_quant/codex_frozen_model_contract_reconciliation_v1.md)、
+[最终 release metadata](reports/etf_quant/etf_quant_v1_final_release_v1.json) 与
+[文档索引](docs/etf_quant/README.md)。旧数据流水线报告的模型合同阻断结论已 **OVERTURNED**；
+其审计正文保留并标记 SUPERSEDED，事实层 PASS 继续有效。
 
-- H10: `d10, p5, align, vc, dd20`.
-- H40/H120 ordered: `d5, d10, d20, d60, d120, p5, p10, p20, p60, p120, align, v5, v20, vc, rev5, rev10, dd20, dd60, rsi`.
-- Per-date/horizon population z-score (ddof=0) **before** .25/.50/.25 fusion;
-  score descending, code ascending ties; Top5.
-- Capped softmax, 35% target cap, redistribution only to uncapped names.
-  Infeasible/insufficient sets block; no hidden capacity change.
-- Rebalance only when the **executable ETF member set changes**, not score/
-  weight changes inside the same set. Initial build is allowed.
+## Quick Start
 
-Core is self-contained under `strategies/etf_quant/`, independent of existing
-Research and any vendor SDK/client. Actual close formulas, named coefficients,
-training cutoffs and model hashes are available in the ETF namespace.
-
-## Isolated CNEquity and Source C
-
-Official software: [CNEquity](https://github.com/rootSunc/CNEquity), pinned
-`1650e384a3fd1f67a70144a489acc91432f1df27`, 0.11.0.
-Source/venv/lake/locks/exports/logs are repo-external. The explicitly authorized
-sidecar venv is an exception, not a global quant environment. Existing
-`quant-research:py3.12` image/dependencies/compose/mounts are unchanged.
-See [sidecar](services/cnequity-sidecar/README.md).
-
-Seven immutable CSV+JSON tables: calendar, exact-HFQ stock bars, reconstructed
-SW membership, raw ETF bars, instruments, trading status, CSI300.
-CSV rather than a new Parquet mount is an explicit implementation discrepancy
-to preserve Docker. Source/version/fetched time, queries, hashes, counts,
-cutoff and pin are retained. Missing amount stays null, never volume×close.
-Stock `strict_adj=True` / `adj_is_exact=true` are mandatory. Non-PIT `as_of`
-is not historical availability proof.
-
-Source C: `INTERNAL_SHENWAN_INDUSTRY_SERIES_V1`, construction
-`INTERNAL_EQUAL_WEIGHT_SHENWAN_SERIES_V1`: equal-weight exact-adjusted
-constituent returns, recursive base1000. Minimum five valid constituents and
-80% coverage against **all** eligible members. No ffill, interpolation, fake
-zero returns, synthetic OHLC, hidden repair/rebase. A broken recursive prefix
-blocks that series. Original six-digit codes are preserved, alias names not
-claimed as verified names or guessed official index identities. Membership
-PIT is **UNPROVEN**; source available_at/published_at stay null. Historical
-uses: MODEL_WARMUP / TRAINING_INPUT / ENGINEERING_VALIDATION only.
-No upstream derived industry_index, THS or other-provider fallback.
-
-**Actual admission is blocked:** strict upstream metadata smoke on 2026-09-27
-failed with RemoteProtocolError. No real lake/export/model/epoch/account was
-admitted. Passing synthetic offline tests does not change that fact.
-
-## Evidence mapping and forward accounting
-
-Default VERIFIED_MAPPING_REGISTRY_V1 is empty. VERIFIED requires official
-tracking-index evidence, original external file/SHA256, provider/URL and real
-retrieval/verification/availability/effective timing. No fuzzy names, invented
-ETF codes or backfilled effective dates. Only A_SHARE_INDUSTRY_OR_THEME_ETF.
-Twenty explicit complete sessions require valid listing/raw OHLC, genuine
-nonzero volume and amount≥1 CNY. Highest true mean amount wins, code ASC ties;
-duplicate ETFs try next candidates; exactly five distinct executable ETFs.
-EastMoney default booleans are not proof; credible exchange halt overrides bars.
-See [mapping contract](docs/etf_quant/industry_etf_mapping_contract_v1.md).
-
-T0 close intent persists first. User-authorized **delayed T+1 EOD accounting**
-uses the genuine finalized T+1 raw OPEN. market_execution_at=09:30 market time;
-processed_at and fill executed_at retain actual processing time. Missed T+1
-blocks, never retrospective replay. Epoch starts at actual first all-gates-PASS
-processing time; **no pre-epoch NAV**.
-
-Commission3bps/slippage5bps per side, duty0/minimum0 explicitly modeled and
-configurable. Lot100 configurable; floor quantities, SELL before BUY, costs
-cash-aware, leftovers kept, cash never negative. Slippage affects price and
-is not charged twice. EOD needs current finalized raw close; missing close
-blocks, no carry-forward fallback. Turnover=cumulative absolute slipped
-notional / initial cash. First daily return and insufficient Sharpe are null.
-
-## Manual runner — no scheduler
-
-Copy [external config/profile templates](services/etf-quant-runner/README.md)
-outside Git; fill absolute external paths and an authorized existing lake.
-The transport refuses dirty/uncommitted integration code and downloads no
-missing market data.
+使用既有冻结 Docker `quant-research:py3.12`、Node ≥22 和锁定的 pnpm 环境。
+Python 量化仅在 Docker 执行；宿主机只使用现有隔离 sidecar 的 transport / metadata 入口。
+本轮未安装、升级依赖或重建镜像。新部署前端可按已提交的 pnpm-lock.yaml 恢复依赖，不改 lockfile。
+`D:/QuantForge` 是当前 Windows deployment 布局示例，不是 GitHub 文档链接。
 
 ```powershell
-# Host file transport only; numerical execution is in existing Docker.
-python -B services/etf-quant-runner/run.py cycle --config <external-config.json>
+docker version
+docker info
+docker ps
 ```
 
-Only ETF code, hash-verified snapshot/profile/evidence and last committed state/
-prefix go to a unique Docker temp workspace, never the main /workspace bind.
-Docker verifies export → Source C → models → ranking → mapping → legal pending
-T+1 fills → valuation → state/NAV. A hidden external bridge verifies all outputs
-before immutable publication and advances latest pointer **last**. Failures
-preserve the successful account. No new mounts/dependencies/rebuilds, automatic
-Validation, source init or market scheduler.
-
-## Read-only API and Dashboard
-
-ETF API: built-in Node only, loopback3312, `/api/etf-quant/v1/`,
-GET/HEAD/OPTIONS; writes405. Explicit external runtime, realpath containment,
-pointer/manifest/all-file hashes, public DTOs only; no paths/secrets/stack leaks.
-[API instructions](services/etf-quant-api/README.md).
+**A. 打开只读控制台**，在当前 checkout：
 
 ```powershell
-$env:ETF_QUANT_RUNTIME_ROOT='<external-runtime-root>'
-node services/etf-quant-api/server.mjs
-# Separate shell, integration checkout:
-cd dashboard
-pnpm install --frozen-lockfile --ignore-scripts
-pnpm dev --host 127.0.0.1
+& ./scripts/Start-EtfQuantConsole.ps1
 ```
 
-Eight `/etf-quant/` routes: overview, portfolio, rankings, factors, mappings,
-trades, benchmarks, health. Independent capability/data contracts: Research API
-disconnect does not block ETF pages. Original Research contracts/nav/seals stay.
-Every page shows SIMULATION_ONLY, snapshot/cutoff/hashes/processing/epoch state.
-Not-started means null metrics, empty holdings/trades and no NAV graph, never
-fake CNY10,000 equity. No automatic mock fallback. Rankings Top20/show-all/Top5;
-factors signed named coefficients; mapping explicit blockers.
-[Dashboard instructions](dashboard/README.md).
+访问 [ETF 总览](http://127.0.0.1:5173/etf-quant/overview)。helper 启动 loopback ETF API3312 与 Vite5173，
+日志仓外保存，不调用 runner。ETF 路由不打开 Research artifacts，也不依赖 Research API。
+手工启动见 [API](services/etf-quant-api/README.md)、[Dashboard](dashboard/README.md)。
 
-CSI300 uses only sidecar `000300.SH`, same forward epoch normalization,
-display-only, never model input. NASDAQ Composite / S&P500 **DEFERRED**.
-No Yahoo/FRED/AKShare fallback or fake US curves.
+**B. 运行一次正式 Shadow cycle**：
 
-## Verification and safe sync
+```powershell
+& D:/QuantForge/external/cnequity-etf-quant-v1/venv/Scripts/python.exe `
+  -B ./services/etf-quant-runner/one_shot.py `
+  --config D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json
+```
 
-Python tests run only in existing Docker against a copied integration source
-workspace, never the main bind. [Handoff](docs/etf_quant/integration_v1_handoff.md)
-records commands/counts and distinguishes engineering tests from real admission.
-Never say the full frozen-data-dependent suite passed without its exact external
-fixtures. Failed tests are not removed/skipped to pass.
+这是唯一正式入口，自动完成 environment/integrity → forward update → finalized gate → frozen model → PIT →
+Strict/Proxy/Cash → sizing → T0 Formal Epoch → signal → T+1 simulation intent。
+不需手工串联 repair/audit 脚本，无 daemon/scheduler。正式运行前 checkout 必须 committed、clean，
+且分支为 integration/etf-quant-v1-shadow-autonomous-final；PR merge 不改变已有 runner branch guard。
+
+## Runner 状态
+
+| 状态 | 含义 |
+|---|---|
+| READY_NO_SIGNAL | 当日休市，正常等待 |
+| ARMED_FOR_NEXT_ELIGIBLE_T | wrapper start gate；下一真实合法 T 重跑同一入口 |
+| WAITING_FOR_MARKET_CLOSE | 正式交易日尚未到 finalization 观察时间 |
+| WAITING_FOR_PROVIDER_DATA | bounded retry 后供应端暂不可用 |
+| WAITING_FOR_FINALIZED_DATA | 当前 T 尚无完整 immutable admission |
+| STARTED / AWAITING_T1_OPEN | T0 Formal 已创建；真实 T+1 open 尚未可用时 fill=0 |
+| SHADOW_CASH_ONLY | 全 Cash 信号合法，不产生 ETF order intent |
+| ALREADY_PROCESSED | 同日正式事件已处理，不重复 signal/intent |
+| BLOCKED_INTEGRITY / BLOCKED_CODE_INTEGRITY / BLOCKED_DATA_INTEGRITY | 实际完整性/工程 gate，fail closed |
+
+Current API 区分静态认证、最新 receipt 与 HISTORICAL 失败。历史 9/24 engineering Top5、
+9/30 MODEL_READINESS_REFERENCE 都不能显示成 Formal Signal。
+
+## 架构与时序
 
 ```text
-Docker: pytest tests/etf_quant -q
-ETF API: node --test
-Research API: pnpm test:unit && pnpm typecheck
-Dashboard: pnpm typecheck && pnpm lint && pnpm exec vitest run --maxWorkers=1 && pnpm build
+External factual sources → pinned CNEquity warehouse → immutable finalized snapshot
+  → Frozen Source-C → H10/H40/H120 Ridge → per-horizon z-score + fusion → Top5 L2
+  → Strict > Proxy > Cash → frozen allocator → T0 Formal Epoch + signal + T+1 intent
+  → actual finalized T+1 open → delayed accounting
 ```
 
-Origin already exists; earlier “no remote configured” claims were obsolete.
-Only integration/etf-quant-v1 sync is authorized after required tests, clean
-committed code, firewall, secret and data-leak gates. No main merge/push,
-force-push, agent-branch push or credential changes.
+T finalized close 形成 signal，并在 **T0** 创建 Formal Epoch。Epoch 引用 Candidate / code / PIT / Strict hashes；
+Candidate 不回写 runtime Epoch ID。真实 T+1 open 才允许 fill，禁止先看 open 后补造 T intent。
+Formal Epoch 与 T+1 accounting/internal account epoch 分别观察。没有账务 Epoch 时，equity、holding、NAV、PnL
+为 null/空，不把 CNY10,000 初始预算当作已经存在的账户资产。
 
-Never commit .env, market data/caches/databases, runtime state/NAV/trades/logs,
-accounts/tokens/cookies. Templates contain no secrets. Software licensing is
-not data redistribution permission; no CNEquity market data is in Git.
-[Third-party notices](THIRD_PARTY_NOTICES.md) and
-[historical safety audit](docs/etf_quant/etf_quant_public_github_security_baseline_v1.md).
-No repository-wide license grant is invented; ownership/licensing needs human
-review before reuse. Research/engineering observation, not investment advice.
+## 冻结模型与执行政策
 
-Directory roles: strategies=self-contained; src=existing framework;
-tests=framework/integration/ETF; scripts=data/automation; research=frozen;
-services=separate APIs/sidecar/transport; dashboard=observer; docs=contracts.
-Docker Python3.12.11/Hikyuu2.8.2/RQAlpha6.4.0/AKShare1.18.88/NumPy2.3.5/
-Pandas2.3.3/SciPy1.16.3 remain unchanged.
+- 固定 **107 admitted industries**；TIME_VARYING_ASOF_MEMBERSHIP_UNIVERSE。
+- Source-C 是内部等权 constituent return series，不是官方指数；industry×date ≥5 valid constituents、coverage≥80%，
+  真实 calendar-adjacent adjusted returns。每行业独立递归前缀，断裂不 restart/rebase，不填 NA、不制造 OHLC。
+- Ridge alpha=.01，raw X；各 maturity cutoff 往前六个月；至少 **30 unique valid training dates**。
+  107 内保留日期必须完整截面，date×sector 每行等权。
+- H10：d10,p5,align,vc,dd20；H40/H120 冻结全部 19 因子。各 horizon population z-score → .25/.50/.25 → Top5。
+- **Strict > Proxy > Cash / B40_WITH_CASH**：Proxy target L2≥40%，且 target-largest；单 ETF cap35%。
+  未执行 slot 保留原权重为 Cash，不重新分配、不下扫替换 Top5。
+- 初始资本 CNY10,000；commission3bps、slippage5bps each side、stamp0、minimum commission0。
+  20-session liquidity、T+1、rebalance 与 tie policy 均保持冻结。
+
+9/24 parity 已通过。9/30 readiness：H10 **13,589 /127**、H40 **12,733 /119**、H120 **12,947 /121**
+observations /unique dates，各 107 sectors；这是输入认证，不是历史账户收益或 Formal Signal。
+
+## 证据与已知限制
+
+- SOURCE_LICENSING_UNRESOLVED：软件许可不是行情再分发许可，raw market/runtime 数据不进入 Git。
+- SWS：PASS_WITH_KNOWN_LIMITATION / OFFICIAL_L2_INDEX_CONSTITUENTS_NOT_MASTER_CLASSIFICATION_TABLE。
+- 历史分类 publication PIT 未证明：**NOT A STRICT HISTORICAL CLASSIFICATION PIT BACKTEST**。
+  历史 warmup 与当前 production execution PIT 分层；缺执行证据 fail closed 到 Cash。
+- PIT coverage / liquidity 可能导致较高 Cash，包括 100% Cash，均为合法输出。
+- CSI300 为 display benchmark；US benchmarks 仍 DEFERRED，无第三方 fallback 或虚构曲线。
+
+独立 Shenwan Research 产品的 F1、official data、protocol/seals 保持原样；Validation / Final OOS performance 仍 SEALED。
+ETF 控制台不执行或读取 Research performance。AGENTS.md 的历史默认限制适用于未授权工作；
+Shadow 与标准 GitHub PR 同步来自明确用户授权。
+
+## 验证
+
+本轮最终结果见 release metadata 的 tests.current_closure，收尾时同步以下摘要；不伪造 CI badge。
+既有 baseline：targeted128、API/security68、full ETF610 passed /1 skipped /0 failed。
+
+```text
+Docker: python -B -m pytest -q -p no:cacheprovider tests/etf_quant tests/test_etf_evidence_diagnostics.py tests/test_etf_proxy_mapping_policy.py
+ETF API/security: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/tests/*.test.mjs
+Research API: pnpm --dir services/research-api test:unit && pnpm --dir services/research-api typecheck
+Frontend: pnpm --dir dashboard test --maxWorkers=1
+Frontend: pnpm --dir dashboard typecheck && pnpm --dir dashboard lint && pnpm --dir dashboard build
+```
+
+没有明确真实 Development fixture 时，可选 artifact integration tests 保持既有 skip；不为验收读取 sealed performance。
+
+## 开发者入口与安全同步
+
+| 目录 | 职责 |
+|---|---|
+| services/etf-quant-runner | 唯一正式 one-shot、既有 transport |
+| strategies/etf_quant | 冻结模型、PIT、执行、模拟账务 |
+| services/etf-quant-api | 独立只读 current/runtime observer |
+| services/research-api | 独立 Research API；sealed firewall |
+| dashboard | 只读观察，无真实交易控制面 |
+| tests | Python 认证；API/frontend 各有测试目录 |
+| docs/etf_quant、reports/etf_quant | 合同、审计、小型 release metadata |
+
+按 normal push → PR → default branch 同步；不 force、不绕过 protection/review、不删除历史 agent branches。
+不提交凭证、.env、raw data、runtime DB/NAV/trades/logs 或大型事实数据。
+见 [第三方声明](THIRD_PARTY_NOTICES.md) 与 [文档索引](docs/etf_quant/README.md)。

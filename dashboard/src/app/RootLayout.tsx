@@ -62,9 +62,10 @@ function Shell() {
 }
 
 export function RootLayout() {
+  const location=useLocation();
   return (
     <TooltipProvider delayDuration={200}>
-      <AppDataProvider>
+      <AppDataProvider enabled={!location.pathname.startsWith('/etf-quant/')}>
         <EtfQuantProvider>
         <Shell />
         </EtfQuantProvider>

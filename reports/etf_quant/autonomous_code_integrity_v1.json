@@ -45,14 +45,16 @@
     "services/etf-quant-runner/one_shot.py": "03ce9e9ab9a6fd01c4c330dc1018a41fb0090744b3238f59725253679432f562",
     "services/etf-quant-runner/run.py": "b1c51de77be5401865e5de1ac415a9e21dad05ebbbbe3d6ef480e36170e5ab64",
     "services/cnequity-sidecar/forward.py": "cfb14a2fdce64de31c197971e7182c11ba3d7fded04ff6c5780d76558ac6aee4",
-    "services/etf-quant-api/server.mjs": "fb50b32a9d2f2f02cb013a800820ea6f109b1bd45c7ae99db8edb40468ba1231",
+    "services/etf-quant-api/server.mjs": "00b0523631d0ef13ac178133710a3c6d96bc1266b4ebd672b931d2d502999501",
     "services/cnequity-sidecar/finalization.py": "c0ce3a78d41a12f67224ff8997276c2c29958d3acd7907c724397c21d2d1f971",
     "services/cnequity-sidecar/expected_bars.py": "a2dd2eafe814f932e46cc5f089a4b9880cf97930fa294a38a138e2fbe0e38353",
     "services/cnequity-sidecar/source_compatibility.py": "fd4194b4ef518750544ce2c1fa1ece1bf31a55c322eab09b30931eb50f2ad038",
     "services/cnequity-sidecar/bse_tip_bridge.py": "bd4675b99d556e88763b357b0239d1a8dd569bd3c71210f94a161e68934023e5",
     "services/cnequity-sidecar/status_evidence.py": "0e95241c3581fcb92bcafdcc35d16658f26d1e965388ad29ac8153e75714bb2c",
     "strategies/etf_quant/runtime/model_inputs.py": "f9997f404675e08656099424256c282400b683a703f29b57d4c26f27a32ae0be",
-    "strategies/etf_quant/config/common_model_universe_v1.json": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5"
+    "strategies/etf_quant/config/common_model_universe_v1.json": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5",
+    "services/etf-quant-api/current.mjs": "7c0de1051f780df0fe954615afc2ce84b73338f39cb3505ffc668cb6d2a3d638"
   },
-  "model_input_semantics": "ADMITTED_COMMON_MODEL_UNIVERSE_V1_FROZEN_SOURCE_C_REFERENCE_CONFORMANCE"
+  "model_input_semantics": "ADMITTED_COMMON_MODEL_UNIVERSE_V1_FROZEN_SOURCE_C_REFERENCE_CONFORMANCE",
+  "read_only_console": "CURRENT_ETF_QUANT_STATUS_V1_NO_RUNTIME_MUTATION"
 }

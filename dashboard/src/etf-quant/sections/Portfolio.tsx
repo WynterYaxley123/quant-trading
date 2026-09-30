@@ -26,6 +26,8 @@ const HOLDING_COLUMNS = buildColumns([
  */
 export function PortfolioSection({ data }: { data: EtfQuantSnapshot }) {
   if (!data.status.epoch) {
+    if(data.status.shadow_epoch) return <EmptyState title="Formal Shadow Epoch 已创建"
+      description={`T0 signal ${data.status.formal_signal?.signal_date??'—'} · ${data.status.formal_signal?.t1_status??'账务尚未开始'}；当前尚无真实 T+1 fill、持仓或 NAV。`} />;
     return (
       <EmptyState
         title="Shadow 尚未启动"

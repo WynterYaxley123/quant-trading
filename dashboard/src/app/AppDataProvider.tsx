@@ -23,18 +23,20 @@ export interface AppData {
 
 const AppDataContext = createContext<AppData | null>(null);
 
-export function AppDataProvider({ children }: { children: ReactNode }) {
+export function AppDataProvider({ children, enabled=true }: { children: ReactNode; enabled?:boolean }) {
   const env = useMemo(() => getAppEnv(), []);
   const api = useMemo(() => getResearchApi(), []);
 
   const shell = useResource(async (signal) => {
+    // ETF observation never opens a Research artifact or requires Research HTTP.
+    if(!enabled) return {capabilities:null,status:null,runs:[]};
     const [capabilities, status, runs] = await Promise.all([
       api.getCapabilities(signal),
       api.getResearchStatus(signal),
       api.getRuns(signal),
     ]);
     return { capabilities, status, runs };
-  }, [api]);
+  }, [api,enabled]);
 
   const value: AppData = {
     capabilities: shell.data?.capabilities ?? null,

@@ -26,10 +26,12 @@ const DIAGNOSTIC_COLUMNS = buildColumns([
 ]);
 
 const B40_SLOT_COLUMNS = buildColumns([
+  { key: 'industry_rank', header: 'Rank', kind: 'int' },
   { key: 'industry_code', header: '原 Top5 行业', kind: 'code' },
   { key: 'mapping_type', header: '执行类型' },
   { key: 'etf_code', header: 'ETF / Cash', kind: 'code' },
-  { key: 'target_l2_exposure', header: '目标 L2 占比 %', kind: 'num' },
+  { key: 'target_l2_exposure', header: 'Proxy 目标 L2 占比', kind: 'pct' },
+  { key: 'evidence_available_at', header: 'Evidence available at' },
   { key: 'liquidity_status', header: '20 日流动性' },
   { key: 'target_weight', header: '原目标权重', kind: 'num' },
   { key: 'cash_retained_weight', header: '保留 Cash', kind: 'num' },
@@ -47,7 +49,7 @@ export function MappingsSection({ data }: { data: EtfQuantSnapshot }) {
       <SectionCard title="B40_WITH_CASH · 只读执行映射"
         description="按原 Top5 排名逐槽显示 Strict / Proxy / Cash；证据不足或流动性不合格时保留原权重为 Cash。Cash 不是 ETF，也不会产生订单。">
         <p className="text-sm">信号目标风险资产：{data.mappings.risk_asset_weight ?? '—'} · 目标保留 Cash：{data.mappings.cash_weight ?? '—'} · 实际账户现金以持仓页为准；Shadow 状态以正式 readiness 记录为准。</p>
-        <DataTable data={(data.mappings.slots ?? []) as Row[]} columns={B40_SLOT_COLUMNS} caption="PIT 执行槽（含 Cash）" manualSorting />
+        <DataTable data={(data.mappings.slots ?? []).map(s=>({...s,etf_code:s.etf_code??'CASH / FAIL-CLOSED'})) as Row[]} columns={B40_SLOT_COLUMNS} caption="PIT 执行槽（含 Cash）" manualSorting />
       </SectionCard>
       <SectionCard title="B40 准入诊断" description="只读显示证据与流动性判定；历史工程参考不等于当前可执行映射。">
         <DataTable data={data.mappings.diagnostics as Row[]} columns={DIAGNOSTIC_COLUMNS} caption="PIT 候选诊断" manualSorting />

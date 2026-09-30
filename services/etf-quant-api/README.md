@@ -1,5 +1,25 @@
 # ETF Quant read-only Data API V1
 
+## Current operations console
+
+`GET /api/etf-quant/v1/current` returns `CURRENT_ETF_QUANT_STATUS_V1`:
+certified release/model/PIT metadata + latest control observation + byte-verified
+export pointer/calendar + the existing verified public formal view. No model,
+mapping, accounting, source refresh or runtime mutation is performed.
+
+Set both `ETF_QUANT_RUNTIME_ROOT` and `ETF_QUANT_CONTROL_ROOT` to external roots.
+The root `scripts/Start-EtfQuantConsole.ps1` reads the existing external config
+and starts loopback observation processes without invoking the one-shot.
+Existing endpoints remain compatible. Only explicitly superseded failure codes
+before the certified cutoff become HISTORICAL; new/unknown failures remain visible.
+
+Release status is static and dated; cutoff comes from latest_export.json and next
+eligible date from the official calendar + real Shanghai clock. Formal T0 status
+wins over a stale pre-start receipt. Private state/prefix remain hashed, never
+parsed or exposed. Counts refer to the current committed public view; missing
+current intent metadata stays null. The legacy readiness endpoint is historical
+pre-start metadata; the updated console uses current for ARMED and STARTED.
+
 Independent of `services/research-api`; no Research artifact loader, seal,
 performance or data-provider path is reused. Requires Node >=22, with **zero
 external dependencies**. Bind is always `127.0.0.1` (default port 3312).

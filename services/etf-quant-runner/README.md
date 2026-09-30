@@ -1,5 +1,12 @@
 # Manual ETF transport V1
 
+Current deployment authority: root README and
+`reports/etf_quant/etf_quant_v1_final_release_v1.json`. The certified one_shot.py
+below is the unique formal entry; older run.py cycle examples are legacy
+engineering transport documentation. COMMON_MODEL_UNIVERSE_V1/reference seed
+binding is verified and mounted read-only automatically; no model repair step
+is required. The console helper starts observation services only.
+
 ## Certified autonomous one-shot entry (no daemon)
 
 The current formal branch is `integration/etf-quant-v1-shadow-autonomous-final`.

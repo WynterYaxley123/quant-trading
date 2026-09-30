@@ -15,7 +15,9 @@ export const statusSchema = z.object({product:z.literal('ETF_QUANT'),version:z.l
   code_commit:nullableText,cutoff:nullableText,updated_at:nullableText,signal_date:nullableText,execution_date:nullableText,
   epoch:epoch.nullable(),mapping_hash:nullableText,strategy_hash:nullableText,broker_enabled:z.literal(false),
   real_order_path:z.literal(false),validation_opened:z.literal(false),final_oos_read:z.literal(false),
-  industry_level:z.literal('SHENWAN_L2').optional(),execution_policy:z.literal('B40_WITH_CASH').optional()});
+  industry_level:z.literal('SHENWAN_L2').optional(),execution_policy:z.literal('B40_WITH_CASH').optional(),
+  shadow_epoch:z.object({epoch_id:z.string(),created_at:z.string()}).passthrough().optional(),
+  formal_signal:z.object({signal_date:z.string(),t1_status:z.string()}).passthrough().optional()});
 export const strategySchema = z.object({version:z.literal('ETF_QUANT_V1'),mode:z.literal('SIMULATION_ONLY'),
   currency:z.literal('CNY'),initial_cash:z.literal('10000'),model:z.literal('Ridge'),alpha:z.literal(.01),
   training_window_months:z.literal(6),minimum_training_days:z.literal(30),window_anchor:z.literal('PER_HORIZON_LABEL_CUTOFF'),
@@ -108,6 +110,29 @@ export const readinessSchema = z.object({contract:z.literal('SHADOW_START_READIN
 export type EtfQuantReadiness = z.infer<typeof readinessSchema>;
 export type EtfQuantSnapshot = z.infer<typeof snapshotSchema>;
 export type EtfQuantStatus = z.infer<typeof statusSchema>;
+const currentHorizon=z.object({status:z.enum(['PASS','FAIL']),valid_observations:z.number().int().nonnegative(),
+  unique_valid_dates:z.number().int().nonnegative(),valid_sectors:z.number().int().nonnegative(),
+  mature_cutoff:z.string(),minimum_valid_dates:z.number().int().positive()}).passthrough();
+export const currentStatusSchema=z.object({contract:z.literal('CURRENT_ETF_QUANT_STATUS_V1'),project:z.literal('ETF-Quant V1'),
+  observed_at:z.string(),mode:z.literal('SIMULATION_ONLY'),read_only:z.literal(true),
+  engineering_complete:z.boolean(),production_usable:z.boolean(),factual_pipeline:z.string(),
+  release_as_of:nullableText,model_readiness:z.object({status:z.string(),as_of:nullableText,horizons:z.record(z.string(),currentHorizon)}),
+  shadow_runtime_armed:z.boolean(),shadow_start_gate:z.string(),latest_finalized_market_date:nullableText,snapshot_id:nullableText,
+  calendar:z.object({as_of_shanghai:z.string(),today:z.string(),is_trading:z.boolean(),market_state:z.string(),
+    next_eligible_trading_date:nullableText}).nullable(),
+  runner:z.object({status:z.string(),observed_at:z.string(),time_source:z.string(),data_cutoff:nullableText,
+    refresh_attempted:z.boolean(),reason_code:nullableText,next_action:z.string()}).nullable(),
+  formal:z.object({epoch_id:nullableText,signal_date:nullableText,t1_status:nullableText,
+    epoch_count:z.number().int().nonnegative(),signal_count:z.number().int().nonnegative(),
+    intent_count:z.number().int().nonnegative().nullable(),fill_count:z.number().int().nonnegative(),
+    holdings_count:z.number().int().nonnegative(),cash_weight:numeric.nullable(),risk_asset_weight:numeric.nullable(),
+    nav:optionalMoney,pnl:optionalMoney}).passthrough(),
+  provenance:z.object({code_sha:nullableText,release_code_sha:nullableText,candidate_hash:nullableText,
+    pit_registry_hash:nullableText,strict_registry_hash:nullableText,cnequity_pin:nullableText}),
+  evidence:z.object({production_pit:z.string(),strict_registry:z.string(),sws:z.string(),known_limitation:nullableText}),
+  historical_status:z.object({status:z.literal('SUPERSEDED / HISTORICAL'),reason_code:nullableText,processed_at:nullableText}).nullable(),
+  one_shot_command:nullableText,broker_enabled:z.literal(false),real_order_path:z.literal(false)});
+export type EtfQuantCurrentStatus=z.infer<typeof currentStatusSchema>;
 export const endpointSchemas = {'status':statusSchema,'strategy':strategySchema,'models':z.array(model),
   'rankings/10d':z.array(rank),'rankings/40d':z.array(rank),'rankings/120d':z.array(rank),'rankings/fusion':z.array(rank),
   'portfolio/summary':completeSummary,'portfolio/holdings':z.array(completeHolding),'portfolio/nav':z.array(nav),'trades':z.array(trade),
