@@ -1,0 +1,676 @@
+{
+  "PRIMARY": "CODEX_FROZEN_MODEL_CONTRACT_RECONCILIATION_COMPLETE",
+  "FINAL_BRANCH": "integration/etf-quant-v1-shadow-autonomous-final",
+  "ENGINEERING_COMPLETE": true,
+  "FACTUAL_PIPELINE": "PASS",
+  "DATA_LAKE_IDENTITY": "PASS",
+  "WINDOWS_PATH_COMPATIBILITY": "PASS",
+  "FROZEN_REFERENCE_IDENTIFIED": "PASS",
+  "SOURCE_C_CONTRACT_PARITY": "PASS",
+  "TRAINING_OBSERVATION_SEMANTICS": "PASS",
+  "HISTORICAL_CLASSIFICATION_SEMANTICS": "PASS",
+  "INDUSTRY_UNIVERSE_SEMANTICS": "PASS",
+  "PRODUCTION_MODEL_ADAPTER": "PASS",
+  "H10_INPUT_READINESS": "PASS",
+  "H40_INPUT_READINESS": "PASS",
+  "H120_INPUT_READINESS": "PASS",
+  "MODEL_READINESS": "PASS",
+  "PRODUCTION_USABLE": true,
+  "ONE_SHOT_SHADOW_RUNNER": "PASS",
+  "T0_EPOCH_LIFECYCLE": "PASS",
+  "PRODUCTION_PIT_EVIDENCE": "PASS",
+  "FINAL_CANDIDATE_INTEGRITY": "PASS",
+  "LATEST_FINALIZED_MARKET_DATE": "2026-09-30",
+  "SHADOW_RUNTIME_ARMED": true,
+  "SHADOW_START_GATE": "ARMED_FOR_NEXT_ELIGIBLE_T",
+  "FIRST_SHADOW_EPOCH_CREATED": false,
+  "SHADOW_EPOCH_CREATED": false,
+  "FORMAL_SHADOW_SIGNAL_CREATED": false,
+  "T1_INTENT_CREATED": false,
+  "BROKER_ENABLED": false,
+  "REAL_ORDER_PATH": false,
+  "schema_version": "1.0.0",
+  "reported_at_shanghai": "2026-10-01T00:45:20.176687+08:00",
+  "continuation_base_sha": "b6980e077d8bba6ba8fbae76ecdbb53f773e6439",
+  "verified_code_sha": "042154268563d595f23d81e760d251e67f701aea",
+  "final_sha_semantics": "文档提交后的最终 SHA 见仓外 final_delivery_state_v1.json 与最终响应；本报告不自引用 commit SHA。",
+  "previous_contract_change_conclusion": "OVERTURNED",
+  "supersedes": "docs/etf_quant/codex_final_data_pipeline_closure_v1.md 的 model contract / production unusable / BLOCKED_HARD 结论；事实层 PASS 保留。",
+  "root_cause": "生产 artifact binding / membership bootstrap / snapshot replacement mismatch；不是 Frozen Source-C 真实规则不兼容。",
+  "why_old_training_dates_were_zero": {
+    "old": {
+      "cutoff": "2026-09-30",
+      "first_session": "2025-04-10",
+      "session_count": 361,
+      "industry_count": 162,
+      "valid_closes_current": 110,
+      "series_valid_all_days": 0,
+      "horizons": [
+        {
+          "horizon": 10,
+          "mature_cutoff": "2026-09-15",
+          "window_start": "2026-03-15",
+          "valid_training_days": 0,
+          "minimum_valid_training_days": 30,
+          "first_valid": null,
+          "last_valid": null
+        },
+        {
+          "horizon": 40,
+          "mature_cutoff": "2026-08-04",
+          "window_start": "2026-02-04",
+          "valid_training_days": 0,
+          "minimum_valid_training_days": 30,
+          "first_valid": null,
+          "last_valid": null
+        },
+        {
+          "horizon": 120,
+          "mature_cutoff": "2026-04-08",
+          "window_start": "2025-10-08",
+          "valid_training_days": 0,
+          "minimum_valid_training_days": 30,
+          "first_valid": null,
+          "last_valid": null
+        }
+      ]
+    },
+    "explanation": "错误地把 162 taxonomy 全截面当成已经准入的 107 model 全截面；任一非准入行业缺值使整日拒绝。遗漏 warmup 前置会员 seed 与移出证券残留进一步改变 Source-C 路径。原冻结工程报告已证明完整 162 截面为 0 而相同 107 截面通过。"
+  },
+  "reference_authorities": [
+    {
+      "role": "coverage",
+      "path": "services/cnequity-sidecar/coverage_matrix.py",
+      "line": 128,
+      "function": "audit/classify/valid_bar",
+      "sha256": "089b3c034262979d0272c25195c2ed73e02b485e67c22d64fb0333d4a11fc0f2"
+    },
+    {
+      "role": "membership",
+      "path": "strategies/etf_quant/data/membership.py",
+      "line": 117,
+      "function": "session_universe",
+      "sha256": "7eb0ca5a14927130f1281a4d003f8c93f4dc319b4d20af3c0a1dcb230721ea8a"
+    },
+    {
+      "role": "source_c",
+      "path": "strategies/etf_quant/data/source_c.py",
+      "line": 133,
+      "function": "industry_date",
+      "sha256": "2f4a5297da658ea094a32340314805b8fdefa97710e049c7ce96b2660777739a"
+    },
+    {
+      "role": "source_c_readiness",
+      "path": "scripts/audit_etf_quant_readiness.py",
+      "line": 56,
+      "function": "advance_source_c + diagnostic_common_universe",
+      "sha256": "dc9f843fff88bd5fe3f15c1d4e74a5dd2c6b43a5c347bd4bedd698e1f7a3bcb0"
+    },
+    {
+      "role": "ridge",
+      "path": "scripts/audit_etf_quant_models.py",
+      "line": 42,
+      "function": "fit_retrospective_horizon + audit",
+      "sha256": "5019bb668a1e055f9a6054f5d1d585aac9ec1eb0acd77a8cb22d92d1d761619d"
+    },
+    {
+      "role": "admission",
+      "path": "docs/etf_quant/common_model_universe_v1.md",
+      "line": 1,
+      "function": "107 model-universe admission",
+      "sha256": "c65cff2a8d1a695cebfb348b088b2c734294c1e8ea47ad666137f3c22e47a5af"
+    },
+    {
+      "role": "granularity",
+      "path": "strategies/etf_quant/domain/industry_level.py",
+      "line": 1,
+      "function": "current frozen explicit L2 taxonomy",
+      "sha256": "6c1ede72f9f52dfa091c0ff102544498d6ad8f122d6202d701918625310c2832"
+    }
+  ],
+  "reference_artifacts": {
+    "readiness": {
+      "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\codex-final-completion\\reports\\etf_quant_readiness_20260928T091309Z_0d2dfbc6.json",
+      "sha256": "532fbb4035d0c6754f987948ded4ffa708edc5ca611635423ce991d789928a8d"
+    },
+    "factor_matrix": {
+      "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\codex-final-completion\\reports\\etf_quant_factor_readiness_20260928T091309Z_0d2dfbc6.csv",
+      "sha256": "6771e6c352df00d9a9f2e6bc98b3b0c20b1614f93bdea8e0e3e813e133bbb482"
+    },
+    "ridge_report": {
+      "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\codex-final-completion\\reports\\etf_quant_engineering_ridge_20260928T123624Z_828fad6e.json",
+      "sha256": "75d21fd4f02e63df26f2be85f1b661f7ebed0965710f7f4d5e1cfe8c01610b68"
+    }
+  },
+  "reference_snapshot": {
+    "path": "D:\\QuantForge\\runtime\\etf-quant-v1\\codex-final-completion\\engineering-exports\\c085168103a7e8206009018e9b0cbc7f1e74b0e03dfed6c9f4ad12896af48995",
+    "manifest_sha256": "4deb4c71da68fef9f6a0a37f77f39c23ac9027b15ffe04ade7f3e2474052d595",
+    "membership_sha256": "33b7f79b756adcc4849fa5f87e09d8b8ac1831178263ab6a8a62b53b23cf2da9"
+  },
+  "contract": {
+    "contract": "COMMON_MODEL_UNIVERSE_V1",
+    "warmup_start": "2025-04-10",
+    "historical_reference_cutoff": "2026-09-24",
+    "admission_date": "2026-09-28",
+    "classification_mode": "TIME_VARYING_ASOF_MEMBERSHIP_UNIVERSE",
+    "historical_classification_pit": "NOT_STRICT_HISTORICAL_CLASSIFICATION_PIT",
+    "training_date_policy": "COMPLETE_ADMITTED_MODEL_UNIVERSE",
+    "industries": [
+      "1101",
+      "1104",
+      "1105",
+      "1107",
+      "1108",
+      "2202",
+      "2203",
+      "2204",
+      "2205",
+      "2206",
+      "2208",
+      "2209",
+      "2303",
+      "2304",
+      "2305",
+      "2402",
+      "2403",
+      "2405",
+      "2406",
+      "2701",
+      "2702",
+      "2703",
+      "2704",
+      "2705",
+      "2706",
+      "2802",
+      "2804",
+      "2805",
+      "3302",
+      "3303",
+      "3304",
+      "3305",
+      "3306",
+      "3404",
+      "3405",
+      "3406",
+      "3407",
+      "3408",
+      "3409",
+      "3501",
+      "3502",
+      "3601",
+      "3602",
+      "3603",
+      "3605",
+      "3701",
+      "3702",
+      "3703",
+      "3704",
+      "3705",
+      "3706",
+      "4101",
+      "4103",
+      "4208",
+      "4209",
+      "4210",
+      "4211",
+      "4303",
+      "4503",
+      "4506",
+      "4608",
+      "4609",
+      "4610",
+      "4802",
+      "4803",
+      "4804",
+      "4805",
+      "4901",
+      "6101",
+      "6102",
+      "6103",
+      "6201",
+      "6203",
+      "6204",
+      "6206",
+      "6301",
+      "6303",
+      "6305",
+      "6306",
+      "6307",
+      "6308",
+      "6401",
+      "6402",
+      "6405",
+      "6406",
+      "6407",
+      "6502",
+      "6503",
+      "6504",
+      "6505",
+      "7101",
+      "7103",
+      "7104",
+      "7206",
+      "7207",
+      "7209",
+      "7210",
+      "7301",
+      "7302",
+      "7401",
+      "7402",
+      "7502",
+      "7503",
+      "7601",
+      "7602",
+      "7701",
+      "7702"
+    ],
+    "industry_count": 107,
+    "admission_document": "docs/etf_quant/common_model_universe_v1.md",
+    "admission_document_sha256": "c65cff2a8d1a695cebfb348b088b2c734294c1e8ea47ad666137f3c22e47a5af",
+    "readiness_sha256": "532fbb4035d0c6754f987948ded4ffa708edc5ca611635423ce991d789928a8d",
+    "factor_matrix_sha256": "6771e6c352df00d9a9f2e6bc98b3b0c20b1614f93bdea8e0e3e813e133bbb482",
+    "engineering_report_sha256": "75d21fd4f02e63df26f2be85f1b661f7ebed0965710f7f4d5e1cfe8c01610b68",
+    "reference_snapshot_id": "c085168103a7e8206009018e9b0cbc7f1e74b0e03dfed6c9f4ad12896af48995",
+    "reference_manifest_sha256": "4deb4c71da68fef9f6a0a37f77f39c23ac9027b15ffe04ade7f3e2474052d595",
+    "reference_membership_sha256": "33b7f79b756adcc4849fa5f87e09d8b8ac1831178263ab6a8a62b53b23cf2da9"
+  },
+  "contract_sha256": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5",
+  "contract_diff": [
+    {
+      "semantic": "行业层级",
+      "frozen_reference": "显式冻结 SWS L2 taxonomy",
+      "old_production_behavior": "L2 已正确",
+      "fixed_production_behavior": "保留；未回退到早期文档的 L3 描述",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "模型行业集合",
+      "frozen_reference": "已准入的固定 107 行业",
+      "old_production_behavior": "未绑定 admission，使用全部 162 taxonomy 行业",
+      "fixed_production_behavior": "hash 绑定相同 107 列表；全部 162 Source-C 仍计算和审计",
+      "status": "FIXED"
+    },
+    {
+      "semantic": "历史分类",
+      "frozen_reference": "TIME_VARYING_ASOF_MEMBERSHIP_UNIVERSE",
+      "old_production_behavior": "backward-asof 模式",
+      "fixed_production_behavior": "保留 ASOF；禁止偷偷替换成固定分类或当前执行分类",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "会员快照替换",
+      "frozen_reference": "全量最近快照替换 constituent set",
+      "old_production_behavior": "逐证券合并，已移出证券残留",
+      "fixed_production_behavior": "完整快照替换；不虚构 constituent",
+      "status": "FIXED"
+    },
+    {
+      "semantic": "warmup bootstrap",
+      "frozen_reference": "2025-04-10 起，使用此前 2025-03-31 会员快照",
+      "old_production_behavior": "短 export 缺前置快照，延后起点",
+      "fixed_production_behavior": "只读 hash-verified 冻结历史 seed；之后使用当前 export 快照",
+      "status": "FIXED"
+    },
+    {
+      "semantic": "个股有效价格",
+      "frozen_reference": "positive OHLC/volume、stock/CDR 身份；真实 adjacent adjusted return",
+      "old_production_behavior": "价格/adj 检查存在，instrument/CDR 排除未完全一致",
+      "fixed_production_behavior": "与实际 coverage_matrix reference 一致；未补造价格",
+      "status": "FIXED"
+    },
+    {
+      "semantic": "Source-C date gate",
+      "frozen_reference": "每行业每日期有效成分 >=5、coverage>=80%",
+      "old_production_behavior": "同门槛、每行业每日期",
+      "fixed_production_behavior": "保持原门槛与真实 denominator，含 BJ",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "递归前缀",
+      "frozen_reference": "每行业独立；断裂后永不 restart/rebase",
+      "old_production_behavior": "已经是每行业独立",
+      "fixed_production_behavior": "保持；不把旧故障错误解释成 global prefix failure",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "历史 publication",
+      "frozen_reference": "重建输入；历史 PIT 未证明，available_at=null",
+      "old_production_behavior": "保持 UNKNOWN/null",
+      "fixed_production_behavior": "保留；当前观察时间不冒充历史发布时间",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "训练 observation",
+      "frozen_reference": "date × sector；每行等权",
+      "old_production_behavior": "date × sector；每行等权",
+      "fixed_production_behavior": "相同；完整日期包含固定 107 个 sector rows",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "完整横截面",
+      "frozen_reference": "admitted 107 内完整日期",
+      "old_production_behavior": "以 162 全 taxonomy 检查，三期限均 0 日",
+      "fixed_production_behavior": "107 内仍整日拒绝 partial 截面；非准入行业不能否决",
+      "status": "FIXED"
+    },
+    {
+      "semantic": "训练 maturity",
+      "frozen_reference": "T-h；各自 mature cutoff 往前六个月",
+      "old_production_behavior": "相同 maturity/window",
+      "fixed_production_behavior": "相同；模型日历对齐真正冻结 warmup sessions",
+      "status": "ALIGNED"
+    },
+    {
+      "semantic": "minimum training",
+      "frozen_reference": "每期限 >=30 unique valid dates",
+      "old_production_behavior": "30 日",
+      "fixed_production_behavior": "30 日；29 日明确 FAIL；不以 observation 数代替日期",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "因子 NA",
+      "frozen_reference": "19 因子定义不变；H10 5 维、H40/H120 19 维；不填 NA",
+      "old_production_behavior": "相同定义",
+      "fixed_production_behavior": "保留；全部 19 factor mask 与数值 parity PASS",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "Ridge/target",
+      "frozen_reference": "alpha=.01、raw X；同日期同模型集合超额收益",
+      "old_production_behavior": "相同数学",
+      "fixed_production_behavior": "相同；不在 partial 横截面重新求均值",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "z-score/fusion/ranking",
+      "frozen_reference": "三期限同 107 集合各自 z-score；.25/.50/.25；Top5/ties",
+      "old_production_behavior": "被错误的 162 input gate 截断",
+      "fixed_production_behavior": "共享冻结模型数学；9/24 raw/z-score/Top5 parity",
+      "status": "FIXED_BINDING"
+    },
+    {
+      "semantic": "执行 PIT/配置",
+      "frozen_reference": "当前生产 PIT + Strict > Proxy > Cash/B40",
+      "old_production_behavior": "既有冻结 guard",
+      "fixed_production_behavior": "保留；历史模型 bootstrap 不替代执行 PIT",
+      "status": "UNCHANGED"
+    },
+    {
+      "semantic": "Formal timing",
+      "frozen_reference": "当前真实 T、finalized、forward-only；T0 Epoch，T+1 intent",
+      "old_production_behavior": "既有同日/forward guard",
+      "fixed_production_behavior": "保留；readiness reference 不写 Formal namespace",
+      "status": "UNCHANGED"
+    }
+  ],
+  "reference_parity": {
+    "source_mask_mismatch_count": 0,
+    "source_max_abs_error": 4.547473508864641e-13,
+    "factor_mask_mismatch_count": 0,
+    "factor_max_abs_error": 1.4210854715202004e-14,
+    "horizons": {
+      "10": {
+        "dates_match": true,
+        "observations_match": true,
+        "max_prediction_abs_error": 9.107298248878237e-17,
+        "max_zscore_abs_error": 1.7541523789077473e-14
+      },
+      "40": {
+        "dates_match": true,
+        "observations_match": true,
+        "max_prediction_abs_error": 8.81239525796218e-16,
+        "max_zscore_abs_error": 2.3342439092743916e-14
+      },
+      "120": {
+        "dates_match": true,
+        "observations_match": true,
+        "max_prediction_abs_error": 1.6375789613221059e-15,
+        "max_zscore_abs_error": 2.930988785010413e-14
+      }
+    },
+    "top5": [
+      "3706",
+      "3703",
+      "4901",
+      "4803",
+      "3701"
+    ],
+    "expected_top5": [
+      "3706",
+      "3703",
+      "4901",
+      "4803",
+      "3701"
+    ],
+    "reference_snapshot": "c085168103a7e8206009018e9b0cbc7f1e74b0e03dfed6c9f4ad12896af48995",
+    "reference_source_c_valid_levels": 38684,
+    "status": "PASS"
+  },
+  "latest_model_readiness": {
+    "artifact": "MODEL_READINESS_REFERENCE",
+    "reference_date": "2026-09-30",
+    "processed_at": "2026-09-30T16:07:53.880622+00:00",
+    "source_snapshot": "5f593d4e16d5becc354d3e5f6411e9cbc6f6033a9c75a1a3845ad39b6859afde",
+    "source_c_current_valid": 107,
+    "membership_seed_date": "2025-03-31",
+    "training": {
+      "10": {
+        "horizon": 10,
+        "valid_observations": 13589,
+        "unique_valid_dates": 127,
+        "valid_sectors": 107,
+        "mature_cutoff": "2026-09-15",
+        "window_start": "2026-03-15",
+        "minimum_valid_dates": 30,
+        "status": "PASS"
+      },
+      "40": {
+        "horizon": 40,
+        "valid_observations": 12733,
+        "unique_valid_dates": 119,
+        "valid_sectors": 107,
+        "mature_cutoff": "2026-08-04",
+        "window_start": "2026-02-04",
+        "minimum_valid_dates": 30,
+        "status": "PASS"
+      },
+      "120": {
+        "horizon": 120,
+        "valid_observations": 12947,
+        "unique_valid_dates": 121,
+        "valid_sectors": 107,
+        "mature_cutoff": "2026-04-08",
+        "window_start": "2025-10-08",
+        "minimum_valid_dates": 30,
+        "status": "PASS"
+      }
+    },
+    "top5_nonformal": [
+      {
+        "rank": 1,
+        "industry_code": "3703",
+        "score": 2.0639817967038008
+      },
+      {
+        "rank": 2,
+        "industry_code": "3706",
+        "score": 1.9178775455135395
+      },
+      {
+        "rank": 3,
+        "industry_code": "4804",
+        "score": 1.5277169731437286
+      },
+      {
+        "rank": 4,
+        "industry_code": "4803",
+        "score": 1.4689497524641513
+      },
+      {
+        "rank": 5,
+        "industry_code": "3405",
+        "score": 1.4597284494211047
+      }
+    ],
+    "formal_signal": false,
+    "formal_epoch_created": false,
+    "intent_created": false,
+    "historical_available_at": null,
+    "historical_membership_pit_proven": false,
+    "external_path": "D:\\QuantForge\\runtime\\etf-quant-v1\\frozen-model-reconciliation-v1\\latest_model_readiness.json"
+  },
+  "universe_audit": {
+    "current_membership_snapshot": "2026-09-24",
+    "current_active_count": 162,
+    "historical_union_count": 181,
+    "retired_historical_only_count": 19,
+    "named_official_current_count": 131,
+    "known_hierarchy_unnamed_current_count": 31,
+    "unknown_current_count": 0,
+    "admitted_model_count": 107,
+    "admitted_model_not_active": [],
+    "official_classification_does_not_select_model_universe": true,
+    "taxonomy_sha256": "3333b4e09c65d6a6b5b6a3b33717236f5723c059c3890415ef9c8f4af5b55836"
+  },
+  "universe_classification_scope": "131 为冻结 official taxonomy 中有名称证据的当前 code；31 为已知 hierarchy 但名称 publication 未证明。未将其伪装成完整官方 master classification；19 个 retired historical-only code 均在当前 162 之外。该分类不选择或重新挑选 107 model universe。",
+  "three_evidence_layers": {
+    "A": "历史 ASOF constituent/feature 重建；historical classification PIT 未证明",
+    "B": "真实当前 finalized snapshot + 当前观察时点；Source-C model readiness",
+    "C": "独立的 production PIT execution eligibility；未知/不足证据 fail closed 到 Cash"
+  },
+  "actual_one_shot": {
+    "runs": 2,
+    "responses": [
+      {
+        "data_cutoff": "2026-09-30",
+        "refresh": {
+          "refresh_attempted": false
+        },
+        "shadow_runtime_armed": true,
+        "shadow_start_gate": "ARMED_FOR_NEXT_ELIGIBLE_T",
+        "status": "READY_NO_SIGNAL"
+      },
+      {
+        "data_cutoff": "2026-09-30",
+        "refresh": {
+          "refresh_attempted": false
+        },
+        "shadow_runtime_armed": true,
+        "shadow_start_gate": "ARMED_FOR_NEXT_ELIGIBLE_T",
+        "status": "READY_NO_SIGNAL"
+      }
+    ],
+    "time_override_used": false,
+    "data_refresh_attempted": false
+  },
+  "formal_start": {
+    "current_shanghai_date": "2026-10-01",
+    "official_calendar_is_trading": false,
+    "next_official_trading_date": "2026-10-08",
+    "latest_export_created_at": "2026-09-30T14:13:35.323862+00:00",
+    "latest_snapshot_id": "5f593d4e16d5becc354d3e5f6411e9cbc6f6033a9c75a1a3845ad39b6859afde",
+    "latest_manifest_sha256": "c5608d3dd6910ba062201a97dc3bd5a22cc65eee9155d974156e3926b2625463",
+    "production_pit_available_from": "2026-09-29T23:05:26+09:00",
+    "reason": "修复与 readiness 认证完成时上海已是 10/1 休市；Formal gate 要求当前同日 T。9/30 finalized factual 仍可作 readiness reference，但不回补正式 Epoch/signal/intent。",
+    "historical_top5_used_as_formal_signal": false,
+    "formal_records_written": false,
+    "fill_count": 0,
+    "retroactive_intent": false
+  },
+  "retained_factual_certification": {
+    "source": "reports/etf_quant/codex_final_data_pipeline_closure_v1.json",
+    "data_lake_identity": {
+      "artifact": "CONTINUATION_DATA_LAKE_IDENTITY_V1",
+      "audited_at": "2026-09-30T14:49:40.493466+00:00",
+      "status": "PASS",
+      "relocation_expected_count": 160072,
+      "relocation_actual_count": 160072,
+      "relocation_inventory_unchanged": true,
+      "relocation_published_byte_fingerprint": "520f175faf951c7758fe6a96f291390163a06bdc6021ccabbaac516440ab5422",
+      "relocation_published_byte_fingerprint_unchanged": true,
+      "expected_count": 187511,
+      "actual_count": 187511,
+      "missing_count": 0,
+      "extra_count": 0,
+      "identity_mismatch_count": 0,
+      "root_file_id": 1407374883938004,
+      "volume_identity": 16315591276170813369,
+      "alias_volume_identity": 16315591276170813369,
+      "physical_logical_samefile": true,
+      "root_file_id_preserved": true,
+      "current_inventory_sha256": "55b80f6ca4cc62dd22abec1acba7e045c856ff8a9d8691637eee379d3ed811a3",
+      "post_verified_relocation_file_count_delta": 27439,
+      "immutable_export_byte_hashes": "PASS",
+      "immutable_export_file_count": 7,
+      "immutable_export_date": "2026-09-24",
+      "immutable_export_snapshot": "4c82b062149dd4aa49b97b932fe3314b662154d046f15b45a87391d13dd0e071",
+      "anomalies": []
+    },
+    "data_pipeline_reaudited_or_researched": false,
+    "lake_data_written_this_task": false
+  },
+  "tests": {
+    "targeted": {
+      "passed": 128,
+      "skipped": 0,
+      "failed": 0,
+      "log_sha256": "48f8d15a3c68b635fe576c68028e32f61aece9eeed6ab1728166e8436259568b"
+    },
+    "full_etf": {
+      "passed": 610,
+      "skipped": 1,
+      "failed": 0,
+      "log_sha256": "57e2a4f733f0e980f6695c37f27d960853aeec21fed6c4b28f4dbec64d24cdc1"
+    },
+    "api_security": {
+      "passed": 68,
+      "skipped": 0,
+      "failed": 0,
+      "log_sha256": "20aad33af42acd2f7a7040f7ada5ab11cbb000be3bf4a87b3c702db437a37b8c"
+    }
+  },
+  "new_regression_tests": 15,
+  "old_branch_refs_unchanged": true,
+  "protected_code_unchanged_from_continuation_base": [
+    "strategies/sw_sector_rotation",
+    "strategies/etf_quant/factors",
+    "strategies/etf_quant/models",
+    "strategies/etf_quant/data",
+    "strategies/etf_quant/domain",
+    "strategies/etf_quant/mapping",
+    "strategies/etf_quant/portfolio",
+    "strategies/etf_quant/evidence",
+    "strategies/etf_quant/runtime/formal.py",
+    "strategies/etf_quant/runtime/oneshot.py",
+    "strategies/etf_quant/config/verified_mappings_v1.json",
+    "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json",
+    "reports/etf_quant/production_pit_evidence_registry_v1.json",
+    "docs/etf_quant/common_model_universe_v1.md",
+    "services/cnequity-sidecar",
+    "requirements.txt",
+    "requirements.lock",
+    "docker",
+    "docker-compose.yml"
+  ],
+  "candidate_hash": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
+  "pit_registry_hash": "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc",
+  "strict_registry_hash": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+  "production_pit_book_hash": "ac730d6475528d494515eec841b7c49f8be55d667449fc8208f534058a907b79",
+  "sws_status": "PASS_WITH_KNOWN_LIMITATION",
+  "sws_known_limitation": "OFFICIAL_L2_INDEX_CONSTITUENTS_NOT_MASTER_CLASSIFICATION_TABLE",
+  "cn_equity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "sdk_vendor_source_unchanged": true,
+  "runtime_guards_released": true,
+  "validation_performance_read": false,
+  "final_oos_performance_read": false,
+  "new_third_party_fallback": false,
+  "remaining_engineering_blockers": [],
+  "remaining_external_condition": "下一真实合法 T 的 finalized factual data；再次调用同一个 one-shot 入口。",
+  "freeze_safety": "19 factors、alpha .01、H10/H40/H120、.25/.50/.25、Top5、Source-C 5/80%/不重启、30 日、Strict、B40 40%/target-largest、35% cap、20d liquidity、T+1、fees、Candidate、PIT policy 均保持；Cash 不重新分配。",
+  "no_real_money_or_broker_or_leverage_or_short": true,
+  "no_historical_evidence_backfill": true,
+  "no_destructive_git": true,
+  "no_new_dependencies_or_global_settings": true,
+  "push": false,
+  "runner_command": "& D:/QuantForge/external/cnequity-etf-quant-v1/venv/Scripts/python.exe -B D:/quant-worktrees/etf-quant-v1-shadow-autonomous-final/services/etf-quant-runner/one_shot.py --config D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json"
+}
