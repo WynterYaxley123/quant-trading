@@ -113,6 +113,16 @@ def test_explicit_expected_no_bar_is_accepted_but_unknown_absence_is_not(modules
     assert m.classify(set(),set())[0]["expected_count"]==0  # calendar supplied no session obligations
 
 
+def test_staged_success_without_curated_publication_never_admits_finalized_data(modules):
+    _,m,_=modules
+    summary,missing,unpublished=m.publication_coverage({"REQUIRED"},set(),{"REQUIRED"},include_staging=False)
+    assert missing==unpublished==["REQUIRED"] and summary["received_count"]==0
+    assert summary["classification"]=="LOCAL_ENGINEERING_FAILURE" and summary["reason_code"]=="PUBLISHED_SCOPE_MISSING"
+    assert m.publication_coverage({"REQUIRED"},{"REQUIRED"},{"REQUIRED"},include_staging=False)[0]["missing_count"]==0
+    # Fetch diagnostics may see staged facts but do not authorize publication.
+    assert m.publication_coverage({"REQUIRED"},set(),{"REQUIRED"},include_staging=True)[0]["missing_count"]==0
+
+
 def test_bj_correction_requires_official_active_identity_and_byte_verified_prior_catalogue(modules):
     *_,m=modules
     rows=[{"symbol":"920001.BJ","delist_date":date(2026,9,28)},

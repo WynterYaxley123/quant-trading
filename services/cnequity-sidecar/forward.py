@@ -89,9 +89,9 @@ def failure_details(engine, run_id, session):
             "retryable": not local, "next_action": "RERUN_ONE_SHOT" if not local else "REPAIR_LOCAL_STORAGE"}
 
 
-def scope_observation(cfg, run_id, session):
+def scope_observation(cfg, run_id, session, finalized=False):
     from expected_bars import observe
-    return observe(cfg, run_id, session)
+    return observe(cfg, run_id, session, include_staging=not finalized)
 
 
 def exception_status(error):
@@ -184,7 +184,7 @@ def forward(root, source_config, export_config, target, after, *, now=None, obse
             # A tolerated success with unresolved factual keys must remain
             # retryable on a later invocation, rather than be reused forever.
             if (result["status"] == "success" and result["action"] == "REUSED_VERIFIED_JOB"
-                    and scope_observation(cfg, result["run_id"], session)["missing_count"]):
+                    and scope_observation(cfg, result["run_id"], session, True)["missing_count"]):
                 result = session_job(engine, session, force_observation=True)
                 result["action"] = "NEW_FORWARD_JOB_AFTER_UNFINALIZED_SCOPE"
             # A failed-only recovery can introduce an irrelevant research
@@ -208,10 +208,11 @@ def forward(root, source_config, export_config, target, after, *, now=None, obse
                 return {"status": "BLOCKED_DATA_INTEGRITY", "reason_code": "SUCCESS_RECEIPT_INCOMPLETE",
                         "missing_stages": missing_stages, "session": str(session),
                         "refresh_attempted": True, "receipts": receipts, "latest_finalized": journal.latest}
-            scope = scope_observation(cfg, result["run_id"], session)
+            scope = scope_observation(cfg, result["run_id"], session, True)
             receipts[-1]["daily_bars"] = scope
             if scope["missing_count"]:
-                return {"status": "WAITING_FOR_PROVIDER_DATA", "reason_code": "PROVIDER_MISSING",
+                return {"status": "BLOCKED_DATA_INTEGRITY" if scope.get("classification") == "LOCAL_ENGINEERING_FAILURE"
+                        else "WAITING_FOR_PROVIDER_DATA", "reason_code": scope.get("reason_code", "PROVIDER_MISSING"),
                         "session": str(session), "refresh_attempted": True, "receipts": receipts,
                         "latest_finalized": journal.latest}
             settings["export"]["cutoff"] = str(session)

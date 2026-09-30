@@ -44,10 +44,10 @@
     "strategies/etf_quant/simulation/lots.py": "b555f2a8f2ecea7e022d53230815ee73bb693102ea299ceb9e6674f6947d611e",
     "services/etf-quant-runner/one_shot.py": "ec284a94ee75fb3cccc72a37f81fdaaaef0bb25fba391b0493e2c36674f72aa4",
     "services/etf-quant-runner/run.py": "b1c51de77be5401865e5de1ac415a9e21dad05ebbbbe3d6ef480e36170e5ab64",
-    "services/cnequity-sidecar/forward.py": "58871ca911b080f6b134fa6999b397376c900713f2da490fb23bd1d3b43d6ad0",
+    "services/cnequity-sidecar/forward.py": "cfb14a2fdce64de31c197971e7182c11ba3d7fded04ff6c5780d76558ac6aee4",
     "services/etf-quant-api/server.mjs": "fb50b32a9d2f2f02cb013a800820ea6f109b1bd45c7ae99db8edb40468ba1231",
     "services/cnequity-sidecar/finalization.py": "c0ce3a78d41a12f67224ff8997276c2c29958d3acd7907c724397c21d2d1f971",
-    "services/cnequity-sidecar/expected_bars.py": "e6db39cad136684f09446b9fa8f68bae43e9ea5ec56e99234e7d5ded1232a80f",
+    "services/cnequity-sidecar/expected_bars.py": "a2dd2eafe814f932e46cc5f089a4b9880cf97930fa294a38a138e2fbe0e38353",
     "services/cnequity-sidecar/source_compatibility.py": "fd4194b4ef518750544ce2c1fa1ece1bf31a55c322eab09b30931eb50f2ad038",
     "services/cnequity-sidecar/bse_tip_bridge.py": "bd4675b99d556e88763b357b0239d1a8dd569bd3c71210f94a161e68934023e5",
     "services/cnequity-sidecar/status_evidence.py": "0e95241c3581fcb92bcafdcc35d16658f26d1e965388ad29ac8153e75714bb2c"
