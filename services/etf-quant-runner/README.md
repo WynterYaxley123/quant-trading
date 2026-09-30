@@ -32,6 +32,10 @@ does not support them. Prior exact-plan jobs in this entry's own
 jobs are recovered through public SDK `retry_failed_only`, which re-runs the
 finalization chain. Unknown plans and active jobs are never adopted or stolen.
 Each invocation makes at most one recovery call per session.
+If an old logical receipt is degraded but its physical batches are all settled,
+the next invocation makes one fresh normal observation instead of endlessly
+retrying no failed batches. Any non-success logical status still returns
+`WAITING_FOR_DATA` without export/model/Epoch, recording safe stage identifiers.
 
 Structured outcomes: `STARTED`, `ALREADY_PROCESSED`, `WAITING_FOR_MARKET_CLOSE`,
 `WAITING_FOR_FINALIZED_DATA`, `WAITING_FOR_PIT_EVIDENCE`, `WAITING_FOR_DATA`,

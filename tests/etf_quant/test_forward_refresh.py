@@ -32,7 +32,7 @@ def forward(tmp_path,monkeypatch):
     job_status={"status":"success"}
     class Engine:
         def __init__(self,cfg):
-            self.manifest=SimpleNamespace(list_runs=lambda name: [])
+            self.manifest=SimpleNamespace(list_runs=lambda name: [],get_dataset_results=lambda run_id: [])
         def run_job(self,name,**kw):
             events.append((name,kw))
             return {"run_id":"SYNTHETIC_"+str(kw["trade_date"]),"status":job_status["status"]}
@@ -98,7 +98,8 @@ def test_io_path_plumbing_preserves_identity_and_rejects_relative_or_other_lake(
 
 
 @pytest.mark.parametrize("state,action,calls",[("success","REUSED_VERIFIED_JOB",0),
-    ("failed","UPSTREAM_FAILED_BATCH_RECOVERY",1),("running","EXISTING_JOB_NOT_TERMINAL",0)])
+    ("failed","UPSTREAM_FAILED_BATCH_RECOVERY",1),("running","EXISTING_JOB_NOT_TERMINAL",0),
+    ("degraded","NEW_FORWARD_JOB_AFTER_DEGRADED",1)])
 def test_only_own_exact_plan_is_reused_or_recovered(forward,state,action,calls):
     import json
     m,*_=forward; events=[]; session=date(2026,9,28)
@@ -108,8 +109,11 @@ def test_only_own_exact_plan_is_reused_or_recovered(forward,state,action,calls):
         run_job=lambda name,**kw:(events.append((name,kw)) or {"run_id":"SYNTHETIC_OWN","status":"success"}))
     result=m.session_job(engine,session)
     assert result["action"]==action and len(events)==calls
-    if calls:
+    if calls and state=="failed":
         assert events[0][1]["run_id"]=="SYNTHETIC_OWN" and events[0][1]["retry_failed_only"] is True
+    if state=="degraded":
+        assert "run_id" not in events[0][1] and "retry_failed_only" not in events[0][1]
+        assert events[0][1]["steps"]==m.STEPS
     if state=="running": assert result["status"]=="pending"
 
 
@@ -122,3 +126,12 @@ def test_mismatched_plan_cannot_be_adopted(forward):
         run_job=lambda *a,**k:pytest.fail("unknown job must never be invoked"))
     with pytest.raises(ValueError,match="PLAN_IDENTITY"):
         m.session_job(engine,session)
+
+
+def test_degraded_source_is_a_data_wait_never_a_partial_export(forward,tmp_path):
+    m,events,status,config=forward;status["status"]="degraded"
+    result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,9,29),date(2026,9,24),
+        now=datetime.fromisoformat("2026-09-30T16:00:00+08:00"))
+    assert result["status"]=="WAITING_FOR_DATA" and "EXPORT" not in events
+    assert result["receipts"][0]["status"]=="degraded"
+    assert "unready_stages" in result["receipts"][0] and "snapshot_id" not in result

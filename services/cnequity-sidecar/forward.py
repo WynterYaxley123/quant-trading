@@ -38,10 +38,17 @@ def session_job(engine, session):
             raise ValueError("FORWARD_JOB_PLAN_IDENTITY_BLOCKER")
         if row["status"] == "success":
             return {"run_id": row["run_id"], "status": "success", "action": "REUSED_VERIFIED_JOB"}
-        if row["status"] in ("failed", "degraded", "warning"):
+        if row["status"] == "failed":
             result = engine.run_job(JOB, trade_date=session, steps=STEPS,
                                     run_id=row["run_id"], retry_failed_only=True)
             return {**result, "action": "UPSTREAM_FAILED_BATCH_RECOVERY"}
+        if row["status"] in ("degraded", "warning"):
+            # A tolerated missing-key warning settles worker batches as
+            # success. Failed-only retry cannot fetch those keys again and
+            # would leave the entry stuck forever on the OLD logical receipt.
+            # Make ONE normal upstream observation, with all original gates.
+            return {**engine.run_job(JOB, trade_date=session, steps=STEPS),
+                    "action": "NEW_FORWARD_JOB_AFTER_DEGRADED"}
         return {"run_id": row["run_id"], "status": "pending", "action": "EXISTING_JOB_NOT_TERMINAL"}
     return {**engine.run_job(JOB, trade_date=session, steps=STEPS), "action": "NEW_FORWARD_JOB"}
 
@@ -87,10 +94,17 @@ def forward(root, source_config, export_config, target, after, *, now=None):
         receipts = []
         for session in sessions:
             # Normal forward daily semantics, NOT backfill. No source code patch.
-            result = session_job(JobEngine(cfg), session)
+            engine = JobEngine(cfg)
+            result = session_job(engine, session)
             receipts.append({"session": str(session), "run_id": result["run_id"],
                              "status": result["status"], "action": result["action"]})
             if result["status"] != "success":
+                # Identifiers/enums only. Do not publish native stderr,
+                # response bodies, network configuration or secret values.
+                receipts[-1]["unready_stages"] = [
+                    {k: r[k] for k in ("dataset", "stage", "status", "criticality", "error_code")}
+                    for r in engine.manifest.get_dataset_results(result["run_id"])
+                    if r["status"] not in ("success", "skipped")]
                 return {"status": "WAITING_FOR_DATA", "reason": "UPSTREAM_PUBLISH_NOT_READY",
                         "refresh_attempted": True, "receipts": receipts}
         settings["export"]["cutoff"] = str(target)
