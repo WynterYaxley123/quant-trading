@@ -13,6 +13,7 @@ from .storage import GateError, json_bytes
 from .view import public_strategy
 from .formal import load_formal_contract
 from .oneshot import one_shot
+from .model_inputs import bind_model_inputs
 
 
 def main():
@@ -29,6 +30,7 @@ def main():
     parser.add_argument("--pit-source-root", type=Path)
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--pit-registry", type=Path)
+    parser.add_argument("--model-reference-snapshot", type=Path)
     args = parser.parse_args()
     if args.command == "describe":
         print(json_bytes(public_strategy()).decode())
@@ -60,6 +62,10 @@ def main():
         costs = TransactionCost(**profile.get("costs", {}))
         config = StrategyConfig(costs=costs)
         formal = args.command == "one-shot"
+        if formal and args.model_reference_snapshot is None:
+            raise GateError("EXPLICIT_MODEL_REFERENCE_REQUIRED")
+        if args.model_reference_snapshot is not None:
+            bind_model_inputs(provider, args.model_reference_snapshot)
         if formal and (args.candidate is None or args.pit_registry is None or args.execution_policy != "B40_WITH_CASH"):
             raise GateError("EXPLICIT_FORMAL_CERTIFICATION_REQUIRED")
         contract = load_formal_contract(args.candidate, args.pit_registry, registry, pit_evidence) if formal else None

@@ -136,7 +136,10 @@ def industry_provider(n=500):
             for i, day in enumerate(days):
                 price = 10 * np.exp((.0003 + .0001 * c) * i + .01 * np.sin(i / (7 + c)))
                 bars.append({"symbol": symbol, "trade_date": day, "adj_close": price, "adj_is_exact": True, "volume": 100.})
-    return SimpleNamespace(tables={"industry_membership": pd.DataFrame(members), "stock_bars": pd.DataFrame(bars)},
+    instruments = [{"symbol": r["symbol"], "asset_type": "stock", "list_date": date(2020, 1, 1),
+                    "delist_date": None, "prev_symbol": None} for r in members]
+    return SimpleNamespace(tables={"industry_membership": pd.DataFrame(members), "stock_bars": pd.DataFrame(bars),
+                                  "instruments": pd.DataFrame(instruments)},
         sessions=days, cutoff=days[-1], created_at=datetime.combine(days[-1], datetime.min.time(), TZ).replace(hour=17))
 
 

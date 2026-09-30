@@ -41,6 +41,12 @@ def certified_inputs(config):
         leaf = transport.storage.contained(REPO, name)
         if checksum(leaf) != expected:
             raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER")
+    model = json.loads((REPO/"strategies/etf_quant/config/common_model_universe_v1.json").read_bytes())
+    reference = transport.external_directory(config["model_reference_snapshot"])
+    if (reference.name != model["reference_snapshot_id"]
+            or checksum(reference/"manifest.json") != model["reference_manifest_sha256"]
+            or checksum(reference/"industry_membership.csv") != model["reference_membership_sha256"]):
+        raise transport.GateError("FORMAL_MODEL_REFERENCE_BINDING_BLOCKER")
     return pins
 
 
@@ -143,11 +149,13 @@ def _run_once(config, control, *, now=None):
     runtime = transport.external_directory(runtime)
     evidence_root = transport.external_directory(config["evidence_root"])
     source_root = transport.external_directory(config["pit_source_root"])
+    model_reference = transport.external_directory(config["model_reference_snapshot"])
     docker = config["docker_executable"]
     snapshot_target = "/snapshot/" + snapshot.name
     mounts = [(REPO,"/workspace",True), (snapshot,snapshot_target,True), (runtime,"/shadow",False),
               (evidence_root,"/strict-evidence",True), (source_root,"/pit-sources",True),
-              (profile,"/profile.json",True), (Path(config["pit_evidence"]),"/pit-book.json",True)]
+              (profile,"/profile.json",True), (Path(config["pit_evidence"]),"/pit-book.json",True),
+              (model_reference,"/model-reference/" + model_reference.name,True)]
     argv = [docker,"run","--rm"]
     for src, dest, readonly in mounts:
         argv += ["--mount", f"type=bind,source={src},target={dest}" + (",readonly" if readonly else "")]
@@ -159,6 +167,7 @@ def _run_once(config, control, *, now=None):
         "--pit-evidence","/pit-book.json","--pit-source-root","/pit-sources",
         "--candidate","/workspace/reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json",
         "--pit-registry","/workspace/reports/etf_quant/production_pit_evidence_registry_v1.json"]
+    argv += ["--model-reference-snapshot", "/model-reference/" + model_reference.name]
     with transport.transport_lock(runtime):
         result = transport.call(argv, timeout=3600)
     response = transport.result_json(result)
@@ -178,7 +187,8 @@ def main():
     except transport.GateError as error:
         result = {"status": "BLOCKED_CODE_INTEGRITY" if error.code in
                   ("FORMAL_CERTIFIED_INPUT_HASH_BLOCKER", "FORMAL_IMPLEMENTATION_HASH_BLOCKER",
-                   "CLEAN_COMMITTED_INTEGRATION_REQUIRED", "FORMAL_INTEGRATION_BRANCH_REQUIRED")
+                   "CLEAN_COMMITTED_INTEGRATION_REQUIRED", "FORMAL_INTEGRATION_BRANCH_REQUIRED",
+                   "FORMAL_MODEL_REFERENCE_BINDING_BLOCKER")
                   else "BLOCKED_DATA_INTEGRITY", "reason_code": error.code,
                   "classification": "LOCAL_ENGINEERING_FAILURE"}
     except Exception as error:

@@ -53,6 +53,11 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
         raise GateError("CLASSIFICATION_VERSION_BLOCKER")
     taxonomy = default_taxonomy() if taxonomy is None else taxonomy
     members = provider.tables["industry_membership"]
+    contract = getattr(provider, "model_input_contract", None)
+    seed = getattr(provider, "model_membership_seed", None)
+    if seed is not None:
+        # Model-only historical bootstrap, never current execution PIT.
+        members = pd.concat([seed, members.loc[members.as_of_date > seed.as_of_date.max()]], ignore_index=True)
     bars = provider.tables["stock_bars"]
     if members.empty or bars.empty:
         raise GateError("SOURCE_C_INPUT_BLOCKER")
@@ -66,19 +71,22 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
         resolved = {code: taxonomy.level2_of(code) for code in set(members.industry_code)}
     except TaxonomyError as error:
         raise GateError(error.code, error.details) from error
-    days = tuple(d for d in provider.sessions if d <= provider.cutoff)
+    first = date.fromisoformat(contract["warmup_start"]) if contract else None
+    days = tuple(d for d in provider.sessions if d <= provider.cutoff and (first is None or d >= first))
     universe = tuple(sorted(set(resolved.values())))
     if len(universe) < 5:
         raise GateError("INSUFFICIENT_INDUSTRY_UNIVERSE")
     records = {(r["symbol"], r["trade_date"]): r for r in bars.to_dict("records")}
+    instruments = {r["symbol"]: r for r in provider.tables["instruments"].to_dict("records")}
     changes = {}
     for r in members.to_dict("records"):
         changes.setdefault(r["as_of_date"], []).append(r)
     active, levels, started, broken, result, audit = {}, {}, set(), set(), [], []
     for i, day in enumerate(days):
         for change_day in sorted(d for d in changes if d <= day):
-            for row in changes.pop(change_day):
-                active[row["symbol"]] = resolved[row["industry_code"]]
+            # Reference membership snapshots replace the complete constituent
+            # set. Retaining absent symbols invents members after removal.
+            active = {r["symbol"]: resolved[r["industry_code"]] for r in changes.pop(change_day)}
         closes = {}
         for code in universe:
             symbols = sorted(s for s, c in active.items() if c == code)
@@ -90,13 +98,16 @@ def build_industry_series(provider, *, min_constituents=5, coverage_threshold=.8
                 valid = all(r is not None and r["adj_is_exact"] is True
                             and np.isfinite(r["adj_close"]) and r["adj_close"] > 0
                             and r["volume"] > 0 for r in needed)
+                if code in started:
+                    inst = instruments.get(symbol)
+                    valid = valid and inst is not None and inst.get("asset_type") != "cdr" and symbol != "689009.SH"
                 if not valid:
                     rejected.append(symbol)
                     continue
                 values.append(cur["adj_close"] / prev["adj_close"] - 1 if code in started else 0.)
             ratio = len(values) / len(symbols) if symbols else 0.
             valid = len(values) >= min_constituents and ratio >= coverage_threshold
-            daily_return = float(np.mean(values)) if valid and code in started else None
+            daily_return = sum(values) / len(values) if valid and code in started else None
             status = "VALID" if valid and code not in broken else "INVALID"
             if status == "VALID":
                 levels[code] = levels[code] * (1 + daily_return) if code in started else 1000.

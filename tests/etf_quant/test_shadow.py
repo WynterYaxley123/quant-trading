@@ -31,7 +31,9 @@ def inputs(tmp_path, end="2026-09-23", empty=False):
     p.cutoff = days[-1]
     p.created_at = datetime.combine(days[-1], datetime.min.time(), TZ).replace(hour=17)
     e = etf_provider()
+    stock_instruments = p.tables["instruments"]
     p.tables.update(e.tables)
+    p.tables["instruments"] = pd.concat([e.tables["instruments"], stock_instruments], ignore_index=True)
     p.tables["etf_bars"] = p.tables["etf_bars"].loc[p.tables["etf_bars"].trade_date <= p.cutoff].copy()
     p.tables["trading_status"] = p.tables["trading_status"].loc[p.tables["trading_status"].trade_date <= p.cutoff].copy()
     p.tables["trading_calendar"] = pd.DataFrame({"trade_date": p.sessions, "is_trading": True})

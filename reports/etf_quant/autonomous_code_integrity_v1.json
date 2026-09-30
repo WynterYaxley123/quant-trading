@@ -30,19 +30,19 @@
     "strategies/etf_quant/portfolio/partial.py": "83271957f1e0d087218bfebd58351295dd84be70f88b1dd234e3bf1d8b390ac3",
     "strategies/etf_quant/portfolio/policy.py": "fdec98f7704090d3456c145b81f308ea56844dc95a2ec76ad23e5715a82d5a19",
     "strategies/etf_quant/runtime/__init__.py": "16dda17016774710bcc2efd322d816ebac96a39cba8ec1fb6467990d2b34360d",
-    "strategies/etf_quant/runtime/cli.py": "a974ab56f966fe201384d67162f9fc41c9adf2b960f54c7b41eb21bd2cfbd87e",
+    "strategies/etf_quant/runtime/cli.py": "46678492994689048930b1d067c2a453015e1e35484086ff76d72fe8dfe56087",
     "strategies/etf_quant/runtime/exports.py": "20be4627b02d2db0392a54638d1c1337c15c694df10c9b93d64f5ec75ef196eb",
     "strategies/etf_quant/runtime/formal.py": "4dc79b1d1ca96bcd3f760d4291cf531ba372d61337121505cd4211ec9898f4cf",
-    "strategies/etf_quant/runtime/industry.py": "8083b7a31603530a0e36a9646234f3fe3771ea42a2f89d4c8da5932adabd8704",
+    "strategies/etf_quant/runtime/industry.py": "8760f92db8009b545cd90093363c7b2664bf47a4f8d47c97b8823d2b003b9f91",
     "strategies/etf_quant/runtime/oneshot.py": "dd46ff26c08b3a0892bf820d45d24bb302425e786d70c52c6779a6efd3564c0f",
-    "strategies/etf_quant/runtime/prediction.py": "55c5ea0252dbebc1ebbc36836d71fc2e8b7265362991407bb91ce96e17425acd",
-    "strategies/etf_quant/runtime/shadow.py": "1a4c954afd2e2e8ae125e56bc4e9f9ce8d8a0af848245e2b914bc5a5298a4d35",
+    "strategies/etf_quant/runtime/prediction.py": "452f7ec969df0b7139dd1aa7023a95e0c38681582dea28090719c6626326185c",
+    "strategies/etf_quant/runtime/shadow.py": "35bc26035083a84ad18153020bb73d3840fe993bef7fbcaa77cb2f6dc8edc62b",
     "strategies/etf_quant/runtime/storage.py": "3c4fede1b288583675df27e42dcff89312e227cb3be51bdae862056653106e47",
     "strategies/etf_quant/runtime/view.py": "132ed9b295ae8e526fc45c2894e96914d425f07467413852ac7e947a27425bb6",
     "strategies/etf_quant/schemas/__init__.py": "71f64c180a8d42a18325a2624e77d69050d90e89dad9b5d349219eb4882fdedb",
     "strategies/etf_quant/simulation/__init__.py": "f9d051a3b6acf85fd5a3a5d1e067f848b423069986f876bb9e678d14cf302346",
     "strategies/etf_quant/simulation/lots.py": "b555f2a8f2ecea7e022d53230815ee73bb693102ea299ceb9e6674f6947d611e",
-    "services/etf-quant-runner/one_shot.py": "d0e8c3e221847e6e078b6b75e4ab4afcbbd7f94fadbd1f02bb350356f1eac2e9",
+    "services/etf-quant-runner/one_shot.py": "03ce9e9ab9a6fd01c4c330dc1018a41fb0090744b3238f59725253679432f562",
     "services/etf-quant-runner/run.py": "b1c51de77be5401865e5de1ac415a9e21dad05ebbbbe3d6ef480e36170e5ab64",
     "services/cnequity-sidecar/forward.py": "cfb14a2fdce64de31c197971e7182c11ba3d7fded04ff6c5780d76558ac6aee4",
     "services/etf-quant-api/server.mjs": "fb50b32a9d2f2f02cb013a800820ea6f109b1bd45c7ae99db8edb40468ba1231",
@@ -50,6 +50,9 @@
     "services/cnequity-sidecar/expected_bars.py": "a2dd2eafe814f932e46cc5f089a4b9880cf97930fa294a38a138e2fbe0e38353",
     "services/cnequity-sidecar/source_compatibility.py": "fd4194b4ef518750544ce2c1fa1ece1bf31a55c322eab09b30931eb50f2ad038",
     "services/cnequity-sidecar/bse_tip_bridge.py": "bd4675b99d556e88763b357b0239d1a8dd569bd3c71210f94a161e68934023e5",
-    "services/cnequity-sidecar/status_evidence.py": "0e95241c3581fcb92bcafdcc35d16658f26d1e965388ad29ac8153e75714bb2c"
-  }
+    "services/cnequity-sidecar/status_evidence.py": "0e95241c3581fcb92bcafdcc35d16658f26d1e965388ad29ac8153e75714bb2c",
+    "strategies/etf_quant/runtime/model_inputs.py": "f9997f404675e08656099424256c282400b683a703f29b57d4c26f27a32ae0be",
+    "strategies/etf_quant/config/common_model_universe_v1.json": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5"
+  },
+  "model_input_semantics": "ADMITTED_COMMON_MODEL_UNIVERSE_V1_FROZEN_SOURCE_C_REFERENCE_CONFORMANCE"
 }

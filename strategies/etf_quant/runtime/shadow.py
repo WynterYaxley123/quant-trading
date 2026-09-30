@@ -224,6 +224,8 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
     if execution_policy == POLICY_B40_WITH_CASH:
         strategy.update(execution_policy=execution_policy, rebalance=REBALANCE_TRIGGER,
                         cash_semantics="UNALLOCATED_EXECUTION_CAPACITY")
+    if getattr(provider, "model_input_contract", None):
+        strategy["model_input_contract_sha256"] = provider.model_input_contract["contract_sha256"]
     strategy_hash = digest(json_bytes(strategy))
     mapping_hash = (registry.sha256 if execution_policy == "STRICT_TOP5" else digest(json_bytes({
         "execution_policy": execution_policy, "registry_identity": registry.identity,
