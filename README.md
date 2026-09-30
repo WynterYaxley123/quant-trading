@@ -131,12 +131,14 @@ Shadow 与标准 GitHub PR 同步来自明确用户授权。
 
 ## 验证
 
-本轮最终结果见 release metadata 的 tests.current_closure，收尾时同步以下摘要；不伪造 CI badge。
-既有 baseline：targeted128、API/security68、full ETF610 passed /1 skipped /0 failed。
+本轮 release 验证：targeted **128/0/0**，API/security **77/0/0**，Research API unit **18/0/0**，
+frontend unit **104/3/0**，full ETF **610/1/0**（passed/skipped/failed）。Typecheck、lint、build 均 PASS。
+3 个 frontend skip 为未配置真实 Development artifact 的既有可选 integration tests；不读取 sealed performance。
+完整摘要与静态生成时间见 release metadata 的 tests.current_closure；不伪造 CI badge。
 
 ```text
 Docker: python -B -m pytest -q -p no:cacheprovider tests/etf_quant tests/test_etf_evidence_diagnostics.py tests/test_etf_proxy_mapping_policy.py
-ETF API/security: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/tests/*.test.mjs
+ETF API/security: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/security-audit.test.mjs
 Research API: pnpm --dir services/research-api test:unit && pnpm --dir services/research-api typecheck
 Frontend: pnpm --dir dashboard test --maxWorkers=1
 Frontend: pnpm --dir dashboard typecheck && pnpm --dir dashboard lint && pnpm --dir dashboard build

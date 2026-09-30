@@ -1,10 +1,10 @@
 {
   "project": "ETF-Quant V1",
-  "release_status": "SHADOW_READY_CONSOLE_VERIFICATION_IN_PROGRESS",
-  "generated_at": "2026-09-30T17:28:24.840Z",
+  "release_status": "SHADOW_READY_PRODUCTION_USABLE",
+  "generated_at": "2026-09-30T17:55:06.082Z",
   "as_of": "2026-10-01",
-  "code_sha": "042154268563d595f23d81e760d251e67f701aea",
-  "code_sha_scope": "Last certified frozen model implementation; final console implementation SHA recorded after release checks.",
+  "code_sha": "00e675b51e1732ef8e922fd8edcfdbd9992bd896",
+  "code_sha_scope": "Tested operations-console implementation commit; later documentation commit does not alter runtime code. Final remote HEAD is obtained from the branch/PR.",
   "candidate_hash": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
   "pit_registry_hash": "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc",
   "strict_registry_hash": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
@@ -72,16 +72,18 @@
   "github": {
     "repository": "WynterYaxley123/quant-trading",
     "branch": "integration/etf-quant-v1-shadow-autonomous-final",
-    "commit": null,
+    "commit": "00e675b51e1732ef8e922fd8edcfdbd9992bd896",
     "default_branch": "main",
-    "status": "NOT_YET_SYNCHRONIZED"
+    "status": "READY_FOR_STANDARD_PR_SYNCHRONIZATION_AS_OF_CERTIFICATE",
+    "final_head_semantics": "Certificate commit cannot self-reference its SHA; actual final integration/merge SHA is recorded in external final_delivery_state_v1.json and GitHub."
   },
   "readme": {
     "version": "ETF_QUANT_V1_FINAL_PROJECT_CLOSURE",
-    "updated_at": "2026-09-30T17:28:24.840Z"
+    "updated_at": "2026-09-30T17:55:06.082Z",
+    "sha256_scope": "README content verified in the same final documentation commit"
   },
-  "dashboard": "VERIFICATION_IN_PROGRESS",
-  "api": "VERIFICATION_IN_PROGRESS",
+  "dashboard": "PASS",
+  "api": "PASS",
   "tests": {
     "previous_certified": {
       "targeted": {
@@ -103,7 +105,37 @@
         "log_sha256": "20aad33af42acd2f7a7040f7ada5ab11cbb000be3bf4a87b3c702db437a37b8c"
       }
     },
-    "current_closure": null
+    "current_closure": {
+      "targeted": {
+        "passed": 128,
+        "skipped": 0,
+        "failed": 0
+      },
+      "api_security": {
+        "passed": 77,
+        "skipped": 0,
+        "failed": 0
+      },
+      "research_api_unit": {
+        "passed": 18,
+        "skipped": 0,
+        "failed": 0
+      },
+      "frontend_unit": {
+        "passed": 104,
+        "skipped": 3,
+        "failed": 0
+      },
+      "typecheck": "PASS",
+      "research_api_typecheck": "PASS",
+      "lint": "PASS",
+      "build": "PASS",
+      "full_etf": {
+        "passed": 610,
+        "skipped": 1,
+        "failed": 0
+      }
+    }
   },
   "authority": {
     "model": "codex_frozen_model_contract_reconciliation_v1",
@@ -116,5 +148,31 @@
   "superseded_failure_codes": [
     "MODEL_WARMUP_INCOMPLETE"
   ],
-  "superseded_before": "2026-10-01T00:45:20.176687+08:00"
+  "superseded_before": "2026-10-01T00:45:20.176687+08:00",
+  "console_contract": "CURRENT_ETF_QUANT_STATUS_V1",
+  "console_read_only": true,
+  "console_smoke": {
+    "http_status": 200,
+    "statuses": {
+      "status": 200,
+      "current": 200,
+      "readiness": 200,
+      "portfolio/summary": 200,
+      "portfolio/holdings": 200,
+      "trades": 200,
+      "mappings": 200,
+      "health": 200
+    },
+    "browser_errors": 0,
+    "browser_warnings": 0,
+    "routes": [
+      "overview",
+      "readiness",
+      "portfolio",
+      "trades",
+      "mappings"
+    ],
+    "formal_namespace_empty_is_normal": true
+  },
+  "remaining_engineering_work": "NONE"
 }
