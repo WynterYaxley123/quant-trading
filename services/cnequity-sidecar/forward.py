@@ -6,8 +6,7 @@ import argparse
 from contextlib import redirect_stdout
 from datetime import date, datetime, time, timezone
 import json
-import os
-from pathlib import Path, PureWindowsPath
+from pathlib import Path
 import sys
 import tomllib
 
@@ -47,17 +46,23 @@ def session_job(engine, session):
     return {**engine.run_job(JOB, trade_date=session, steps=STEPS), "action": "NEW_FORWARD_JOB"}
 
 
-def extended_path_text(value):
-    """Local Windows filename plumbing, not a lake/source/methodology change."""
-    path = PureWindowsPath(value)
-    if not path.is_absolute():
+def configure_io_root(cfg, paths):
+    r"""Optional explicit short alias, authenticated as the SAME physical lake.
+
+    Windows native DuckDB globs do not accept \\?\ paths, while atomic raw
+    archive filenames exceed MAX_PATH below the original long root. A local
+    directory junction fixes both without changing SDK/global Windows settings.
+    Existing storage link/containment checks remain entirely upstream-owned.
+    """
+    export_lake = Path(paths["lake_root"])
+    io_root = Path(paths.get("lake_io_root", paths["lake_root"]))
+    if not export_lake.is_absolute() or not io_root.is_absolute():
         raise ValueError("EXPLICIT_ABSOLUTE_LAKE_REQUIRED")
-    text = str(path)
-    if text.startswith("\\\\?\\"):
-        return text
-    if text.startswith("\\\\"):
-        return "\\\\?\\UNC\\" + text[2:]
-    return "\\\\?\\" + text
+    if not export_lake.samefile(cfg.data_root) or not io_root.samefile(cfg.data_root):
+        raise ValueError("SOURCE_LAKE_CONFIG_MISMATCH")
+    # Preserve lexical short spelling for RawPayloadArchive; resolving here
+    # would recreate the long pathname. Readers still validate real identity.
+    cfg.data_root = io_root
 
 
 def forward(root, source_config, export_config, target, after, *, now=None):
@@ -71,17 +76,8 @@ def forward(root, source_config, export_config, target, after, *, now=None):
     if target > current.date() or target == current.date() and current.time() < time(15, 5):
         return {"status": "WAITING_FOR_MARKET_CLOSE", "refresh_attempted": False}
     cfg = load_config(source_config)
-    if os.name == "nt":
-        # RawArchive's two hashes plus mkstemp suffix exceed legacy MAX_PATH.
-        # CPython's explicit extended-length path reaches the SAME filesystem
-        # location. No registry/global setting or upstream file is modified.
-        original = cfg.data_root
-        cfg.data_root = Path(extended_path_text(str(original)))
-        if not cfg.data_root.samefile(original):
-            raise ValueError("SOURCE_LAKE_CONFIG_MISMATCH")
     settings = tomllib.loads(export_config.read_text(encoding="utf-8"))
-    if not Path(settings["paths"]["lake_root"]).samefile(cfg.data_root):
-        raise ValueError("SOURCE_LAKE_CONFIG_MISMATCH")
+    configure_io_root(cfg, settings["paths"])
     with proxy_policy("direct"):
         calendar = load("trading_calendar", start=str(after), end=str(target), data_root=cfg.data_root)
         sessions = sorted(r["trade_date"] for r in calendar.to_dicts()

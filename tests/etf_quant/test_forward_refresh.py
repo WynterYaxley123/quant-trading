@@ -82,13 +82,19 @@ def test_missing_official_calendar_fails_closed(forward,tmp_path):
     assert result["status"]=="WAITING_FOR_DATA" and events==["VERIFY_PIN"]
 
 
-def test_windows_long_path_plumbing_preserves_identity_and_rejects_relative(forward):
+def test_io_path_plumbing_preserves_identity_and_rejects_relative_or_other_lake(forward,tmp_path):
     m,*_=forward
-    assert m.extended_path_text(r"D:\Synthetic\lake") == "\\\\?\\D:\\Synthetic\\lake"
-    assert m.extended_path_text("\\\\?\\D:\\Synthetic\\lake") == "\\\\?\\D:\\Synthetic\\lake"
-    assert m.extended_path_text(r"\\synthetic\share\lake") == "\\\\?\\UNC\\synthetic\\share\\lake"
+    root=tmp_path/"lake"; cfg=SimpleNamespace(data_root=root)
+    m.configure_io_root(cfg,{"lake_root":str(root)})
+    assert cfg.data_root==root
+    alias=tmp_path/"alias"; alias.symlink_to(root,target_is_directory=True)
+    m.configure_io_root(cfg,{"lake_root":str(root),"lake_io_root":str(alias)})
+    assert cfg.data_root==alias and cfg.data_root.samefile(root)
     with pytest.raises(ValueError,match="ABSOLUTE"):
-        m.extended_path_text("relative/lake")
+        m.configure_io_root(cfg,{"lake_root":str(root),"lake_io_root":"relative/lake"})
+    other=tmp_path/"different"; other.mkdir()
+    with pytest.raises(ValueError,match="MISMATCH"):
+        m.configure_io_root(cfg,{"lake_root":str(root),"lake_io_root":str(other)})
 
 
 @pytest.mark.parametrize("state,action,calls",[("success","REUSED_VERIFIED_JOB",0),

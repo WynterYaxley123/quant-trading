@@ -20,6 +20,19 @@ manifest hash. A same-T committed signal returns `ALREADY_PROCESSED` **before**
 refresh, so it cannot generate another Epoch/signal/intent. The control lock
 serializes the entire operation; the account lock remains exclusive.
 
+On Windows the external export configuration may supply `paths.lake_io_root`,
+a human/audit-visible short directory junction to the **same physical** existing
+lake. The runner proves `samefile` against the pinned source and export roots.
+It changes only in-memory filename spelling, not SDK bytes or OS global settings.
+The deployment alias is `D:/QuantForge/etf-lake`; the canonical physical root
+remains `D:/QuantForge/external/cnequity-etf-quant-v1/lake-minimal`. No directory
+is moved/copied. Extended `\\?\` paths are not used because native DuckDB glob
+does not support them. Prior exact-plan jobs in this entry's own
+`etf_quant_forward` namespace are reused only if successful; terminal failed
+jobs are recovered through public SDK `retry_failed_only`, which re-runs the
+finalization chain. Unknown plans and active jobs are never adopted or stolen.
+Each invocation makes at most one recovery call per session.
+
 Structured outcomes: `STARTED`, `ALREADY_PROCESSED`, `WAITING_FOR_MARKET_CLOSE`,
 `WAITING_FOR_FINALIZED_DATA`, `WAITING_FOR_PIT_EVIDENCE`, `WAITING_FOR_DATA`,
 `READY_NO_SIGNAL`, `BLOCKED_INTEGRITY`. Waiting is factual, not authorization to
