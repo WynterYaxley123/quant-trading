@@ -14,6 +14,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -38,7 +39,8 @@ AFTER = datetime(2026, 10, 1, 9, 0, tzinfo=TZ)
 BEFORE = datetime(2026, 9, 30, 18, 4, 59, tzinfo=TZ)
 HASHES = ("a" * 64, "b" * 64)
 
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
+RUNTIME = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
+                            r"D:\QuantForge\runtime\etf-quant-v1")) / "production-pit-evidence-v1"
 PACKAGES = RUNTIME / "packages"
 SUMMARY = (Path(__file__).resolve().parents[2] / "reports" / "etf_quant"
            / "production_strict_pit_evidence_summary_v1.json")

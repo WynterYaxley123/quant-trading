@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from pathlib import Path
 
 import pytest
@@ -46,7 +47,8 @@ from strategies.etf_quant.portfolio.policy import (
     softmax,
 )
 
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\proxy-policy-finalization-v1")
+RUNTIME = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
+                            r"D:\QuantForge\runtime\etf-quant-v1")) / "proxy-policy-finalization-v1"
 
 #: Deterministic synthetic signal set. Scores are chosen so that one industry takes a cap breach,
 #: which is what forces the two cap rules apart.

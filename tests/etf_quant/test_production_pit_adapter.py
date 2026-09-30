@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timedelta, timezone
 import json
+import os
 from pathlib import Path
 import shutil
 from types import SimpleNamespace
@@ -37,7 +38,8 @@ from strategies.etf_quant.runtime.storage import GateError, digest, json_bytes
 from test_registry_sidecar import registry_doc
 
 TZ = timezone(timedelta(hours=8))
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
+RUNTIME = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
+                            r"D:\QuantForge\runtime\etf-quant-v1")) / "production-pit-evidence-v1"
 BOOK = RUNTIME / "adapter-tests" / "production_evidence_book_v1.json"
 SOURCE_ROOT = RUNTIME / "adapter-sources"
 REGISTRY = RUNTIME / "reports" / "production_pit_evidence_registry_v1.json"

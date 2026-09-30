@@ -15,20 +15,23 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 import re
 
 import pytest
 
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
+EXTERNAL_ROOT = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
+                                    r"D:\QuantForge\runtime\etf-quant-v1"))
+RUNTIME = EXTERNAL_ROOT / "production-pit-evidence-v1"
 BOOK = RUNTIME / "adapter-tests" / "production_evidence_book_v1.json"
 SOURCE_ROOT = RUNTIME / "adapter-sources"
 REGISTRY = RUNTIME / "reports" / "production_pit_evidence_registry_v1.json"
 MANIFEST = RUNTIME / "reports" / "raw_source_manifest_v1.json"
 BUILD_REPORT = RUNTIME / "reports" / "build_report_v1.json"
 PACKAGES = RUNTIME / "packages"
-SIDECAR = Path(r"D:\QuantForge\runtime\etf-quant-v1\proxy-exposure-v1\subagents"
-               r"\subagent-c-sw-membership\stock_to_l2_v1.json")
+SIDECAR = (EXTERNAL_ROOT / "proxy-exposure-v1" / "subagents"
+           / "subagent-c-sw-membership" / "stock_to_l2_v1.json")
 
 OFFICIAL_SUFFIXES = ("csindex.com.cn", "cnindex.com.cn", "sse.com.cn", "szse.cn",
                      "swsresearch.com")
@@ -310,7 +313,7 @@ def test_packages_are_append_only_and_never_reuse_a_hash_for_different_bytes():
 # F. Cross-check against the research sidecar (never a production substitute)
 # ---------------------------------------------------------------------------
 
-def test_official_classification_is_cross_checked_against_the_research_sidecar():
+def test_official_classification_is_cross_checked_against_the_research_sidecar(tmp_path):
     _require(SIDECAR)
     sidecar = _load(SIDECAR)
     research = {key.split(".")[0]: value for key, value in sidecar["members"].items()}
@@ -329,7 +332,7 @@ def test_official_classification_is_cross_checked_against_the_research_sidecar()
     report = {"official_rows": len(official), "research_rows": len(research),
               "shared": len(shared), "match": len(match), "mismatch": len(mismatch),
               "official_only": len(missing), "mismatch_codes": mismatch[:50]}
-    (RUNTIME / "reports" / "classification_cross_check_v1.json").write_text(
+    (tmp_path / "classification_cross_check_v1.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     assert isinstance(mismatch, list)
 

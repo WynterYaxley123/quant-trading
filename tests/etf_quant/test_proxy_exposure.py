@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from pathlib import Path
 
 import pytest
@@ -50,7 +51,8 @@ from strategies.etf_quant.mapping.proxy import (
 )
 
 WORKTREE = Path(__file__).resolve().parents[2]
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\proxy-exposure-v1")
+RUNTIME = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
+                            r"D:\QuantForge\runtime\etf-quant-v1")) / "proxy-exposure-v1"
 
 #: A tiny two-sector benchmark universe. Deliberately NOT equal-weighted, so an implementation
 #: that quietly assumes equal weights produces a different answer and fails.
