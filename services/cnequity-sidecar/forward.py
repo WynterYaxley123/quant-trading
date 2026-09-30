@@ -6,7 +6,8 @@ import argparse
 from contextlib import redirect_stdout
 from datetime import date, datetime, time, timezone
 import json
-from pathlib import Path
+import os
+from pathlib import Path, PureWindowsPath
 import sys
 import tomllib
 
@@ -53,12 +54,29 @@ def session_job(engine, session):
     return {**engine.run_job(JOB, trade_date=session, steps=STEPS), "action": "NEW_FORWARD_JOB"}
 
 
+def windows_storage_path_gate(root):
+    """Both lexical writer and resolved containment paths must fit Win32.
+
+    Model the pinned RawArchive + atomic writer filename, not market data.
+    DuckDB also cannot consume an extended-length glob. No SDK guard is patched.
+    """
+    root = PureWindowsPath(root)
+    if not root.is_absolute() or str(root).startswith("\\\\?\\"):
+        raise ValueError("WINDOWS_NORMAL_ABSOLUTE_IO_ROOT_REQUIRED")
+    probe = (root / "meta/raw/corporate_actions/source=eastmoney/captured_date=2000-01-01"
+             / ("." + "a"*64 + "." + "b"*64 + ".json." + "c"*8 + ".tmp"))
+    if len(str(probe).encode("utf-16-le")) // 2 >= 260:
+        raise ValueError("WINDOWS_SHORT_PHYSICAL_IO_ROOT_REQUIRED")
+
+
 def configure_io_root(cfg, paths):
     r"""Optional explicit short alias, authenticated as the SAME physical lake.
 
     Windows native DuckDB globs do not accept \\?\ paths, while atomic raw
     archive filenames exceed MAX_PATH below the original long root. A local
-    directory junction fixes both without changing SDK/global Windows settings.
+    short PHYSICAL root fixes both, with the old access path retained by junction.
+    A short junction to a long physical root is insufficient: resolve() can add
+    an extended prefix only to the long leaf, breaking upstream containment.
     Existing storage link/containment checks remain entirely upstream-owned.
     """
     export_lake = Path(paths["lake_root"])
@@ -67,6 +85,9 @@ def configure_io_root(cfg, paths):
         raise ValueError("EXPLICIT_ABSOLUTE_LAKE_REQUIRED")
     if not export_lake.samefile(cfg.data_root) or not io_root.samefile(cfg.data_root):
         raise ValueError("SOURCE_LAKE_CONFIG_MISMATCH")
+    if os.name == "nt":
+        windows_storage_path_gate(str(io_root))
+        windows_storage_path_gate(str(io_root.resolve(strict=True)))
     # Preserve lexical short spelling for RawPayloadArchive; resolving here
     # would recreate the long pathname. Readers still validate real identity.
     cfg.data_root = io_root

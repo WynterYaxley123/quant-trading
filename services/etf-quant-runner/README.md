@@ -21,12 +21,18 @@ refresh, so it cannot generate another Epoch/signal/intent. The control lock
 serializes the entire operation; the account lock remains exclusive.
 
 On Windows the external export configuration may supply `paths.lake_io_root`,
-a human/audit-visible short directory junction to the **same physical** existing
-lake. The runner proves `samefile` against the pinned source and export roots.
-It changes only in-memory filename spelling, not SDK bytes or OS global settings.
-The deployment alias is `D:/QuantForge/etf-lake`; the canonical physical root
-remains `D:/QuantForge/external/cnequity-etf-quant-v1/lake-minimal`. No directory
-is moved/copied. Extended `\\?\` paths are not used because native DuckDB glob
+a human/audit-visible short physical path to the **same** existing lake. The
+runner proves `samefile` against the pinned source and export roots, and verifies
+both lexical and resolved Windows raw-archive paths fit the pinned writer.
+The physical directory was recoverably renamed on the same volume to
+`D:/QuantForge/etf-lake`; the prior access path
+`D:/QuantForge/external/cnequity-etf-quant-v1/lake-minimal` remains a junction to it.
+The former short-to-long junction is retained as `etf-lake-link-before-relocation`.
+File identities and published Parquet byte fingerprints are verified before/after;
+no file is deleted, copied or rewritten by this relocation, and no SDK/global
+settings change is made. A short junction TO a long physical root is insufficient:
+long leaf resolve() may add an extended prefix and trip the unchanged containment
+check. Extended `\\?\` paths are not used because native DuckDB glob
 does not support them. Prior exact-plan jobs in this entry's own
 `etf_quant_forward` namespace are reused only if successful; terminal failed
 jobs are recovered through public SDK `retry_failed_only`, which re-runs the

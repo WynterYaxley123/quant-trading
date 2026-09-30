@@ -135,3 +135,12 @@ def test_degraded_source_is_a_data_wait_never_a_partial_export(forward,tmp_path)
     assert result["status"]=="WAITING_FOR_DATA" and "EXPORT" not in events
     assert result["receipts"][0]["status"]=="degraded"
     assert "unready_stages" in result["receipts"][0] and "snapshot_id" not in result
+
+
+def test_windows_raw_path_gate_covers_resolved_long_root_and_extended_globs(forward):
+    m,*_=forward
+    m.windows_storage_path_gate(r"D:\QuantForge\etf-lake")
+    with pytest.raises(ValueError,match="SHORT_PHYSICAL"):
+        m.windows_storage_path_gate(r"D:\QuantForge\external\cnequity-etf-quant-v1\lake-minimal")
+    with pytest.raises(ValueError,match="NORMAL_ABSOLUTE"):
+        m.windows_storage_path_gate("\\\\?\\D:\\QuantForge\\etf-lake")
