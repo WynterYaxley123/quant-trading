@@ -58,7 +58,7 @@ _REGISTRY_PATH: Path | None = None
 PATCHED = False
 
 
-def enable(*, registry_path: Path | None = None) -> dict[str, Any]:
+def enable(*, registry_path: Path | None = None, board_session: dt.date | None = None) -> dict[str, Any]:
     """Install the tip-board shim. Idempotent.
 
     Returns a summary describing what was installed, for the run journal.
@@ -77,11 +77,14 @@ def enable(*, registry_path: Path | None = None) -> dict[str, Any]:
     def fetch_bse_instruments_tip(trade_date: dt.date, *, client=None, config=None):
         """Serve a historical request from the current tip board, honestly."""
         observed_at = shanghai_today()
-        if trade_date == observed_at:
-            board = original(trade_date, client=client, config=config)
+        snapshot_session = board_session or observed_at
+        if snapshot_session > observed_at:
+            raise ValueError("FUTURE_BSE_IDENTITY_SNAPSHOT_REJECTED")
+        if trade_date == snapshot_session:
+            board = original(snapshot_session, client=client, config=config)
             source = "BSE_TIP_BOARD_SAME_DAY"
         else:
-            board = original(observed_at, client=client, config=config)
+            board = original(snapshot_session, client=client, config=config)
             source = "BSE_TIP_BOARD"
             if board.height:
                 logger.info(
@@ -97,6 +100,7 @@ def enable(*, registry_path: Path | None = None) -> dict[str, Any]:
                     "asset_type": "stock",
                     "identity_source": source,
                     "identity_observed_at": observed_at.isoformat(),
+                    "source_snapshot_session": snapshot_session.isoformat(),
                     "requested_trade_date": trade_date.isoformat(),
                     "effective_from": "UNKNOWN",
                     "historical_pit_proven": False,

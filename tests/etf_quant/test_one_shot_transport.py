@@ -33,7 +33,7 @@ def config(tmp_path, module, cutoff="2026-09-30"):
 @pytest.mark.parametrize("now,status", [
     ("2026-09-30T06:00:00+00:00","WAITING_FOR_MARKET_CLOSE"),
     ("2026-10-01T10:00:00+00:00","READY_NO_SIGNAL"),
-    ("2026-10-02T10:00:00+00:00","WAITING_FOR_DATA"),
+    ("2026-10-02T10:00:00+00:00","BLOCKED_DATA_INTEGRITY"),
 ])
 def test_no_docker_or_epoch_for_waiting_session(tmp_path, runner, monkeypatch, now, status):
     cfg = config(tmp_path, runner)
@@ -74,7 +74,7 @@ def test_refresh_failure_waits_without_partial_epoch(tmp_path, runner, monkeypat
             else json.dumps({"status":"WAITING_FOR_DATA","exception_class":"ReadTimeout"})))
     monkeypatch.setattr(runner.transport,"call",call)
     result=runner.run_once(cfg,now=datetime.fromisoformat("2026-09-30T06:00:00+00:00"))
-    assert result["status"]=="WAITING_FOR_DATA" and len(calls)==2
+    assert result["status"]=="WAITING_FOR_PROVIDER_DATA" and len(calls)==2
     assert not Path(cfg["runtime_root"]).exists()
     assert len(list((Path(cfg["control_root"])/"refreshes").iterdir()))==1
 
@@ -88,3 +88,26 @@ def test_uncertified_hash_blocks_before_any_refresh(tmp_path, runner, monkeypatc
     with pytest.raises(runner.transport.GateError,match="CERTIFIED_INPUT_HASH"):
         runner.run_once(cfg)
     assert not Path(cfg["runtime_root"]).exists()
+
+
+def test_partial_finalization_is_adopted_despite_next_session_failure_and_resume_uses_it(tmp_path,runner,monkeypatch):
+    cfg=config(tmp_path,runner,cutoff="2026-09-24")
+    cfg.update(source_config=str(tmp_path/"source.toml"),export_config=str(tmp_path/"export.toml"),export_root=str(tmp_path/"exports"))
+    for k in ("source_config","export_config"):Path(cfg[k]).write_text("# SYNTHETIC")
+    admitted=Path(cfg["export_root"])/("f"*64);admitted.mkdir(parents=True)
+    (admitted/"manifest.json").write_bytes(b'SYNTHETIC_MANIFEST')
+    (admitted/"trading_calendar.csv").write_bytes((Path(cfg["snapshot"])/"trading_calendar.csv").read_bytes())
+    monkeypatch.setattr(runner.transport,"verify_snapshot_files",lambda p:{"data_cutoff":"2026-09-28" if p==admitted else "2026-09-24"})
+    calls=[]
+    def call(argv,**kw):
+        calls.append(argv)
+        if argv[0]=="git":return SimpleNamespace(returncode=0,stdout="integration/etf-quant-v1-shadow-autonomous-final")
+        return SimpleNamespace(returncode=0,stdout=json.dumps({"status":"WAITING_FOR_PROVIDER_DATA",
+            "latest_finalized":{"snapshot_id":admitted.name,"manifest_sha256":runner.checksum(admitted/"manifest.json")}}))
+    monkeypatch.setattr(runner.transport,"call",call)
+    r=runner.run_once(cfg,now=datetime.fromisoformat("2026-09-30T12:00:00+00:00"))
+    assert r["data_cutoff"]=="2026-09-28" and r["status"]=="WAITING_FOR_PROVIDER_DATA"
+    assert r["shadow_runtime_armed"] is True and not Path(cfg["runtime_root"]).exists()
+    pointer=Path(cfg["control_root"])/"latest_export.json";before=pointer.read_bytes()
+    runner.run_once(cfg,now=datetime.fromisoformat("2026-09-30T12:01:00+00:00"))
+    assert str(calls[-1][-1])=="2026-09-28" and pointer.read_bytes()==before

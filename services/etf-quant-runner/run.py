@@ -84,20 +84,92 @@ def committed_code(repo=REPO):
 
 
 @contextmanager
+def lock_guard(root):
+    """Kernel-released mutex for create/recover/release; no stale guard owner."""
+    with (root / ".transport.guard").open("a+b") as guard:
+        guard.seek(0)
+        if not guard.read(1):
+            guard.write(b"0"); guard.flush()
+        guard.seek(0)
+        try:
+            if os.name == "nt":
+                import msvcrt
+                msvcrt.locking(guard.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(guard, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            raise GateError("CONCURRENT_OR_INTERRUPTED_TRANSPORT_BLOCKER") from error
+        try:
+            yield
+        finally:
+            guard.seek(0)
+            if os.name == "nt":
+                msvcrt.locking(guard.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(guard, fcntl.LOCK_UN)
+
+
+def process_owner(pid):
+    """Only an OS-proven absent owner permits recovery; denial is unknown."""
+    if not isinstance(pid, int) or pid <= 0:
+        return "UNKNOWN"
+    if os.name == "nt":
+        import ctypes
+        from ctypes import wintypes
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel.OpenProcess.restype = wintypes.HANDLE
+        handle = kernel.OpenProcess(0x1000, False, pid)
+        if not handle:
+            return "DEAD" if ctypes.get_last_error() == 87 else "UNKNOWN"
+        code = wintypes.DWORD()
+        kernel.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+        known = kernel.GetExitCodeProcess(handle, ctypes.byref(code))
+        status = ("ALIVE" if code.value == 259 else "DEAD") if known else "UNKNOWN"
+        kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel.CloseHandle(handle)
+        return status
+    try:
+        os.kill(pid, 0)
+        return "ALIVE"
+    except ProcessLookupError:
+        return "DEAD"
+    except PermissionError:
+        return "UNKNOWN"
+
+
+@contextmanager
 def transport_lock(root):
     path = root / ".transport.lock"
-    try:
+    payload = storage.json_bytes({"pid": os.getpid(), "created_at": datetime.now(timezone.utc).isoformat(),
+        "scope": "ETF_QUANT_TRANSPORT_V1", "root_file_id": root.stat().st_ino, "nonce": uuid4().hex})
+    with lock_guard(root):
+        if path.exists():
+            try:
+                owner = json.loads(path.read_bytes())
+                known = (set(owner) == {"pid", "created_at"} or
+                         owner.get("scope") == "ETF_QUANT_TRANSPORT_V1" and
+                         owner.get("root_file_id") == root.stat().st_ino)
+                if not known or process_owner(owner.get("pid")) != "DEAD":
+                    raise ValueError()
+            except (ValueError, TypeError, OSError):
+                raise GateError("CONCURRENT_OR_INTERRUPTED_TRANSPORT_BLOCKER")
+            storage.atomic_bytes(root / "last_lock_recovery.json", storage.json_bytes({
+                "reason_code": "OS_PROVEN_DEAD_OWNER", "prior_pid": owner["pid"],
+                "recovered_at": datetime.now(timezone.utc).isoformat()}))
+            path.unlink()
         handle = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    except FileExistsError as error:
-        raise GateError("CONCURRENT_OR_INTERRUPTED_TRANSPORT_BLOCKER") from error
     try:
         with os.fdopen(handle, "wb") as stream:
-            stream.write(storage.json_bytes({"pid": os.getpid(), "created_at": datetime.now(timezone.utc).isoformat()}))
+            stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())
         yield
     finally:
-        path.unlink(missing_ok=True)
+        with lock_guard(root):
+            if path.exists() and path.read_bytes() == payload:
+                path.unlink()
 
 
 def verify_snapshot_files(folder):

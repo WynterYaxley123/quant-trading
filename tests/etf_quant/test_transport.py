@@ -91,6 +91,29 @@ def test_transport_lock_no_stale_stealing(tmp_path):
     assert not (tmp_path / ".transport.lock").exists()
 
 
+def test_proven_dead_owned_transport_lock_recovers_without_touching_unknown_lock(tmp_path,monkeypatch):
+    path=tmp_path/".transport.lock"
+    path.write_text(json.dumps({"pid":123456,"created_at":"SYNTHETIC"}))
+    monkeypatch.setattr(transport,"process_owner",lambda pid:"DEAD")
+    with transport.transport_lock(tmp_path):
+        assert json.loads(path.read_bytes())["scope"]=="ETF_QUANT_TRANSPORT_V1"
+    assert json.loads((tmp_path/"last_lock_recovery.json").read_bytes())["reason_code"]=="OS_PROVEN_DEAD_OWNER"
+    path.write_text(json.dumps({"pid":123456,"unknown":"SYNTHETIC"}))
+    with pytest.raises(s.GateError,match="CONCURRENT"):
+        with transport.transport_lock(tmp_path):pass
+    assert path.exists()
+
+
+@pytest.mark.parametrize("state",["ALIVE","UNKNOWN"])
+def test_transport_lock_never_recovers_active_or_uninspectable_owner(tmp_path,monkeypatch,state):
+    path=tmp_path/".transport.lock";path.write_text(json.dumps({"pid":123456,"created_at":"SYNTHETIC"}))
+    monkeypatch.setattr(transport,"process_owner",lambda pid:state)
+    before=path.read_bytes()
+    with pytest.raises(s.GateError,match="CONCURRENT"):
+        with transport.transport_lock(tmp_path):pass
+    assert path.read_bytes()==before
+
+
 def test_external_profile_required_and_safe_child_errors(tmp_path):
     with pytest.raises(s.GateError): transport.external_file("relative.json")
     root = tmp_path / "repo"

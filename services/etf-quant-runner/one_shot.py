@@ -53,7 +53,11 @@ def run_once(config, *, now=None):
         # sleep/schedule/replay and never allow a test clock to become live.
         if (now is None and result["status"] == "WAITING_FOR_MARKET_CLOSE"
                 and datetime.now(timezone.utc).astimezone(SHANGHAI).time() >= time(15,5)):
-            return _run_once(config, control)
+            result = _run_once(config, control)
+        result["shadow_runtime_armed"] = not result["status"].startswith("BLOCKED")
+        result["shadow_start_gate"] = ("STARTED" if result["status"] in ("STARTED", "ALREADY_PROCESSED")
+            else "ARMED_FOR_NEXT_ELIGIBLE_T" if result["shadow_runtime_armed"] else "BLOCKED_HARD")
+        transport.storage.atomic_bytes(control / "latest_observation.json", transport.storage.json_bytes(result))
         return result
 
 
@@ -93,7 +97,8 @@ def _run_once(config, control, *, now=None):
     eligible_days = [d for d, trading in calendar.items() if trading and
                      (d < local.date() or d == local.date() and local.time() >= time(15,5))]
     if local.date() not in calendar:
-        return {"status": "WAITING_FOR_DATA", "reason": "OFFICIAL_CALENDAR_REQUIRED"}
+        return {"status": "BLOCKED_DATA_INTEGRITY", "reason_code": "OFFICIAL_CALENDAR_REQUIRED",
+                "classification": "LOCAL_ENGINEERING_FAILURE"}
     target = max(eligible_days) if eligible_days else None
     refresh = {"refresh_attempted": False}
     if target and meta["data_cutoff"] < str(target):
@@ -108,14 +113,23 @@ def _run_once(config, control, *, now=None):
         receipt_id = now.strftime("%Y%m%dT%H%M%S") + "_" + transport.uuid4().hex[:12]
         transport.storage.publish_generation(control/"refreshes", receipt_id,
             {"refresh.json": transport.storage.json_bytes(refresh)}, {"created_at": now.isoformat()})
+        finalized = refresh.get("latest_finalized") or (refresh if refresh.get("status") == "REFRESH_EXPORTED" else None)
+        if finalized:
+            exports = transport.external_directory(config["export_root"])
+            admitted = transport.storage.contained(exports, finalized["snapshot_id"])
+            if checksum(admitted / "manifest.json") != finalized["manifest_sha256"]:
+                raise transport.GateError("EXPORT_HASH_BLOCKER")
+            admitted_meta = transport.verify_snapshot_files(admitted)
+            if not meta["data_cutoff"] <= admitted_meta["data_cutoff"] <= str(target):
+                raise transport.GateError("FINALIZATION_MONOTONICITY_BLOCKER")
+            snapshot, meta = admitted, admitted_meta
+            transport.storage.atomic_bytes(export_pointer, transport.storage.json_bytes({
+                "snapshot_id": snapshot.name, "manifest_sha256": checksum(snapshot/"manifest.json")}))
         if result.returncode or refresh.get("status") != "REFRESH_EXPORTED":
-            return {"status": "BLOCKED_INTEGRITY" if refresh.get("status") == "BLOCKED_INTEGRITY" else "WAITING_FOR_DATA",
+            status = refresh.get("status", "BLOCKED_CODE_INTEGRITY")
+            if status == "WAITING_FOR_DATA": status = "WAITING_FOR_PROVIDER_DATA"
+            return {"status": status, "reason_code": refresh.get("reason_code", "SOURCE_SESSION_INCOMPLETE"),
                     "data_cutoff": meta["data_cutoff"], "refresh": refresh}
-        exports = transport.external_directory(config["export_root"])
-        snapshot = transport.storage.contained(exports, refresh["snapshot_id"])
-        meta = transport.verify_snapshot_files(snapshot)
-        transport.storage.atomic_bytes(export_pointer, transport.storage.json_bytes({
-            "snapshot_id": snapshot.name, "manifest_sha256": checksum(snapshot/"manifest.json")}))
     if not calendar[local.date()]:
         return {"status": "READY_NO_SIGNAL", "data_cutoff": meta["data_cutoff"], "refresh": refresh}
     if local.time() < time(15,5):
@@ -161,12 +175,16 @@ def main():
     try:
         result = run_once(json.loads(transport.external_file(args.config).read_bytes()))
     except transport.GateError as error:
-        result = {"status": "BLOCKED_INTEGRITY", "blocker": error.code}
+        result = {"status": "BLOCKED_CODE_INTEGRITY" if error.code in
+                  ("FORMAL_CERTIFIED_INPUT_HASH_BLOCKER", "FORMAL_IMPLEMENTATION_HASH_BLOCKER",
+                   "CLEAN_COMMITTED_INTEGRATION_REQUIRED", "FORMAL_INTEGRATION_BRANCH_REQUIRED")
+                  else "BLOCKED_DATA_INTEGRITY", "reason_code": error.code,
+                  "classification": "LOCAL_ENGINEERING_FAILURE"}
     except Exception as error:
-        result = {"status": "BLOCKED_INTEGRITY", "blocker": "FORMAL_TRANSPORT_INPUT_BLOCKER",
+        result = {"status": "BLOCKED_CODE_INTEGRITY", "reason_code": "FORMAL_TRANSPORT_INPUT_BLOCKER",
                   "exception_class": type(error).__name__}
     print(transport.storage.json_bytes(result).decode())
-    return 2 if result["status"] == "BLOCKED_INTEGRITY" else 0
+    return 2 if result["status"].startswith("BLOCKED") else 0
 
 
 if __name__ == "__main__":

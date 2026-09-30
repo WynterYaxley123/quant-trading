@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[2]
 
 @pytest.fixture
 def forward(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/"services/cnequity-sidecar"))
     events=[]
     (tmp_path/"lake").mkdir()
     def module(name,**attrs):
@@ -20,7 +21,7 @@ def forward(tmp_path,monkeypatch):
         m.__dict__.update(attrs)
         monkeypatch.setitem(sys.modules,name,m)
         return m
-    module("runner",verify_install=lambda root:events.append("VERIFY_PIN"))
+    module("runner",verify_install=lambda root:events.append("VERIFY_PIN"),lake_fingerprint=lambda root:"SYNTHETIC")
     module("proxy_policy",proxy_policy=lambda p:nullcontext())
     module("export_streaming",export_lake_streaming=lambda *a,**k:(events.append("EXPORT") or {"snapshot_id":"a"*64}))
     dates=[date(2026,9,25),date(2026,9,28),date(2026,9,29)]
@@ -32,7 +33,13 @@ def forward(tmp_path,monkeypatch):
     job_status={"status":"success"}
     class Engine:
         def __init__(self,cfg):
-            self.manifest=SimpleNamespace(list_runs=lambda name: [],get_dataset_results=lambda run_id: [])
+            datasets=["trading_calendar","instruments","industry_members","daily_bars","index_bars",
+                      "corporate_actions","trading_status"]
+            receipts=[{"dataset":d,"stage":s,"status":"success"} for d in datasets for s in ("fetch","stage","compact")]
+            receipts += [{"dataset":d,"stage":s,"status":"success"} for d,s in
+                         [("compact","compact"),("adj_factors","derive"),("adj_factors","publish_revision"),
+                          ("audit","audit"),("trading_status_derive","fetch"),("trading_status_derive","stage")]]
+            self.manifest=SimpleNamespace(list_runs=lambda name: [],get_dataset_results=lambda run_id: receipts)
         def run_job(self,name,**kw):
             events.append((name,kw))
             return {"run_id":"SYNTHETIC_"+str(kw["trade_date"]),"status":job_status["status"]}
@@ -43,6 +50,14 @@ def forward(tmp_path,monkeypatch):
     module("cnequity.domain.market_time",SHANGHAI_TZ=SHANGHAI)
     spec=importlib.util.spec_from_file_location("synthetic_forward",ROOT/"services/cnequity-sidecar/forward.py")
     m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    class Journal:
+        def __init__(self, settings, after, sessions):self.cutoff=after;self.latest=None
+        def prepare(self,*args):pass
+        def publish(self,session,result,run_id):
+            self.cutoff=session;self.latest={**result,"session":str(session),"source_run_id":run_id}
+    monkeypatch.setattr(m,"SessionJournal",Journal)
+    monkeypatch.setattr(m,"enable_source_compatibility",lambda *a:{})
+    monkeypatch.setattr(m,"scope_observation",lambda *a:{"missing_count":0})
     config=tmp_path/"export.toml"
     config.write_text('[paths]\nlake_root="'+(tmp_path/"lake").as_posix()+'"\n[export]\ncutoff="2026-09-24"\n')
     return m,events,job_status,config
@@ -63,7 +78,7 @@ def test_upstream_failure_never_exports_or_invents_cutoff(forward,tmp_path):
     m,events,status,config=forward;status["status"]="failed"
     result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,9,29),date(2026,9,24),
         now=datetime.fromisoformat("2026-09-30T14:00:00+08:00"))
-    assert result["status"]=="WAITING_FOR_DATA" and "EXPORT" not in events
+    assert result["status"]=="WAITING_FOR_PROVIDER_DATA" and "EXPORT" not in events
     assert len(result["receipts"])==1 and "snapshot_id" not in result
 
 
@@ -79,7 +94,7 @@ def test_missing_official_calendar_fails_closed(forward,tmp_path):
     m,events,status,config=forward
     result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,10,1),date(2026,9,29),
         now=datetime.fromisoformat("2026-10-02T16:00:00+08:00"))
-    assert result["status"]=="WAITING_FOR_DATA" and events==["VERIFY_PIN"]
+    assert result["status"]=="BLOCKED_DATA_INTEGRITY" and events==["VERIFY_PIN"]
 
 
 def test_io_path_plumbing_preserves_identity_and_rejects_relative_or_other_lake(forward,tmp_path):
@@ -132,7 +147,7 @@ def test_degraded_source_is_a_data_wait_never_a_partial_export(forward,tmp_path)
     m,events,status,config=forward;status["status"]="degraded"
     result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,9,29),date(2026,9,24),
         now=datetime.fromisoformat("2026-09-30T16:00:00+08:00"))
-    assert result["status"]=="WAITING_FOR_DATA" and "EXPORT" not in events
+    assert result["status"]=="WAITING_FOR_PROVIDER_DATA" and "EXPORT" not in events
     assert result["receipts"][0]["status"]=="degraded"
     assert "unready_stages" in result["receipts"][0] and "snapshot_id" not in result
 
@@ -144,3 +159,33 @@ def test_windows_raw_path_gate_covers_resolved_long_root_and_extended_globs(forw
         m.windows_storage_path_gate(r"D:\QuantForge\external\cnequity-etf-quant-v1\lake-minimal")
     with pytest.raises(ValueError,match="NORMAL_ABSOLUTE"):
         m.windows_storage_path_gate("\\\\?\\D:\\QuantForge\\etf-lake")
+
+
+def test_latest_failure_never_hides_successful_receipt_for_same_session(forward):
+    import json
+    m,*_=forward;session=date(2026,9,28)
+    def row(status):return {"status":status,"job_name":m.JOB,"run_id":"SYNTHETIC_"+status,
+        "metadata_json":json.dumps({"trade_date":str(session),"backfill":False,"planned_steps":m.STEPS})}
+    engine=SimpleNamespace(manifest=SimpleNamespace(list_runs=lambda job:[row("failed"),row("success"),row("degraded")]),
+        run_job=lambda *a,**k:pytest.fail("must reuse admitted success, not latest failure"))
+    assert m.session_job(engine,session)["run_id"]=="SYNTHETIC_success"
+
+
+def test_later_failure_returns_previously_finalized_session_without_exporting_failed_day(forward,tmp_path):
+    m,events,status,cfg=forward;calls=[]
+    def job(engine,session,**kwargs):
+        calls.append(session)
+        return {"status":"success" if len(calls)==1 else "failed","run_id":"SYNTHETIC_"+str(session),"action":"NEW_FORWARD_JOB"}
+    m.session_job=job
+    result=m.forward(tmp_path,tmp_path/"source.toml",cfg,date(2026,9,29),date(2026,9,24),
+                     now=datetime.fromisoformat("2026-09-30T16:00:00+08:00"))
+    assert result["status"]=="WAITING_FOR_PROVIDER_DATA"
+    assert result["latest_finalized"]["session"]=="2026-09-25"
+    assert events.count("EXPORT")==1 and len(calls)==2  # synthetic calendar; never guessed weekdays
+
+
+def test_wrapped_local_path_failure_cannot_be_labelled_provider_wait(forward):
+    m,*_=forward
+    leaf=ValueError("SYNTHETIC_UNSAFE_PATH");outer=RuntimeError("SYNTHETIC_PROVIDER_WRAPPER");outer.__cause__=leaf
+    assert m.exception_status(outer)==("BLOCKED_DATA_INTEGRITY","LOCAL_ENGINEERING_FAILURE")
+    assert m.exception_status(TimeoutError("SYNTHETIC_TIMEOUT"))==("WAITING_FOR_PROVIDER_DATA","PROVIDER_DATA_FAILURE")
