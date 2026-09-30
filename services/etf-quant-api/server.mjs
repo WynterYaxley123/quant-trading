@@ -141,6 +141,27 @@ function validateView(view, now) {
   invariant(Object.values(view.strategy.costs).every(v=>money(v) && Number(v)>=0));
   const updated = Date.parse(view.status.updated_at);
   invariant(Number.isFinite(updated) && updated<=now);
+  // Formal T0 instance is NOT the legacy T1 account. At T0 the public
+  // accounting summary remains null, and no fill/NAV is fabricated.
+  if (view.status.shadow_epoch || view.status.formal_signal) {
+    const e=view.status.shadow_epoch, s=view.status.formal_signal;
+    invariant(b40 && e && s && view.status.shadow_epoch_created===true
+      && e.simulation_only===true && e.broker_enabled===false && e.real_order_path===false
+      && s.simulation_only===true && s.broker_enabled===false && s.real_order_path===false
+      && e.epoch_id===s.epoch_id && e.candidate_hash===s.candidate_hash
+      && e.initial_capital==='10000' && e.initial_cash==='10000'
+      && Array.isArray(e.initial_positions) && e.initial_positions.length===0
+      && HASH.test(e.candidate_hash) && HASH.test(s.pit_registry_hash) && HASH.test(s.strict_registry_hash)
+      && /^[a-f0-9]{40}$/.test(s.code_sha) && s.code_sha===view.status.code_commit
+      && Date.parse(e.created_at)<=updated && Date.parse(s.decision_at)===updated
+      && Date.parse(e.available_from)<=Date.parse(e.created_at) && Date.parse(s.available_from)<=updated
+      && e.source_commit===view.status.source_commit && s.source_commit===view.status.source_commit
+      && e.first_signal_date<=s.signal_date && s.signal_date===view.status.signal_date
+      && s.signal_date===view.status.cutoff && s.signal_date!=='2026-09-24' && e.first_signal_date!=='2026-09-24'
+      && s.slots.length===5 && isDeepStrictEqual(s.slots,view.mappings.slots)
+      && Math.abs(s.risk_asset_weight+s.cash_weight-1)<1e-9);
+    if (view.status.epoch) invariant(view.status.epoch.shadow_epoch_id===e.epoch_id);
+  }
   invariant(view.models.length===0 || (view.models.length===3 && new Set(view.models.map(m=>m.horizon)).size===3));
   for (const m of view.models) {
     const names=m.horizon===10?strategy.h10_factors:m.horizon===40?strategy.h40_factors:m.horizon===120?strategy.h120_factors:null;

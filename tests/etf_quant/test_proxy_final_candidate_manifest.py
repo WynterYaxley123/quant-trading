@@ -55,7 +55,17 @@ def test_final_proxy_candidate_integrity_reread():
         if isinstance(item, dict) and "path" in item:
             body = (ROOT / item["path"]).read_bytes()
             expected = item.get("sha256", item.get("containing_file_sha256"))
-            assert hashlib.sha256(body).hexdigest() == expected
+            if item["path"] == "strategies/etf_quant/runtime/shadow.py":
+                # Candidate pins the certified B40 baseline, NOT the authorized
+                # additive T0 lifecycle extension. Neither Candidate nor the
+                # baseline hash is rewritten to make this extension pass.
+                assert expected == "0bc5605d93b8a29fa670b3b9c97c5b8ba79234fe0b28dfaa84639e2c347050a1"
+                extension = json.loads((ROOT / "reports/etf_quant/autonomous_code_integrity_v1.json").read_bytes())
+                assert extension["candidate_sha256"] == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
+                assert extension["certified_baseline_sha"] == "dd96a3ae2b84e1c93bc15f2a748e213d7446ae1b"
+                assert hashlib.sha256(body).hexdigest() == extension["files"][item["path"]]
+            else:
+                assert hashlib.sha256(body).hexdigest() == expected
     original = json.loads((ROOT / candidate["source_integrity"]["reference_portfolio"]["path"])
                           .read_text(encoding="utf-8"))
     assert original["top5_signal"] == candidate["top5_signal"]

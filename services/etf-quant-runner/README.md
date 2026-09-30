@@ -1,5 +1,54 @@
 # Manual ETF transport V1
 
+## Certified autonomous one-shot entry (no daemon)
+
+The current formal branch is `integration/etf-quant-v1-shadow-autonomous-final`.
+Use `one_shot.py --config <external-one-shot-config.json>` with the **existing
+isolated CNEquity interpreter**, not Windows global Python. The separate
+`one_shot.config.example.json` enumerates required paths; the deployment config
+is outside Git at `D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json`.
+Only file transport / calendar metadata execute on the host. Model, allocation,
+PIT admission and accounting run inside the existing frozen Docker image.
+
+The one-shot refreshes only already completed official sessions via the pinned
+upstream job engine, preserving stage / batch / compact / revision / audit gates.
+It exports the real lake with the existing streaming exporter. No direct curated
+write, provider fallback, SDK upgrade or historical formal replay is used.
+Refresh receipts live in the separate metadata-only control root. No formal
+`shadow/` records are created for WAIT. Successful exports are reused by pinned
+manifest hash. A same-T committed signal returns `ALREADY_PROCESSED` **before**
+refresh, so it cannot generate another Epoch/signal/intent. The control lock
+serializes the entire operation; the account lock remains exclusive.
+
+Structured outcomes: `STARTED`, `ALREADY_PROCESSED`, `WAITING_FOR_MARKET_CLOSE`,
+`WAITING_FOR_FINALIZED_DATA`, `WAITING_FOR_PIT_EVIDENCE`, `WAITING_FOR_DATA`,
+`READY_NO_SIGNAL`, `BLOCKED_INTEGRITY`. Waiting is factual, not authorization to
+invent prices or evidence. No clock override is exposed by either CLI.
+
+Formal T0 `shadow_epoch` and `formal_signal` are stored in each immutable
+hash-verified `state.json` generation; `view.status` exposes their compact
+provenance. The first epoch object remains byte-equivalent in later states.
+`state.epoch` / `view.status.epoch` remain the **legacy T1 accounting epoch**:
+not renamed, not claimed as T0. At T0 no accounting NAV/fill/holding is invented.
+T0 manifest records the real CNY10,000 initial cash and zero positions separately.
+Even all-Cash creates a formal strategy epoch and signal, with no order/intent.
+T1 accounting references the formal epoch, prior signal and immutable Candidate.
+
+The Candidate retains its original SHA256. Its runtime-contract hash describes
+the certified **baseline**. Authorized additive lifecycle code is separately
+pinned in `reports/etf_quant/autonomous_code_integrity_v1.json`; that document
+pins every strategy source and transport/API source used here. Both layers are
+checked instead of rewriting the Candidate to pretend its old hash is current.
+
+Production evidence remains forward-only. First legal T is strictly after the
+Shanghai date when certified evidence first became available; the historical
+reference 2026-09-24 can never initialize a formal epoch. Current finalized
+same-day export, frozen models, listing, 20/20 liquidity and Strict > B40 > Cash
+gates are enforced inside Docker. Missing evidence -> Cash; no coverage quota.
+
+The following legacy strict-only transport is retained for compatibility; it
+is **not** the certified B40 formal initialization entry.
+
 `run.py` is stdlib-only host infrastructure. Only the standalone storage/hash
 helper is imported, not a quant package. Numerical models and accounting execute
 solely in existing quant-research. No scheduler, source downloader or credentials.

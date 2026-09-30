@@ -11,11 +11,13 @@ from .exports import ExportProvider
 from .shadow import daily_cycle
 from .storage import GateError, json_bytes
 from .view import public_strategy
+from .formal import load_formal_contract
+from .oneshot import one_shot
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=("describe", "verify-export", "cycle"))
+    parser.add_argument("command", choices=("describe", "verify-export", "cycle", "one-shot"))
     parser.add_argument("--snapshot", type=Path)
     parser.add_argument("--runtime", type=Path)
     parser.add_argument("--registry", type=Path)
@@ -25,6 +27,8 @@ def main():
     parser.add_argument("--execution-policy", choices=("STRICT_TOP5", "B40_WITH_CASH"), default="STRICT_TOP5")
     parser.add_argument("--pit-evidence", type=Path)
     parser.add_argument("--pit-source-root", type=Path)
+    parser.add_argument("--candidate", type=Path)
+    parser.add_argument("--pit-registry", type=Path)
     args = parser.parse_args()
     if args.command == "describe":
         print(json_bytes(public_strategy()).decode())
@@ -55,13 +59,18 @@ def main():
                         if args.execution_policy == "B40_WITH_CASH" else None)
         costs = TransactionCost(**profile.get("costs", {}))
         config = StrategyConfig(costs=costs)
-        result = daily_cycle(provider, registry, args.runtime, now=now, code_commit=args.commit, config=config,
+        formal = args.command == "one-shot"
+        if formal and (args.candidate is None or args.pit_registry is None or args.execution_policy != "B40_WITH_CASH"):
+            raise GateError("EXPLICIT_FORMAL_CERTIFICATION_REQUIRED")
+        contract = load_formal_contract(args.candidate, args.pit_registry, registry, pit_evidence) if formal else None
+        kwargs = ({"formal_contract": contract} if formal else {"execution_policy": args.execution_policy})
+        result = (one_shot if formal else daily_cycle)(provider, registry, args.runtime, now=now, code_commit=args.commit, config=config,
             lot_size=profile.get("lot_size", 100), min_constituents=profile.get("min_valid_constituents", 5),
             coverage_threshold=profile.get("min_constituent_coverage_ratio", .8),
             classification_version=profile.get("classification_version"),
-            execution_policy=args.execution_policy, pit_evidence=pit_evidence)
+            pit_evidence=pit_evidence, **kwargs)
     print(json_bytes(result).decode())
-    return 0
+    return 2 if result.get("status") == "BLOCKED_INTEGRITY" else 0
 
 
 if __name__ == "__main__":

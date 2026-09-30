@@ -68,7 +68,8 @@ def committed_code(repo=REPO):
     branch = call(["git", "--no-optional-locks", "branch", "--show-current"], cwd=repo, timeout=30)
     head = call(["git", "--no-optional-locks", "rev-parse", "HEAD"], cwd=repo, timeout=30)
     status = call(["git", "--no-optional-locks", "status", "--porcelain"], cwd=repo, timeout=30)
-    if (any(r.returncode for r in (branch, head, status)) or branch.stdout.strip() != "integration/etf-quant-v1"
+    if (any(r.returncode for r in (branch, head, status)) or branch.stdout.strip() not in (
+            "integration/etf-quant-v1", "integration/etf-quant-v1-shadow-autonomous-final")
             or status.stdout.strip() or not re.fullmatch(r"[0-9a-f]{40}", head.stdout.strip())):
         raise GateError("CLEAN_COMMITTED_INTEGRATION_REQUIRED")
     return head.stdout.strip()

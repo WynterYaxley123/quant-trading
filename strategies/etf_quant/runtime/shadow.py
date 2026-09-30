@@ -26,6 +26,7 @@ from .prediction import current_predictions
 from .storage import (GateError, atomic_bytes, contained, digest, external_root, json_bytes,
                       publish_generation, read_generation)
 from .view import empty_view, public_strategy
+from .formal import FormalContract, record_signal, start_gate
 
 
 @contextmanager
@@ -164,7 +165,8 @@ def _slot_transitions(previous, current):
 
 def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_commit: str,
                 config=None, lot_size=100, min_constituents=5, coverage_threshold=.8,
-                classification_version=None, execution_policy="STRICT_TOP5", pit_evidence: PITEvidenceBook | None = None):
+                classification_version=None, execution_policy="STRICT_TOP5", pit_evidence: PITEvidenceBook | None = None,
+                formal_contract: FormalContract | None = None):
     """All computation uses one verified export. T0 intent survives until T+1.
 
     Authorized delayed EOD accounting: a prior persisted T0 intent is priced at
@@ -179,6 +181,15 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
         raise GateError("EXPLICIT_PIT_EVIDENCE_REQUIRED")
     if execution_policy == "STRICT_TOP5" and pit_evidence is not None:
         raise GateError("STRICT_PATH_PIT_EVIDENCE_FORBIDDEN")
+    if formal_contract is not None:
+        if (execution_policy != POLICY_B40_WITH_CASH or registry.sha256 != formal_contract.strict_registry_hash
+                or pit_evidence.sha256 != formal_contract.evidence_book_hash
+                or config != StrategyConfig() or lot_size != 100 or min_constituents != 5
+                or coverage_threshold != .8 or classification_version != "SWCLASS2021"):
+            raise GateError("FORMAL_FROZEN_CONTRACT_BLOCKER")
+        gate = start_gate(provider, formal_contract, now)
+        if gate != "ELIGIBLE":
+            raise GateError(gate)
     root = external_root(runtime_root)
     if not isinstance(code_commit, str) or len(code_commit) != 40 or any(c not in "0123456789abcdef" for c in code_commit):
         raise GateError("IMPLEMENTATION_COMMIT_REQUIRED")
@@ -188,7 +199,7 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
             with decimal_math():
                 return _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
                               min_constituents, coverage_threshold, classification_version,
-                              execution_policy, pit_evidence)
+                              execution_policy, pit_evidence, formal_contract)
         except Exception as error:
             code = error.code if isinstance(error, GateError) else "RUNTIME_CYCLE_BLOCKER"
             failure = {"schema_version": "1.0.0", "run_id": run_id, "status": "FAILED", "blocker": code,
@@ -204,7 +215,7 @@ def daily_cycle(provider, registry, runtime_root: Path, *, now: datetime, code_c
 
 
 def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size, minimum, coverage, classification,
-           execution_policy, pit_evidence):
+           execution_policy, pit_evidence, formal_contract):
     local_now = now.astimezone(SHANGHAI)
     if (now < provider.created_at or provider.cutoff != local_now.date() or local_now.time() < time(15, 5)):
         raise GateError("CURRENT_FINALIZED_SESSION_REQUIRED")
@@ -228,6 +239,11 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         m, bodies = read_generation(root / "runs", parent_pointer)
         previous = json.loads(bodies["view.json"])
         ledger = json.loads(bodies["state.json"])
+        existing_formal = ledger.get("shadow_epoch")
+        if bool(existing_formal) != bool(formal_contract):
+            raise GateError("FORMAL_LEGACY_NAMESPACE_MIX_BLOCKER")
+        if existing_formal and any(existing_formal.get(k) != v for k, v in formal_contract.references().items()):
+            raise GateError("FORMAL_EPOCH_PROVENANCE_DRIFT_BLOCKER")
         previous_prefix = json.loads(bodies["prefix.json"])
         if (m["mapping_hash"] != mapping_hash or m["strategy_hash"] != strategy_hash
                 or m["source_commit"] != provider.manifest["source_commit"]):
@@ -255,6 +271,12 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
                 select_pit_mappings(registry, fused.rankings, provider, pit_evidence, signal_at=now))
     pending = ledger["pending"]
     if pending is not None:
+        if formal_contract:
+            economic_open = datetime.combine(provider.cutoff, time(9, 30), SHANGHAI)
+            if (pending.get("epoch_id") != ledger["shadow_epoch"]["epoch_id"]
+                    or pending.get("candidate_hash") != formal_contract.candidate_hash
+                    or not observed_time(pending["persisted_at"]) < economic_open < provider.created_at <= now):
+                raise GateError("FORMAL_T1_INTENT_REFERENCE_BLOCKER")
         if (pending["execution_date"] != str(provider.cutoff) or observed_time(pending["persisted_at"]) >= provider.created_at
                 or pending["mapping_hash"] != mapping_hash or pending["strategy_hash"] != strategy_hash
                 or pending.get("execution_policy", "STRICT_TOP5") != execution_policy):
@@ -283,6 +305,12 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
                 "market_cutoff": str(provider.cutoff), "provider_snapshot_id": provider.manifest["snapshot_id"],
                 "mapping_hash": mapping_hash, "strategy_config_hash": strategy_hash, "initial_cash": "10000",
                 "code_commit": code_commit, "bookkeeping": "DELAYED_EOD_ACTUAL_PROCESSED_AT"}
+            if formal_contract:
+                if (pending.get("epoch_id") != ledger["shadow_epoch"]["epoch_id"]
+                        or pending.get("candidate_hash") != formal_contract.candidate_hash):
+                    raise GateError("FORMAL_T1_INTENT_REFERENCE_BLOCKER")
+                ledger["epoch"]["shadow_epoch_id"] = pending["epoch_id"]
+                ledger["epoch"]["candidate_hash"] = formal_contract.candidate_hash
         targets = tuple(TargetPosition(r["asset_id"], r["target_weight"]) for r in pending["targets"])
         from datetime import date
         portfolio, fills = rebalance_at_open(portfolio, targets, opens, signal_day=date.fromisoformat(pending["signal_date"]),
@@ -297,7 +325,9 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
             "rebalance_reason": "INITIAL_BUILD" if not ledger["members"] else "EXECUTABLE_ETF_SET_CHANGED",
             **({"accounting_mode": "DELAYED_T1_OPEN_ACCOUNTING", "execution_evidence": "NOT_REALTIME_EXECUTION_EVIDENCE",
                 "economic_execution_at": market_open, "evidence_available_at": provider.created_at.isoformat()}
-               if execution_policy == POLICY_B40_WITH_CASH else {})} for f in fills)
+               if execution_policy == POLICY_B40_WITH_CASH else {}),
+            **({"shadow_epoch_id": pending["epoch_id"], "formal_signal_id": pending["signal_id"],
+                "candidate_hash": formal_contract.candidate_hash} if formal_contract else {})} for f in fills)
         ledger["turnover_notional"] = str(Decimal(ledger["turnover_notional"]) +
             sum((f.price * f.intent.quantity for f in fills), Decimal(0)))
         ledger["holding_metadata"].update({r["etf_code"]: {k: r[k] for k in ("etf_name", "industry_code", "industry_name")}
@@ -407,6 +437,12 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
         view["rankings"][str(int(h)) + "d"] = [{"rank": i + 1, "industry_code": p.industry_code, "score": p.prediction}
             for i, p in enumerate(sorted(predictions[h], key=lambda p: (-p.prediction, p.industry_code)))]
     view["rankings"]["fusion"] = to_primitive(fused.rankings)
+    if formal_contract:
+        if selected["status"] != "READY":
+            raise GateError("FORMAL_SIGNAL_NOT_ACCEPTED")
+        record_signal(ledger, view, selected, formal_contract, now=now,
+                      code_commit=code_commit, strategy_hash=strategy_hash)
+        phase = view["status"]["phase"]
     latest_audit = [r for r in series.audit if r["trade_date"] == str(provider.cutoff)]
     view["health"].update(status=phase, blockers=[] if portfolio else [phase],
         adjustment_exact_rows=int(provider.tables["stock_bars"].adj_is_exact.sum()),
@@ -420,4 +456,8 @@ def _daily(provider, registry, root, now, code_commit, run_id, config, lot_size,
     pointer = publish_generation(root / "runs", run_id,
         {"view.json": json_bytes(view), "state.json": json_bytes(ledger), "prefix.json": json_bytes(prefix)}, manifest)
     atomic_bytes(latest, json_bytes(pointer))
-    return {"status": phase, **pointer, "snapshot_id": provider.manifest["snapshot_id"], "epoch": ledger["epoch"]}
+    return {"status": phase, **pointer, "snapshot_id": provider.manifest["snapshot_id"], "epoch": ledger["epoch"],
+            **({"shadow_epoch": ledger["shadow_epoch"], "signal_id": ledger["formal_signal"]["signal_id"],
+                "intent_count": 1 if ledger["pending"] else 0,
+                "etf_target_count": len(ledger["pending"]["targets"]) if ledger["pending"] else 0,
+                "fill_count": len(ledger["trades"])} if formal_contract else {})}
