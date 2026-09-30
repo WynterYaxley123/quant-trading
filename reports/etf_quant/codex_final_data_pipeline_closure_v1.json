@@ -1,0 +1,607 @@
+{
+  "schema_version": "1.0.0",
+  "reported_at_shanghai": "2026-09-30T22:53:36.500241+08:00",
+  "PRIMARY": "CODEX_FINAL_DATA_PIPELINE_CLOSURE_COMPLETE",
+  "FINAL_BRANCH": "integration/etf-quant-v1-shadow-autonomous-final",
+  "ENGINEERING_COMPLETE": true,
+  "PRODUCTION_USABLE": false,
+  "DATA_LAKE_IDENTITY": "PASS",
+  "WINDOWS_PATH_COMPATIBILITY": "PASS",
+  "RECEIPT_RECONCILIATION": "PASS",
+  "PER_SESSION_FINALIZATION": "PASS",
+  "BJ_DATA_SEMANTICS": "PASS",
+  "CORPORATE_ACTIONS_PIPELINE": "PASS",
+  "ONE_SHOT_RUNNER": "PASS",
+  "T0_EPOCH_LIFECYCLE": "PASS",
+  "PRODUCTION_PIT_EVIDENCE": "PASS",
+  "FINAL_CANDIDATE_INTEGRITY": "PASS",
+  "LATEST_FINALIZED_MARKET_DATE": "2026-09-30",
+  "SHADOW_RUNTIME_ARMED": true,
+  "SHADOW_START_GATE": "BLOCKED_HARD",
+  "FIRST_SHADOW_EPOCH_CREATED": false,
+  "SHADOW_EPOCH_CREATED": false,
+  "FORMAL_SHADOW_SIGNAL_CREATED": false,
+  "T1_INTENT_CREATED": false,
+  "BROKER_ENABLED": false,
+  "REAL_ORDER_PATH": false,
+  "continuation_base_sha": "ed6138539ed2b3098516add0359631b794dfba63",
+  "verified_code_sha": "72e198c6bfb11632cb8342f9779aeb25247d3b20",
+  "local_engineering_blockers": 0,
+  "delivery_assessment": "FACTUAL_PIPELINE_CLOSED_FORMAL_PRODUCTION_INPUT_CONTRACT_BLOCKED",
+  "hard_stop": {
+    "reason_code": "FROZEN_SOURCE_C_CONTRACT_CHANGE_REQUIRED_FOR_CURRENT_INPUTS",
+    "scope": "FIRST_FORMAL_SHADOW_ONLY",
+    "reason": "当前事实输入无法满足冻结 Source-C 的全行业横截面和成分股门槛；不能降门槛、删行业、重启递归前缀或跳过冻结模型创建信号。",
+    "automatic_next_session_recovery_proven": false,
+    "core_contract_modified": false
+  },
+  "actual_runner_status": "WAITING_FOR_DATA",
+  "actual_runner_shadow_start_gate": "ARMED_FOR_NEXT_ELIGIBLE_T",
+  "actual_runner_blocker": "MODEL_WARMUP_INCOMPLETE",
+  "runner_wait_is_provider_failure": false,
+  "root_causes": [
+    {
+      "code": "ALL_OR_NOTHING_EXPORT_AFTER_LATER_SESSION",
+      "finding": "9/28 原生任务成功后，9/29 的失败使旧 adapter 在整个循环完成前返回；未执行 export，因此旧 cutoff 留在 9/24。",
+      "closure": "逐 session 发布、不可变 receipt、连续单调 cursor、部分成功对 host 可见。"
+    },
+    {
+      "code": "WINDOWS_EXTENDED_PATH_CONTAINMENT",
+      "finding": "extended prefix 与 SDK containment 不兼容，并曾被供应端通用错误掩盖。",
+      "closure": "同盘保身份物理短路径、逻辑 junction、lexical/resolved 双 guard；不改 SDK。"
+    },
+    {
+      "code": "BSE_TIP_DATE_AND_FALSE_DELIST_INFERENCE",
+      "finding": "当前 tip 请求历史 session 过滤为空，后续两次目录缺席推导出 347 个 BJ 假退市；旧成功 batch 的实际 ownership 为 0。",
+      "closure": "真实 tip session 的身份桥接、经官方活动目录与旧 byte-verified catalog 反证的限定 COW 纠正；历史价格仍用原生真实历史源。"
+    },
+    {
+      "code": "CONTRADICTED_DERIVED_STATUS",
+      "finding": "旧 derived_delisted 假证据仍影响 expected-bar admission。",
+      "closure": "项目 read guard 将限定矛盾记录视为 UNKNOWN，要求真实 bars，保留原 revision。"
+    },
+    {
+      "code": "TERMINAL_RECEIPT_NOT_FACT_COVERAGE",
+      "finding": "零 failed batch、旧 success receipt 或 stage 数据不等于正式数据完整。",
+      "closure": "精确 all-A ownership 与独立 no-bar 证据核对；finalization 仅承认 curated，按需一次正常 reobservation。"
+    },
+    {
+      "code": "DOCKER_SNAPSHOT_BASENAME",
+      "finding": "挂载 /snapshot 丢失快照 hash basename，触发既有 consumer identity guard。",
+      "closure": "挂载 /snapshot/<真实 snapshot hash>，保留原 guard。"
+    }
+  ],
+  "data_lake_identity": {
+    "artifact": "CONTINUATION_DATA_LAKE_IDENTITY_V1",
+    "audited_at": "2026-09-30T14:49:40.493466+00:00",
+    "status": "PASS",
+    "relocation_expected_count": 160072,
+    "relocation_actual_count": 160072,
+    "relocation_inventory_unchanged": true,
+    "relocation_published_byte_fingerprint": "520f175faf951c7758fe6a96f291390163a06bdc6021ccabbaac516440ab5422",
+    "relocation_published_byte_fingerprint_unchanged": true,
+    "expected_count": 187511,
+    "actual_count": 187511,
+    "missing_count": 0,
+    "extra_count": 0,
+    "identity_mismatch_count": 0,
+    "root_file_id": 1407374883938004,
+    "volume_identity": 16315591276170813369,
+    "alias_volume_identity": 16315591276170813369,
+    "physical_logical_samefile": true,
+    "root_file_id_preserved": true,
+    "current_inventory_sha256": "55b80f6ca4cc62dd22abec1acba7e045c856ff8a9d8691637eee379d3ed811a3",
+    "post_verified_relocation_file_count_delta": 27439,
+    "immutable_export_byte_hashes": "PASS",
+    "immutable_export_file_count": 7,
+    "immutable_export_date": "2026-09-24",
+    "immutable_export_snapshot": "4c82b062149dd4aa49b97b932fe3314b662154d046f15b45a87391d13dd0e071",
+    "anomalies": []
+  },
+  "continuous_sessions": [
+    {
+      "session": "2026-09-28",
+      "finalized": true,
+      "snapshot_id": "37c244963cbc6aba0d760bae8b9e2a04e6617262c1557e96174bf3d93971b074",
+      "source_run_id": "54cde185-8f8a-4f28-a4e2-17a40c335f68",
+      "coverage": {
+        "classification": "EXPECTED_MARKET_STATE",
+        "expected_count": 5557,
+        "expected_no_bar_count": 351,
+        "missing_count": 0,
+        "missing_sample": [],
+        "reason_code": "EXPECTED_SCOPE_SATISFIED",
+        "received_count": 5557,
+        "retryable": false
+      },
+      "bj_expected_count": 347,
+      "bj_received_count": 347,
+      "all_required_stages": "PASS",
+      "independent_curated_coverage": "PASS"
+    },
+    {
+      "session": "2026-09-29",
+      "finalized": true,
+      "snapshot_id": "401d97c3bd45317c6ae5360364a0f2bb3673264c796bc1b0b451fee03d4b56fc",
+      "source_run_id": "df050617-8dcb-4b08-8f0d-776c4c4273c6",
+      "coverage": {
+        "classification": "EXPECTED_MARKET_STATE",
+        "expected_count": 5558,
+        "expected_no_bar_count": 351,
+        "missing_count": 0,
+        "missing_sample": [],
+        "reason_code": "EXPECTED_SCOPE_SATISFIED",
+        "received_count": 5558,
+        "received_scope": "CURATED_ONLY",
+        "retryable": false,
+        "staged_unpublished_count": 0
+      },
+      "bj_expected_count": 347,
+      "bj_received_count": 347,
+      "all_required_stages": "PASS",
+      "independent_curated_coverage": "PASS"
+    },
+    {
+      "session": "2026-09-30",
+      "finalized": true,
+      "snapshot_id": "5f593d4e16d5becc354d3e5f6411e9cbc6f6033a9c75a1a3845ad39b6859afde",
+      "source_run_id": "e0c0b00a-a08b-43dc-8af6-37a3e67937cb",
+      "coverage": {
+        "classification": "EXPECTED_MARKET_STATE",
+        "expected_count": 5561,
+        "expected_no_bar_count": 348,
+        "missing_count": 0,
+        "missing_sample": [],
+        "reason_code": "EXPECTED_SCOPE_SATISFIED",
+        "received_count": 5561,
+        "received_scope": "CURATED_ONLY",
+        "retryable": false,
+        "staged_unpublished_count": 0
+      },
+      "bj_expected_count": 348,
+      "bj_received_count": 348,
+      "all_required_stages": "PASS",
+      "independent_curated_coverage": "PASS"
+    }
+  ],
+  "latest_snapshot_id": "5f593d4e16d5becc354d3e5f6411e9cbc6f6033a9c75a1a3845ad39b6859afde",
+  "independent_curated_coverage": "PASS",
+  "published_frozen_bytes": "PASS",
+  "original_frozen_export_file_count": 7,
+  "missing_security_evidence": [
+    {
+      "symbol": "000016.SZ",
+      "name": "*ST康佳A",
+      "list_date": "1992-03-27",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:00:28.473673+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "002731.SZ",
+      "name": "*ST萃华",
+      "list_date": "2014-11-04",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:00:28.473673+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "002860.SZ",
+      "name": "星帅尔",
+      "list_date": "2017-04-12",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:00:28.473673+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "300082.SZ",
+      "name": "奥克股份",
+      "list_date": "2010-05-20",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:00:28.473673+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "301139.SZ",
+      "name": "元道退",
+      "list_date": "2022-07-08",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:00:28.473673+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "601059.SH",
+      "name": "信达证券",
+      "list_date": "2023-02-01",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "eastmoney",
+      "observed_at": "2026-09-30 13:25:29.432879+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "601198.SH",
+      "name": "东兴证券",
+      "list_date": "2015-02-26",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "eastmoney",
+      "observed_at": "2026-09-30 13:25:29.432879+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "603400.SH",
+      "name": "华之杰",
+      "list_date": "2025-06-20",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "eastmoney",
+      "observed_at": "2026-09-30 13:25:29.432879+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "688496.SH",
+      "name": "*ST清越",
+      "list_date": "2022-12-28",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "eastmoney",
+      "observed_at": "2026-09-30 13:25:29.432879+00:00",
+      "received_dates": [],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "300527.SZ",
+      "name": "中船应急",
+      "list_date": "2016-08-05",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:35:23.789364+00:00",
+      "received_dates": [
+        "2026-09-24",
+        "2026-09-28"
+      ],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "600293.SH",
+      "name": "三峡新材",
+      "list_date": "2000-09-19",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:35:23.789364+00:00",
+      "received_dates": [
+        "2026-09-24",
+        "2026-09-28"
+      ],
+      "historical_status_backdated": false
+    },
+    {
+      "symbol": "600363.SH",
+      "name": "ST联光",
+      "list_date": "2001-03-29",
+      "delist_date": null,
+      "trade_date": "2026-09-29",
+      "classification": "EXPECTED_NO_BAR",
+      "status": "suspended",
+      "source": "baostock",
+      "observed_at": "2026-09-30 13:35:23.789364+00:00",
+      "received_dates": [
+        "2026-09-24",
+        "2026-09-28"
+      ],
+      "historical_status_backdated": false
+    }
+  ],
+  "missing_price_rows_manufactured": false,
+  "corporate_actions": {
+    "2026-09-28": "PASS",
+    "2026-09-29": "PASS",
+    "2026-09-30": "PASS",
+    "provider_failure_remaining": false
+  },
+  "model_input_readiness": {
+    "cutoff": "2026-09-30",
+    "first_session": "2025-04-10",
+    "session_count": 361,
+    "industry_count": 162,
+    "valid_closes_current": 110,
+    "series_valid_all_days": 0,
+    "horizons": [
+      {
+        "horizon": 10,
+        "mature_cutoff": "2026-09-15",
+        "window_start": "2026-03-15",
+        "valid_training_days": 0,
+        "minimum_valid_training_days": 30,
+        "first_valid": null,
+        "last_valid": null
+      },
+      {
+        "horizon": 40,
+        "mature_cutoff": "2026-08-04",
+        "window_start": "2026-02-04",
+        "valid_training_days": 0,
+        "minimum_valid_training_days": 30,
+        "first_valid": null,
+        "last_valid": null
+      },
+      {
+        "horizon": 120,
+        "mature_cutoff": "2026-04-08",
+        "window_start": "2025-10-08",
+        "valid_training_days": 0,
+        "minimum_valid_training_days": 30,
+        "first_valid": null,
+        "last_valid": null
+      }
+    ]
+  },
+  "model_input_examples": [
+    {
+      "industry": "1103",
+      "invalid_days": 361,
+      "first_failure": {
+        "trade_date": "2025-04-10",
+        "industry_code": "1103",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 0,
+        "valid_constituents": 0,
+        "coverage": 0.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_valid_date": null,
+      "last_valid_date": null,
+      "first_recursive_break": null,
+      "current": {
+        "trade_date": "2026-09-30",
+        "industry_code": "1103",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 4,
+        "valid_constituents": 4,
+        "coverage": 1.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_excluded_count": 0,
+      "first_excluded_sample": []
+    },
+    {
+      "industry": "1109",
+      "invalid_days": 361,
+      "first_failure": {
+        "trade_date": "2025-04-10",
+        "industry_code": "1109",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 0,
+        "valid_constituents": 0,
+        "coverage": 0.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_valid_date": null,
+      "last_valid_date": null,
+      "first_recursive_break": null,
+      "current": {
+        "trade_date": "2026-09-30",
+        "industry_code": "1109",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 3,
+        "valid_constituents": 3,
+        "coverage": 1.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_excluded_count": 0,
+      "first_excluded_sample": []
+    },
+    {
+      "industry": "3307",
+      "invalid_days": 361,
+      "first_failure": {
+        "trade_date": "2025-04-10",
+        "industry_code": "3307",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 0,
+        "valid_constituents": 0,
+        "coverage": 0.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_valid_date": null,
+      "last_valid_date": null,
+      "first_recursive_break": null,
+      "current": {
+        "trade_date": "2026-09-30",
+        "industry_code": "3307",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 3,
+        "valid_constituents": 3,
+        "coverage": 1.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_excluded_count": 0,
+      "first_excluded_sample": []
+    },
+    {
+      "industry": "7703",
+      "invalid_days": 361,
+      "first_failure": {
+        "trade_date": "2025-04-10",
+        "industry_code": "7703",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 0,
+        "valid_constituents": 0,
+        "coverage": 0.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_valid_date": null,
+      "last_valid_date": null,
+      "first_recursive_break": null,
+      "current": {
+        "trade_date": "2026-09-30",
+        "industry_code": "7703",
+        "industry_level": "SHENWAN_L2",
+        "status": "INVALID",
+        "eligible_members": 4,
+        "valid_constituents": 4,
+        "coverage": 1.0,
+        "daily_return": null,
+        "close": null,
+        "classification_version": "SWCLASS2021",
+        "available_at": null,
+        "source_published_at": null,
+        "quality_flag": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        "reason": "INSUFFICIENT_COVERAGE"
+      },
+      "first_excluded_count": 0,
+      "first_excluded_sample": []
+    }
+  ],
+  "model_input_full_diagnostics_external": "D:\\QuantForge\\runtime\\etf-quant-v1\\autonomous-control-v1\\root-cause-closure-v1\\warmup_diagnostic.json",
+  "idempotence": {
+    "real_reinvocation": "SAME_MODEL_INPUT_GATE_NO_REFRESH_NO_FORMAL_STATE",
+    "session_receipts_and_snapshot_reused": true,
+    "duplicate_formal_epoch_or_signal_or_intent": false,
+    "formal_success_idempotence": "SYNTHETIC_LIFECYCLE_TEST_PASS"
+  },
+  "crash_recovery": {
+    "synthetic_regression_phases": [
+      "fetch",
+      "stage",
+      "derive",
+      "before_export",
+      "export_before_receipt",
+      "receipt_before_cursor",
+      "after_publish"
+    ],
+    "result": "PASS",
+    "actual_dead_transport_owner_recovery": {
+      "prior_pid": 25912,
+      "reason_code": "OS_PROVEN_DEAD_OWNER",
+      "recovered_at": "2026-09-30T12:49:20.587410+00:00"
+    },
+    "unknown_or_alive_owners_stolen": false,
+    "later_failed_session_retracts_previous_finalization": false
+  },
+  "tests": {
+    "targeted": {
+      "passed": 100,
+      "skipped": 0,
+      "failed": 0
+    },
+    "api_security": {
+      "passed": 68,
+      "skipped": 0,
+      "failed": 0
+    },
+    "full_etf": {
+      "passed": 595,
+      "skipped": 1,
+      "failed": 0
+    }
+  },
+  "candidate_hash": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
+  "pit_registry_hash": "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc",
+  "strict_registry_hash": "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37",
+  "sws_status": "PASS_WITH_KNOWN_LIMITATION",
+  "sws_known_limitation": "OFFICIAL_L2_INDEX_CONSTITUENTS_NOT_MASTER_CLASSIFICATION_TABLE",
+  "frozen_strategy_code_unchanged": true,
+  "old_branch_refs_unchanged": true,
+  "cn_equity_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "sdk_vendor_source_unchanged": true,
+  "new_third_party_fallback": false,
+  "validation_performance_read": false,
+  "final_oos_performance_read": false,
+  "historical_formal_shadow_created": false,
+  "retroactive_intent": false,
+  "push": false,
+  "runner_command": "& D:/QuantForge/external/cnequity-etf-quant-v1/venv/Scripts/python.exe -B services/etf-quant-runner/one_shot.py --config D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json"
+}
