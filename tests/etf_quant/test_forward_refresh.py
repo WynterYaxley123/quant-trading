@@ -31,7 +31,8 @@ def forward(tmp_path,monkeypatch):
     module("cnequity.config",load_config=lambda p:SimpleNamespace(data_root=tmp_path/"lake"))
     job_status={"status":"success"}
     class Engine:
-        def __init__(self,cfg):pass
+        def __init__(self,cfg):
+            self.manifest=SimpleNamespace(list_runs=lambda name: [])
         def run_job(self,name,**kw):
             events.append((name,kw))
             return {"run_id":"SYNTHETIC_"+str(kw["trade_date"]),"status":job_status["status"]}
@@ -88,3 +89,30 @@ def test_windows_long_path_plumbing_preserves_identity_and_rejects_relative(forw
     assert m.extended_path_text(r"\\synthetic\share\lake") == "\\\\?\\UNC\\synthetic\\share\\lake"
     with pytest.raises(ValueError,match="ABSOLUTE"):
         m.extended_path_text("relative/lake")
+
+
+@pytest.mark.parametrize("state,action,calls",[("success","REUSED_VERIFIED_JOB",0),
+    ("failed","UPSTREAM_FAILED_BATCH_RECOVERY",1),("running","EXISTING_JOB_NOT_TERMINAL",0)])
+def test_only_own_exact_plan_is_reused_or_recovered(forward,state,action,calls):
+    import json
+    m,*_=forward; events=[]; session=date(2026,9,28)
+    row={"job_name":m.JOB,"run_id":"SYNTHETIC_OWN","status":state,
+        "metadata_json":json.dumps({"trade_date":str(session),"backfill":False,"planned_steps":m.STEPS})}
+    engine=SimpleNamespace(manifest=SimpleNamespace(list_runs=lambda name:[row]),
+        run_job=lambda name,**kw:(events.append((name,kw)) or {"run_id":"SYNTHETIC_OWN","status":"success"}))
+    result=m.session_job(engine,session)
+    assert result["action"]==action and len(events)==calls
+    if calls:
+        assert events[0][1]["run_id"]=="SYNTHETIC_OWN" and events[0][1]["retry_failed_only"] is True
+    if state=="running": assert result["status"]=="pending"
+
+
+def test_mismatched_plan_cannot_be_adopted(forward):
+    import json
+    m,*_=forward; session=date(2026,9,28)
+    row={"job_name":m.JOB,"run_id":"SYNTHETIC_UNKNOWN","status":"success",
+        "metadata_json":json.dumps({"trade_date":str(session),"backfill":True,"planned_steps":m.STEPS})}
+    engine=SimpleNamespace(manifest=SimpleNamespace(list_runs=lambda name:[row]),
+        run_job=lambda *a,**k:pytest.fail("unknown job must never be invoked"))
+    with pytest.raises(ValueError,match="PLAN_IDENTITY"):
+        m.session_job(engine,session)

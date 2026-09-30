@@ -44,12 +44,20 @@ def external_directory(path):
 
 
 def call(argv, *, cwd=None, timeout=900):
-    env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
+    env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"}
     env.pop("PYTHONPATH", None)
     env.pop("PYTHONHOME", None)
     try:
-        return subprocess.run([str(v) for v in argv], cwd=cwd, env=env, capture_output=True,
-                              text=True, encoding="utf-8", timeout=timeout, check=False)
+        result = subprocess.run([str(v) for v in argv], cwd=cwd, env=env,
+                                capture_output=True, timeout=timeout, check=False)
+        # Structured stdout stays STRICT UTF-8. Native upstream diagnostics
+        # sometimes mix Windows encodings; preserve those bytes as escapes
+        # instead of letting a stderr reader crash and lose the JSON receipt.
+        result.stdout = result.stdout.decode("utf-8")
+        result.stderr = result.stderr.decode("utf-8", errors="backslashreplace")
+        return result
+    except UnicodeDecodeError as error:
+        raise GateError("TRANSPORT_CHILD_ENCODING_BLOCKER") from error
     except (OSError, subprocess.TimeoutExpired) as error:
         raise GateError("TRANSPORT_PROCESS_BLOCKER", {"exception_class": type(error).__name__}) from error
 

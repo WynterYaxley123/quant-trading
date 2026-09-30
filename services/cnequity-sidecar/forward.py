@@ -20,6 +20,31 @@ from export_streaming import export_lake_streaming
 STEPS = ["trading_calendar", "instruments", "industry_members", "daily_bars",
          "index_bars", "corporate_actions", "trading_status", "compact",
          "derive_adj_factors", "trading_status_derive", "audit"]
+JOB = "etf_quant_forward"
+
+
+def session_job(engine, session):
+    """Reuse/recover only this entry's exact pinned plan, never unknown jobs.
+
+    Public SDK retry re-runs compact/derived/audit after the failed batch. It
+    owns its bounded worker budget; this entry makes just one recovery call.
+    A running job is not stolen, reconciled or restarted by this function.
+    """
+    for row in engine.manifest.list_runs(JOB):
+        meta = json.loads(row["metadata_json"] or "{}")
+        if meta.get("trade_date") != str(session):
+            continue
+        if (row["job_name"] != JOB or meta.get("backfill") is not False
+                or meta.get("planned_steps") != STEPS):
+            raise ValueError("FORWARD_JOB_PLAN_IDENTITY_BLOCKER")
+        if row["status"] == "success":
+            return {"run_id": row["run_id"], "status": "success", "action": "REUSED_VERIFIED_JOB"}
+        if row["status"] in ("failed", "degraded", "warning"):
+            result = engine.run_job(JOB, trade_date=session, steps=STEPS,
+                                    run_id=row["run_id"], retry_failed_only=True)
+            return {**result, "action": "UPSTREAM_FAILED_BATCH_RECOVERY"}
+        return {"run_id": row["run_id"], "status": "pending", "action": "EXISTING_JOB_NOT_TERMINAL"}
+    return {**engine.run_job(JOB, trade_date=session, steps=STEPS), "action": "NEW_FORWARD_JOB"}
 
 
 def extended_path_text(value):
@@ -66,8 +91,9 @@ def forward(root, source_config, export_config, target, after, *, now=None):
         receipts = []
         for session in sessions:
             # Normal forward daily semantics, NOT backfill. No source code patch.
-            result = JobEngine(cfg).run_job("etf_quant_forward", trade_date=session, steps=STEPS)
-            receipts.append({"session": str(session), "run_id": result["run_id"], "status": result["status"]})
+            result = session_job(JobEngine(cfg), session)
+            receipts.append({"session": str(session), "run_id": result["run_id"],
+                             "status": result["status"], "action": result["action"]})
             if result["status"] != "success":
                 return {"status": "WAITING_FOR_DATA", "reason": "UPSTREAM_PUBLISH_NOT_READY",
                         "refresh_attempted": True, "receipts": receipts}

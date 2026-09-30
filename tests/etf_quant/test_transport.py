@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import importlib.util
 import json
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -12,6 +13,18 @@ spec = importlib.util.spec_from_file_location("transport_under_test", REPO / "se
 transport = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(transport)
 s = transport.storage
+
+
+def test_mixed_native_stderr_does_not_destroy_structured_receipt():
+    result=transport.call([sys.executable,"-c",
+        "import os; os.write(2,bytes([0x97,0x98])); print('{\"status\":\"SYNTHETIC\"}')"])
+    assert transport.result_json(result)=={"status":"SYNTHETIC"}
+    assert result.stderr==r"\x97\x98" and result.returncode==0
+
+
+def test_non_utf8_structured_stdout_still_blocks():
+    with pytest.raises(s.GateError,match="CHILD_ENCODING"):
+        transport.call([sys.executable,"-c","import os; os.write(1,bytes([0x97]))"])
 
 
 def generation(root, run="SYNTHETIC_TEST_001"):
