@@ -3,9 +3,11 @@
 External isolated sidecar only. No direct curated writes or new provider.
 """
 import argparse
+from contextlib import redirect_stdout
 from datetime import date, datetime, time, timezone
 import json
-from pathlib import Path
+import os
+from pathlib import Path, PureWindowsPath
 import sys
 import tomllib
 
@@ -20,6 +22,19 @@ STEPS = ["trading_calendar", "instruments", "industry_members", "daily_bars",
          "derive_adj_factors", "trading_status_derive", "audit"]
 
 
+def extended_path_text(value):
+    """Local Windows filename plumbing, not a lake/source/methodology change."""
+    path = PureWindowsPath(value)
+    if not path.is_absolute():
+        raise ValueError("EXPLICIT_ABSOLUTE_LAKE_REQUIRED")
+    text = str(path)
+    if text.startswith("\\\\?\\"):
+        return text
+    if text.startswith("\\\\"):
+        return "\\\\?\\UNC\\" + text[2:]
+    return "\\\\?\\" + text
+
+
 def forward(root, source_config, export_config, target, after, *, now=None):
     verify_install(root)
     from cnequity.query import load
@@ -31,8 +46,16 @@ def forward(root, source_config, export_config, target, after, *, now=None):
     if target > current.date() or target == current.date() and current.time() < time(15, 5):
         return {"status": "WAITING_FOR_MARKET_CLOSE", "refresh_attempted": False}
     cfg = load_config(source_config)
+    if os.name == "nt":
+        # RawArchive's two hashes plus mkstemp suffix exceed legacy MAX_PATH.
+        # CPython's explicit extended-length path reaches the SAME filesystem
+        # location. No registry/global setting or upstream file is modified.
+        original = cfg.data_root
+        cfg.data_root = Path(extended_path_text(str(original)))
+        if not cfg.data_root.samefile(original):
+            raise ValueError("SOURCE_LAKE_CONFIG_MISMATCH")
     settings = tomllib.loads(export_config.read_text(encoding="utf-8"))
-    if Path(settings["paths"]["lake_root"]).resolve() != Path(cfg.data_root).resolve():
+    if not Path(settings["paths"]["lake_root"]).samefile(cfg.data_root):
         raise ValueError("SOURCE_LAKE_CONFIG_MISMATCH")
     with proxy_policy("direct"):
         calendar = load("trading_calendar", start=str(after), end=str(target), data_root=cfg.data_root)
@@ -62,7 +85,8 @@ def main():
     parser.add_argument("--after", type=date.fromisoformat, required=True)
     args = parser.parse_args()
     try:
-        result = forward(args.root, args.source_config, args.export_config, args.target, args.after)
+        with redirect_stdout(sys.stderr):
+            result = forward(args.root, args.source_config, args.export_config, args.target, args.after)
     except Exception as error:
         # Provider readiness failure cannot produce a signal or invented cutoff.
         integrity = (getattr(error, "code", "") in ("PINNED_SOURCE_BLOCKER", "ISOLATED_SIDECAR_REQUIRED")

@@ -14,6 +14,7 @@ ROOT=Path(__file__).resolve().parents[2]
 @pytest.fixture
 def forward(tmp_path,monkeypatch):
     events=[]
+    (tmp_path/"lake").mkdir()
     def module(name,**attrs):
         m=ModuleType(name)
         m.__dict__.update(attrs)
@@ -78,3 +79,12 @@ def test_missing_official_calendar_fails_closed(forward,tmp_path):
     result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,10,1),date(2026,9,29),
         now=datetime.fromisoformat("2026-10-02T16:00:00+08:00"))
     assert result["status"]=="WAITING_FOR_DATA" and events==["VERIFY_PIN"]
+
+
+def test_windows_long_path_plumbing_preserves_identity_and_rejects_relative(forward):
+    m,*_=forward
+    assert m.extended_path_text(r"D:\Synthetic\lake") == "\\\\?\\D:\\Synthetic\\lake"
+    assert m.extended_path_text("\\\\?\\D:\\Synthetic\\lake") == "\\\\?\\D:\\Synthetic\\lake"
+    assert m.extended_path_text(r"\\synthetic\share\lake") == "\\\\?\\UNC\\synthetic\\share\\lake"
+    with pytest.raises(ValueError,match="ABSOLUTE"):
+        m.extended_path_text("relative/lake")
