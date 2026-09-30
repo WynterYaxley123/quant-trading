@@ -181,6 +181,12 @@ def forward(root, source_config, export_config, target, after, *, now=None, obse
             engine = JobEngine(cfg)
             result = session_job(engine, session, force_observation=compatibility.get("repair_required", False))
             compatibility["repair_required"] = False
+            # A tolerated success with unresolved factual keys must remain
+            # retryable on a later invocation, rather than be reused forever.
+            if (result["status"] == "success" and result["action"] == "REUSED_VERIFIED_JOB"
+                    and scope_observation(cfg, result["run_id"], session)["missing_count"]):
+                result = session_job(engine, session, force_observation=True)
+                result["action"] = "NEW_FORWARD_JOB_AFTER_UNFINALIZED_SCOPE"
             # A failed-only recovery can introduce an irrelevant research
             # warning through the SDK finalization plan. Reobserve once using
             # our exact normal plan rather than retain that stale warning.

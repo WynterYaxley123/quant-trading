@@ -74,6 +74,36 @@ def test_forward_preserves_upstream_all_gates_and_exports_after_all_sessions(for
     assert all("backfill" not in r[1] for r in jobs)
 
 
+def test_unfinalized_success_gets_one_fresh_observation_when_provider_can_recover(forward,tmp_path,monkeypatch):
+    m,events,status,config=forward;calls=[]
+    def run(engine,session,*,force_observation=False):
+        calls.append(force_observation)
+        return {"run_id":"SYNTHETIC", "status":"success",
+                "action":"CURRENT_IDENTITY_REOBSERVATION" if force_observation else "REUSED_VERIFIED_JOB"}
+    scopes=iter([{"missing_count":1},{"missing_count":0}])
+    monkeypatch.setattr(m,"session_job",run)
+    monkeypatch.setattr(m,"scope_observation",lambda *a:next(scopes))
+    result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,9,29),date(2026,9,28),
+        now=datetime.fromisoformat("2026-09-30T16:00:00+08:00"))
+    assert result["status"]=="REFRESH_EXPORTED" and calls==[False,True]
+    assert result["receipts"][0]["action"]=="NEW_FORWARD_JOB_AFTER_UNFINALIZED_SCOPE"
+
+
+def test_exception_after_published_session_preserves_finalized_pointer(forward,tmp_path,monkeypatch,capsys):
+    m,*_=forward
+    def fail(*args,observation,**kwargs):
+        observation["latest_finalized"]={"session":"2026-09-28","snapshot_id":"a"*64}
+        raise TimeoutError("SYNTHETIC_PROVIDER_UNAVAILABLE")
+    monkeypatch.setattr(m,"forward",fail)
+    monkeypatch.setattr(sys,"argv",["forward.py","--root",str(tmp_path),"--source-config",str(tmp_path/"source.toml"),
+        "--export-config",str(tmp_path/"export.toml"),"--target","2026-09-29","--after","2026-09-24"])
+    m.main()
+    import json
+    result=json.loads(capsys.readouterr().out)
+    assert result["status"]=="WAITING_FOR_PROVIDER_DATA"
+    assert result["latest_finalized"]["session"]=="2026-09-28"
+
+
 def test_upstream_failure_never_exports_or_invents_cutoff(forward,tmp_path):
     m,events,status,config=forward;status["status"]="failed"
     result=m.forward(tmp_path,tmp_path/"source.toml",config,date(2026,9,29),date(2026,9,24),

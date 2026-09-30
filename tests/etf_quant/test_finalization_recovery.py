@@ -122,3 +122,14 @@ def test_bj_correction_requires_official_active_identity_and_byte_verified_prior
     assert m.correction_symbols(rows,{"920001.BJ"},baseline)=={"920001.BJ"}
     assert not m.correction_symbols(rows,set(),baseline)
     assert not m.correction_symbols(rows,{"920001.BJ"},{"920001.BJ":{"delist_date":"2026-09-28"}})
+
+
+def test_contradicted_bj_derived_delisting_becomes_unknown_not_an_expected_halt(modules):
+    from status_evidence import contradicted
+    row={"symbol":"920001.BJ","trade_date":date(2026,9,29),
+         "is_trading":False,"source":"derived_delisted","status":"delisted"}
+    assert contradicted(row,{"920001.BJ"})
+    assert not contradicted({**row,"source":"official_bse","status":"suspended"},{"920001.BJ"})
+    assert not contradicted({**row,"is_trading":True,"status":"normal"},{"920001.BJ"})
+    assert not contradicted({**row,"symbol":"920002.BJ"},{"920001.BJ"})
+    assert not contradicted({**row,"trade_date":date(2026,9,24)},{"920001.BJ"})

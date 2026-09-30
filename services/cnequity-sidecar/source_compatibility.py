@@ -49,6 +49,19 @@ def enable(cfg, settings):
     bse_tip_bridge.enable(registry_path=control / "bj_routing_identity.json", board_session=board_day)
     existing = load_curated_instruments(cfg)
     bad = correction_symbols(existing.to_dicts(), active, baseline) if existing is not None else set()
+    from status_evidence import enable as enable_validated_status
+    # Current routing identity does not assert historical normal trading.
+    # It contradicts only the known inferred delisting. The dated old rows
+    # are retained on disk and become UNKNOWN in completeness decisions.
+    validated_ids = {s for s in active if s.endswith(".BJ") and s in baseline
+                     and not baseline[s].get("delist_date")}
+    enable_validated_status(validated_ids)
+    atomic_bytes(control / "status_evidence_invalidation.json", json_bytes({
+        "observed_at": datetime.now(timezone.utc).isoformat(),
+        "reason_code": "CONTRADICTED_BJ_INFERRED_DELISTING",
+        "symbols": sorted(validated_ids), "inference_start": "2026-09-28",
+        "source_snapshot_session": str(board_day), "historical_normal_asserted": False,
+        "prior_revisions_modified": False, "missing_bar_remains_required": True}))
     original = finalize.compact_instruments
     if getattr(original, "__etf_quant_catalogue_correction__", False):
         return {"repair_required": bool(bad), "current_bj_count": len(active)}
