@@ -67,6 +67,29 @@ describe('ETF Quant independent product',()=>{
     await userEvent.click(screen.getByRole('tab',{name:'120d'}));
     expect(screen.getByRole('table',{name:'120d 因子和系数'})).toBeInTheDocument();
   });
+  it('an armed empty formal model does not report a warmup failure',async()=>{
+    const data=etfFixture();data.status.phase='ARMED';data.status.reason='WAITING_FOR_NEXT_ELIGIBLE_FINALIZED_T';
+    data.health.status='ARMED';data.health.blockers=[];
+    const readiness=notReachedReadiness();
+    setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return readiness;}});
+    await renderApp('/etf-quant/factors');
+    expect(await screen.findByText('AWAITING_FORMAL_MODEL')).toBeInTheDocument();
+    expect(screen.getByText(/尚无正式 Shadow 模型输出/)).toBeInTheDocument();
+    expect(screen.queryByText('MODEL_WARMUP_INCOMPLETE')).not.toBeInTheDocument();
+    for(const h of ['40d','120d']) {
+      await userEvent.click(screen.getByRole('tab',{name:h}));
+      expect(screen.getByText('AWAITING_FORMAL_MODEL')).toBeInTheDocument();
+      expect(screen.queryByText('MODEL_WARMUP_INCOMPLETE')).not.toBeInTheDocument();
+    }
+  });
+  it('an explicitly reported warmup failure remains visible',async()=>{
+    const data=etfFixture();data.health.blockers=['MODEL_WARMUP_INCOMPLETE'];
+    const readiness=notReachedReadiness();
+    setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return readiness;}});
+    await renderApp('/etf-quant/factors');
+    expect(await screen.findByText('MODEL_WARMUP_INCOMPLETE')).toBeInTheDocument();
+    expect(screen.queryByText(/尚无正式 Shadow 模型输出/)).not.toBeInTheDocument();
+  });
   it('mapping blocked is explicit and benchmarks are deferred',async()=>{
     await renderApp('/etf-quant/mappings');
     expect(await screen.findByRole('heading',{name:'MAPPING_ADMISSION_BLOCKED'})).toBeInTheDocument();
