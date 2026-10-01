@@ -25,6 +25,11 @@ Shadow 是向前运行的内部模拟，不是历史回测，也不是券商 pap
 | First Formal Shadow Epoch | 尚未创建；正常初始状态 |
 | Broker / real orders | DISABLED / DISABLED |
 
+最终验收修复已按原提交 `244daea` → `aad22ea` 集成到 `integration/etf-quant-v1-final-accepted`。
+仅修复展示、配置示例、许可声明与测试；量化生产语义未改变。正常 PR 合并成功后 V1 工程冻结，
+后续仅为正常 V1 Shadow 操作或独立授权的 V2 研究。最终提交与合并 SHA 以 GitHub 及仓外
+`final_delivery_state_v1.json` 为准；所有者许可决定与行情再分发权仍为 REVIEW_REQUIRED。
+
 最新已认证 finalized factual cutoff 为 **2026-09-30**。当前处于休市周期，READY_NO_SIGNAL 是正常输出；
 下一 eligible 日期由正式交易日历动态计算。不得历史补造 Formal Shadow，也不能仅凭收盘时间判断 finalized。
 
@@ -68,6 +73,8 @@ docker ps
 Strict/Proxy/Cash → sizing → T0 Formal Epoch → signal → T+1 simulation intent。
 不需手工串联 repair/audit 脚本，无 daemon/scheduler。正式运行前 checkout 必须 committed、clean，
 且分支为 integration/etf-quant-v1-shadow-autonomous-final；PR merge 不改变已有 runner branch guard。
+当前正式运行 checkout `D:/quant-worktrees/etf-quant-v1-shadow-autonomous-final` 以 fast-forward 部署
+与 final-accepted 相同的提交；保留原分支名以满足既有门禁，不修改 runner guard。
 
 ## Runner 状态
 
@@ -131,8 +138,10 @@ Shadow 与标准 GitHub PR 同步来自明确用户授权。
 
 ## 验证
 
-本轮 release 验证：targeted **128/0/0**，API/security **77/0/0**，Research API unit **18/0/0**，
-frontend unit **104/3/0**，full ETF **610/1/0**（passed/skipped/failed）。Typecheck、lint、build 均 PASS。
+最终修复集成验证：metadata/transport **10/0/0**、proxy **35/0/0**，API/security **77/0/0**，
+Research API unit **18/0/0**，frontend unit **106/3/0**（passed/skipped/failed）。
+Typecheck、lint、build 均 PASS；真实浏览器 9 页通过，console error/warning 为 0/0。
+沿用前次完整 ETF 验收 **610/1/0**：量化生产模块变更为 0，故本轮仅运行受影响测试。
 3 个 frontend skip 为未配置真实 Development artifact 的既有可选 integration tests；不读取 sealed performance。
 完整摘要与静态生成时间见 release metadata 的 tests.current_closure；不伪造 CI badge。
 
