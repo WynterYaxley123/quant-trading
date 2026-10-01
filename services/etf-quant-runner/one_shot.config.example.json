@@ -10,5 +10,6 @@
   "evidence_root": "",
   "pit_evidence": "",
   "pit_source_root": "",
+  "model_reference_snapshot": "",
   "docker_executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe"
 }

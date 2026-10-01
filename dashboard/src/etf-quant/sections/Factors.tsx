@@ -27,6 +27,8 @@ export function FactorsSection({ data }: { data: EtfQuantSnapshot }) {
   const [horizonKey, setHorizonKey] = useState<Horizon>('10d');
   const horizon = Number(horizonKey.slice(0, -1));
   const model = data.models.find((m) => m.horizon === horizon);
+  const modelPhase = model ? 'READY' : data.health.blockers.includes('MODEL_WARMUP_INCOMPLETE')
+    ? 'MODEL_WARMUP_INCOMPLETE' : 'AWAITING_FORMAL_MODEL';
   const names = horizon === 10 ? data.strategy.h10_factors : horizon === 40 ? data.strategy.h40_factors : data.strategy.h120_factors;
   const registry = new Map(data.strategy.factor_registry.map((f) => [f.name, f]));
   const rows = names.map((name, i) => ({
@@ -44,10 +46,13 @@ export function FactorsSection({ data }: { data: EtfQuantSnapshot }) {
       >
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           <span className="flex items-center gap-1.5">
-            模型状态 <PhaseBadge phase={model ? 'READY' : 'MODEL_WARMUP_INCOMPLETE'} />
+            模型状态 <PhaseBadge phase={modelPhase} />
           </span>
           <span className="tabular-nums">截距 {model ? fmtSigned(model.intercept) : '—'}</span>
         </div>
+        {!model && modelPhase === 'AWAITING_FORMAL_MODEL' ? (
+          <p className="text-sm text-muted-foreground">尚无正式 Shadow 模型输出；模型输入 readiness 请查看 Shadow 准备页。</p>
+        ) : null}
         <p className="break-all text-sm text-muted-foreground">
           训练日期：{model?.training.training_start ?? '—'} → {model?.training.training_end ?? '—'}；
           label cutoff：{model?.training.label_cutoff ?? '—'}；有效交易日：{fmtCount(model?.training.training_day_count)}；样本：{fmtCount(model?.training.sample_count)}

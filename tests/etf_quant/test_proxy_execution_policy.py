@@ -381,13 +381,6 @@ def test_cash_redistribution_is_declared_as_forbidden():
 
 
 def test_rebalance_trigger_names_executability_transitions():
-    """A one-off data gap must not leave the account permanently under-invested."""
-    assert REBALANCE_TRIGGER == \
-        "EXECUTABLE_MEMBER_SET_CHANGE_INCLUDING_EXECUTABILITY_TRANSITIONS"
-    assert "EXECUTABILITY_TRANSITIONS" in REBALANCE_TRIGGER
-
-
-def test_rebalance_trigger_names_executability_transitions():
     """A one-off data gap must not leave the account permanently under-invested.
 
     The rule refines the frozen ``EXECUTABLE_ETF_SET_CHANGE_ONLY`` rather than replacing it, and is

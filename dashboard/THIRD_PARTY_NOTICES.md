@@ -5,7 +5,7 @@
 1. 被**直接复制/改写**的上游代码来源与许可证；
 2. 通过 npm 引用的**依赖包**及其许可证（不复制其源码）。
 
-本项目的自有代码以本仓库整体许可证发布；以下第三方内容按各自许可证保留。
+本仓库未为自有研究与代码授予统一许可证；第三方复用需由所有者确认。以下第三方内容按各自许可证保留。
 
 ---
 
@@ -15,6 +15,7 @@
 
 - **project**: shadcn-ui/shadcn/ui 组件模式；结构研究对象为 satnaing/shadcn-admin
 - **license**: MIT License
+- **copyright and permission notice**: [完整上游 MIT 声明](licenses/shadcn-ui-MIT.txt)，仅适用于上游改编部分，不为本项目自有代码授予许可。
 - **what was adapted**: `src/components/ui/` 下的组件写法约定（CVA 变体 + `cn()` 类名合并 + Radix primitive 封装）：Button、Card、Badge、Dialog、Tooltip、Collapsible、Separator、Skeleton、Table 样式与 CSS 变量主题令牌（shadcn 设计令牌体系）。App shell 布局思路（sidebar + header + content）参考其架构后重写。
 - **not copied**: 其 demo 业务页面、demo 数据、RTL 魔改组件、品牌/logo、Clerk 认证代码、任何图片素材。
 
@@ -47,7 +48,8 @@
 | @tanstack/react-table | MIT | headless 表格 |
 | recharts | MIT | 图表引擎（Tremor 同源引擎） |
 | zod | MIT | API 响应运行时校验 |
-| clsx / tailwind-merge / class-variance-authority | MIT | 类名与变体工具 |
+| clsx / tailwind-merge | MIT | 类名工具 |
+| class-variance-authority 0.7.1 | Apache-2.0 | 组件变体工具 |
 | lucide-react | ISC | 图标 |
 | @radix-ui/react-slot | MIT | 组件组合原语 |
 | @radix-ui/react-dialog | MIT | 可访问 dialog（sector 明细面板） |
