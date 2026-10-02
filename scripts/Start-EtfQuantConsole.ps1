@@ -26,10 +26,19 @@ foreach ($name in @('runtime_root','control_root')) {
         throw "Config $name must be outside this checkout."
     }
 }
-if (-not $PSBoundParameters.ContainsKey('ResearchReportRoot')) {
-    $ResearchReportRoot = if ($env:RESEARCH_REPORT_ROOT) { $env:RESEARCH_REPORT_ROOT } else { Join-Path $consoleRepo 'reports/research' }
+if ($PSBoundParameters.ContainsKey('ResearchReportRoot') -and -not $ResearchReportRoot) { throw 'An explicit ResearchReportRoot must not be empty.' }
+if (-not $PSBoundParameters.ContainsKey('ResearchReportRoot')) { $ResearchReportRoot = $env:RESEARCH_REPORT_ROOT }
+if ($ResearchReportRoot) { $ResearchReportRoot = [IO.Path]::GetFullPath($ResearchReportRoot) }
+$researchWorkspaceConfig = $env:RESEARCH_WORKSPACE_CONFIG
+if ($researchWorkspaceConfig) { $researchWorkspaceConfig = [IO.Path]::GetFullPath($researchWorkspaceConfig) }
+if (-not $researchWorkspaceConfig -and -not $ResearchReportRoot) {
+    $localWorkspace = Join-Path $consoleConfig.control_root 'research-workspace.json'
+    if (Test-Path -LiteralPath $localWorkspace) { $researchWorkspaceConfig = $localWorkspace }
 }
-$ResearchReportRoot = [IO.Path]::GetFullPath($ResearchReportRoot)
+$researchConfigHash = if ($researchWorkspaceConfig -and (Test-Path -LiteralPath $researchWorkspaceConfig -PathType Leaf)) {
+    (Get-FileHash -LiteralPath $researchWorkspaceConfig -Algorithm SHA256).Hash
+} else { 'ABSENT' }
+$researchApprovalHash = (Get-FileHash -LiteralPath (Join-Path $consoleRepo 'services/research-api/config/development-workspaces.v1.json') -Algorithm SHA256).Hash
 $consoleLogs = Join-Path $consoleConfig.control_root 'console-logs'
 New-Item -ItemType Directory -Force -Path $consoleLogs | Out-Null
 $runLogs = Join-Path $consoleLogs ('run-' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff') + '-' + $PID)
@@ -43,7 +52,7 @@ foreach ($entry in @($viteEntry,(Join-Path $consoleRepo 'services/research-api/n
         throw "Existing locked dependencies are missing: $entry. Restore the frozen environment separately; the launcher installs nothing."
     }
 }
-$settings = @($consoleRepo,$consoleNode,$consoleConfig.runtime_root,$consoleConfig.control_root,$ResearchReportRoot,$EtfApiPort,$ResearchApiPort,$DashboardPort) -join "`n"
+$settings = @($consoleRepo,$consoleNode,$consoleConfig.runtime_root,$consoleConfig.control_root,$ResearchReportRoot,$researchWorkspaceConfig,$researchConfigHash,$researchApprovalHash,$env:RESEARCH_ARTIFACT_ID,$EtfApiPort,$ResearchApiPort,$DashboardPort) -join "`n"
 $hasher = [Security.Cryptography.SHA256]::Create()
 try { $settingsHash = ([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($settings)))).Replace('-','').ToLowerInvariant() }
 finally { $hasher.Dispose() }
@@ -68,7 +77,7 @@ function Test-ServiceHealth($Service) {
     if ($Service.key -eq 'research') {
         $health = Invoke-RestMethod -Uri ($Service.url + '/api/v1/health') -TimeoutSec 2
         if ($health.schemaVersion -ne '1.0.0' -or $health.data.status -ne 'ok' -or $health.data.readOnly -ne $true) { return $false }
-        $capabilities = Invoke-RestMethod -Uri ($Service.url + '/api/v1/capabilities') -TimeoutSec 2
+        $capabilities = Invoke-RestMethod -Uri ($Service.url + '/api/v1/capabilities') -TimeoutSec $StartupTimeoutSeconds
         return $capabilities.data.readOnly -eq $true -and $capabilities.data.mutations -eq $false `
             -and $capabilities.data.validationAvailable -eq $false -and $capabilities.data.finalOosAvailable -eq $false
     }
@@ -113,7 +122,8 @@ foreach ($service in $services) {
 $savedConsoleEnv = @{}
 $childEnvironment = @{
     ETF_QUANT_RUNTIME_ROOT=$consoleConfig.runtime_root; ETF_QUANT_CONTROL_ROOT=$consoleConfig.control_root; ETF_QUANT_API_PORT="$EtfApiPort"
-    RESEARCH_REPORT_ROOT=$ResearchReportRoot; HOST='127.0.0.1'; PORT="$ResearchApiPort"
+    RESEARCH_REPORT_ROOT=$ResearchReportRoot; RESEARCH_WORKSPACE_CONFIG=$researchWorkspaceConfig
+    RESEARCH_ARTIFACT_ID=$env:RESEARCH_ARTIFACT_ID; HOST='127.0.0.1'; PORT="$ResearchApiPort"
     DASHBOARD_ORIGINS="http://127.0.0.1:$DashboardPort,http://localhost:$DashboardPort"
     VITE_RESEARCH_API_BASE_URL="http://127.0.0.1:$ResearchApiPort/api/v1"
     VITE_ETF_QUANT_API_BASE_URL="http://127.0.0.1:$EtfApiPort"; VITE_DATA_MODE='api'
@@ -165,6 +175,14 @@ try {
         }
         Wait-ServiceReady $service $record
         Write-Output ("{0,-16} READY  {1}  ({2})" -f $service.name,$service.url,$action)
+        if ($service.key -eq 'research') {
+            $workspace = Invoke-RestMethod -Uri ($service.url + '/api/v1/research/status') -TimeoutSec $StartupTimeoutSeconds
+            if ($workspace.data.artifactState -eq 'AVAILABLE') {
+                Write-Output "Research workspace DEVELOPMENT_READY | $($workspace.data.artifactId) | approved runs: $($workspace.data.availableRunCount)"
+            } elseif ($workspace.data.artifactState -eq 'DEGRADED') {
+                Write-Output "Research workspace DEGRADED | $($workspace.data.artifactError.code) | $($workspace.data.artifactError.message)"
+            } else { Write-Output 'Research workspace NOT_CONFIGURED | no approved Development artifact configured' }
+        }
     }
     Write-Output "Open http://127.0.0.1:$DashboardPort/etf-quant/overview"
     Write-Output 'READ-ONLY | SIMULATION_ONLY | no runner invocation or market-data refresh'

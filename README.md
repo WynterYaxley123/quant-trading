@@ -153,7 +153,7 @@ Shadow 是基于真实 finalized 数据的向前内部模拟，不是券商 pape
 
 不需要三个终端。健康的同 checkout / 同配置服务会被安全复用；不属于该实例的端口冲突会明确报错，不终止任意 Python / Node 进程。日志与进程身份记录在仓外 control root 的 `console-logs/`。
 
-Research root 由现有 `RESEARCH_REPORT_ROOT` 环境变量或 `-ResearchReportRoot` 参数指定，默认是本 checkout 的 `reports/research`。目录不存在也是合法空状态。
+配置过的机器会自动连接本机获准的 Development 工作区，核验批准清单、阶段、metadata 与内容 Hash，并提供只读运行选择。Validation / Final OOS 始终封存，不重新生成历史研究结果。其他机器没有获准产物时仍正常启动，Research 明确显示 `NOT_CONFIGURED`。不要指向任意研究目录；显式覆盖也必须通过批准和完整性校验。配置与优先级见[Research 工作区指南](docs/research_workspace.md)。
 
 **启动控制台 ≠ 执行 Shadow cycle。** 启动过程不刷新行情、不训练模型、不运行 one-shot。
 

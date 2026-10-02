@@ -51,7 +51,7 @@ async function fixture() {
   await writeFile(configPath,JSON.stringify({runtime_root:runtimeRoot,control_root:controlRoot}));
   const ports=[];
   while(ports.length<3) {const port=await freePort();if(!ports.includes(port))ports.push(port);}
-  const args=['-Config',quote(configPath),'-ResearchReportRoot',quote(path.join(root,'absent-reports')),
+  const args=['-Config',quote(configPath),
     '-EtfApiPort',ports[0],'-ResearchApiPort',ports[1],'-DashboardPort',ports[2]];
   const receiptPath=path.join(controlRoot,'console-logs',`services-${ports.join('-')}.json`);
   let invocation=0;
@@ -150,20 +150,55 @@ test('unrelated temporary listener is refused before any service starts and rema
     } finally {await new Promise(resolve=>server.close(resolve));await f.cleanup();}
   });
 
-test('healthy process with corrupt artifacts fails readiness and rolls back only this invocation',
+test('healthy process with invalid artifacts stays connected and reports DEGRADED without fallback',
   {skip:!enabled,timeout:60000},async()=>{
     const f=await fixture();
     const badRoot=path.join(f.root,'bad-reports');
     const runRoot=path.join(badRoot,'shenwan_sector_index','iteration1_20260101_000000_000000_utc');
     await mkdir(runRoot,{recursive:true});await writeFile(path.join(runRoot,'metadata.json'),'corrupt test metadata');
     try {
-      await assert.rejects(f.launch(['-ResearchReportRoot',quote(badRoot),'-StartupTimeoutSeconds','5']),error=>{
-        assert.match(error.stderr,/Research API.*port/);
-        assert.match(error.stderr,/Command: node --import tsx/);
-        assert.match(error.stderr,/Log:[\s\S]*research.stderr.log/);
+      const result=await f.launch(['-ResearchReportRoot',quote(badRoot)]);
+      assert.match(result.stdout,/Research API +READY/);
+      assert.match(result.stdout,/Research workspace DEGRADED/);
+      const status=await (await fetch(`http://127.0.0.1:${f.ports[1]}/api/v1/research/status`)).json();
+      assert.equal(status.data.artifactState,'DEGRADED');
+      assert.equal(status.data.artifactError.code,'RESEARCH_ARTIFACT_UNAPPROVED');
+      assert.equal(await readFile(path.join(runRoot,'metadata.json'),'utf8'),'corrupt test metadata');
+      assert.equal(await readFile(path.join(f.runtimeRoot,'sentinel.txt'),'utf8'),'unchanged observation fixture');
+      for(const port of f.ports) assert.equal(await connected(port),true);
+    } finally {await f.cleanup();}
+  });
+
+test('a failed newly started observer is rolled back without terminating an unrelated process',
+  {skip:!enabled,timeout:60000},async()=>{
+    const f=await fixture();
+    const sentinel=net.createServer(socket=>socket.end());
+    const sentinelPort=await freePort();
+    await new Promise(resolve=>sentinel.listen(sentinelPort,'127.0.0.1',resolve));
+    try {
+      await assert.rejects(f.launch([], {NODE_OPTIONS:`--require="${path.join(f.root,'missing-test-only-module.cjs')}"`}),error=>{
+        assert.match(error.stderr,/ETF Quant API.*port/);
+        assert.match(error.stderr,/Log:/);
         return true;
       });
       assert.deepEqual((await f.receipt()).services,{});
       for(const port of f.ports) assert.equal(await connected(port),false);
+      assert.equal(await connected(sentinelPort),true);
+    } finally {await new Promise(resolve=>sentinel.close(resolve));await f.cleanup();}
+  });
+
+test('normal launcher resolves the approved local workspace without a root argument',
+  {skip:!enabled || !process.env.CONSOLE_APPROVED_RESEARCH_ROOT,timeout:60000},async()=>{
+    const f=await fixture();
+    try {
+      await writeFile(path.join(f.controlRoot,'research-workspace.json'),JSON.stringify({schemaVersion:'1.0.0',artifactId:'shenwan-iteration1-development',reportRoot:process.env.CONSOLE_APPROVED_RESEARCH_ROOT}));
+      const result=await f.launch();
+      assert.match(result.stdout,/Research workspace DEVELOPMENT_READY/);
+      const status=await (await fetch(`http://127.0.0.1:${f.ports[1]}/api/v1/research/status`)).json();
+      assert.equal(status.data.approvalState,'APPROVED');
+      assert.equal(status.data.availableRunCount,2);
+      assert.equal(status.data.sealedValidation,true);
+      assert.equal(status.data.sealedFinalOos,true);
+      assert.equal(await readFile(path.join(f.runtimeRoot,'sentinel.txt'),'utf8'),'unchanged observation fixture');
     } finally {await f.cleanup();}
   });
