@@ -14,6 +14,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
   const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
   const reportRoot = resolve(env.RESEARCH_REPORT_ROOT || resolve(repoRoot, 'reports/research'))
   const host = env.HOST || '127.0.0.1'
+  if (!['127.0.0.1', 'localhost', '::1'].includes(host)) {
+    throw new Error('HOST must be a loopback address')
+  }
   const port = env.PORT === undefined ? 8787 : Number(env.PORT)
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error('PORT must be an integer from 1 to 65535')

@@ -26,8 +26,17 @@ export function runDetail(meta: RunMetadata) {
   }
 }
 
-export function researchStatus(meta: RunMetadata) {
+export function researchStatus(meta: RunMetadata | null) {
+  if (!meta) return {
+    artifactState: 'NOT_CONFIGURED' as const,
+    researchLabel: 'SECTOR_INDEX_RESEARCH_ONLY', phase: 'NOT_CONFIGURED',
+    validation: 'SEALED', finalOos: 'SEALED', executable: false, tradable: false,
+    strictPit: false, classification: 'NOT_CONFIGURED', classificationAdmission: 'NOT_CONFIGURED',
+    etf: 'DISABLED', syntheticPortfolio: 'DISABLED', levelB: 'DISABLED',
+    sourceOfTruth: 'RESEARCH_ARTIFACTS' as const,
+  }
   return {
+    artifactState: 'AVAILABLE' as const,
     researchLabel: meta.research_label, phase: meta.phase,
     validation: meta.validation_access, finalOos: meta.final_oos_access,
     executable: meta.executable, tradable: false, strictPit: meta.strict_pit,

@@ -108,6 +108,9 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
     const incomingRawUrl = (c.env as { incoming?: { url?: string } } | undefined)?.incoming?.url
     rejectUnsafeRequest(incomingRawUrl ?? c.req.url)
     if (c.req.method === 'OPTIONS') return c.body(null, 204)
+    const path = new URL(c.req.url).pathname
+    query(c.req.url, path.endsWith('/predictions') ? ['date', 'top5', 'limit', 'offset']
+      : path.endsWith('/daily-metrics') ? ['horizon'] : [])
     await next()
   })
 
@@ -115,8 +118,9 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
     data: { status: 'ok', readOnly: true, sourceOfTruth: 'RESEARCH_ARTIFACTS' } }))
 
   app.get('/api/v1/capabilities', async (c) => {
-    await repo.latest()
+    const latest = await repo.latestOrNull()
     return c.json({ schemaVersion: SCHEMA_VERSION, data: {
+      artifactState: latest ? 'AVAILABLE' : 'NOT_CONFIGURED',
       readOnly: true, mutations: false,
       candidateComparison: true, developmentExplorer: true, sectorExplorer: true,
       diagnostics: true, portfolio: false, execution: false, etf: false,
@@ -125,7 +129,7 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
   })
 
   app.get('/api/v1/research/status', async (c) => c.json({
-    schemaVersion: SCHEMA_VERSION, data: researchStatus(await repo.latest()),
+    schemaVersion: SCHEMA_VERSION, data: researchStatus(await repo.latestOrNull()),
   }))
 
   app.get('/api/v1/runs', async (c) => c.json({

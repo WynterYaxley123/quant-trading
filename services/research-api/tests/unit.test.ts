@@ -34,6 +34,55 @@ async function response(path: string, init?: RequestInit) {
 }
 
 describe('stable read-only HTTP boundary', () => {
+  it('rejects public listen addresses', () => {
+    for (const host of ['0.0.0.0', '::', '192.168.1.10']) {
+      expect(() => loadConfig({ HOST: host })).toThrow(/loopback/)
+    }
+    expect(loadConfig({ HOST: '::1' }).host).toBe('::1')
+  })
+
+  it('starts with an absent report root and returns honest empty observation data without writing it', async () => {
+    const root = join(await fixtureRoot(), 'not-configured')
+    const api = app(root)
+    const health = await api.request('/api/v1/health')
+    expect(health.status).toBe(200)
+    for (const path of ['/api/v1/capabilities', '/api/v1/research/status', '/api/v1/runs']) {
+      const result = await api.request(path)
+      expect(result.status).toBe(200)
+      const body = await result.json()
+      if (path.endsWith('/runs')) expect(body.data.items).toEqual([])
+      else expect(body.data.artifactState).toBe('NOT_CONFIGURED')
+      expect(JSON.stringify(body)).not.toContain(root)
+    }
+    const status = await (await api.request('/api/v1/research/status')).json()
+    expect(status.data).toMatchObject({ phase: 'NOT_CONFIGURED', validation: 'SEALED', finalOos: 'SEALED', executable: false, tradable: false })
+    await expect(readFile(root)).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+
+  it('treats a missing collection and an empty collection as empty, but never swallows corrupt metadata', async () => {
+    const root = await fixtureRoot()
+    expect((await (await app(root).request('/api/v1/runs')).json()).data.items).toEqual([])
+    const runId = 'iteration1_20260101_000000_000000_utc'
+    await mkdir(join(root, 'shenwan_sector_index', runId))
+    await writeFile(join(root, 'shenwan_sector_index', runId, 'metadata.json'), 'invalid JSON')
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    for (const path of ['/api/v1/capabilities', '/api/v1/research/status', '/api/v1/runs']) {
+      const result = await app(root).request(path)
+      expect(result.status).toBe(500)
+      expect((await result.json()).error.code).toBe('ARTIFACT_SCHEMA_ERROR')
+    }
+    expect(log).toHaveBeenCalled()
+    expect((await app(root).request('/api/v1/health')).status).toBe(200)
+  })
+
+  it('rejects force and bypass queries rather than implying execution support', async () => {
+    for (const path of ['/api/v1/health?force=true', '/api/v1/runs?bypass=true']) {
+      const result = await response(path)
+      expect(result.status).toBe(400)
+      expect(result.body.error.code).toBe('BAD_QUERY')
+    }
+  })
+
   it('health does not require artifacts and advertises read-only source of truth', async () => {
     const result = await response('/api/v1/health')
     expect(result.status).toBe(200)

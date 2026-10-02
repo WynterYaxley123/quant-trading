@@ -71,7 +71,22 @@ export class ArtifactStorage {
   }
 
   async directories(segments: readonly string[]): Promise<string[]> {
-    const path = await this.inside(segments, 'ARTIFACT_IO_ERROR')
+    segments.forEach(assertSafeSegment)
+    // A deployment without optional reports is a valid empty catalog. Only
+    // absence is optional: permissions, broken manifests and escapes still fail.
+    try {
+      await realpath(resolve(this.configuredRoot))
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []
+      throw new ApiError('ARTIFACT_IO_ERROR', 500, 'Research artifact root is unavailable')
+    }
+    let path: string
+    try {
+      path = await this.inside(segments, 'RUN_NOT_FOUND')
+    } catch (error) {
+      if (error instanceof ApiError && error.code === 'RUN_NOT_FOUND') return []
+      throw error
+    }
     try {
       const entries = await readdir(path, { withFileTypes: true })
       return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort()

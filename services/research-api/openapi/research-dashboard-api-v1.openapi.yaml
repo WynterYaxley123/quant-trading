@@ -25,7 +25,7 @@ paths:
       operationId: capabilities
       responses:
         '200':
-          description: Capabilities backed by an admitted Development run.
+          description: Read-only capabilities and artifact availability; absent optional reports are NOT_CONFIGURED.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CapabilitiesEnvelope' }
@@ -35,7 +35,7 @@ paths:
       operationId: researchStatus
       responses:
         '200':
-          description: Current formal Development research status from metadata.
+          description: Development metadata or an explicit NOT_CONFIGURED policy state; sealed phases remain unavailable.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/StatusEnvelope' }
@@ -46,7 +46,7 @@ paths:
       description: Newest admitted Iteration-1 Development run first. Legacy runs are excluded.
       responses:
         '200':
-          description: Formal run catalog.
+          description: Formal run catalog; an absent optional root or collection returns an empty items array.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/RunListEnvelope' }
@@ -236,6 +236,7 @@ components:
             sectorExplorer, diagnostics, portfolio, execution, etf,
             validationAvailable, finalOosAvailable]
           properties:
+            artifactState: { type: string, enum: [AVAILABLE, NOT_CONFIGURED] }
             readOnly: { type: boolean, const: true }
             mutations: { type: boolean, const: false }
             candidateComparison: { type: boolean, const: true }
@@ -259,14 +260,15 @@ components:
         strictPit, classification, classificationAdmission, etf, syntheticPortfolio, levelB, sourceOfTruth]
       properties:
         researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
-        phase: { type: string, const: DEVELOPMENT }
+        artifactState: { type: string, enum: [AVAILABLE, NOT_CONFIGURED] }
+        phase: { type: string, enum: [DEVELOPMENT, NOT_CONFIGURED] }
         validation: { type: string, const: SEALED }
         finalOos: { type: string, const: SEALED }
         executable: { type: boolean, const: false }
         tradable: { type: boolean, const: false }
         strictPit: { type: boolean, const: false }
-        classification: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
-        classificationAdmission: { type: string, const: FIXED_CLASSIFICATION_RESEARCH }
+        classification: { type: string, enum: [FIXED_CLASSIFICATION_RESEARCH, NOT_CONFIGURED] }
+        classificationAdmission: { type: string, enum: [FIXED_CLASSIFICATION_RESEARCH, NOT_CONFIGURED] }
         etf: { type: string, const: DISABLED }
         syntheticPortfolio: { type: string, const: DISABLED }
         levelB: { type: string, const: DISABLED }
