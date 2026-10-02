@@ -6,6 +6,8 @@
 | 文档 | 定位 |
 |---|---|
 | [首页](../../README.md) | Quick Start、架构、冻结参数、运行状态、限制 |
+| [统一控制台](../unified_console.md) | Dashboard、ETF API、Research API 的启动与只读边界 |
+| [2026-10-02 控制台验收](../unified_console_acceptance_20261002.md) | 本次产品整合与完整重验；策略语义保持冻结 |
 | [Release metadata](../../reports/etf_quant/etf_quant_v1_final_release_v1.json) | 当前静态认证与最终测试 |
 | [Frozen model reconciliation](codex_frozen_model_contract_reconciliation_v1.md) | 当前模型合同权威；旧阻断 OVERRULED/OVERTURNED |
 | [107 admission](common_model_universe_v1.md) | 原行业准入；早期 L3 描述以现有 explicit L2 contract 为准 |
