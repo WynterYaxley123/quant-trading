@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { getResearchApi } from '@/api';
-import type { Capabilities, ResearchStatus, RunSummary } from '@/api/contracts';
+import type { Capabilities, Health, ResearchStatus, RunSummary } from '@/api/contracts';
 import type { ResearchApiError } from '@/api/errors';
 import { useResource } from '@/hooks/useResource';
 import { getAppEnv, type DataMode } from '@/lib/env';
@@ -18,6 +18,10 @@ export interface AppData {
   apiBaseUrl: string;
   loading: boolean;
   error: ResearchApiError | null;
+  health: Health | null;
+  healthLoading: boolean;
+  healthError: ResearchApiError | null;
+  artifactState: 'AVAILABLE' | 'NOT_CONFIGURED' | null;
   retry: () => void;
 }
 
@@ -26,9 +30,11 @@ const AppDataContext = createContext<AppData | null>(null);
 export function AppDataProvider({ children, enabled=true }: { children: ReactNode; enabled?:boolean }) {
   const env = useMemo(() => getAppEnv(), []);
   const api = useMemo(() => getResearchApi(), []);
+  // Process health never opens an artifact, including on ETF observation pages.
+  const health = useResource((signal) => api.getHealth(signal), [api]);
 
   const shell = useResource(async (signal) => {
-    // ETF observation never opens a Research artifact or requires Research HTTP.
+    // ETF rendering never opens a Research artifact or depends on its availability.
     if(!enabled) return {capabilities:null,status:null,runs:[]};
     const [capabilities, status, runs] = await Promise.all([
       api.getCapabilities(signal),
@@ -44,9 +50,13 @@ export function AppDataProvider({ children, enabled=true }: { children: ReactNod
     runs: shell.data?.runs ?? [],
     dataMode: env.dataMode,
     apiBaseUrl: env.apiBaseUrl,
-    loading: shell.loading,
-    error: shell.error,
-    retry: shell.retry,
+    loading: shell.loading || health.loading,
+    error: health.error ?? shell.error,
+    health: health.data,
+    healthLoading: health.loading,
+    healthError: health.error,
+    artifactState: enabled && shell.data ? (shell.data.runs.length ? 'AVAILABLE' : 'NOT_CONFIGURED') : null,
+    retry: () => { health.retry(); shell.retry(); },
   };
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;

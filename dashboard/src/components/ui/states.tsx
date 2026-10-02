@@ -31,8 +31,21 @@ export function EmptyState({
   );
 }
 
+/** Healthy Research service with no approved Development run. */
+export function ResearchEmptyState({ onRetry }: { onRetry?: () => void }) {
+  return (
+    <div className="flex flex-col gap-3 rounded-lg border border-dashed border-border p-10 text-center" role="status">
+      <p className="text-base font-semibold">Research API 已连接</p>
+      <p className="text-sm text-muted-foreground">未配置获准的 Development 研究产物。</p>
+      <p className="text-sm text-muted-foreground">Validation 与 Final OOS 保持封存。配置现有的获准产物后刷新；控制台不会生成研究数据或启动 Shadow。</p>
+      <p className="text-xs text-muted-foreground">SERVICE READY · NO APPROVED DEVELOPMENT ARTIFACT CONFIGURED</p>
+      {onRetry ? <Button variant="outline" size="sm" className="self-center" onClick={onRetry}>重新检查产物</Button> : null}
+    </div>
+  );
+}
+
 /** API disconnected — shown when the Research API cannot be reached. */
-export function DisconnectedState({ onRetry }: { onRetry?: () => void }) {
+export function DisconnectedState({ onRetry, endpoint }: { onRetry?: () => void; endpoint?: string }) {
   return (
     <div
       className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border p-10 text-center"
@@ -41,7 +54,7 @@ export function DisconnectedState({ onRetry }: { onRetry?: () => void }) {
       <PlugZap aria-hidden="true" className="h-6 w-6 text-muted-foreground" />
       <p className="text-base font-semibold">研究数据接口未连接</p>
       <p className="max-w-md text-sm text-muted-foreground">
-        无法连接到本地 Research API。请确认 API 服务正在运行，然后重试。
+        无法连接到本地 Research API{endpoint ? `（${endpoint}）` : ''}。运行 scripts/Start-EtfQuantConsole.ps1 启动统一控制台；若启动失败，请查看启动器输出的组件日志，然后重试。
       </p>
       <p className="text-xs text-muted-foreground">API DISCONNECTED</p>
       {onRetry ? (

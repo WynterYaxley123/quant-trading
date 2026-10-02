@@ -29,7 +29,7 @@ describe('Navigation', () => {
 
   it('labels the dashboard as a read-only research view', async () => {
     await renderApp('/');
-    expect(await screen.findByText('申万研究仪表盘')).toBeInTheDocument();
+    expect(await screen.findByText('Quant Trading / ETF-Quant')).toBeInTheDocument();
     expect(screen.getByText(/只读研究界面，不提供交易功能/)).toBeInTheDocument();
     expect(screen.getByText(/不能发起研究执行或交易/)).toBeInTheDocument();
   });

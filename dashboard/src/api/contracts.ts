@@ -70,6 +70,7 @@ export const healthSchema = z.object({
 export type Health = z.infer<typeof healthSchema>;
 
 export const capabilitiesSchema = z.object({
+  artifactState: z.enum(['AVAILABLE', 'NOT_CONFIGURED']).optional(),
   readOnly: z.boolean(),
   mutations: z.boolean(),
   candidateComparison: z.boolean(),
@@ -85,6 +86,7 @@ export const capabilitiesSchema = z.object({
 export type Capabilities = z.infer<typeof capabilitiesSchema>;
 
 export const researchStatusSchema = z.object({
+  artifactState: z.enum(['AVAILABLE', 'NOT_CONFIGURED']).optional(),
   researchLabel: z.string(),
   phase: z.string(),
   validation: z.string(),

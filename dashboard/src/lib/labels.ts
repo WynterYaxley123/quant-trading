@@ -1,5 +1,6 @@
 /** Human-facing Chinese labels. API, route and artifact machine values remain unchanged. */
 export function phaseLabel(value: string): string {
+  if (value === 'NOT_CONFIGURED') return '未配置 Development 产物';
   return value === 'DEVELOPMENT' ? 'Development（开发集）' : '未识别阶段';
 }
 
