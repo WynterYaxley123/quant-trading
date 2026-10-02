@@ -5,7 +5,7 @@ import { SidebarContent } from './Sidebar';
 import { MockDataBanner } from '@/components/research/MockDataBanner';
 import { ResearchStatusBanner } from '@/components/research/ResearchStatusBanner';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { DisconnectedState, ErrorState, LoadingState, ResearchEmptyState } from '@/components/ui/states';
+import { DisconnectedState, ErrorState, LoadingState, ResearchEmptyState, ResearchInvalidState } from '@/components/ui/states';
 import { EtfQuantProvider } from '@/etf-quant/Provider';
 import { ConsoleServiceStatus } from './ConsoleServiceStatus';
 
@@ -26,7 +26,7 @@ function titleForPath(pathname: string): string {
 
 function Shell() {
   const location = useLocation();
-  const { dataMode, loading, error, retry, artifactState, apiBaseUrl } = useAppData();
+  const { dataMode, loading, error, retry, artifactState, apiBaseUrl, status } = useAppData();
   const isEtf = location.pathname.startsWith('/etf-quant/');
   const isResearch = location.pathname === '/' || TITLES.some(({ prefix }) => location.pathname === prefix);
 
@@ -50,6 +50,8 @@ function Shell() {
             ) : (
               <ErrorState error={error} onRetry={retry} />
             )
+          ) : isResearch && artifactState === 'DEGRADED' ? (
+            <ResearchInvalidState error={status?.artifactError} onRetry={retry} />
           ) : isResearch && artifactState === 'NOT_CONFIGURED' ? (
             <ResearchEmptyState onRetry={retry} />
           ) : (

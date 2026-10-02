@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { readFile, readdir, realpath } from 'node:fs/promises'
 import { isAbsolute, relative, resolve, sep } from 'node:path'
-import { ApiError, schemaError } from '../errors.js'
+import { ApiError } from '../errors.js'
 
 export function assertSafeSegment(segment: string): void {
   if (!segment || segment === '.' || segment.includes('..') || /[/\\:%\0]/.test(segment)
@@ -20,7 +20,7 @@ function contained(root: string, target: string): boolean {
 export class ArtifactStorage {
   constructor(private readonly configuredRoot: string) {}
 
-  private async root(): Promise<string> {
+  async root(): Promise<string> {
     try {
       return await realpath(resolve(this.configuredRoot))
     } catch (error) {
@@ -53,9 +53,9 @@ export class ArtifactStorage {
     return actual
   }
 
-  async read(segments: readonly string[], expectedSha: string | null = null,
+  async readHashed(segments: readonly string[], expectedSha: string | null = null,
              missingCode: 'RUN_NOT_FOUND' | 'ARTIFACT_IO_ERROR' = 'ARTIFACT_IO_ERROR'):
-    Promise<string> {
+    Promise<{ text: string; sha256: string }> {
     const path = await this.inside(segments, missingCode)
     let bytes: Buffer
     try {
@@ -64,10 +64,16 @@ export class ArtifactStorage {
       throw new ApiError('ARTIFACT_IO_ERROR', 500, 'Research artifact unavailable',
         `${segments.join('/')}: ${String(error)}`)
     }
-    if (expectedSha !== null && createHash('sha256').update(bytes).digest('hex') !== expectedSha) {
-      schemaError(segments.join('/'), 'SHA256 does not match official metadata manifest')
+    const sha256 = createHash('sha256').update(bytes).digest('hex')
+    if (expectedSha !== null && sha256 !== expectedSha) {
+      throw new ApiError('RESEARCH_ARTIFACT_HASH_MISMATCH', 500, 'Artifact SHA256 does not match its approved manifest', segments.join('/'))
     }
-    return bytes.toString('utf8')
+    return { text: bytes.toString('utf8'), sha256 }
+  }
+
+  async read(segments: readonly string[], expectedSha: string | null = null,
+             missingCode: 'RUN_NOT_FOUND' | 'ARTIFACT_IO_ERROR' = 'ARTIFACT_IO_ERROR') {
+    return (await this.readHashed(segments, expectedSha, missingCode)).text
   }
 
   async directories(segments: readonly string[]): Promise<string[]> {
@@ -89,7 +95,7 @@ export class ArtifactStorage {
     }
     try {
       const entries = await readdir(path, { withFileTypes: true })
-      return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort()
+      return entries.filter((entry) => entry.isDirectory() || entry.isSymbolicLink()).map((entry) => entry.name).sort()
     } catch (error) {
       throw new ApiError('ARTIFACT_IO_ERROR', 500, 'Research artifact catalog unavailable',
         `${segments.join('/')}: ${String(error)}`)

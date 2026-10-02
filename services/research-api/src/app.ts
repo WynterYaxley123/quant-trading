@@ -94,8 +94,17 @@ function pagination(params: URLSearchParams) {
   return { limit, offset }
 }
 
-export function createApp(config: ApiConfig, repo = new ArtifactRepository(config.reportRoot)) {
+export function createApp(config: ApiConfig, repo = new ArtifactRepository(config.reportRoot, config)) {
   const app = new Hono()
+  app.use('/api/v1/*', async (c, next) => {
+    const origin = c.req.header('Origin')
+    if (origin && !config.origins.includes(origin)) throw new ApiError('ORIGIN_NOT_ALLOWED', 403, 'Origin is not allowed')
+    let hostname = ''
+    try { hostname = new URL(`http://${c.req.header('Host') ?? new URL(c.req.url).host}`).hostname }
+    catch { /* An invalid Host is rejected below. */ }
+    if (!['localhost', '127.0.0.1', '[::1]'].includes(hostname)) throw new ApiError('HOST_NOT_ALLOWED', 403, 'Host must be loopback')
+    await next()
+  })
   app.use('/api/v1/*', cors({
     origin: (origin) => config.origins.includes(origin) ? origin : '',
     allowMethods: ['GET', 'HEAD', 'OPTIONS'],
@@ -118,9 +127,9 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
     data: { status: 'ok', readOnly: true, sourceOfTruth: 'RESEARCH_ARTIFACTS' } }))
 
   app.get('/api/v1/capabilities', async (c) => {
-    const latest = await repo.latestOrNull()
+    const workspace = await repo.workspace()
     return c.json({ schemaVersion: SCHEMA_VERSION, data: {
-      artifactState: latest ? 'AVAILABLE' : 'NOT_CONFIGURED',
+      artifactState: workspace.artifactState,
       readOnly: true, mutations: false,
       candidateComparison: true, developmentExplorer: true, sectorExplorer: true,
       diagnostics: true, portfolio: false, execution: false, etf: false,
@@ -128,9 +137,13 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
     } })
   })
 
-  app.get('/api/v1/research/status', async (c) => c.json({
-    schemaVersion: SCHEMA_VERSION, data: researchStatus(await repo.latestOrNull()),
-  }))
+  app.get('/api/v1/research/status', async (c) => {
+    const { latest, ...workspace } = await repo.workspace()
+    return c.json({ schemaVersion: SCHEMA_VERSION, data: {
+      ...researchStatus(latest), ...workspace,
+      phase: workspace.artifactState === 'DEGRADED' ? 'DEGRADED' : latest?.phase ?? 'NOT_CONFIGURED',
+    } })
+  })
 
   app.get('/api/v1/runs', async (c) => c.json({
     schemaVersion: SCHEMA_VERSION, data: { items: (await repo.runs()).map(runItem) },
@@ -195,9 +208,10 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
         `${meta.run_id}/${candidateId}/training_diagnostics.csv`) })
   })
 
-  app.get('/api/v1/runs/:runId/integrity', async (c) => c.json({
-    schemaVersion: SCHEMA_VERSION, data: integrity(await repo.metadata(c.req.param('runId'))),
-  }))
+  app.get('/api/v1/runs/:runId/integrity', async (c) => {
+    const { meta, ...proof } = await repo.integrityProof(c.req.param('runId'))
+    return c.json({ schemaVersion: SCHEMA_VERSION, data: { ...integrity(meta), ...proof } })
+  })
 
   app.notFound((c) => c.json({ schemaVersion: SCHEMA_VERSION,
     error: { code: 'ROUTE_NOT_FOUND', message: 'API route not found' } }, 404))

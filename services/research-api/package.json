@@ -9,7 +9,7 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:unit": "vitest run tests/unit.test.ts",
+    "test:unit": "vitest run tests/unit.test.ts tests/approval.test.ts",
     "test:integration": "vitest run tests/integration.test.ts",
     "build": "tsc -p tsconfig.build.json"
   },

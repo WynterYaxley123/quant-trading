@@ -8,6 +8,7 @@ import type { DailyMetricRow, PredictionRow, TrainingRow } from '../schemas/csv.
 export function runItem(meta: RunMetadata) {
   return {
     runId: meta.run_id, phase: meta.phase, iteration: meta.iteration,
+    createdAt: meta.run_id.replace(/^iteration1_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})_(\d{6})_utc$/, '$1-$2-$3T$4:$5:$6.$7Z'),
     candidateIds: meta.candidate_family, researchLabel: meta.research_label,
     gitCommit: meta.git_head, protocolHash: meta.development_iteration1_protocol_hash,
     sectorSnapshotId: meta.sector_snapshot_id,

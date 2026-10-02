@@ -1,8 +1,39 @@
 import { describe, expect, it, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { createMockApiAdapter } from '@/api/adapters/mock-api';
 import { renderApp } from './test-utils';
 
 describe('Overview page', () => {
+  function workspacePort() {
+    const port = createMockApiAdapter();
+    const oldId = 'test-older-approved-run';
+    const runs = port.getRuns;
+    const candidates = port.getCandidates;
+    const integrity = port.getIntegrity;
+    return {port:{...port,
+      getRuns:async () => {const items=await runs();return [...items,{...items[0]!,runId:oldId}];},
+      getCandidates:vi.fn(async (runId:string,signal?:AbortSignal) => candidates(runId===oldId ? (await runs())[0]!.runId : runId,signal)),
+      getIntegrity:vi.fn(async (runId:string,signal?:AbortSignal) => integrity(runId===oldId ? (await runs())[0]!.runId : runId,signal)),
+    },oldId};
+  }
+
+  it('changes the read-only run in the URL and requests the selected run', async () => {
+    const {port,oldId}=workspacePort();
+    const router=await renderApp('/',port);
+    await screen.findByText('D0');
+    await userEvent.selectOptions(screen.getByRole('combobox',{name:'研究运行'}),oldId);
+    await waitFor(()=>expect(router.state.location.search.run).toBe(oldId));
+    await waitFor(()=>expect(port.getCandidates.mock.calls.at(-1)?.[0]).toBe(oldId));
+  });
+
+  it('preserves a valid run deep link on the workspace landing', async () => {
+    const {port,oldId}=workspacePort();
+    await renderApp(`/?run=${oldId}`,port);
+    await screen.findByText('D0');
+    expect(screen.getByRole('combobox',{name:'研究运行'})).toHaveValue(oldId);
+    expect(port.getIntegrity.mock.calls.at(-1)?.[0]).toBe(oldId);
+  });
   it('shows research state first: development, sealed validation and OOS, non-executable, not tradable', async () => {
     await renderApp('/');
 

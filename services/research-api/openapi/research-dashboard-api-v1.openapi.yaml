@@ -35,7 +35,7 @@ paths:
       operationId: researchStatus
       responses:
         '200':
-          description: Development metadata or an explicit NOT_CONFIGURED policy state; sealed phases remain unavailable.
+          description: Approved Development workspace, optional NOT_CONFIGURED state, or explicit DEGRADED artifact diagnostic. Process health is independent.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/StatusEnvelope' }
@@ -43,7 +43,7 @@ paths:
   /api/v1/runs:
     get:
       operationId: listRuns
-      description: Newest admitted Iteration-1 Development run first. Legacy runs are excluded.
+      description: Only registry-approved Iteration-1 Development runs, ordered by explicit metadata UTC creation time then stable run ID descending. No filesystem-mtime selection.
       responses:
         '200':
           description: Formal run catalog; an absent optional root or collection returns an empty items array.
@@ -211,7 +211,11 @@ components:
               type: string
               enum: [BAD_QUERY, RUN_NOT_FOUND, CANDIDATE_NOT_FOUND, SEALED_PHASE,
                 ARTIFACT_SCHEMA_ERROR, ARTIFACT_IO_ERROR, PATH_TRAVERSAL_BLOCKED,
-                METHOD_NOT_ALLOWED, ROUTE_NOT_FOUND]
+                METHOD_NOT_ALLOWED, ROUTE_NOT_FOUND, RESEARCH_APPROVAL_INVALID,
+                RESEARCH_APPROVAL_AMBIGUOUS, RESEARCH_CONFIGURATION_INVALID,
+                RESEARCH_ARTIFACT_UNAPPROVED, RESEARCH_ARTIFACT_INVALID,
+                RESEARCH_ARTIFACT_PHASE_FORBIDDEN, RESEARCH_ARTIFACT_HASH_MISMATCH,
+                HOST_NOT_ALLOWED, ORIGIN_NOT_ALLOWED]
             message: { type: string }
     HealthEnvelope:
       type: object
@@ -236,7 +240,7 @@ components:
             sectorExplorer, diagnostics, portfolio, execution, etf,
             validationAvailable, finalOosAvailable]
           properties:
-            artifactState: { type: string, enum: [AVAILABLE, NOT_CONFIGURED] }
+            artifactState: { type: string, enum: [AVAILABLE, NOT_CONFIGURED, DEGRADED] }
             readOnly: { type: boolean, const: true }
             mutations: { type: boolean, const: false }
             candidateComparison: { type: boolean, const: true }
@@ -260,8 +264,26 @@ components:
         strictPit, classification, classificationAdmission, etf, syntheticPortfolio, levelB, sourceOfTruth]
       properties:
         researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
-        artifactState: { type: string, enum: [AVAILABLE, NOT_CONFIGURED] }
-        phase: { type: string, enum: [DEVELOPMENT, NOT_CONFIGURED] }
+        artifactState: { type: string, enum: [AVAILABLE, NOT_CONFIGURED, DEGRADED] }
+        artifactId: { type: [string, 'null'] }
+        artifactPhase: { type: [string, 'null'], enum: [DEVELOPMENT, null] }
+        approvalState: { type: string, enum: [APPROVED, NOT_CONFIGURED, REJECTED] }
+        activeRunId: { type: [string, 'null'] }
+        availableRunCount: { type: integer, minimum: 0 }
+        integrityStatus: { type: string, enum: [PASS, FAIL, NOT_CONFIGURED] }
+        readOnly: { type: boolean, const: true }
+        sealedValidation: { type: boolean, const: true }
+        sealedFinalOos: { type: boolean, const: true }
+        candidateAvailability: { type: string, enum: [AVAILABLE, NOT_CONFIGURED, DEGRADED] }
+        metricsAvailability: { type: string, enum: [AVAILABLE, NOT_CONFIGURED, DEGRADED] }
+        diagnosticsAvailability: { type: string, enum: [AVAILABLE, NOT_CONFIGURED, DEGRADED] }
+        artifactError:
+          type: [object, 'null']
+          properties:
+            code: { type: string }
+            message: { type: string }
+          required: [code, message]
+        phase: { type: string, enum: [DEVELOPMENT, NOT_CONFIGURED, DEGRADED] }
         validation: { type: string, const: SEALED }
         finalOos: { type: string, const: SEALED }
         executable: { type: boolean, const: false }
@@ -289,6 +311,7 @@ components:
         protocolHash, sectorSnapshotId]
       properties:
         runId: { type: string }
+        createdAt: { type: string, description: Explicit approved UTC time from the metadata run identity; never filesystem mtime. }
         phase: { type: string, const: DEVELOPMENT }
         iteration: { type: integer, const: 1 }
         candidateIds: { type: array, items: { type: string, enum: [D0, D1, D2, D3] } }
@@ -492,6 +515,16 @@ components:
             syntheticPortfolioConfigHash, sectorSnapshotId, executable, strictPit,
             etf, syntheticPortfolio, levelB]
           properties:
+            artifactId: { type: string }
+            approvalState: { type: string, const: APPROVED }
+            metadataHash: { type: string, pattern: '^[a-f0-9]{64}$' }
+            manifestStatus: { type: string, const: PASS }
+            hashStatus: { type: string, const: PASS }
+            schemaStatus: { type: string, const: PASS }
+            verifiedContentFileCount: { type: integer, const: 29 }
+            readOnly: { type: boolean, const: true }
+            sealedValidation: { type: boolean, const: true }
+            sealedFinalOos: { type: boolean, const: true }
             researchLabel: { type: string, const: SECTOR_INDEX_RESEARCH_ONLY }
             phase: { type: string, const: DEVELOPMENT }
             validation: { type: string, const: SEALED }

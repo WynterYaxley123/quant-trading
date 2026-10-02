@@ -44,6 +44,23 @@ export function ResearchEmptyState({ onRetry }: { onRetry?: () => void }) {
   );
 }
 
+/** Process health and artifact admission are separate observations. */
+export function ResearchInvalidState({ error, onRetry }: {
+  error?: {code:string;message:string} | null; onRetry: () => void;
+}) {
+  return (
+    <div role="alert" className="flex flex-col gap-3 rounded-lg border border-destructive/40 p-8">
+      <p className="text-base font-semibold">Research API 已连接 · 研究产物校验未通过</p>
+      <p className="text-sm">SERVICE READY · ARTIFACT INVALID · DEGRADED</p>
+      <p className="text-sm text-muted-foreground">{error?.message ?? '配置的产物未通过批准、阶段、结构或 Hash 校验。'}</p>
+      <p className="text-xs font-mono">{error?.code ?? 'RESEARCH_ARTIFACT_INVALID'}</p>
+      <p className="text-sm text-muted-foreground">请核对本机研究工作区配置与获准清单，并恢复完整的获准 Development 产物。系统不会改选其他目录。Validation 与 Final OOS 保持 SEALED。</p>
+      <Button variant="outline" size="sm" className="self-start" onClick={onRetry}>重新校验产物</Button>
+      <p className="text-xs text-muted-foreground">重新校验只读取状态；不会生成研究结果、修改产物或启动 Shadow。</p>
+    </div>
+  );
+}
+
 /** API disconnected — shown when the Research API cannot be reached. */
 export function DisconnectedState({ onRetry, endpoint }: { onRetry?: () => void; endpoint?: string }) {
   return (

@@ -19,12 +19,14 @@ $env:RESEARCH_REPORT_ROOT = 'D:\quant-trading\reports\research'
 pnpm dev
 ```
 
-The default report root is `<this worktree>/reports/research`. An absent root,
-collection or approved run is a valid empty deployment: health, capabilities,
-status and runs return 200; capabilities/status say `artifactState=NOT_CONFIGURED`
-and runs contains an empty items array. The API never creates or writes the root.
-Configured corrupt artifacts still return integrity/IO errors. Select an existing
-approved Development root with `RESEARCH_REPORT_ROOT` or `-ResearchReportRoot`.
+The normal console supplies the optional machine-local approved workspace.
+An explicit registry anchors metadata SHA256 and its complete content manifest.
+See [workspace configuration](../../docs/research_workspace.md). Without any local
+configuration, the optional default is `<this worktree>/reports/research`; absent
+root/catalog is `NOT_CONFIGURED`. Invalid explicit configuration is `DEGRADED`,
+never an empty fallback. Health remains artifact-free; status/capabilities explain
+admission while run/content routes reject invalid or unapproved data. No artifact
+root is created or written.
 Default URL: `http://127.0.0.1:8787/api/v1`.
 
 ## Commands
@@ -45,6 +47,8 @@ No lint script is configured; `pnpm typecheck`, tests and the production build a
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `RESEARCH_REPORT_ROOT` | `<repo>/reports/research` | Only filesystem root the API may read. |
+| `RESEARCH_WORKSPACE_CONFIG` | Unset | Machine-local JSON pointer; root override wins. |
+| `RESEARCH_ARTIFACT_ID` | Local config ID or sole registry workspace | Explicit approval identity; unknown/ambiguous IDs fail closed. |
 | `HOST` | `127.0.0.1` | Loopback only: 127.0.0.1, localhost or ::1; public addresses rejected. |
 | `PORT` | `8787` | Listen port. |
 | `DASHBOARD_ORIGINS` | `http://127.0.0.1:5173,http://localhost:5173` | Exact allowed browser origins, comma-separated; wildcard rejected. |
