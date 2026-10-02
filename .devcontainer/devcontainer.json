@@ -1,24 +1,20 @@
 {
-  "name": "quant-research",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "quant-research",
+  "name": "quant-trading-portable-development",
+  "build": { "dockerfile": "Dockerfile", "context": ".." },
   "workspaceFolder": "/workspace",
-  "shutdownAction": "stopCompose",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
 
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-python.debugpy",
-        "ms-toolsai.jupyter",
-        "ms-azuretools.vscode-docker"
+        "charliermarsh.ruff"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/opt/conda/bin/python",
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.languageServer": "Pylance",
         "python.testing.pytestEnabled": true,
-        "python.testing.pytestArgs": ["tests"],
+        "python.testing.pytestArgs": ["-m", "not external_runtime"],
         "python.terminal.activateEnvironment": false,
         "jupyter.notebookFileRoot": "/workspace",
         "files.encoding": "utf8",
@@ -28,6 +24,5 @@
     }
   },
 
-  "remoteUser": "mambauser",
-  "postCreateCommand": "python -c \"import numpy, pandas, akshare, hikyuu, rqalpha; print('deps ok')\""
+  "postCreateCommand": "pre-commit install"
 }
