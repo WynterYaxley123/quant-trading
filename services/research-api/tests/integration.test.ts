@@ -42,7 +42,7 @@ describe.skipIf(!reportRoot)('current formal Iteration-1 artifacts, read-only', 
     expect(runs.body.data.items.map((item: { runId: string }) => item.runId))
       .not.toContain('20260924_145948_233618_utc')
     const status = await get('/api/v1/research/status')
-    expect(status.body.data).toMatchObject({ researchLabel: 'SECTOR_INDEX_RESEARCH_ONLY',
+    expect(status.body.data).toMatchObject({artifactState:'AVAILABLE',artifactId:'shenwan-iteration1-development',approvalState:'APPROVED',availableRunCount:2,integrityStatus:'PASS',sealedValidation:true,sealedFinalOos:true, researchLabel: 'SECTOR_INDEX_RESEARCH_ONLY',
       phase: 'DEVELOPMENT', validation: 'SEALED', finalOos: 'SEALED',
       executable: false, tradable: false, strictPit: false,
       classification: 'FIXED_CLASSIFICATION_RESEARCH', etf: 'DISABLED',
@@ -56,7 +56,7 @@ describe.skipIf(!reportRoot)('current formal Iteration-1 artifacts, read-only', 
     expect(detail.body.data).toMatchObject({ runId, candidateIds: candidates,
       validation: 'SEALED', finalOos: 'SEALED', strictPit: false })
     const integrity = await get(`/api/v1/runs/${runId}/integrity`)
-    expect(integrity.body.data).toMatchObject({ universe: 'U0_FIXED_124', sectorCount: 124,
+    expect(integrity.body.data).toMatchObject({approvalState:'APPROVED',manifestStatus:'PASS',hashStatus:'PASS',schemaStatus:'PASS',readOnly:true,verifiedContentFileCount:29, universe: 'U0_FIXED_124', sectorCount: 124,
       featureCount: 19, alpha: 0.01, horizons: [10, 40, 120],
       fusion: [0.25, 0.5, 0.25], topK: 5, executable: false, tradable: false,
       strictPit: false, classification: 'FIXED_CLASSIFICATION_RESEARCH',

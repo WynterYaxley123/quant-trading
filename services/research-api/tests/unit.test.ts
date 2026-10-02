@@ -25,7 +25,7 @@ async function fixtureRoot() {
 }
 
 function app(root = join(tmpdir(), 'nonexistent-research-api-fixture')) {
-  return createApp(loadConfig({ RESEARCH_REPORT_ROOT: root }))
+  return createApp({ ...loadConfig({}), reportRoot: root, optionalRoot: true })
 }
 
 async function response(path: string, init?: RequestInit) {
@@ -59,19 +59,18 @@ describe('stable read-only HTTP boundary', () => {
     await expect(readFile(root)).rejects.toMatchObject({ code: 'ENOENT' })
   })
 
-  it('treats a missing collection and an empty collection as empty, but never swallows corrupt metadata', async () => {
+  it('treats optional empty catalogs as empty and rejects unapproved folders without parsing their metadata', async () => {
     const root = await fixtureRoot()
     expect((await (await app(root).request('/api/v1/runs')).json()).data.items).toEqual([])
     const runId = 'iteration1_20260101_000000_000000_utc'
     await mkdir(join(root, 'shenwan_sector_index', runId))
     await writeFile(join(root, 'shenwan_sector_index', runId, 'metadata.json'), 'invalid JSON')
-    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
-    for (const path of ['/api/v1/capabilities', '/api/v1/research/status', '/api/v1/runs']) {
+    for (const path of ['/api/v1/capabilities', '/api/v1/research/status']) {
       const result = await app(root).request(path)
-      expect(result.status).toBe(500)
-      expect((await result.json()).error.code).toBe('ARTIFACT_SCHEMA_ERROR')
+      expect(result.status).toBe(200)
+      expect((await result.json()).data.artifactState).toBe('DEGRADED')
     }
-    expect(log).toHaveBeenCalled()
+    expect((await (await app(root).request('/api/v1/runs')).json()).error.code).toBe('RESEARCH_ARTIFACT_UNAPPROVED')
     expect((await app(root).request('/api/v1/health')).status).toBe(200)
   })
 
@@ -173,28 +172,27 @@ describe('stable read-only HTTP boundary', () => {
     }
   })
 
-  it('returns 404 for an unknown safe run', async () => {
+  it('refuses an unapproved safe run before filesystem access', async () => {
     const root = await fixtureRoot()
     const result = await app(root).request('/api/v1/runs/iteration1_20260101_000000_000000_utc')
-    expect(result.status).toBe(404)
-    expect((await result.json()).error.code).toBe('RUN_NOT_FOUND')
+    expect(result.status).toBe(403)
+    expect((await result.json()).error.code).toBe('RESEARCH_ARTIFACT_UNAPPROVED')
   })
 
-  it('omits a sealed-phase run from the catalog and refuses its direct metadata request', async () => {
+  it('never reads an unapproved sealed-phase folder and refuses its direct request', async () => {
     const root = await fixtureRoot()
     const runId = 'iteration1_20260101_000000_000000_utc'
     await mkdir(join(root, 'shenwan_sector_index', runId))
     await writeFile(join(root, 'shenwan_sector_index', runId, 'metadata.json'),
       JSON.stringify({ run_id: runId, phase: 'VALIDATION' }))
     const catalog = await app(root).request('/api/v1/runs')
-    expect(catalog.status).toBe(200)
-    expect((await catalog.json()).data.items).toEqual([])
+    expect(catalog.status).toBe(403)
     const direct = await app(root).request(`/api/v1/runs/${runId}`)
     expect(direct.status).toBe(403)
-    expect((await direct.json()).error.code).toBe('SEALED_PHASE')
+    expect((await direct.json()).error.code).toBe('RESEARCH_ARTIFACT_UNAPPROVED')
   })
 
-  it('reports malformed formal metadata without leaking an absolute path', async () => {
+  it('does not parse malformed unapproved metadata or leak an absolute path', async () => {
     const root = await fixtureRoot()
     const runId = 'iteration1_20260101_000000_000000_utc'
     await mkdir(join(root, 'shenwan_sector_index', runId))
@@ -202,11 +200,11 @@ describe('stable read-only HTTP boundary', () => {
       JSON.stringify({ run_id: runId, phase: 'DEVELOPMENT', candidate_family: ['D0'] }))
     const log = vi.spyOn(console, 'error').mockImplementation(() => {})
     const result = await app(root).request(`/api/v1/runs/${runId}`)
-    expect(result.status).toBe(500)
+    expect(result.status).toBe(403)
     const body = await result.json()
-    expect(body.error.code).toBe('ARTIFACT_SCHEMA_ERROR')
+    expect(body.error.code).toBe('RESEARCH_ARTIFACT_UNAPPROVED')
     expect(JSON.stringify(body)).not.toContain(root)
-    expect(log).toHaveBeenCalledWith(expect.stringContaining(`${runId}/metadata.json`))
+    expect(log).not.toHaveBeenCalled()
   })
 
   it('rejects SHA mismatch and path escape in storage', async () => {
@@ -215,7 +213,7 @@ describe('stable read-only HTTP boundary', () => {
     await writeFile(file, '{"ok":true}')
     const storage = new ArtifactStorage(root)
     await expect(storage.read(['shenwan_sector_index', 'official.json'], '0'.repeat(64)))
-      .rejects.toMatchObject({ code: 'ARTIFACT_SCHEMA_ERROR' })
+      .rejects.toMatchObject({ code: 'RESEARCH_ARTIFACT_HASH_MISMATCH' })
     await expect(storage.read(['..', 'outside'])).rejects.toMatchObject({ code: 'PATH_TRAVERSAL_BLOCKED' })
   })
 

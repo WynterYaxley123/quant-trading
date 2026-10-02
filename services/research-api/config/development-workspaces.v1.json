@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "workspaces": [
+    {
+      "artifactId": "shenwan-iteration1-development",
+      "collection": "shenwan_sector_index",
+      "phase": "DEVELOPMENT",
+      "approvalState": "APPROVED",
+      "approvalBasis": "OWNER_AUTHORIZED_EXISTING_DEVELOPMENT_ACCEPTANCE",
+      "evidence": "services/research-api/docs/artifact-audit.md",
+      "runs": [
+        {
+          "runId": "iteration1_20260924_163607_787266_utc",
+          "createdAt": "2026-09-24T16:36:07.787266Z",
+          "timeSource": "METADATA_RUN_ID_UTC",
+          "metadataSha256": "25a9a637f9a3c7c48750057551b1975e780e8ffe212274d276550b479e5ee526"
+        },
+        {
+          "runId": "iteration1_20260924_163106_040404_utc",
+          "createdAt": "2026-09-24T16:31:06.040404Z",
+          "timeSource": "METADATA_RUN_ID_UTC",
+          "metadataSha256": "bf79ffb56f90b0a9cf48cda9ea62d5807972c888ab1d12b358dcfe0471e16d69"
+        }
+      ]
+    }
+  ]
+}
