@@ -6,22 +6,33 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from strategies.sw_sector_rotation import SWSectorRotationCore, SWSectorRotationConfig
-from strategies.sw_sector_rotation.src.common.temporal_integrity import (
-    make_forward_label, signal_timing, temporal_boundaries, validate_execution_date,
+from strategies.sw_sector_rotation import SWSectorRotationConfig, SWSectorRotationCore
+from strategies.sw_sector_rotation.src.adapters.hikyuu.sector_rotation import (
+    SectorWeightTarget,
+    build_stock_selector_input,
+    ranked_sectors_to_targets,
 )
+from strategies.sw_sector_rotation.src.common.temporal_integrity import (
+    make_forward_label,
+    signal_timing,
+    temporal_boundaries,
+    validate_execution_date,
+)
+from strategies.sw_sector_rotation.src.factors.macro_pit import add_macro_features
+from strategies.sw_sector_rotation.src.factors.sector_rotation import validate_market_frame
 from strategies.sw_sector_rotation.src.model.model import CrossSectionalRidgeModel, NumPyRidge
 from strategies.sw_sector_rotation.src.model.ranking import rank_sectors, sector_scores_to_weights
 from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import (
-    match_etfs_for_sectors, normalize_scores_to_weights, passthrough_sector_weights,
+    match_etfs_for_sectors,
+    normalize_scores_to_weights,
+    passthrough_sector_weights,
 )
-from strategies.sw_sector_rotation.src.adapters.hikyuu.sector_rotation import (
-    SectorWeightTarget, build_stock_selector_input, ranked_sectors_to_targets,
-)
-from strategies.sw_sector_rotation.src.factors.sector_rotation import validate_market_frame
-from strategies.sw_sector_rotation.src.factors.macro_pit import add_macro_features
 from strategies.sw_sector_rotation.src.risk.sector_rotation import compute_risk_state
-from strategies.sw_sector_rotation.tests.conftest import make_named_panel, make_sector_panel, make_market_frame
+from strategies.sw_sector_rotation.tests.conftest import (
+    make_market_frame,
+    make_named_panel,
+    make_sector_panel,
+)
 
 
 @pytest.mark.parametrize("horizon", [10, 40, 120])
@@ -68,7 +79,7 @@ def test_after_close_execution_contract_skips_non_sessions():
 
 @pytest.mark.parametrize("bad", [0, -1, 1.5, True])
 def test_invalid_horizon_rejected(bad):
-    close = pd.Series([100., 101.], index=pd.bdate_range("2024-01-01", periods=2))
+    close = pd.Series([100.0, 101.0], index=pd.bdate_range("2024-01-01", periods=2))
     with pytest.raises(ValueError):
         make_forward_label(close, bad)
     with pytest.raises(ValueError):
@@ -91,7 +102,10 @@ def test_core_ranking_unchanged_by_future_prices_and_calendar():
     assert result["fused_ranking"] == truncated["fused_ranking"] == changed["fused_ranking"]
     for p in ("short", "medium", "long"):
         assert result["periods"][p]["scores"] == truncated["periods"][p]["scores"]
-        assert result["periods"][p]["train_dates"][-1] <= result["periods"][p]["boundaries"].label_cutoff
+        assert (
+            result["periods"][p]["train_dates"][-1]
+            <= result["periods"][p]["boundaries"].label_cutoff
+        )
     assert result["target_definition"] == "absolute_close_to_close_forward_return"
     assert result["holding_period"] is result["rebalance_cadence"] is None
     assert result["risk_budget_status"] == "NOT_IMPLEMENTED"
@@ -123,12 +137,12 @@ def test_ridge_rejects_nonfinite_fit_and_predict(bad):
         NumPyRidge(alpha=bad)
 
 
-@pytest.mark.parametrize("alpha", [0., .01])
+@pytest.mark.parametrize("alpha", [0.0, 0.01])
 def test_ridge_constant_features_and_underdetermined_system(alpha):
     X = np.ones((4, 7))
     y = np.arange(4, dtype=float)
     m = NumPyRidge(alpha=alpha).fit(X, y)
-    np.testing.assert_allclose(m.coef_, 0., atol=1e-12)
+    np.testing.assert_allclose(m.coef_, 0.0, atol=1e-12)
     np.testing.assert_allclose(m.predict(X), y.mean())
     rng = np.random.default_rng(21)
     X = rng.normal(size=(4, 7))
@@ -142,20 +156,20 @@ def test_ridge_ill_conditioned_matches_augmented_reference():
     X = np.column_stack((x, x + 1e-9 * rng.normal(size=80), np.ones(80)))
     y = x * 2 + 3
     model = NumPyRidge().fit(X, y)
-    A = np.vstack((X - X.mean(0), np.sqrt(.01) * np.eye(3)))
+    A = np.vstack((X - X.mean(0), np.sqrt(0.01) * np.eye(3)))
     expected = np.linalg.lstsq(A, np.r_[y - y.mean(), np.zeros(3)], rcond=None)[0]
     np.testing.assert_allclose(model.coef_, expected, atol=1e-12)
 
 
 def test_ridge_extreme_values_fail_without_stale_state():
-    model = NumPyRidge().fit(np.arange(20.).reshape(10, 2), np.arange(10.))
+    model = NumPyRidge().fit(np.arange(20.0).reshape(10, 2), np.arange(10.0))
     with pytest.raises(ValueError):
-        model.fit(np.full((10, 2), 1e308), np.arange(10.))
+        model.fit(np.full((10, 2), 1e308), np.arange(10.0))
     with pytest.raises(RuntimeError, match="尚未 fit"):
-        model.predict([[1., 2.]])
+        model.predict([[1.0, 2.0]])
 
 
-@pytest.mark.parametrize("X,y", [([], []), ([[1.]], [[1.]]), ([[1., 2.]], [1., 2.])])
+@pytest.mark.parametrize("X,y", [([], []), ([[1.0]], [[1.0]]), ([[1.0, 2.0]], [1.0, 2.0])])
 def test_ridge_invalid_shapes_fail_explicitly(X, y):
     with pytest.raises(ValueError):
         NumPyRidge().fit(X, y)
@@ -167,8 +181,16 @@ def _model_panel():
     panel = {}
     for name in ("A", "B", "C"):
         x = rng.normal(size=(65, 2))
-        panel[name] = pd.DataFrame({"x": x[:, 0], "z": x[:, 1], "fwd10": x[:, 0] * .1,
-                                    "fwd40": x[:, 1] * .2, "fwd120": x[:, 0] - x[:, 1]}, index=cal)
+        panel[name] = pd.DataFrame(
+            {
+                "x": x[:, 0],
+                "z": x[:, 1],
+                "fwd10": x[:, 0] * 0.1,
+                "fwd40": x[:, 1] * 0.2,
+                "fwd120": x[:, 0] - x[:, 1],
+            },
+            index=cal,
+        )
     return panel, cal
 
 
@@ -289,21 +311,27 @@ def test_nonfinite_horizon_score_never_becomes_zero(bad):
 def test_fusion_rejects_mixed_dates_and_stabilizes_ties():
     model, results = _trained_results()
     for r in results.values():
-        r.scores = {"C": 1., "B": 1., "A": 1.}
-    assert model.fuse_periods(results) == [("A", 0.), ("B", 0.), ("C", 0.)]
+        r.scores = {"C": 1.0, "B": 1.0, "A": 1.0}
+    assert model.fuse_periods(results) == [("A", 0.0), ("B", 0.0), ("C", 0.0)]
     results["long"].predict_date += pd.Timedelta(days=1)
     with pytest.raises(ValueError, match="dates"):
         model.fuse_periods(results)
 
 
 def test_core_defaults_load_package_configuration():
-    import yaml
     from pathlib import Path
+
+    import yaml
+
     path = Path(__file__).resolve().parents[1] / "config/sw_sector_rotation.yaml"
     cfg = yaml.safe_load(path.read_text(encoding="utf-8"))
     core = SWSectorRotationCore()
-    assert core.model.fusion_weights == cfg["model"]["fusion_weights"] == {"short": .25, "medium": .5, "long": .25}
-    assert core.model.alpha == cfg["model"]["alpha"] == .01
+    assert (
+        core.model.fusion_weights
+        == cfg["model"]["fusion_weights"]
+        == {"short": 0.25, "medium": 0.5, "long": 0.25}
+    )
+    assert core.model.alpha == cfg["model"]["alpha"] == 0.01
     assert core.model.forward_windows == cfg["model"]["horizons"]
 
 
@@ -312,14 +340,16 @@ def test_historical_flow_rejected_and_inference_updates_fusion(monkeypatch):
     panel = make_named_panel(n_sectors=3, n_days=400)
     cal = panel["ALPHA"].index
     with pytest.raises(ValueError, match="live_flow"):
-        core.run(panel, cal, cal[-1], live_flow={"ALPHA": 1.})
+        core.run(panel, cal, cal[-1], live_flow={"ALPHA": 1.0})
     captured = {}
     original = core.model.fuse_periods
+
     def capture(results):
         captured.update(results)
         return original(results)
+
     monkeypatch.setattr(core.model, "fuse_periods", capture)
-    out = core.run(panel, cal, cal[-1], mode="inference", live_flow={"ALPHA": 1.})
+    out = core.run(panel, cal, cal[-1], mode="inference", live_flow={"ALPHA": 1.0})
     assert out["flow_posthoc_applied"]
     for p, r in out["periods"].items():
         assert captured[p].scores == r["scores"]
@@ -327,29 +357,36 @@ def test_historical_flow_rejected_and_inference_updates_fusion(monkeypatch):
 
 def test_missing_mapping_is_visible_and_empty_etf_set_is_not_sector_trade():
     with pytest.warns(RuntimeWarning, match="missing ETF mapping: A"):
-        assert match_etfs_for_sectors([("A", 1.)], {}) == []
-    assert ranked_sectors_to_targets([("A", 1.)], []) == []
+        assert match_etfs_for_sectors([("A", 1.0)], {}) == []
+    assert ranked_sectors_to_targets([("A", 1.0)], []) == []
 
 
 def test_duplicate_mapping_keeps_max_score_and_direct_relation():
     mapping = {"A": {"code": "E", "relation": "proxy"}, "B": {"code": "E", "relation": "direct"}}
-    out = match_etfs_for_sectors([("A", 2.), ("B", 1.)], mapping)
-    assert len(out) == 1 and out[0]["score"] == 2. and out[0]["relation"] == "direct"
+    out = match_etfs_for_sectors([("A", 2.0), ("B", 1.0)], mapping)
+    assert len(out) == 1 and out[0]["score"] == 2.0 and out[0]["relation"] == "direct"
     assert out[0]["sectors"] == ["A", "B"]
 
 
-@pytest.mark.parametrize("entry", [{"code": ""}, [{"code": "E1"}, {"code": "E2"}], {"code": "E", "relation": "typo"}])
+@pytest.mark.parametrize(
+    "entry", [{"code": ""}, [{"code": "E1"}, {"code": "E2"}], {"code": "E", "relation": "typo"}]
+)
 def test_unsupported_mapping_fails_explicitly(entry):
     with pytest.raises(ValueError):
-        match_etfs_for_sectors([("A", 1.)], {"A": entry})
+        match_etfs_for_sectors([("A", 1.0)], {"A": entry})
 
 
-@pytest.mark.parametrize("candidates", [
-    [{"etf_code": "E"}, {"etf_code": "E"}], [{"weight": 1.}],
-    [{"etf_code": "E", "weight": -1.}], [{"etf_code": "E", "weight": np.nan}],
-    [{"etf_code": "E", "weight": 0.}],
-    [{"etf_code": "E", "weight": .2}, {"etf_code": "F"}],
-])
+@pytest.mark.parametrize(
+    "candidates",
+    [
+        [{"etf_code": "E"}, {"etf_code": "E"}],
+        [{"weight": 1.0}],
+        [{"etf_code": "E", "weight": -1.0}],
+        [{"etf_code": "E", "weight": np.nan}],
+        [{"etf_code": "E", "weight": 0.0}],
+        [{"etf_code": "E", "weight": 0.2}, {"etf_code": "F"}],
+    ],
+)
 def test_invalid_etf_candidates_cannot_reach_selector(candidates):
     with pytest.raises(ValueError):
         ranked_sectors_to_targets([], candidates)
@@ -357,20 +394,23 @@ def test_invalid_etf_candidates_cannot_reach_selector(candidates):
 
 def test_selector_requires_unique_targets_and_complete_resolver():
     with pytest.raises(ValueError, match="duplicate"):
-        build_stock_selector_input([SectorWeightTarget("E", .5), SectorWeightTarget("E", .5)])
+        build_stock_selector_input([SectorWeightTarget("E", 0.5), SectorWeightTarget("E", 0.5)])
     with pytest.raises(ValueError, match="resolver"):
-        build_stock_selector_input([SectorWeightTarget("E", 1.)], {})
+        build_stock_selector_input([SectorWeightTarget("E", 1.0)], {})
 
 
 @pytest.mark.parametrize("bad", [np.nan, np.inf, -np.inf])
 def test_invalid_scores_never_produce_rank_or_weight(bad):
-    for func, arg in ((rank_sectors, {"A": bad}), (sector_scores_to_weights, [("A", bad)]),
-                      (normalize_scores_to_weights, {"A": bad})):
+    for func, arg in (
+        (rank_sectors, {"A": bad}),
+        (sector_scores_to_weights, [("A", bad)]),
+        (normalize_scores_to_weights, {"A": bad}),
+    ):
         with pytest.raises(ValueError):
             func(arg)
 
 
-@pytest.mark.parametrize("weights", [{"A": -1., "B": 2.}, {"A": np.inf}, {"A": 0.}])
+@pytest.mark.parametrize("weights", [{"A": -1.0, "B": 2.0}, {"A": np.inf}, {"A": 0.0}])
 def test_invalid_passthrough_weights_fail(weights):
     with pytest.raises(ValueError):
         passthrough_sector_weights({"sector_weights": weights}, list(weights))
@@ -403,16 +443,18 @@ def test_factor_input_invalidity_is_not_silently_filled(kind):
     if kind == "duplicate_date":
         f = pd.concat([f, f.iloc[-1:]])
     else:
-        f.iloc[0, f.columns.get_loc("close")] = {"nan": np.nan, "inf": np.inf, "zero_close": 0.}[kind]
+        f.iloc[0, f.columns.get_loc("close")] = {"nan": np.nan, "inf": np.inf, "zero_close": 0.0}[
+            kind
+        ]
     with pytest.raises(ValueError):
         validate_market_frame(f)
 
 
 def test_macro_unpublished_values_stay_missing_even_for_unsorted_queries():
-    raw = pd.DataFrame({"m2_yoy": [8.]}, index=pd.to_datetime(["2024-01-01"]))
-    features = pd.DataFrame({"x": [1., 2.]}, index=pd.to_datetime(["2024-02-12", "2024-02-01"]))
+    raw = pd.DataFrame({"m2_yoy": [8.0]}, index=pd.to_datetime(["2024-01-01"]))
+    features = pd.DataFrame({"x": [1.0, 2.0]}, index=pd.to_datetime(["2024-02-12", "2024-02-01"]))
     out = add_macro_features(features, raw)
-    assert out.loc["2024-02-12", "macro_m2_yoy"] == 8.
+    assert out.loc["2024-02-12", "macro_m2_yoy"] == 8.0
     assert pd.isna(out.loc["2024-02-01", "macro_m2_yoy"])
     with pytest.raises(ValueError, match="macro_enabled"):
         SWSectorRotationConfig(macro_enabled=True)

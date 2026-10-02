@@ -5,8 +5,10 @@ from pathlib import Path
 import pytest
 
 from scripts.data.admit_shenwan_etf_mapping import _load_official_evidence, build
-from src.data.providers.etf_local import read_local_etf_snapshot
 from src.data.loaders.shenwan_sector_loader import load_sector_catalog
+from src.data.providers.etf_local import read_local_etf_snapshot
+
+pytestmark = pytest.mark.external_runtime
 
 
 @pytest.mark.integration
@@ -14,8 +16,14 @@ def test_frozen_local_etf_metadata_does_not_claim_listing_date():
     metadata, bars = read_local_etf_snapshot(Path("data/hikyuu"))
     assert len(metadata) == 8
     assert set(metadata["etf_code"]) == {
-        "sh510300", "sh510500", "sh512400", "sh512660", "sh588000",
-        "sz159745", "sz159915", "sz159934",
+        "sh510300",
+        "sh510500",
+        "sh512400",
+        "sh512660",
+        "sh588000",
+        "sz159745",
+        "sz159915",
+        "sz159934",
     }
     assert metadata["listing_date"].isna().all()
     assert metadata["bar_count"].sum() == len(bars)
@@ -46,8 +54,11 @@ def test_offline_etf_admission_reports_evidence_gap(tmp_path, monkeypatch):
     assert report["tracking_index_name_complete_count"] == 22
     assert report["mapping_effective_from_complete_count_official"] == 0
     assert report["official_evidence_status_counts"] == {
-        "VALIDATED": 0, "PARTIAL_EVIDENCE": 6,
-        "NOT_DIRECT_MAPPING": 15, "CONFLICT": 1, "UNVERIFIED": 0,
+        "VALIDATED": 0,
+        "PARTIAL_EVIDENCE": 6,
+        "NOT_DIRECT_MAPPING": 15,
+        "CONFLICT": 1,
+        "UNVERIFIED": 0,
     }
     assert report["partial_candidate_sector_count"] == 6
     assert report["partial_candidate_notice"] == "CANDIDATE ONLY; NOT ADMITTED FOR BACKTEST"
@@ -71,13 +82,21 @@ def test_offline_etf_admission_reports_evidence_gap(tmp_path, monkeypatch):
     assert all(not r["proxy_currently_admissible"] for r in proxy.values())
     assert all(r["relationship_effective_from"] is None for r in proxy.values())
     assert all(r["temporal_status"] == "PROXY_HISTORICALLY_INSUFFICIENT" for r in proxy.values())
-    assert all(r["sw_classification_status"] == "FIXED_CLASSIFICATION_RESEARCH" for r in proxy.values())
-    assert all(r["composition_as_of_date"] == "2026-09-23"
-               for code, r in proxy.items() if code != "159840")
-    assert all(r["composition_available_at"] == "2026-09-23"
-               for code, r in proxy.items() if code != "159840")
+    assert all(
+        r["sw_classification_status"] == "FIXED_CLASSIFICATION_RESEARCH" for r in proxy.values()
+    )
+    assert all(
+        r["composition_as_of_date"] == "2026-09-23" for code, r in proxy.items() if code != "159840"
+    )
+    assert all(
+        r["composition_available_at"] == "2026-09-23"
+        for code, r in proxy.items()
+        if code != "159840"
+    )
     assert proxy["515790"]["evidence_acquisition_priority"] == "EXCLUDE_SINGLE_SECTOR_PROXY"
-    assert proxy["159840"]["evidence_acquisition_priority"] == "DEFER_CURRENT_AND_HISTORICAL_RESEARCH"
+    assert (
+        proxy["159840"]["evidence_acquisition_priority"] == "DEFER_CURRENT_AND_HISTORICAL_RESEARCH"
+    )
     assert report["strict_validated_coverage_ratio"] == 0
     assert report["latest_executable_sector_count"] == 0
     assert report["historical_executable_max"] == 0
@@ -98,7 +117,9 @@ def test_reconciled_field_provenance_and_legacy_reviews_are_kept_separate():
     catalog = load_sector_catalog(Path("data/processed/shenwan"))
     codes = {str(r.sector_code): str(r.sector_name) for r in catalog.itertuples()}
     evidence = _load_official_evidence(
-        Path("."), Path("data/processed/shenwan_etf_mapping"), codes,
+        Path("."),
+        Path("data/processed/shenwan_etf_mapping"),
+        codes,
     )
     assert len(evidence["sources"]) == 29
     assert len(evidence["legacy"]) == 25
@@ -108,6 +129,11 @@ def test_reconciled_field_provenance_and_legacy_reviews_are_kept_separate():
     assert reviews[("IT服务Ⅱ", "159852")]["final_evidence_status"] == "NOT_DIRECT_MAPPING"
     assert reviews[("电网设备", "159616")]["final_evidence_status"] == "CONFLICT"
     assert reviews[("装修建材", "159745")]["legacy_conflict_type"] == "MANAGER_NAME_CONFLICT"
-    assert reviews[("银行", "512800")]["legacy_conflict_type"] == "LEGACY_SECTOR_NOT_IN_CANONICAL_L2_CATALOG"
-    assert any(r["official_evidence_status"] == "UNVERIFIED_OUTSIDE_INVESTIGATED_UNIVERSE"
-               for r in evidence["reference"])
+    assert (
+        reviews[("银行", "512800")]["legacy_conflict_type"]
+        == "LEGACY_SECTOR_NOT_IN_CANONICAL_L2_CATALOG"
+    )
+    assert any(
+        r["official_evidence_status"] == "UNVERIFIED_OUTSIDE_INVESTIGATED_UNIVERSE"
+        for r in evidence["reference"]
+    )

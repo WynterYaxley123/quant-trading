@@ -5,27 +5,34 @@ scanned one calendar session per pinned query and every dataset is encoded
 incrementally, so peak row memory is one day partition (~5.6K rows) plus one
 encode slice instead of the full materialized export.
 """
+
 from __future__ import annotations
 
 import csv
-from datetime import date, datetime, time, timezone
 import hashlib
 import io
 import math
 import os
-from pathlib import Path
 import re
 import shutil
 import sys
+from datetime import date, datetime, time, timezone
+from pathlib import Path
 from uuid import uuid4
 
 # File boundary utilities only. Quant models execute exclusively in Docker.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from strategies.etf_quant.runtime.exports import KEYS, PROVENANCE, SCHEMAS, SHANGHAI, observed_time
-from strategies.etf_quant.runtime.storage import (GateError, atomic_bytes, closed_id, digest,
-    external_root, json_bytes)
-
 from runner import DATASETS, IDENTITY, lake_fingerprint
+
+from strategies.etf_quant.runtime.exports import KEYS, PROVENANCE, SCHEMAS, SHANGHAI, observed_time
+from strategies.etf_quant.runtime.storage import (
+    GateError,
+    atomic_bytes,
+    closed_id,
+    digest,
+    external_root,
+    json_bytes,
+)
 
 SLICE_ROWS = 50_000
 _FILENAME = re.compile(r"[a-z0-9_]+\.(json|csv)")
@@ -60,7 +67,9 @@ class _StreamTable:
             raise GateError("CNE_SNAPSHOT_SCHEMA_BLOCKER", {"dataset": self.name})
         self.columns = list(columns)
         stream = io.StringIO(newline="")
-        csv.DictWriter(stream, fieldnames=self.columns, extrasaction="raise", lineterminator="\n").writeheader()
+        csv.DictWriter(
+            stream, fieldnames=self.columns, extrasaction="raise", lineterminator="\n"
+        ).writeheader()
         self._emit(stream.getvalue())
 
     def write_chunk(self, columns, rows):
@@ -68,10 +77,24 @@ class _StreamTable:
             return
         self.prepare(columns)
         stream = io.StringIO(newline="")
-        writer = csv.DictWriter(stream, fieldnames=self.columns, extrasaction="raise", lineterminator="\n")
+        writer = csv.DictWriter(
+            stream, fieldnames=self.columns, extrasaction="raise", lineterminator="\n"
+        )
         for row in rows:
-            writer.writerow({k: "" if v is None else "true" if v is True else "false" if v is False
-                             else v.isoformat() if isinstance(v, (datetime, date)) else v for k, v in row.items()})
+            writer.writerow(
+                {
+                    k: ""
+                    if v is None
+                    else "true"
+                    if v is True
+                    else "false"
+                    if v is False
+                    else v.isoformat()
+                    if isinstance(v, (datetime, date))
+                    else v
+                    for k, v in row.items()
+                }
+            )
         self._emit(stream.getvalue())
         self.row_count += len(rows)
 
@@ -148,22 +171,37 @@ def _validate_row(name, row, cutoff, session_set, table):
         if row["data_version"] != "v2":
             raise GateError("CNE_VOLUME_UNIT_BLOCKER")
         amount = row["amount"]
-        if (min(row[k] for k in ("open", "high", "low", "close")) <= 0 or row["volume"] < 0
-                or amount is not None and not (isinstance(amount, float) and math.isnan(amount)) and amount < 0
-                or row["high"] < max(row["open"], row["close"], row["low"])
-                or row["low"] > min(row["open"], row["close"], row["high"])):
+        if (
+            min(row[k] for k in ("open", "high", "low", "close")) <= 0
+            or row["volume"] < 0
+            or amount is not None
+            and not (isinstance(amount, float) and math.isnan(amount))
+            and amount < 0
+            or row["high"] < max(row["open"], row["close"], row["low"])
+            or row["low"] > min(row["open"], row["close"], row["high"])
+        ):
             raise GateError("CNE_PRICE_SCHEMA_BLOCKER")
         shanghai = fetched.astimezone(SHANGHAI)
-        if (shanghai.date() < row["trade_date"]
-                or shanghai.date() == row["trade_date"] and shanghai.time() < time(15, 5)):
+        if (
+            shanghai.date() < row["trade_date"]
+            or shanghai.date() == row["trade_date"]
+            and shanghai.time() < time(15, 5)
+        ):
             raise GateError("CNE_PARTIAL_SESSION_BLOCKER")
     if name == "stock_bars" and (row["adj_is_exact"] is not True or row["adj_close"] <= 0):
         raise GateError("ADJUSTMENT_SEMANTICS_BLOCKER")
-    if name == "industry_membership" and (row["classification_system"] != "sw" or row["source"] != "sw"):
+    if name == "industry_membership" and (
+        row["classification_system"] != "sw" or row["source"] != "sw"
+    ):
         raise GateError("INDUSTRY_CLASSIFICATION_BLOCKER")
-    if name == "benchmark_csi300" and (row["symbol"] != "000300.SH" or row["frequency"] != "1d" or row["close"] <= 0):
+    if name == "benchmark_csi300" and (
+        row["symbol"] != "000300.SH" or row["frequency"] != "1d" or row["close"] <= 0
+    ):
         raise GateError("BENCHMARK_IDENTITY_BLOCKER")
-    if name in ("stock_bars", "etf_bars", "trading_status", "benchmark_csi300") and row["trade_date"] not in session_set:
+    if (
+        name in ("stock_bars", "etf_bars", "trading_status", "benchmark_csi300")
+        and row["trade_date"] not in session_set
+    ):
         raise GateError("CNE_CALENDAR_BLOCKER")
 
 
@@ -190,8 +228,12 @@ def export_lake_streaming(config, load, *, observed_at=None):
     """Same contract as runner.export_lake; diagnostics are returned, never manifested."""
     started = datetime.now(timezone.utc) if observed_at is None else observed_at
     settings = config["export"]
-    if any(not isinstance(config["paths"].get(k), str) or not config["paths"][k].strip()
-           or not Path(config["paths"][k]).is_absolute() for k in ("lake_root", "export_root")):
+    if any(
+        not isinstance(config["paths"].get(k), str)
+        or not config["paths"][k].strip()
+        or not Path(config["paths"][k]).is_absolute()
+        for k in ("lake_root", "export_root")
+    ):
         raise GateError("EXPLICIT_EXTERNAL_PATHS_REQUIRED")
     if settings.get("classification_version") != IDENTITY["classification_version"]:
         raise GateError("CLASSIFICATION_VERSION_BLOCKER")
@@ -200,7 +242,11 @@ def export_lake_streaming(config, load, *, observed_at=None):
     if start > cutoff or calendar_end < cutoff:
         raise GateError("EXPORT_DATE_RANGE_BLOCKER")
     etfs = settings["etf_symbols"]
-    if not isinstance(etfs, list) or len(set(etfs)) != len(etfs) or any(not re.fullmatch(r"\d{6}\.(SH|SZ)", s) for s in etfs):
+    if (
+        not isinstance(etfs, list)
+        or len(set(etfs)) != len(etfs)
+        or any(not re.fullmatch(r"\d{6}\.(SH|SZ)", s) for s in etfs)
+    ):
         raise GateError("EXPLICIT_ETF_SCOPE_BLOCKER")
     lake = external_root(Path(config["paths"]["lake_root"]))
     export_path = Path(config["paths"]["export_root"])
@@ -216,24 +262,55 @@ def export_lake_streaming(config, load, *, observed_at=None):
         queries = {}
         # Membership must be complete, not narrowed to stocks with available prices.
         symbols_seen = set()
-        _stream_dataset("industry_membership",
-            load(DATASETS["industry_membership"], start=start.isoformat(), end=cutoff.isoformat(), data_root=lake),
+        _stream_dataset(
+            "industry_membership",
+            load(
+                DATASETS["industry_membership"],
+                start=start.isoformat(),
+                end=cutoff.isoformat(),
+                data_root=lake,
+            ),
             tables["industry_membership"],
             lambda r: r["source"] == "sw" and r["classification_system"] == "sw",
-            cutoff, None, stats, each=lambda r: symbols_seen.add(r["symbol"]))
+            cutoff,
+            None,
+            stats,
+            each=lambda r: symbols_seen.add(r["symbol"]),
+        )
         symbols = sorted(symbols_seen)
         if not symbols:
             raise GateError("SHENWAN_MEMBERSHIP_UNAVAILABLE")
-        queries["industry_membership"] = {"dataset": DATASETS["industry_membership"], "start": str(start),
-            "end": str(cutoff), "source_filter": "sw", "classification_system": "sw", "as_of": None,
-            "availability_evidence": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN"}
+        queries["industry_membership"] = {
+            "dataset": DATASETS["industry_membership"],
+            "start": str(start),
+            "end": str(cutoff),
+            "source_filter": "sw",
+            "classification_system": "sw",
+            "as_of": None,
+            "availability_evidence": "HISTORICAL_MEMBERSHIP_PIT_UNPROVEN",
+        }
         traded = []
-        _stream_dataset("trading_calendar",
-            load(DATASETS["trading_calendar"], start=str(start), end=str(calendar_end), data_root=lake),
-            tables["trading_calendar"], lambda r: True, cutoff, None, stats,
-            each=lambda r: traded.append(r["trade_date"]) if r["is_trading"] is True else None)
-        queries["trading_calendar"] = {"dataset": DATASETS["trading_calendar"], "start": str(start),
-            "end": str(calendar_end), "as_of": None}
+        _stream_dataset(
+            "trading_calendar",
+            load(
+                DATASETS["trading_calendar"],
+                start=str(start),
+                end=str(calendar_end),
+                data_root=lake,
+            ),
+            tables["trading_calendar"],
+            lambda r: True,
+            cutoff,
+            None,
+            stats,
+            each=lambda r: traded.append(r["trade_date"]) if r["is_trading"] is True else None,
+        )
+        queries["trading_calendar"] = {
+            "dataset": DATASETS["trading_calendar"],
+            "start": str(start),
+            "end": str(calendar_end),
+            "as_of": None,
+        }
         sessions = tuple(sorted(traded))
         if not sessions or cutoff not in sessions:
             raise GateError("CNE_CALENDAR_BLOCKER")
@@ -245,8 +322,15 @@ def export_lake_streaming(config, load, *, observed_at=None):
         adjustment_exact_rows = 0
         for day in (d for d in sessions if start <= d <= cutoff):
             day_symbols = set()
-            frame = load(DATASETS["stock_bars"], symbols=symbols, adjust="hfq", strict_adj=False,
-                         start=day.isoformat(), end=day.isoformat(), data_root=lake)
+            frame = load(
+                DATASETS["stock_bars"],
+                symbols=symbols,
+                adjust="hfq",
+                strict_adj=False,
+                start=day.isoformat(),
+                end=day.isoformat(),
+                data_root=lake,
+            )
             for chunk in frame.iter_slices(SLICE_ROWS):
                 rows = chunk.to_dicts()
                 stats["peak_chunk_rows"] = max(stats["peak_chunk_rows"], len(rows))
@@ -265,37 +349,110 @@ def export_lake_streaming(config, load, *, observed_at=None):
                     stock.track_date(r["trade_date"])
                 stock.write_chunk(chunk.columns, accepted)
                 adjustment_exact_rows += len(accepted)
-        queries["stock_bars"] = {"dataset": DATASETS["stock_bars"], "start": str(start), "end": str(cutoff),
-            "symbols": symbols, "adjust": "hfq", "strict_adj": False, "as_of": None,
-            "published_exact_only": True, "rejected_nonexact_rows": adjustment_rejected_rows}
+        queries["stock_bars"] = {
+            "dataset": DATASETS["stock_bars"],
+            "start": str(start),
+            "end": str(cutoff),
+            "symbols": symbols,
+            "adjust": "hfq",
+            "strict_adj": False,
+            "as_of": None,
+            "published_exact_only": True,
+            "rejected_nonexact_rows": adjustment_rejected_rows,
+        }
         if not etfs:
-            queries["etf_bars"] = {"dataset": DATASETS["etf_bars"], "symbols": [], "adjust": None,
-                "status": "NO_VERIFIED_ETF_SCOPE"}
+            queries["etf_bars"] = {
+                "dataset": DATASETS["etf_bars"],
+                "symbols": [],
+                "adjust": None,
+                "status": "NO_VERIFIED_ETF_SCOPE",
+            }
         else:
-            _stream_dataset("etf_bars",
-                load(DATASETS["etf_bars"], start=str(start), end=str(cutoff), data_root=lake,
-                     symbols=etfs, adjust=None),
-                tables["etf_bars"], lambda r: True, cutoff, session_set, stats)
-            queries["etf_bars"] = {"dataset": DATASETS["etf_bars"], "start": str(start), "end": str(cutoff),
-                "symbols": etfs, "adjust": None, "as_of": None}
-        _stream_dataset("instruments", load(DATASETS["instruments"], data_root=lake),
-            tables["instruments"], lambda r: True, cutoff, session_set, stats)
+            _stream_dataset(
+                "etf_bars",
+                load(
+                    DATASETS["etf_bars"],
+                    start=str(start),
+                    end=str(cutoff),
+                    data_root=lake,
+                    symbols=etfs,
+                    adjust=None,
+                ),
+                tables["etf_bars"],
+                lambda r: True,
+                cutoff,
+                session_set,
+                stats,
+            )
+            queries["etf_bars"] = {
+                "dataset": DATASETS["etf_bars"],
+                "start": str(start),
+                "end": str(cutoff),
+                "symbols": etfs,
+                "adjust": None,
+                "as_of": None,
+            }
+        _stream_dataset(
+            "instruments",
+            load(DATASETS["instruments"], data_root=lake),
+            tables["instruments"],
+            lambda r: True,
+            cutoff,
+            session_set,
+            stats,
+        )
         queries["instruments"] = {"dataset": DATASETS["instruments"], "as_of": None}
         if not etfs:
-            queries["trading_status"] = {"dataset": DATASETS["trading_status"], "symbols": [],
-                "status": "NO_VERIFIED_ETF_SCOPE"}
+            queries["trading_status"] = {
+                "dataset": DATASETS["trading_status"],
+                "symbols": [],
+                "status": "NO_VERIFIED_ETF_SCOPE",
+            }
         else:
-            _stream_dataset("trading_status",
-                load(DATASETS["trading_status"], start=str(start), end=str(cutoff), data_root=lake, symbols=etfs),
-                tables["trading_status"], lambda r: True, cutoff, session_set, stats)
-            queries["trading_status"] = {"dataset": DATASETS["trading_status"], "start": str(start),
-                "end": str(cutoff), "symbols": etfs, "as_of": None}
-        _stream_dataset("benchmark_csi300",
-            load(DATASETS["benchmark_csi300"], start=str(start), end=str(cutoff), data_root=lake,
-                 symbols=["000300.SH"]),
-            tables["benchmark_csi300"], lambda r: r.get("frequency") == "1d", cutoff, session_set, stats)
-        queries["benchmark_csi300"] = {"dataset": DATASETS["benchmark_csi300"], "start": str(start),
-            "end": str(cutoff), "symbols": ["000300.SH"], "as_of": None}
+            _stream_dataset(
+                "trading_status",
+                load(
+                    DATASETS["trading_status"],
+                    start=str(start),
+                    end=str(cutoff),
+                    data_root=lake,
+                    symbols=etfs,
+                ),
+                tables["trading_status"],
+                lambda r: True,
+                cutoff,
+                session_set,
+                stats,
+            )
+            queries["trading_status"] = {
+                "dataset": DATASETS["trading_status"],
+                "start": str(start),
+                "end": str(cutoff),
+                "symbols": etfs,
+                "as_of": None,
+            }
+        _stream_dataset(
+            "benchmark_csi300",
+            load(
+                DATASETS["benchmark_csi300"],
+                start=str(start),
+                end=str(cutoff),
+                data_root=lake,
+                symbols=["000300.SH"],
+            ),
+            tables["benchmark_csi300"],
+            lambda r: r.get("frequency") == "1d",
+            cutoff,
+            session_set,
+            stats,
+        )
+        queries["benchmark_csi300"] = {
+            "dataset": DATASETS["benchmark_csi300"],
+            "start": str(start),
+            "end": str(cutoff),
+            "symbols": ["000300.SH"],
+            "as_of": None,
+        }
         for table in tables.values():
             table.finish()
         completed = datetime.now(timezone.utc) if observed_at is None else observed_at
@@ -307,22 +464,36 @@ def export_lake_streaming(config, load, *, observed_at=None):
             raise GateError("CNE_SNAPSHOT_TIME_BLOCKER")
         datasets = {}
         for name, table in tables.items():
-            datasets[name] = {"file": name + ".csv", "row_count": table.row_count, "columns": table.columns,
+            datasets[name] = {
+                "file": name + ".csv",
+                "row_count": table.row_count,
+                "columns": table.columns,
                 "file_sha256": table.hexdigest,
                 "date_start": str(table.date_min) if table.date_min is not None else None,
                 "date_end": str(table.date_max) if table.date_max is not None else None,
-                "query": queries.get(name, {})}
-        metadata = {**IDENTITY, "lake_fingerprint_sha256": before,
-            "created_at": completed.isoformat(), "fetch_started_at": started.isoformat(),
-            "fetch_completed_at": completed.isoformat(), "data_cutoff": cutoff.isoformat(),
+                "query": queries.get(name, {}),
+            }
+        metadata = {
+            **IDENTITY,
+            "lake_fingerprint_sha256": before,
+            "created_at": completed.isoformat(),
+            "fetch_started_at": started.isoformat(),
+            "fetch_completed_at": completed.isoformat(),
+            "data_cutoff": cutoff.isoformat(),
             "datasets": datasets,
-            "warnings": ["NOT_EX_ANTE_AVAILABILITY_PROOF", "ETF_MAPPING_EXTERNAL_EVIDENCE_REQUIRED",
-                         "CALENDAR_FUTURE_SESSIONS_ARE_NOT_FUTURE_PRICES", "NO_THIRD_PARTY_DATA_REDISTRIBUTION"],
+            "warnings": [
+                "NOT_EX_ANTE_AVAILABILITY_PROOF",
+                "ETF_MAPPING_EXTERNAL_EVIDENCE_REQUIRED",
+                "CALENDAR_FUTURE_SESSIONS_ARE_NOT_FUTURE_PRICES",
+                "NO_THIRD_PARTY_DATA_REDISTRIBUTION",
+            ],
             "quality_flags": ["HISTORICAL_MEMBERSHIP_PIT_UNPROVEN", "SOURCE_LICENSING_UNRESOLVED"],
             "historical_uses": ["MODEL_WARMUP", "TRAINING_INPUT", "ENGINEERING_VALIDATION"],
-            "available_at": None, "source_published_at": None,
+            "available_at": None,
+            "source_published_at": None,
             "adjustment_exact_rows": adjustment_exact_rows,
-            "adjustment_rejected_rows": adjustment_rejected_rows}
+            "adjustment_rejected_rows": adjustment_rejected_rows,
+        }
         snapshot_id = digest(json_bytes(metadata))
         metadata["snapshot_id"] = snapshot_id
         closed_id(snapshot_id)
@@ -349,5 +520,10 @@ def export_lake_streaming(config, load, *, observed_at=None):
             except OSError:
                 pass
         raise
-    return {"run_id": snapshot_id, "manifest_sha256": digest(manifest_bytes), "snapshot_id": snapshot_id,
-            "streaming": True, "peak_chunk_rows": stats["peak_chunk_rows"]}
+    return {
+        "run_id": snapshot_id,
+        "manifest_sha256": digest(manifest_bytes),
+        "snapshot_id": snapshot_id,
+        "streaming": True,
+        "peak_chunk_rows": stats["peak_chunk_rows"],
+    }

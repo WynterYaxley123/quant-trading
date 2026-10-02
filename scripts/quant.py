@@ -36,13 +36,14 @@ def _cmd_strategies(_args) -> int:
         return 0
     for name, sp in sorted(specs.items()):
         req = f" requirements={dict(sp.requirements)}" if sp.requirements else ""
-        print(f"{name}\n  package: {sp.package}\n  config:  {sp.config_file}\n  version: {sp.version}{req}")
+        print(
+            f"{name}\n  package: {sp.package}\n  config:  {sp.config_file}\n  version: {sp.version}{req}"
+        )
     return 0
 
 
 def _cmd_frameworks(_args) -> int:
     import src.backtesting  # noqa: F401  触发注册
-
     from src.backtesting import available_frameworks
 
     print("\n".join(available_frameworks()) or "(无)")

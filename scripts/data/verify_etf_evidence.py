@@ -9,6 +9,7 @@ No network.  Read-only.  Exit code 0 = all checks pass, 1 = failure.
 Usage:
     python scripts/data/verify_etf_evidence.py [--repo-root PATH]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -48,8 +49,9 @@ def verify_etf_evidence(repo_root: str | os.PathLike = ".") -> dict:
     registered: dict[str, dict] = {}
     duplicates: list[str] = []
     for code, rec in manifest.items():
-        entries = ([dict(rec, _role="primary")] if rec.get("document") else []) + \
-                  [dict(e, _role="extra") for e in rec.get("extra_docs", [])]
+        entries = ([dict(rec, _role="primary")] if rec.get("document") else []) + [
+            dict(e, _role="extra") for e in rec.get("extra_docs", [])
+        ]
         for e in entries:
             fn = e.get("document")
             if not fn:
@@ -57,8 +59,9 @@ def verify_etf_evidence(repo_root: str | os.PathLike = ".") -> dict:
                 continue
             if fn in registered:
                 duplicates.append(fn)
-                problems.append(f"CHECK10 duplicate manifest entry: {fn} "
-                                f"({registered[fn]['_code']} and {code})")
+                problems.append(
+                    f"CHECK10 duplicate manifest entry: {fn} ({registered[fn]['_code']} and {code})"
+                )
             registered[fn] = dict(e, _code=code)
     report["checks"]["2_manifest_filename_unique"] = not duplicates
     report["checks"]["10_duplicate_manifest_entries"] = not duplicates
@@ -83,11 +86,15 @@ def verify_etf_evidence(repo_root: str | os.PathLike = ".") -> dict:
             continue
         if disk[fn]["sha256"] != e.get("sha256"):
             sha_bad.append(fn)
-            problems.append(f"CHECK4 sha256 mismatch: {fn} "
-                            f"manifest={str(e.get('sha256'))[:16]} disk={disk[fn]['sha256'][:16]}")
+            problems.append(
+                f"CHECK4 sha256 mismatch: {fn} "
+                f"manifest={str(e.get('sha256'))[:16]} disk={disk[fn]['sha256'][:16]}"
+            )
         if int(disk[fn]["size"]) != int(e.get("bytes", -1)):
             size_bad.append(fn)
-            problems.append(f"CHECK5 size mismatch: {fn} manifest={e.get('bytes')} disk={disk[fn]['size']}")
+            problems.append(
+                f"CHECK5 size mismatch: {fn} manifest={e.get('bytes')} disk={disk[fn]['size']}"
+            )
     report["checks"]["3_disk_file_exists"] = not missing
     report["checks"]["4_sha256_match"] = not sha_bad
     report["checks"]["5_size_match"] = not size_bad
@@ -123,7 +130,9 @@ def verify_etf_evidence(repo_root: str | os.PathLike = ".") -> dict:
             cat_url_bad.append(code)
             problems.append(f"CHECK8 catalog source_url disagrees with manifest: {code} -> {sd}")
         if e is not None and e["_code"] != code:
-            problems.append(f"catalog {code} references a document registered to {e['_code']}: {sd}")
+            problems.append(
+                f"catalog {code} references a document registered to {e['_code']}: {sd}"
+            )
     report["checks"]["6_catalog_source_document_exists"] = not cat_missing
     report["checks"]["7_catalog_source_sha256_match"] = not cat_sha_bad
     report["checks"]["8_catalog_source_url_agrees"] = not cat_url_bad

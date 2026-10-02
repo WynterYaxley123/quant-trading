@@ -83,7 +83,8 @@ def enable() -> dict[str, Any]:
     PATCHED = True
     logger.info(
         "sidecar: BEIJING_AWARE_QUOTE_PARTITION_V1 enabled; TDX exchanges %s -> %s",
-        before, after,
+        before,
+        after,
     )
     return {"status": "ENABLED", "before": list(before), "after": list(after), "probe": probe}
 
@@ -106,6 +107,7 @@ def diagnose() -> dict[str, Any]:
         "patched": PATCHED,
         "tdx_exchanges": sorted(SY.TDX_EXCHANGES),
         "original_exchanges": sorted(ORIGINAL_EXCHANGES) if ORIGINAL_EXCHANGES else None,
-        "probe": {s: SY.is_tdx_servable(s)
-                  for s in ("920000.BJ", "920001.BJ", "600519.SH", "000001.SZ")},
+        "probe": {
+            s: SY.is_tdx_servable(s) for s in ("920000.BJ", "920001.BJ", "600519.SH", "000001.SZ")
+        },
     }

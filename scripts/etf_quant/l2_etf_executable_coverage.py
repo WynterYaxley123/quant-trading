@@ -14,6 +14,7 @@ Two read-only tools used by the supply audit:
     it is never wired into runtime execution and it never changes the frozen
     Top5 rule.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -24,8 +25,15 @@ STATUS_VOCABULARY = ("VERIFIED_PASS", "VERIFIED_REJECTED", "INSUFFICIENT_EVIDENC
 LIQUIDITY_PASS = "LIQUIDITY_ADMISSION_PASS"
 SCAN_CONTRACT = "HYPOTHETICAL_EXECUTABLE_SCAN_V1"
 SCAN_STATUS = "FEASIBILITY_ANALYSIS_ONLY"
-REQUIRED_MATRIX_FIELDS = ("l2_code", "l2_name", "l1_name", "strictly_executable",
-                          "verified_etf_codes", "current_active", "model_signal_eligible")
+REQUIRED_MATRIX_FIELDS = (
+    "l2_code",
+    "l2_name",
+    "l1_name",
+    "strictly_executable",
+    "verified_etf_codes",
+    "current_active",
+    "model_signal_eligible",
+)
 
 
 class AuditError(ValueError):
@@ -41,7 +49,10 @@ def load_coverage_matrix(path: Path) -> dict:
     than defaulted: an absent verdict must never read as "executable".
     """
     doc = json.loads(Path(path).read_bytes())
-    if doc.get("artifact") != "STRICT_L2_ETF_COVERAGE_MATRIX_V1" or doc.get("industry_level") != "SHENWAN_L2":
+    if (
+        doc.get("artifact") != "STRICT_L2_ETF_COVERAGE_MATRIX_V1"
+        or doc.get("industry_level") != "SHENWAN_L2"
+    ):
         raise AuditError("COVERAGE_MATRIX_SCHEMA_BLOCKER")
     rows = doc.get("rows")
     if not isinstance(rows, list) or not rows:
@@ -68,15 +79,22 @@ def coverage_summary(matrix: dict) -> dict:
     def block(name: str, selector) -> dict:
         subset = [row for row in rows if selector(row)]
         executable = [row for row in subset if row["strictly_executable"]]
-        return {"universe": name, "total_l2": len(subset), "executable_l2": len(executable),
-                "non_executable_l2": len(subset) - len(executable),
-                "coverage_ratio": (len(executable) / len(subset)) if subset else None}
+        return {
+            "universe": name,
+            "total_l2": len(subset),
+            "executable_l2": len(executable),
+            "non_executable_l2": len(subset) - len(executable),
+            "coverage_ratio": (len(executable) / len(subset)) if subset else None,
+        }
 
     return {
         "current_active": block("CURRENT_ACTIVE_L2_UNIVERSE", lambda r: r["current_active"]),
-        "model_signal_at_2026_09_24": block("MODEL_SIGNAL_UNIVERSE_AT_2026_09_24",
-                                            lambda r: r["model_signal_eligible"]),
-        "historical_union": block("HISTORICAL_L2_UNION", lambda r: r.get("historical_union", False)),
+        "model_signal_at_2026_09_24": block(
+            "MODEL_SIGNAL_UNIVERSE_AT_2026_09_24", lambda r: r["model_signal_eligible"]
+        ),
+        "historical_union": block(
+            "HISTORICAL_L2_UNION", lambda r: r.get("historical_union", False)
+        ),
         "etf_count_distribution": _distribution(rows),
         "l1_coverage": _l1(rows),
     }
@@ -111,16 +129,25 @@ def _l1(rows) -> dict:
     return out
 
 
-def executable_scan(ranking, matrix: dict, *, liquidity: dict | None = None,
-                    target: int = 5, limit: int | None = None) -> dict:
+def executable_scan(
+    ranking,
+    matrix: dict,
+    *,
+    liquidity: dict | None = None,
+    target: int = 5,
+    limit: int | None = None,
+) -> dict:
     """HYPOTHETICAL_EXECUTABLE_SCAN_V1. Feasibility only; no side effects."""
     if limit is not None and limit <= 0:
         raise AuditError("SCAN_LIMIT_BLOCKER")
     entries = {row["l2_code"]: row for row in matrix["rows"]}
     passed = set()
     if liquidity is not None:
-        passed = {code for code, row in (liquidity.get("results_by_code") or {}).items()
-                  if row.get("status") == LIQUIDITY_PASS}
+        passed = {
+            code
+            for code, row in (liquidity.get("results_by_code") or {}).items()
+            if row.get("status") == LIQUIDITY_PASS
+        }
     ordered = sorted(ranking, key=lambda r: (r["rank"], r["industry_code"]))
     used: set[str] = set()
     selected: list[dict] = []
@@ -137,28 +164,44 @@ def executable_scan(ranking, matrix: dict, *, liquidity: dict | None = None,
             if liquidity is not None and code not in passed:
                 continue
             used.add(code)
-            selected.append({"rank": position, "l2_code": row["industry_code"],
-                             "l2_name": entry["l2_name"], "etf_code": code,
-                             "score": row.get("fused_score")})
+            selected.append(
+                {
+                    "rank": position,
+                    "l2_code": row["industry_code"],
+                    "l2_name": entry["l2_name"],
+                    "etf_code": code,
+                    "score": row.get("fused_score"),
+                }
+            )
             depth[len(selected)] = position
             break
         if len(selected) == target:
             break
-    return {"contract": SCAN_CONTRACT, "status": SCAN_STATUS,
-            "production_policy": "NOT_PRODUCTION_POLICY", "frozen_strategy": "NOT_FROZEN_STRATEGY",
-            "target": target, "selected": selected, "scan_depth": depth,
-            "distinct_etf_count": len(selected), "five_found": len(selected) == target,
-            "ranking_length": len(ordered),
-            "distinct_industries_reachable": sum(1 for r in matrix["rows"] if r["strictly_executable"])}
+    return {
+        "contract": SCAN_CONTRACT,
+        "status": SCAN_STATUS,
+        "production_policy": "NOT_PRODUCTION_POLICY",
+        "frozen_strategy": "NOT_FROZEN_STRATEGY",
+        "target": target,
+        "selected": selected,
+        "scan_depth": depth,
+        "distinct_etf_count": len(selected),
+        "five_found": len(selected) == target,
+        "ranking_length": len(ordered),
+        "distinct_industries_reachable": sum(1 for r in matrix["rows"] if r["strictly_executable"]),
+    }
 
 
-def top_n_feasibility(ranking, matrix: dict, *, liquidity=None,
-                      limits=(5, 10, 15, 20, 30), target: int = 5) -> dict:
+def top_n_feasibility(
+    ranking, matrix: dict, *, liquidity=None, limits=(5, 10, 15, 20, 30), target: int = 5
+) -> dict:
     out = {}
     for limit in limits:
         outcome = executable_scan(ranking, matrix, liquidity=liquidity, target=target, limit=limit)
-        out[str(limit)] = {"executable_found": outcome["distinct_etf_count"],
-                           "five_found": outcome["five_found"]}
+        out[str(limit)] = {
+            "executable_found": outcome["distinct_etf_count"],
+            "five_found": outcome["five_found"],
+        }
     full = executable_scan(ranking, matrix, liquidity=liquidity, target=target)
     out["full"] = {"executable_found": full["distinct_etf_count"], "five_found": full["five_found"]}
     return out
@@ -190,14 +233,21 @@ def main() -> int:
     sealed_split_guard(source)
     liquidity = json.loads(args.liquidity.read_bytes()) if args.liquidity else None
     result = executable_scan(source["full_engineering_ranking"], matrix, liquidity=liquidity)
-    result["top_n_feasibility"] = top_n_feasibility(source["full_engineering_ranking"], matrix,
-                                                    liquidity=liquidity)
-    result["current_top5"] = [{"rank": r["rank"], "l2_code": r["industry_code"],
-                               "strictly_executable": next(row["strictly_executable"]
-                                                           for row in matrix["rows"]
-                                                           if row["l2_code"] == r["industry_code"])}
-                              for r in sorted(source["full_engineering_ranking"],
-                                              key=lambda x: x["rank"])[:5]]
+    result["top_n_feasibility"] = top_n_feasibility(
+        source["full_engineering_ranking"], matrix, liquidity=liquidity
+    )
+    result["current_top5"] = [
+        {
+            "rank": r["rank"],
+            "l2_code": r["industry_code"],
+            "strictly_executable": next(
+                row["strictly_executable"]
+                for row in matrix["rows"]
+                if row["l2_code"] == r["industry_code"]
+            ),
+        }
+        for r in sorted(source["full_engineering_ranking"], key=lambda x: x["rank"])[:5]
+    ]
     print(json.dumps(result, ensure_ascii=False, indent=1))
     return 0
 

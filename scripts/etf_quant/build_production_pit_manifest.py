@@ -3,17 +3,23 @@
 Produces only metadata: identifiers, hashes, counts and availability instants.
 No constituent rows, no classification tables, no raw provider bytes.
 """
+
 from __future__ import annotations
 
+import json
+import os
 from datetime import datetime, timezone
 from hashlib import sha256
-import json
 from pathlib import Path
 
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
+RUNTIME = Path(
+    os.environ.get(
+        "ETF_QUANT_PIT_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1"
+    )
+)
 REPORTS = RUNTIME / "reports"
 PACKAGES = RUNTIME / "packages"
-REPO = Path(r"D:\quant-worktrees\deepseek-production-pit-evidence-v1")
+REPO = Path(__file__).resolve().parents[2]
 
 
 def _load(path: Path):
@@ -36,7 +42,7 @@ def package_inventory(folder: str) -> dict:
 
 def main() -> int:
     registry = _load(REPORTS / "production_pit_evidence_registry_v1.json")
-    build = _load(REPORTS / "build_report_v1.json")
+    build = _load(REPORTS / "build_report_v1.json")  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
     top5 = _load(REPORTS / "production_pit_current_top5_status_v1.json")
     manifest = _load(REPORTS / "raw_source_manifest_v1.json")
     cross = _load(REPORTS / "classification_cross_check_v1.json")
@@ -80,9 +86,13 @@ def main() -> int:
             "weights": weights["hashes"],
             "exposure": exposures["hashes"],
         },
-        "raw_hash_manifest_digest": sha256(json.dumps(
-            [row["source_sha256"] for row in manifest["sources"]], sort_keys=True,
-            separators=(",", ":")).encode("utf-8")).hexdigest(),
+        "raw_hash_manifest_digest": sha256(
+            json.dumps(
+                [row["source_sha256"] for row in manifest["sources"]],
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest(),
         "adapter_compatibility": {
             "loader": "strategies.etf_quant.mapping.pit.load_pit_evidence",
             "selector": "strategies.etf_quant.mapping.pit.select_pit_mappings",
@@ -95,16 +105,21 @@ def main() -> int:
             "historical_decision_date_tested": "2026-09-24",
             "evidence_visible_at_2026_09_24": 0,
             "earliest_availability_in_book": min(
-                record["available_at"] for record in book["records"]),
+                record["available_at"] for record in book["records"]
+            ),
         },
         "current_top5_status": top5["summary"],
         "current_top5_detail": [
-            {"industry_code": row["industry_code"], "industry_name": row["industry_name"],
-             "status": row["status"],
-             "best_benchmark": (row["best_candidate"] or {}).get("benchmark_code"),
-             "best_target_l2_exposure": (row["best_candidate"] or {}).get("target_l2_exposure"),
-             "best_target_is_largest": (row["best_candidate"] or {}).get("target_is_largest")}
-            for row in top5["industries"]],
+            {
+                "industry_code": row["industry_code"],
+                "industry_name": row["industry_name"],
+                "status": row["status"],
+                "best_benchmark": (row["best_candidate"] or {}).get("benchmark_code"),
+                "best_target_l2_exposure": (row["best_candidate"] or {}).get("target_l2_exposure"),
+                "best_target_is_largest": (row["best_candidate"] or {}).get("target_is_largest"),
+            }
+            for row in top5["industries"]
+        ],
         "research_cross_check_only": cross,
         "runtime_paths": {
             "root": str(RUNTIME),
@@ -136,14 +151,19 @@ def main() -> int:
         "exposure_package_ids": sorted(exposures["hashes"]),
     }
     (commit_dir / "production_pit_evidence_registry_v1.json").write_text(
-        json.dumps(small_registry, ensure_ascii=False, indent=1), encoding="utf-8")
+        json.dumps(small_registry, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
     (commit_dir / "production_pit_current_top5_status_v1.json").write_text(
-        json.dumps(top5, ensure_ascii=False, indent=1), encoding="utf-8")
+        json.dumps(top5, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
     (commit_dir / "deepseek_production_pit_evidence_manifest_v1.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
-    for name in ("production_pit_evidence_registry_v1.json",
-                 "production_pit_current_top5_status_v1.json",
-                 "deepseek_production_pit_evidence_manifest_v1.json"):
+        json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+    for name in (
+        "production_pit_evidence_registry_v1.json",
+        "production_pit_current_top5_status_v1.json",
+        "deepseek_production_pit_evidence_manifest_v1.json",
+    ):
         path = commit_dir / name
         print(f"  {name}: {path.stat().st_size} B sha256={_sha(path)}")
     return 0

@@ -4,9 +4,10 @@ These tests exercise the *contracts*, not a market view: every industry code and
 industry name is read from the sealed taxonomy artifact, so a test can never
 assert a name the project has no evidence for.
 """
+
+import json
 from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
-import json
 from types import SimpleNamespace
 
 import numpy as np
@@ -14,11 +15,22 @@ import pandas as pd
 import pytest
 
 from strategies.etf_quant.domain import IndustryRanking
-from strategies.etf_quant.domain.industry_level import (ETF_QUANT_INDUSTRY_LEVEL_V1,
-                                                        INDUSTRY_LEVEL_WIDTH, TaxonomyError,
-                                                        default_taxonomy, load_taxonomy, parse_taxonomy)
-from strategies.etf_quant.mapping.liquidity import (FAIL, INSUFFICIENT, LIQUIDITY_SESSIONS, PASS,
-                                                    assess_liquidity, liquidity_window)
+from strategies.etf_quant.domain.industry_level import (
+    ETF_QUANT_INDUSTRY_LEVEL_V1,
+    INDUSTRY_LEVEL_WIDTH,
+    TaxonomyError,
+    default_taxonomy,
+    load_taxonomy,
+    parse_taxonomy,
+)
+from strategies.etf_quant.mapping.liquidity import (
+    FAIL,
+    INSUFFICIENT,
+    LIQUIDITY_SESSIONS,
+    PASS,
+    assess_liquidity,
+    liquidity_window,
+)
 from strategies.etf_quant.mapping.registry import load_registry, select_mappings
 from strategies.etf_quant.portfolio import AllocationStatus, size_targets
 from strategies.etf_quant.runtime.storage import GateError, digest, json_bytes
@@ -72,15 +84,15 @@ def test_taxonomy_resolves_by_explicit_relation_and_never_truncates():
     sample = sorted(tx.level3_to_level2)[0]
     assert tx.level2_of(sample) == tx.level3_to_level2[sample]
     with pytest.raises(TaxonomyError, match="INDUSTRY_TAXONOMY"):
-        tx.level2_of("999999")           # well-formed but absent -> blocker, not "9999"
+        tx.level2_of("999999")  # well-formed but absent -> blocker, not "9999"
     with pytest.raises(TaxonomyError, match="INDUSTRY_TAXONOMY"):
-        tx.level2_of("99999")            # wrong width
+        tx.level2_of("99999")  # wrong width
     with pytest.raises(TaxonomyError, match="INDUSTRY_LEVEL_CONTRACT"):
-        tx.assert_level("999999")        # a Level-3 key can never be a production key
+        tx.assert_level("999999")  # a Level-3 key can never be a production key
 
 
 def test_taxonomy_loader_rejects_a_rewritten_artifact():
-    tx = taxonomy()
+    tx = taxonomy()  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
     body = json.loads((load_taxonomy.__globals__["TAXONOMY_PATH"]).read_bytes())
     body["level_width"] = 6
     with pytest.raises(TaxonomyError, match="TAXONOMY_SCHEMA"):
@@ -94,22 +106,54 @@ def test_taxonomy_loader_rejects_a_rewritten_artifact():
 # --------------------------------------------------------------------------- helpers
 
 
-def provider(days=30, etfs=6, industry_count=5, codes=None, amount=1000.):
+def provider(days=30, etfs=6, industry_count=5, codes=None, amount=1000.0):
     sessions = tuple(pd.bdate_range(end="2026-09-25", periods=days).date)
     codes = l2_codes(industry_count) if codes is None else codes
     bars, instruments, status = [], [], []
     for i in range(etfs):
         symbol = "5100%02d.SH" % i
-        instruments.append({"symbol": symbol, "asset_type": "etf", "list_date": date(2020, 1, 1),
-                            "delist_date": None, "prev_symbol": None})
+        instruments.append(
+            {
+                "symbol": symbol,
+                "asset_type": "etf",
+                "list_date": date(2020, 1, 1),
+                "delist_date": None,
+                "prev_symbol": None,
+            }
+        )
         for day in sessions:
-            bars.append({"symbol": symbol, "trade_date": day, "open": 1., "high": 1.1, "low": .9, "close": 1.,
-                         "volume": 1000., "amount": amount * (i + 1), "source": "tdx_protocol"})
-            status.append({"symbol": symbol, "trade_date": day, "is_trading": True, "status": "normal",
-                           "source": "eastmoney"})
-    return SimpleNamespace(sessions=sessions, cutoff=SIGNAL.date(), created_at=OBSERVED,
-                           tables={"etf_bars": pd.DataFrame(bars), "instruments": pd.DataFrame(instruments),
-                                   "trading_status": pd.DataFrame(status)})
+            bars.append(
+                {
+                    "symbol": symbol,
+                    "trade_date": day,
+                    "open": 1.0,
+                    "high": 1.1,
+                    "low": 0.9,
+                    "close": 1.0,
+                    "volume": 1000.0,
+                    "amount": amount * (i + 1),
+                    "source": "tdx_protocol",
+                }
+            )
+            status.append(
+                {
+                    "symbol": symbol,
+                    "trade_date": day,
+                    "is_trading": True,
+                    "status": "normal",
+                    "source": "eastmoney",
+                }
+            )
+    return SimpleNamespace(
+        sessions=sessions,
+        cutoff=SIGNAL.date(),
+        created_at=OBSERVED,
+        tables={
+            "etf_bars": pd.DataFrame(bars),
+            "instruments": pd.DataFrame(instruments),
+            "trading_status": pd.DataFrame(status),
+        },
+    )
 
 
 def evidence_file(tmp_path):
@@ -126,24 +170,44 @@ def registry_doc(tmp_path, industries=5, per_industry=1):
     entries, index = [], 0
     for code in codes:
         for _ in range(per_industry):
-            entries.append({
-                "industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1, "industry_code": code,
-                "industry_name": taxonomy().name_of(code), "etf_code": "5100%02d.SH" % index,
-                "etf_name": "SYNTHETIC", "mapping_method": "OFFICIAL_FUND_DOCUMENT",
-                "tracking_index_code": "SYN_%d" % index, "tracking_index_name": "SYNTHETIC",
-                "tracking_target": "SYNTHETIC TEST TARGET",
-                "classification": "A_SHARE_INDUSTRY_OR_THEME_ETF", "verification_status": "VERIFIED",
-                "verified": True, "evidence_source": "SYNTHETIC", "evidence_type": "FUND_CONTRACT",
-                "evidence_observed_at": "2026-08-01T09:00:00+08:00",
-                "verified_at": "2026-08-01T10:00:00+08:00", "effective_from": "2026-08-02",
-                "effective_to": None, "notes": "SYNTHETIC TEST ONLY",
-                "available_at": "2026-08-01T10:00:00+08:00", "source_provider": "SYNTHETIC",
-                "source_url": "https://example.invalid/synthetic", "source_file": "synthetic.txt",
-                "source_sha256": digest(body), "source_retrieved_at": "2026-08-01T08:00:00+08:00"})
+            entries.append(
+                {
+                    "industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1,
+                    "industry_code": code,
+                    "industry_name": taxonomy().name_of(code),
+                    "etf_code": "5100%02d.SH" % index,
+                    "etf_name": "SYNTHETIC",
+                    "mapping_method": "OFFICIAL_FUND_DOCUMENT",
+                    "tracking_index_code": "SYN_%d" % index,
+                    "tracking_index_name": "SYNTHETIC",
+                    "tracking_target": "SYNTHETIC TEST TARGET",
+                    "classification": "A_SHARE_INDUSTRY_OR_THEME_ETF",
+                    "verification_status": "VERIFIED",
+                    "verified": True,
+                    "evidence_source": "SYNTHETIC",
+                    "evidence_type": "FUND_CONTRACT",
+                    "evidence_observed_at": "2026-08-01T09:00:00+08:00",
+                    "verified_at": "2026-08-01T10:00:00+08:00",
+                    "effective_from": "2026-08-02",
+                    "effective_to": None,
+                    "notes": "SYNTHETIC TEST ONLY",
+                    "available_at": "2026-08-01T10:00:00+08:00",
+                    "source_provider": "SYNTHETIC",
+                    "source_url": "https://example.invalid/synthetic",
+                    "source_file": "synthetic.txt",
+                    "source_sha256": digest(body),
+                    "source_retrieved_at": "2026-08-01T08:00:00+08:00",
+                }
+            )
             index += 1
-    return {"schema_version": "1.0.0", "registry_identity": "VERIFIED_MAPPING_REGISTRY_V1",
-            "scope": "CURRENT_FORWARD_ONLY", "industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1,
-            "taxonomy_identity": taxonomy().identity, "entries": entries}, folder
+    return {
+        "schema_version": "1.0.0",
+        "registry_identity": "VERIFIED_MAPPING_REGISTRY_V1",
+        "scope": "CURRENT_FORWARD_ONLY",
+        "industry_level": ETF_QUANT_INDUSTRY_LEVEL_V1,
+        "taxonomy_identity": taxonomy().identity,
+        "entries": entries,
+    }, folder
 
 
 def loaded(tmp_path, doc=None, **kw):
@@ -154,7 +218,7 @@ def loaded(tmp_path, doc=None, **kw):
 
 
 def rank(codes):
-    return tuple(IndustryRanking(i + 1, code, 5. - i) for i, code in enumerate(codes))
+    return tuple(IndustryRanking(i + 1, code, 5.0 - i) for i, code in enumerate(codes))
 
 
 def selected(tmp_path, doc=None, p=None, **kw):
@@ -205,7 +269,7 @@ def test_registry_requires_evidence_observation_time(tmp_path):
 
 def test_registry_cannot_backdate_effective_from(tmp_path):
     doc, _ = registry_doc(tmp_path)
-    doc["entries"][0]["effective_from"] = "2026-07-01"   # before the evidence existed
+    doc["entries"][0]["effective_from"] = "2026-07-01"  # before the evidence existed
     with pytest.raises(GateError, match="TEMPORAL"):
         loaded(tmp_path, doc)
 
@@ -240,8 +304,11 @@ def test_liquidity_window_is_exactly_the_twenty_sessions_ending_at_signal():
 def test_liquidity_missing_amount_is_admission_fail_never_averaged():
     p = provider(days=30)
     window, _ = liquidity_window(p, SIGNAL.date())
-    p.tables["etf_bars"].loc[(p.tables["etf_bars"].symbol == "510000.SH")
-                             & (p.tables["etf_bars"].trade_date == window[7]), "amount"] = None
+    p.tables["etf_bars"].loc[
+        (p.tables["etf_bars"].symbol == "510000.SH")
+        & (p.tables["etf_bars"].trade_date == window[7]),
+        "amount",
+    ] = None
     result = assess_liquidity(p, "510000.SH", window)
     assert result.status == FAIL and result.mean_amount_cny is None
     assert result.reason == "AMOUNT_EVIDENCE_MISSING" and result.sessions_present == 7
@@ -250,9 +317,12 @@ def test_liquidity_missing_amount_is_admission_fail_never_averaged():
 def test_liquidity_zero_and_sub_yuan_amount_are_feed_artefacts():
     p = provider(days=30)
     window, _ = liquidity_window(p, SIGNAL.date())
-    for bad in (0., 0.5, -1.):
-        p.tables["etf_bars"].loc[(p.tables["etf_bars"].symbol == "510001.SH")
-                                 & (p.tables["etf_bars"].trade_date == window[3]), "amount"] = bad
+    for bad in (0.0, 0.5, -1.0):
+        p.tables["etf_bars"].loc[
+            (p.tables["etf_bars"].symbol == "510001.SH")
+            & (p.tables["etf_bars"].trade_date == window[3]),
+            "amount",
+        ] = bad
         result = assess_liquidity(p, "510001.SH", window)
         assert result.status == FAIL and result.mean_amount_cny is None
     assert result.reason == "AMOUNT_BELOW_FEED_FLOOR"
@@ -261,7 +331,9 @@ def test_liquidity_zero_and_sub_yuan_amount_are_feed_artefacts():
 def test_liquidity_insufficient_history_is_not_shortened():
     p = provider(days=30)
     window, _ = liquidity_window(p, SIGNAL.date())
-    p.tables["instruments"].loc[p.tables["instruments"].symbol == "510002.SH", "list_date"] = window[5]
+    p.tables["instruments"].loc[p.tables["instruments"].symbol == "510002.SH", "list_date"] = (
+        window[5]
+    )
     result = assess_liquidity(p, "510002.SH", window)
     assert result.status == INSUFFICIENT and result.mean_amount_cny is None
     with pytest.raises(ValueError, match="twenty"):
@@ -272,7 +344,9 @@ def test_liquidity_passes_only_on_twenty_complete_sessions():
     p = provider(days=30)
     window, _ = liquidity_window(p, SIGNAL.date())
     result = assess_liquidity(p, "510000.SH", window)
-    assert result.status == PASS and result.sessions_present == 20 and result.mean_amount_cny == 1000.
+    assert (
+        result.status == PASS and result.sessions_present == 20 and result.mean_amount_cny == 1000.0
+    )
 
 
 def test_liquidity_unproven_listing_date_fails_closed():
@@ -311,11 +385,11 @@ def test_collision_falls_back_to_the_next_admitted_candidate(tmp_path):
     assert result["status"] == "READY"
     assert len({r["etf_code"] for r in result["selected"]}) == 5
     chosen = next(r for r in result["selected"] if r["industry_code"] == codes[4])
-    assert chosen["etf_code"] == "510005.SH"            # fell back, never reused
+    assert chosen["etf_code"] == "510005.SH"  # fell back, never reused
 
 
 def test_one_industry_without_a_verified_candidate_blocks_distinct_five(tmp_path):
-    doc, folder = registry_doc(tmp_path, industries=4)   # only 4 industries covered
+    doc, folder = registry_doc(tmp_path, industries=4)  # only 4 industries covered
     result = selected(tmp_path, doc)
     assert result["status"] == "MAPPING_ADMISSION_BLOCKED"
     assert result["reason"] == "DISTINCT_EXECUTABLE_ETF_BLOCKER"
@@ -334,7 +408,7 @@ def test_duplicate_etf_cannot_be_reused_to_fake_five_assets(tmp_path):
         row = deepcopy(base)
         row["industry_code"] = code
         row["industry_name"] = taxonomy().name_of(code)
-        doc["entries"].append(row)           # every industry points at the SAME ETF
+        doc["entries"].append(row)  # every industry points at the SAME ETF
     result = selected(tmp_path, doc)
     assert result["status"] == "MAPPING_ADMISSION_BLOCKED"
     assert result["reason"] == "DISTINCT_EXECUTABLE_ETF_BLOCKER"
@@ -349,8 +423,12 @@ def test_industry_rankings_must_be_level2_keys(tmp_path):
     path.write_bytes(json_bytes(doc))
     reg = load_registry(path, evidence_root=folder)
     with pytest.raises(GateError, match="INDUSTRY_LEVEL_CONTRACT"):
-        select_mappings(reg, rank(["370601", "370301", "490101", "480301", "370101"]),
-                        provider(), signal_at=SIGNAL)
+        select_mappings(
+            reg,
+            rank(["370601", "370301", "490101", "480301", "370101"]),
+            provider(),
+            signal_at=SIGNAL,
+        )
 
 
 def test_liquidity_representative_is_highest_mean_amount_then_lowest_code(tmp_path):
@@ -362,11 +440,11 @@ def test_liquidity_representative_is_highest_mean_amount_then_lowest_code(tmp_pa
     doc["entries"].append(bigger)
     result = selected(tmp_path, doc, provider(etfs=11))
     chosen = next(r for r in result["selected"] if r["industry_code"] == codes[0])
-    assert chosen["etf_code"] == "510010.SH"          # amount 11000 beats 1000
-    assert chosen["mean_amount_cny"] == 11000.
+    assert chosen["etf_code"] == "510010.SH"  # amount 11000 beats 1000
+    assert chosen["mean_amount_cny"] == 11000.0
     # Ties break on ascending ETF code.
     p = provider(etfs=11)
-    p.tables["etf_bars"].loc[p.tables["etf_bars"].symbol == "510010.SH", "amount"] = 1000.
+    p.tables["etf_bars"].loc[p.tables["etf_bars"].symbol == "510010.SH", "amount"] = 1000.0
     result = selected(tmp_path, doc, p)
     chosen = next(r for r in result["selected"] if r["industry_code"] == codes[0])
     assert chosen["etf_code"] == "510000.SH"
@@ -376,7 +454,13 @@ def test_liquidity_representative_is_highest_mean_amount_then_lowest_code(tmp_pa
 
 
 def test_capped_softmax_is_finite_positive_summing_to_one_within_cap():
-    scores = {"510300.SH": 2.4, "510500.SH": 1.8, "159915.SZ": 1.2, "512880.SH": 1.1, "512800.SH": 1.0}
+    scores = {
+        "510300.SH": 2.4,
+        "510500.SH": 1.8,
+        "159915.SZ": 1.2,
+        "512880.SH": 1.1,
+        "512800.SH": 1.0,
+    }
     result = size_targets(scores)
     assert result.status == AllocationStatus.READY
     weights = {t.asset_id: t.target_weight for t in result.targets}
@@ -384,11 +468,11 @@ def test_capped_softmax_is_finite_positive_summing_to_one_within_cap():
     assert all(np.isfinite(v) and v > 0 for v in weights.values())
     assert abs(sum(weights.values()) - 1) < 1e-12
     assert max(weights.values()) <= 0.35 + 1e-12
-    assert result.unallocated_weight == 0.
+    assert result.unallocated_weight == 0.0
 
 
 def test_capped_softmax_redistributes_from_a_dominant_asset():
-    scores = {"A.SH": 40., "B.SH": 1., "C.SH": 1., "D.SH": 1., "E.SH": 1.}
+    scores = {"A.SH": 40.0, "B.SH": 1.0, "C.SH": 1.0, "D.SH": 1.0, "E.SH": 1.0}
     weights = {t.asset_id: t.target_weight for t in size_targets(scores).targets}
     assert weights["A.SH"] == pytest.approx(0.35)
     assert abs(sum(weights.values()) - 1) < 1e-12
@@ -396,7 +480,7 @@ def test_capped_softmax_redistributes_from_a_dominant_asset():
 
 
 def test_capped_softmax_refuses_fewer_than_five_assets():
-    result = size_targets({"A.SH": 1., "B.SH": 1., "C.SH": 1., "D.SH": 1.})
+    result = size_targets({"A.SH": 1.0, "B.SH": 1.0, "C.SH": 1.0, "D.SH": 1.0})
     assert result.status == AllocationStatus.INSUFFICIENT_ASSETS and result.targets == ()
     assert result.unallocated_weight == 1.0
 

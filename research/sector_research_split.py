@@ -9,8 +9,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Mapping, Sequence
 
 import pandas as pd
 
@@ -19,20 +19,33 @@ from src.data.loaders.shenwan_sector_loader import load_sector_catalog, load_sec
 from strategies.sw_sector_rotation.src.common.temporal_integrity import temporal_boundaries
 from strategies.sw_sector_rotation.src.factors.sector_rotation import TRAIN_FEATURES_PRICE
 from strategies.sw_sector_rotation.src.model.model import (
-    DEFAULT_ALPHA, DEFAULT_TOP_N, DEFAULT_TRAIN_MONTHS, FORWARD_WINDOWS,
-    FUSION_WEIGHTS, MIN_TRAIN_DATES,
+    DEFAULT_ALPHA,
+    DEFAULT_TOP_N,
+    DEFAULT_TRAIN_MONTHS,
+    FORWARD_WINDOWS,
+    FUSION_WEIGHTS,
+    MIN_TRAIN_DATES,
 )
 
 SPLIT_POLICY_VERSION = "sector-index-strict-session-purge-v1"
 UNLOCKED = "UNLOCKED_UNOPENED"
 REBALANCE_FIELDS = ("interval_sessions", "anchor")
 HOLDING_FIELDS = (
-    "portfolio_formation", "entry_convention", "holding_convention",
-    "overlap_policy", "return_measurement", "turnover_semantics",
+    "portfolio_formation",
+    "entry_convention",
+    "holding_convention",
+    "overlap_policy",
+    "return_measurement",
+    "turnover_semantics",
 )
 SPLIT_FIELDS = (
-    "policy_version", "development_signals", "validation_signals",
-    "final_oos_signals", "boundary_purge_sessions", "oos_start", "oos_end",
+    "policy_version",
+    "development_signals",
+    "validation_signals",
+    "final_oos_signals",
+    "boundary_purge_sessions",
+    "oos_start",
+    "oos_end",
 )
 UNIVERSE_FIELDS = ("mode", "sector_codes", "admission_mode")
 EPHEMERAL_HASH_FIELDS = frozenset({"timestamp", "locked_at", "uuid", "run_id", "generated_at"})
@@ -40,9 +53,14 @@ EPHEMERAL_HASH_FIELDS = frozenset({"timestamp", "locked_at", "uuid", "run_id", "
 
 def _calendar(dates: Sequence) -> pd.DatetimeIndex:
     calendar = pd.DatetimeIndex(dates)
-    if (calendar.empty or calendar.hasnans or calendar.tz is not None
-            or not calendar.equals(calendar.normalize())
-            or not calendar.is_monotonic_increasing or calendar.has_duplicates):
+    if (
+        calendar.empty
+        or calendar.hasnans
+        or calendar.tz is not None
+        or not calendar.equals(calendar.normalize())
+        or not calendar.is_monotonic_increasing
+        or calendar.has_duplicates
+    ):
         raise ValueError("expected a nonempty, unique, ordered trading-session calendar")
     return calendar
 
@@ -54,9 +72,15 @@ def strict_budget(eligible_sessions: int, horizon: int, *, phases: int = 3) -> d
     The next phase's first signal must be at least i+h+1. Thus exactly h
     sessions i+1..i+h are purged, including the label endpoint.
     """
-    if (isinstance(eligible_sessions, bool) or not isinstance(eligible_sessions, int)
-            or eligible_sessions < 0 or isinstance(horizon, bool)
-            or not isinstance(horizon, int) or horizon < 1 or phases < 2):
+    if (
+        isinstance(eligible_sessions, bool)
+        or not isinstance(eligible_sessions, int)
+        or eligible_sessions < 0
+        or isinstance(horizon, bool)
+        or not isinstance(horizon, int)
+        or horizon < 1
+        or phases < 2
+    ):
         raise ValueError("invalid session budget")
     purge = (phases - 1) * horizon
     minimum = phases + purge
@@ -100,8 +124,11 @@ def candidate_three_way(dates: Sequence, horizon: int) -> dict | None:
     assert v1 + horizon == p21 < o0
 
     def _interval(first: int, last: int) -> dict:
-        return {"start": str(calendar[first].date()), "end": str(calendar[last].date()),
-                "count": last - first + 1}
+        return {
+            "start": str(calendar[first].date()),
+            "end": str(calendar[last].date()),
+            "count": last - first + 1,
+        }
 
     return {
         "status": "ILLUSTRATIVE_HORIZON_ONLY_NOT_OOS_LOCK",
@@ -115,7 +142,9 @@ def candidate_three_way(dates: Sequence, horizon: int) -> dict | None:
 
 
 def verify_training_label_availability(
-    raw_calendar: Sequence, signal_dates: Sequence, horizons: Sequence[int],
+    raw_calendar: Sequence,
+    signal_dates: Sequence,
+    horizons: Sequence[int],
 ) -> int:
     """Check each signal/horizon against the existing core's cutoff rule."""
     raw = _calendar(raw_calendar)
@@ -178,10 +207,12 @@ def strategy_config_payload(
 
 def strategy_config_hash(payload: Mapping[str, object]) -> str | None:
     """Return a deterministic hash only when all OOS-lock semantics exist."""
-    for name, required in (("rebalance_policy", REBALANCE_FIELDS),
-                           ("holding_policy", HOLDING_FIELDS),
-                           ("split_policy", SPLIT_FIELDS),
-                           ("universe_policy", UNIVERSE_FIELDS)):
+    for name, required in (
+        ("rebalance_policy", REBALANCE_FIELDS),
+        ("holding_policy", HOLDING_FIELDS),
+        ("split_policy", SPLIT_FIELDS),
+        ("universe_policy", UNIVERSE_FIELDS),
+    ):
         policy = payload.get(name)
         if not isinstance(policy, Mapping) or any(
             policy.get(field) is None or policy.get(field) == "" for field in required
@@ -189,25 +220,36 @@ def strategy_config_hash(payload: Mapping[str, object]) -> str | None:
             return None
     split = payload["split_policy"]
     universe = payload["universe_policy"]
-    if (split["boundary_purge_sessions"] != max(FORWARD_WINDOWS.values())
-            or any(isinstance(split[field], bool) or not isinstance(split[field], int)
-                   or split[field] < 1 for field in (
-                       "development_signals", "validation_signals", "final_oos_signals"))
-            or split["oos_start"] > split["oos_end"]
-            or not isinstance(universe["sector_codes"], (list, tuple))
-            or not universe["sector_codes"]):
+    if (
+        split["boundary_purge_sessions"] != max(FORWARD_WINDOWS.values())
+        or any(
+            isinstance(split[field], bool) or not isinstance(split[field], int) or split[field] < 1
+            for field in ("development_signals", "validation_signals", "final_oos_signals")
+        )
+        or split["oos_start"] > split["oos_end"]
+        or not isinstance(universe["sector_codes"], (list, tuple))
+        or not universe["sector_codes"]
+    ):
         return None
 
     def _without_ephemeral(value):
         if isinstance(value, Mapping):
-            return {key: _without_ephemeral(item) for key, item in value.items()
-                    if key not in EPHEMERAL_HASH_FIELDS}
+            return {
+                key: _without_ephemeral(item)
+                for key, item in value.items()
+                if key not in EPHEMERAL_HASH_FIELDS
+            }
         if isinstance(value, (list, tuple)):
             return [_without_ephemeral(item) for item in value]
         return value
 
-    canonical = json.dumps(_without_ephemeral(payload), sort_keys=True, ensure_ascii=False,
-                           separators=(",", ":"), allow_nan=False)
+    canonical = json.dumps(
+        _without_ephemeral(payload),
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
@@ -218,8 +260,10 @@ def audit_split(processed_dir: Path) -> dict:
     admission = json.loads((processed_dir / "sector_admission.json").read_text(encoding="utf-8"))
     panel = load_sector_panel(
         catalog["sector_code"].astype(str).tolist(),
-        admission["common_start_date"], admission["common_end_date"],
-        processed_dir=processed_dir, allow_invalid_for_audit=True,
+        admission["common_start_date"],
+        admission["common_end_date"],
+        processed_dir=processed_dir,
+        allow_invalid_for_audit=True,
     )
     raw = _calendar(sorted(panel["date"].unique()))
     start = pd.Timestamp(signal_audit["signal_only_eligible_start"])
@@ -235,7 +279,8 @@ def audit_split(processed_dir: Path) -> dict:
         candidate = candidate_three_way(eligible, horizon)
         if candidate is not None:
             candidate["label_realization_tail_end"] = label_tail_end(
-                raw, candidate["final_oos_candidate"]["end"], horizon)
+                raw, candidate["final_oos_candidate"]["end"], horizon
+            )
         per_horizon[name] = {**budget, "candidate": candidate}
     combined_horizon = max(horizons.values())
     combined = strict_budget(len(eligible), combined_horizon)
@@ -247,7 +292,9 @@ def audit_split(processed_dir: Path) -> dict:
         "first_possible_development_signal": str(raw[first_raw_position].date()),
         "first_development_label_end": str(raw[first_raw_position + combined_horizon].date()),
         "earliest_validation_signal": str(raw[earliest_validation_position].date()),
-        "first_validation_label_end": str(raw[earliest_validation_position + combined_horizon].date()),
+        "first_validation_label_end": str(
+            raw[earliest_validation_position + combined_horizon].date()
+        ),
         "earliest_final_oos_signal": str(raw[earliest_oos_position].date()),
         "last_eligible_signal": str(eligible[-1].date()),
         "earliest_oos_is_eligible": earliest_oos_position <= int(raw.get_loc(eligible[-1])),
@@ -255,7 +302,9 @@ def audit_split(processed_dir: Path) -> dict:
     payload = strategy_config_payload(admission["data_snapshot_id"])
     return {
         "split_policy_version": SPLIT_POLICY_VERSION,
-        "status": "STRICT_3WAY_SPLIT_NOT_FEASIBLE" if not combined["feasible"] else "FEASIBLE_NOT_LOCKED",
+        "status": "STRICT_3WAY_SPLIT_NOT_FEASIBLE"
+        if not combined["feasible"]
+        else "FEASIBLE_NOT_LOCKED",
         "data_snapshot_id": admission["data_snapshot_id"],
         "raw_common_start": str(raw[0].date()),
         "raw_common_end": str(raw[-1].date()),
@@ -281,7 +330,10 @@ def audit_split(processed_dir: Path) -> dict:
         "holding_semantics": "HOLDING_SEMANTICS_NOT_FROZEN",
         "strategy_config_hash": strategy_config_hash(payload),
         "missing_for_config_hash": [
-            "rebalance_policy", "holding_policy", "split_policy", "universe_policy",
+            "rebalance_policy",
+            "holding_policy",
+            "split_policy",
+            "universe_policy",
         ],
         "performance_metrics_viewed": False,
         "executable": False,

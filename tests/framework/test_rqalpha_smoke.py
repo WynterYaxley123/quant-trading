@@ -12,6 +12,8 @@ import os
 
 import pytest
 
+pytestmark = pytest.mark.external_runtime
+
 # 顶层 import：若失败则为框架级故障
 rqalpha = pytest.importorskip("rqalpha", reason="rqalpha not importable")
 

@@ -11,13 +11,12 @@
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 import pytest
 
 from strategies.sw_sector_rotation.src.model.model import (
     DEFAULT_ALPHA,
-    DEFAULT_TRAIN_MONTHS,
     DEFAULT_TOP_N,
+    DEFAULT_TRAIN_MONTHS,
     FORWARD_WINDOWS,
     FUSION_WEIGHTS,
     MIN_TRAIN_DATES,
@@ -25,7 +24,6 @@ from strategies.sw_sector_rotation.src.model.model import (
     NumPyRidge,
 )
 from strategies.sw_sector_rotation.tests.conftest import make_named_panel
-
 
 # ---------------------------------------------------------------------------
 # NumPyRidge 数学正确性
@@ -69,9 +67,7 @@ def test_ridge_zero_alpha_is_ols():
     X = rng.normal(size=(80, 3))
     y = rng.normal(size=80)
     m = NumPyRidge(alpha=0.0).fit(X, y)
-    ols, *_ = np.linalg.lstsq(
-        np.hstack([X, np.ones((len(X), 1))]), y, rcond=None
-    )
+    ols, *_ = np.linalg.lstsq(np.hstack([X, np.ones((len(X), 1))]), y, rcond=None)
     assert np.allclose(m.coef_, ols[:3], atol=1e-8)
     assert m.intercept_ == pytest.approx(ols[3], abs=1e-8)
 
@@ -144,8 +140,8 @@ def test_initial_defaults_match_legacy():
 
 
 def _panel_with_factors(panel: dict) -> tuple[dict, list[str]]:
-    from strategies.sw_sector_rotation.src.factors.sector_rotation import compute_all_price_features
     from strategies.sw_sector_rotation.src.common.temporal_integrity import make_forward_label
+    from strategies.sw_sector_rotation.src.factors.sector_rotation import compute_all_price_features
 
     out = {}
     feats = None
@@ -163,7 +159,7 @@ def test_fit_requires_min_train_dates():
     """有效训练日期 < 30 时不得训练。"""
     panel, feats = _panel_with_factors(make_named_panel(n_sectors=5, n_days=200))
     model = CrossSectionalRidgeModel()
-    dates = list(panel["ALPHA"].index[:MIN_TRAIN_DATES - 1])
+    dates = list(panel["ALPHA"].index[: MIN_TRAIN_DATES - 1])
     assert model.fit_period("short", panel, feats, dates) is None
     assert "short" not in model.models
 

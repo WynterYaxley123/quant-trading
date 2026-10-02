@@ -16,7 +16,7 @@ Legacy china-market-data v5 ``scripts/quant/predict.py`` 的排序与
 
 from __future__ import annotations
 
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 
 import numpy as np
 
@@ -79,6 +79,8 @@ def build_etf_candidates(
     复用 :func:`strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping.match_etfs_for_sectors`，
     以保证 ETF 去重规则唯一。
     """
-    from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import match_etfs_for_sectors
+    from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import (
+        match_etfs_for_sectors,
+    )
 
     return match_etfs_for_sectors(select_top(ranked, top_n), mapping)

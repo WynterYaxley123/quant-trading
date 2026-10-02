@@ -25,7 +25,6 @@ from strategies.sw_sector_rotation.src.common.temporal_integrity import (
 )
 from strategies.sw_sector_rotation.tests.conftest import make_market_frame
 
-
 # ---------------------------------------------------------------------------
 # 1. 未来价格变化不能改变过去日期的因子
 # ---------------------------------------------------------------------------
@@ -47,9 +46,7 @@ def test_future_prices_do_not_affect_past_factors():
     f_mod = compute_all_price_features(modified, include_rsrs=False)
 
     past = slice(None, cut_date)
-    pd.testing.assert_frame_equal(
-        f_orig.loc[past], f_mod.loc[past], check_exact=False, atol=1e-12
-    )
+    pd.testing.assert_frame_equal(f_orig.loc[past], f_mod.loc[past], check_exact=False, atol=1e-12)
 
 
 # ---------------------------------------------------------------------------
@@ -178,9 +175,6 @@ def test_flow_forbidden_in_training():
 
 
 def test_fundamentals_not_in_train_features():
-    from strategies.sw_sector_rotation.src.model.model import (
-        CrossSectionalRidgeModel,
-    )
     from strategies.sw_sector_rotation.src.strategy import SWSectorRotationCore
 
     core = SWSectorRotationCore()
@@ -202,7 +196,10 @@ def test_fundamentals_not_in_train_features():
 
 
 def test_macro_not_visible_before_publication():
-    from strategies.sw_sector_rotation.src.factors.macro_pit import macro_available_at, publication_date
+    from strategies.sw_sector_rotation.src.factors.macro_pit import (
+        macro_available_at,
+        publication_date,
+    )
 
     macro_raw = pd.DataFrame(
         {
@@ -336,9 +333,7 @@ def test_rsrs_zscore_uses_strictly_lagged_window():
 
     frame = make_market_frame(n_days=400, seed=13)
     n, m = 18, 100
-    beta, r2 = rolling_ols_beta_r2(
-        frame["high"].to_numpy(), frame["low"].to_numpy(), n
-    )
+    beta, r2 = rolling_ols_beta_r2(frame["high"].to_numpy(), frame["low"].to_numpy(), n)
     rsrs = compute_rsrs(frame["close"], frame["high"], frame["low"], n=n, m=m)
 
     t = 300
@@ -355,11 +350,11 @@ def test_rsrs_zscore_uses_strictly_lagged_window():
 
 
 def test_correlation_excludes_diagonal():
-    from strategies.sw_sector_rotation.src.risk.sector_rotation import compute_offdiag_correlation_mean
-
-    corr = pd.DataFrame(
-        [[1.0, 0.5, 0.3], [0.5, 1.0, 0.1], [0.3, 0.1, 1.0]]
+    from strategies.sw_sector_rotation.src.risk.sector_rotation import (
+        compute_offdiag_correlation_mean,
     )
+
+    corr = pd.DataFrame([[1.0, 0.5, 0.3], [0.5, 1.0, 0.1], [0.3, 0.1, 1.0]])
     # 非对角元素: 0.5, 0.3, 0.1 → 均值 0.3
     assert compute_offdiag_correlation_mean(corr) == pytest.approx(0.3)
 
@@ -374,7 +369,9 @@ def test_correlation_excludes_diagonal():
 
 
 def test_offdiag_returns_zero_for_degenerate_input():
-    from strategies.sw_sector_rotation.src.risk.sector_rotation import compute_offdiag_correlation_mean
+    from strategies.sw_sector_rotation.src.risk.sector_rotation import (
+        compute_offdiag_correlation_mean,
+    )
 
     assert compute_offdiag_correlation_mean(pd.DataFrame([[1.0]])) == 0.0
     assert compute_offdiag_correlation_mean(pd.DataFrame()) == 0.0

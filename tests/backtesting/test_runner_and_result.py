@@ -32,7 +32,6 @@ from src.backtesting.testing.smoke_strategy import (
     EXECUTION_SMOKE_RUN_TYPE,
 )
 
-
 # --- BacktestRequest 校验 -------------------------------------------------
 
 
@@ -43,9 +42,7 @@ def test_request_requires_dates():
 
 def test_request_rejects_reversed_range():
     with pytest.raises(BacktestRequestError, match="早于"):
-        BacktestRequest(
-            strategy="s", framework="f", start_date="2024-06-01", end_date="2024-01-01"
-        )
+        BacktestRequest(strategy="s", framework="f", start_date="2024-06-01", end_date="2024-01-01")
 
 
 def test_request_rejects_bad_date_format():
@@ -56,8 +53,11 @@ def test_request_rejects_bad_date_format():
 def test_request_rejects_non_positive_cash():
     with pytest.raises(BacktestRequestError, match="initial_cash"):
         BacktestRequest(
-            strategy="s", framework="f", start_date="2024-01-01",
-            end_date="2024-02-01", initial_cash=0,
+            strategy="s",
+            framework="f",
+            start_date="2024-01-01",
+            end_date="2024-02-01",
+            initial_cash=0,
         )
 
 
@@ -77,21 +77,24 @@ def test_request_rejects_empty_strategy():
 
 def _spec() -> dict[str, StrategySpec]:
     return {
-        "demo": StrategySpec(name="demo", package="strategies.demo",
-                             path=Path("/nonexistent"), version="1.0")
+        "demo": StrategySpec(
+            name="demo", package="strategies.demo", path=Path("/nonexistent"), version="1.0"
+        )
     }
 
 
 def test_run_backtest_rejects_unknown_framework():
-    req = BacktestRequest(strategy="demo", framework="nope",
-                          start_date="2024-01-01", end_date="2024-02-01")
+    req = BacktestRequest(
+        strategy="demo", framework="nope", start_date="2024-01-01", end_date="2024-02-01"
+    )
     with pytest.raises(UnknownFrameworkError, match="nope"):
         run_backtest(req, specs=_spec(), frameworks={"hikyuu": lambda r, s: None})
 
 
 def test_run_backtest_rejects_unknown_strategy():
-    req = BacktestRequest(strategy="ghost", framework="hikyuu",
-                          start_date="2024-01-01", end_date="2024-02-01")
+    req = BacktestRequest(
+        strategy="ghost", framework="hikyuu", start_date="2024-01-01", end_date="2024-02-01"
+    )
     with pytest.raises(UnknownStrategyError, match="ghost"):
         run_backtest(req, specs=_spec(), frameworks={"hikyuu": lambda r, s: None})
 
@@ -104,8 +107,9 @@ def test_run_backtest_dispatches_to_framework():
         captured["spec"] = spec
         return "RESULT"
 
-    req = BacktestRequest(strategy="demo", framework="hikyuu",
-                          start_date="2024-01-01", end_date="2024-02-01")
+    req = BacktestRequest(
+        strategy="demo", framework="hikyuu", start_date="2024-01-01", end_date="2024-02-01"
+    )
     out = run_backtest(req, specs=_spec(), frameworks={"hikyuu": fake_fw})
     assert out == "RESULT"
     assert captured["spec"].name == "demo"
@@ -159,28 +163,55 @@ def test_strategy_spec_load_config_reads_yaml(tmp_path):
 
 def _result() -> BacktestResult:
     meta = BacktestMetadata(
-        strategy="demo", strategy_version="1.0", framework="hikyuu",
-        framework_version="2.8.2", git_commit="abc1234", run_id="run-1",
-        start_date="2024-01-01", end_date="2024-12-31",
-        data_source="hikyuu:pytdx-hdf5", data_snapshot=None,
-        initial_cash=100000.0, commission=None, slippage=None,
+        strategy="demo",
+        strategy_version="1.0",
+        framework="hikyuu",
+        framework_version="2.8.2",
+        git_commit="abc1234",
+        run_id="run-1",
+        start_date="2024-01-01",
+        end_date="2024-12-31",
+        data_source="hikyuu:pytdx-hdf5",
+        data_snapshot=None,
+        initial_cash=100000.0,
+        commission=None,
+        slippage=None,
         status="LEVEL_A_SMOKE",
     )
     metrics = BacktestMetrics(
-        initial_cash=100000.0, final_value=101000.0, total_return=0.01,
-        annual_return=None, max_drawdown=-0.02, volatility=None,
-        sharpe=None, trade_count=3, commission=None, slippage=None,
+        initial_cash=100000.0,
+        final_value=101000.0,
+        total_return=0.01,
+        annual_return=None,
+        max_drawdown=-0.02,
+        volatility=None,
+        sharpe=None,
+        trade_count=3,
+        commission=None,
+        slippage=None,
         execution_time=1.5,
     )
     return BacktestResult(
-        metadata=meta, metrics=metrics,
-        trades=pd.DataFrame([{"datetime": "2024-02-01", "symbol": "X",
-                              "business": "BUY", "price": 10.0,
-                              "number": 100.0, "amount": 1000.0,
-                              "cash": 0.0, "cost": None}]),
+        metadata=meta,
+        metrics=metrics,
+        trades=pd.DataFrame(
+            [
+                {
+                    "datetime": "2024-02-01",
+                    "symbol": "X",
+                    "business": "BUY",
+                    "price": 10.0,
+                    "number": 100.0,
+                    "amount": 1000.0,
+                    "cash": 0.0,
+                    "cost": None,
+                }
+            ]
+        ),
         positions=pd.DataFrame(columns=["datetime", "symbol", "number", "price"]),
-        equity_curve=pd.DataFrame([{"date": "2024-01-01", "equity": 100000.0},
-                                   {"date": "2024-12-31", "equity": 101000.0}]),
+        equity_curve=pd.DataFrame(
+            [{"date": "2024-01-01", "equity": 100000.0}, {"date": "2024-12-31", "equity": 101000.0}]
+        ),
         yearly_returns=pd.DataFrame(columns=["year", "return"]),
     )
 
@@ -264,12 +295,25 @@ def _smoke_result() -> BacktestResult:
 
 def test_default_run_type_is_strategy_backtest():
     """默认必须是 strategy_backtest（宁可被当成正式回测，也不默认伪装 smoke）。"""
-    assert BacktestMetadata(
-        strategy="s", strategy_version="v", framework="f", framework_version="1",
-        git_commit="c", run_id="r", start_date="2024-01-01", end_date="2024-01-02",
-        data_source="d", data_snapshot=None, initial_cash=1.0, commission=None,
-        slippage=None, status="ok",
-    ).run_type == "strategy_backtest"
+    assert (
+        BacktestMetadata(
+            strategy="s",
+            strategy_version="v",
+            framework="f",
+            framework_version="1",
+            git_commit="c",
+            run_id="r",
+            start_date="2024-01-01",
+            end_date="2024-01-02",
+            data_source="d",
+            data_snapshot=None,
+            initial_cash=1.0,
+            commission=None,
+            slippage=None,
+            status="ok",
+        ).run_type
+        == "strategy_backtest"
+    )
 
 
 def test_execution_smoke_does_not_use_strategy_name_dir(tmp_path):
@@ -310,6 +354,11 @@ def test_metadata_json_records_run_type(tmp_path):
 
 def test_result_files_constant_matches_task_spec():
     assert set(RESULT_FILES) == {
-        "metadata.json", "metrics.json", "trades.csv", "positions.csv",
-        "equity_curve.csv", "yearly_returns.csv", "report.md",
+        "metadata.json",
+        "metrics.json",
+        "trades.csv",
+        "positions.csv",
+        "equity_curve.csv",
+        "yearly_returns.csv",
+        "report.md",
     }

@@ -14,8 +14,17 @@ def t(name):
         mods.append((name, False))
 
 
-for n in ["hikyuu", "rqalpha", "akshare", "numpy", "pandas",
-          "scipy", "matplotlib", "pytest", "jupyter"]:
+for n in [
+    "hikyuu",
+    "rqalpha",
+    "akshare",
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "pytest",
+    "jupyter",
+]:
     t(n)
 
 bad = [n for n, ok in mods if not ok]

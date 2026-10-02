@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$Config = 'D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json',
+    [string]$Config = $(if ($env:ETF_QUANT_CONSOLE_CONFIG) { $env:ETF_QUANT_CONSOLE_CONFIG } else { 'D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json' }),
     [string]$ResearchReportRoot,
     [ValidateRange(1024,65535)][int]$EtfApiPort = 3312,
     [ValidateRange(1024,65535)][int]$ResearchApiPort = 8787,

@@ -1,7 +1,8 @@
 """Isolated pure tests; no root/data/source fixture dependency."""
+
 import sys
+from decimal import ROUND_HALF_EVEN, Context, localcontext
 from pathlib import Path
-from decimal import Context, ROUND_HALF_EVEN, localcontext
 
 import pytest
 

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import numpy as np
 import pandas as pd
@@ -33,7 +33,9 @@ def _verified_csv(root: Path, name: str, metadata: dict) -> Path:
 def load_sector_catalog(processed_dir: Path | str = DEFAULT_PROCESSED_DIR) -> pd.DataFrame:
     root = Path(processed_dir)
     metadata = _metadata(root)
-    frame = pd.read_csv(_verified_csv(root, "sector_catalog.csv", metadata), dtype={"sector_code": "string"})
+    frame = pd.read_csv(
+        _verified_csv(root, "sector_catalog.csv", metadata), dtype={"sector_code": "string"}
+    )
     if not set(CATALOG_COLUMNS).issubset(frame.columns) or frame["sector_code"].duplicated().any():
         raise ShenwanRawDataError("canonical sector catalog schema/代码重复")
     if frame["sector_name"].isna().any() or not frame["sector_level"].eq(2).all():
@@ -43,27 +45,41 @@ def load_sector_catalog(processed_dir: Path | str = DEFAULT_PROCESSED_DIR) -> pd
 
 def _market(root: Path) -> pd.DataFrame:
     meta = _metadata(root)
-    frame = pd.read_csv(_verified_csv(root, "sector_ohlcva.csv", meta), dtype={"sector_code": "string"}, parse_dates=["date"], low_memory=False)
+    frame = pd.read_csv(
+        _verified_csv(root, "sector_ohlcva.csv", meta),
+        dtype={"sector_code": "string"},
+        parse_dates=["date"],
+        low_memory=False,
+    )
     if not set(OHLCVA_COLUMNS).issubset(frame.columns):
         raise ShenwanRawDataError("canonical sector OHLCVA schema 不完整")
     if frame.duplicated(["sector_code", "date"]).any():
         raise ShenwanRawDataError("canonical sector OHLCVA 日期重复")
-    if not frame.sort_values(["sector_code", "date"])[["sector_code", "date"]].reset_index(drop=True).equals(
-        frame[["sector_code", "date"]].reset_index(drop=True)
+    if (
+        not frame.sort_values(["sector_code", "date"])[["sector_code", "date"]]
+        .reset_index(drop=True)
+        .equals(frame[["sector_code", "date"]].reset_index(drop=True))
     ):
         raise ShenwanRawDataError("canonical sector OHLCVA 顺序错误")
     if not frame["source_snapshot"].eq(frame["source_sha256"]).all():
         raise ShenwanRawDataError("canonical sector OHLCVA source snapshot 不一致")
-    if frame[["sector_name", "source_provider", "source_url", "source_filename", "source_sha256"]].isna().any().any():
+    if (
+        frame[["sector_name", "source_provider", "source_url", "source_filename", "source_sha256"]]
+        .isna()
+        .any()
+        .any()
+    ):
         raise ShenwanRawDataError("canonical sector OHLCVA 来源字段缺失")
     prices = frame[["open", "high", "low", "close"]].apply(pd.to_numeric, errors="coerce")
-    finite = pd.DataFrame(np.isfinite(prices.to_numpy()), columns=prices.columns, index=prices.index).all(axis=1)
+    finite = pd.DataFrame(
+        np.isfinite(prices.to_numpy()), columns=prices.columns, index=prices.index
+    ).all(axis=1)
     valid = finite & prices.gt(0).all(axis=1)
     valid &= prices["high"].ge(prices[["open", "low", "close"]].max(axis=1))
     valid &= prices["low"].le(prices[["open", "high", "close"]].min(axis=1))
     for col in ("volume", "amount"):
         values = pd.to_numeric(frame[col], errors="coerce")
-        valid &= (frame[col].isna() | (np.isfinite(values) & values.ge(0)))
+        valid &= frame[col].isna() | (np.isfinite(values) & values.ge(0))
     if not valid.eq(frame["is_valid_ohlc"]).all():
         raise ShenwanRawDataError("canonical OHLC 质量标记与实际数值不一致")
     if meta.get("data_snapshot_id") is None:
@@ -90,7 +106,11 @@ def load_sector_ohlcva(
     if out.empty:
         raise ShenwanRawDataError(f"无申万行业行情: {sector_code} / {start}..{end}")
     if not allow_invalid_for_audit and not out["is_valid_ohlc"].all():
-        examples = out.loc[~out["is_valid_ohlc"], ["date", "quality_violations"]].head(3).to_dict("records")
+        examples = (
+            out.loc[~out["is_valid_ohlc"], ["date", "quality_violations"]]
+            .head(3)
+            .to_dict("records")
+        )
         raise ShenwanRawDataError(f"行业 {sector_code} 含源头异常 OHLC，禁止进入模型: {examples}")
     return out.reset_index(drop=True)
 
@@ -114,10 +134,14 @@ def load_sector_panel(
     available = set(market["sector_code"])
     if missing := requested - available:
         raise ShenwanRawDataError(f"请求的行业不存在: {sorted(missing)}")
-    out = market.loc[
-        market["sector_code"].isin(requested)
-        & market["date"].between(pd.Timestamp(start), pd.Timestamp(end))
-    ].sort_values(["date", "sector_code"]).reset_index(drop=True)
+    out = (
+        market.loc[
+            market["sector_code"].isin(requested)
+            & market["date"].between(pd.Timestamp(start), pd.Timestamp(end))
+        ]
+        .sort_values(["date", "sector_code"])
+        .reset_index(drop=True)
+    )
     if not allow_invalid_for_audit and not out["is_valid_ohlc"].all():
         raise ShenwanRawDataError("panel 含源头异常 OHLC，禁止进入模型")
     # 没有 group reindex 或 ffill；缺日表现为该 (date, sector_code) 行不存在。

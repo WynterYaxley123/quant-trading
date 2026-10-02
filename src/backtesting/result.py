@@ -12,9 +12,10 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass, field, asdict
+from collections.abc import Mapping
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Mapping
+from typing import Any
 
 import pandas as pd
 
@@ -157,8 +158,9 @@ class BacktestResult:
         os.makedirs(out, exist_ok=True)
 
         with open(os.path.join(out, "metadata.json"), "w", encoding="utf-8") as f:
-            json.dump(self.metadata.to_dict(), f, ensure_ascii=False, indent=2,
-                      default=_json_default)
+            json.dump(
+                self.metadata.to_dict(), f, ensure_ascii=False, indent=2, default=_json_default
+            )
 
         m = self.metrics.to_dict()
         with open(os.path.join(out, "metrics.json"), "w", encoding="utf-8") as f:
@@ -225,8 +227,10 @@ class BacktestResult:
                 lines.append(f"| {k} | {v} |")
         lines.append("")
         if mt.unsupported_fields:
-            lines.append("> **unsupported 字段说明**：当前框架无法提供以下指标，已置为 `null`，"
-                         "**未用 0 冒充**：")
+            lines.append(
+                "> **unsupported 字段说明**：当前框架无法提供以下指标，已置为 `null`，"
+                "**未用 0 冒充**："
+            )
             lines.append("> " + ", ".join(mt.unsupported_fields))
             lines.append("")
         lines.append("## 未建模事项")

@@ -10,8 +10,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Mapping, Sequence
 
 import pandas as pd
 
@@ -20,8 +20,12 @@ from research.sector_universe_feasibility import prediction_metric_contract
 from src.data.loaders.shenwan_sector_loader import load_sector_catalog, load_sector_panel
 from strategies.sw_sector_rotation.src.factors.sector_rotation import TRAIN_FEATURES_PRICE
 from strategies.sw_sector_rotation.src.model.model import (
-    DEFAULT_ALPHA, DEFAULT_TOP_N, DEFAULT_TRAIN_MONTHS, FORWARD_WINDOWS,
-    FUSION_WEIGHTS, MIN_TRAIN_DATES,
+    DEFAULT_ALPHA,
+    DEFAULT_TOP_N,
+    DEFAULT_TRAIN_MONTHS,
+    FORWARD_WINDOWS,
+    FUSION_WEIGHTS,
+    MIN_TRAIN_DATES,
 )
 
 POLICY_NAME = "POLICY_C_FIXED124_STRICT120"
@@ -33,12 +37,24 @@ FROZEN_FEATURES_SHA256 = "ee1b70d4623b566451eae8c8a0c4878720049e506b05f4cd94b9d7
 FROZEN_HISTORY_END = "2026-09-18"
 FROZEN_HISTORY_SHA256 = "a78ae9d6e3c0f7b985927e1d6ae721f94ae4bb85fb58440cfd76719846eff82c"
 HISTORY_COLUMNS = (
-    "date", "sector_code", "sector_name", "open", "high", "low", "close",
-    "volume", "amount", "is_valid_ohlc",
+    "date",
+    "sector_code",
+    "sector_name",
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "amount",
+    "is_valid_ohlc",
 )
 FROZEN_BOUNDARY_DATES = {
-    1: "2025-04-02", 100: "2025-08-26", 101: "2025-08-27",
-    220: "2026-03-02", 221: "2026-03-03", 239: "2026-03-27",
+    1: "2025-04-02",
+    100: "2025-08-26",
+    101: "2025-08-27",
+    220: "2026-03-02",
+    221: "2026-03-03",
+    239: "2026-03-27",
 }
 PHASES = (
     ("development", 1, 100),
@@ -51,16 +67,22 @@ PHASES = (
 
 def canonical_hash(value: object) -> str:
     """Stable SHA256 of semantic JSON (never of timestamps or generated IDs)."""
-    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True,
-                         separators=(",", ":"), allow_nan=False).encode("utf-8")
+    encoded = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
 def _dates(dates: Sequence) -> list[str]:
     calendar = pd.DatetimeIndex(dates)
-    if (calendar.empty or calendar.hasnans or calendar.tz is not None
-            or not calendar.equals(calendar.normalize())
-            or not calendar.is_monotonic_increasing or calendar.has_duplicates):
+    if (
+        calendar.empty
+        or calendar.hasnans
+        or calendar.tz is not None
+        or not calendar.equals(calendar.normalize())
+        or not calendar.is_monotonic_increasing
+        or calendar.has_duplicates
+    ):
         raise ValueError("eligible signal calendar must be unique, ordered trading dates")
     return [str(day.date()) for day in calendar]
 
@@ -87,8 +109,7 @@ def split_policy_payload() -> dict:
             "ordinal assigned from the first eligible signal date, never from returns"
         ),
         "ordinal_definition": [
-            {"phase": phase, "start": start, "end": end}
-            for phase, start, end in PHASES
+            {"phase": phase, "start": start, "end": end} for phase, start, end in PHASES
         ],
         "strict_pit": False,
         "sector_data_admission": ADMISSION,
@@ -101,12 +122,16 @@ def split_policy_hash() -> str:
 
 def prediction_config_payload() -> dict:
     """Prediction-only semantics, independent of unresolved portfolio rules."""
-    if (len(TRAIN_FEATURES_PRICE) != 19
-            or canonical_hash(list(TRAIN_FEATURES_PRICE)) != FROZEN_FEATURES_SHA256
-            or DEFAULT_ALPHA != 0.01 or DEFAULT_TOP_N != 5
-            or DEFAULT_TRAIN_MONTHS != 6 or MIN_TRAIN_DATES != 30
-            or dict(FORWARD_WINDOWS) != {"short": 10, "medium": 40, "long": 120}
-            or dict(FUSION_WEIGHTS) != {"short": 0.25, "medium": 0.5, "long": 0.25}):
+    if (
+        len(TRAIN_FEATURES_PRICE) != 19
+        or canonical_hash(list(TRAIN_FEATURES_PRICE)) != FROZEN_FEATURES_SHA256
+        or DEFAULT_ALPHA != 0.01
+        or DEFAULT_TOP_N != 5
+        or DEFAULT_TRAIN_MONTHS != 6
+        or MIN_TRAIN_DATES != 30
+        or dict(FORWARD_WINDOWS) != {"short": 10, "medium": 40, "long": 120}
+        or dict(FUSION_WEIGHTS) != {"short": 0.25, "medium": 0.5, "long": 0.25}
+    ):
         raise ValueError("RESEARCH_SEMANTICS_FREEZE_REQUIRED: strategy prediction inputs changed")
     return {
         "formal_universe": FORMAL_UNIVERSE,
@@ -139,13 +164,15 @@ def verify_frozen_prefix(eligible_dates: Sequence, sector_codes: Sequence[str]) 
     """Allow an append, but fail closed if historical ordinals or U0 changed."""
     dates = _dates(eligible_dates)
     codes = sorted(map(str, sector_codes))
-    if (len(codes) != 124 or len(set(codes)) != 124
-            or canonical_hash(codes) != FROZEN_CODES_SHA256
-            or len(dates) < FROZEN_PREFIX_COUNT
-            or canonical_hash(dates[:FROZEN_PREFIX_COUNT]) != FROZEN_PREFIX_SHA256):
+    if (
+        len(codes) != 124
+        or len(set(codes)) != 124
+        or canonical_hash(codes) != FROZEN_CODES_SHA256
+        or len(dates) < FROZEN_PREFIX_COUNT
+        or canonical_hash(dates[:FROZEN_PREFIX_COUNT]) != FROZEN_PREFIX_SHA256
+    ):
         raise ValueError("SPLIT_REPRODUCIBILITY_REVIEW: frozen U0 or E001-E239 changed")
-    if any(dates[ordinal - 1] != expected
-           for ordinal, expected in FROZEN_BOUNDARY_DATES.items()):
+    if any(dates[ordinal - 1] != expected for ordinal, expected in FROZEN_BOUNDARY_DATES.items()):
         raise ValueError("SPLIT_REPRODUCIBILITY_REVIEW: frozen ordinal boundary changed")
     return dates
 
@@ -158,8 +185,11 @@ def historical_panel_hash(panel: pd.DataFrame, *, through: str = FROZEN_HISTORY_
     if old.empty or old.duplicated(["date", "sector_code"]).any():
         raise ValueError("SPLIT_REPRODUCIBILITY_REVIEW: historical rows invalid")
     canonical = old.sort_values(["date", "sector_code"]).to_csv(
-        index=False, float_format="%.17g", na_rep="<NULL>",
-        date_format="%Y-%m-%d", lineterminator="\n",
+        index=False,
+        float_format="%.17g",
+        na_rep="<NULL>",
+        date_format="%Y-%m-%d",
+        lineterminator="\n",
     )
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
@@ -191,8 +221,9 @@ def guard_evaluation(phase: str, ordinals: Sequence[int]) -> None:
             raise PermissionError(f"PURGED_ORDINAL_ACCESS_ERROR: E{ordinal:03d} is not evaluable")
 
 
-def guard_evaluation_dates(phase: str, requested_dates: Sequence,
-                           eligible_dates: Sequence) -> list[int]:
+def guard_evaluation_dates(
+    phase: str, requested_dates: Sequence, eligible_dates: Sequence
+) -> list[int]:
     """Date-based wrapper prevents a future runner bypassing ordinal checks."""
     dates = _dates(eligible_dates)
     lookup = {day: index for index, day in enumerate(dates, 1)}
@@ -204,8 +235,9 @@ def guard_evaluation_dates(phase: str, requested_dates: Sequence,
     return ordinals
 
 
-def availability_metadata(eligible_dates: Sequence, sector_codes: Sequence[str],
-                          *, data_snapshot_id: str) -> dict:
+def availability_metadata(
+    eligible_dates: Sequence, sector_codes: Sequence[str], *, data_snapshot_id: str
+) -> dict:
     """Calendar counts and configuration only; never reads prices or metrics."""
     dates = verify_frozen_prefix(eligible_dates, sector_codes)
     if not data_snapshot_id:
@@ -214,7 +246,8 @@ def availability_metadata(eligible_dates: Sequence, sector_codes: Sequence[str],
     for phase, start, end in PHASES:
         available = max(0, min(len(dates), end) - start + 1)
         availability[phase] = {
-            "ordinal_start": start, "ordinal_end": end,
+            "ordinal_start": start,
+            "ordinal_end": end,
             "required_count": end - start + 1,
             "available_count": available,
             "remaining_count": end - start + 1 - available,
@@ -271,8 +304,11 @@ def audit_local_policy(processed_dir: Path) -> dict:
     catalog = load_sector_catalog(processed_dir)
     codes = catalog["sector_code"].astype(str).tolist()
     panel = load_sector_panel(
-        codes, admission["common_start_date"], admission["common_end_date"],
-        processed_dir=processed_dir, allow_invalid_for_audit=True,
+        codes,
+        admission["common_start_date"],
+        admission["common_end_date"],
+        processed_dir=processed_dir,
+        allow_invalid_for_audit=True,
     )
     if historical_panel_hash(panel) != FROZEN_HISTORY_SHA256:
         raise ValueError("SPLIT_REPRODUCIBILITY_REVIEW: historical sector data revised")
@@ -288,8 +324,11 @@ def audit_local_policy(processed_dir: Path) -> dict:
     # E100's 120-session label endpoint must be inside Purge 1 and before E221.
     last_dev = eligible[99]
     endpoint_i = int(calendar.get_loc(last_dev)) + 120
-    if (endpoint_i >= len(calendar) or calendar[endpoint_i] != eligible[219]
-            or not calendar[endpoint_i] < eligible[220]):
+    if (
+        endpoint_i >= len(calendar)
+        or calendar[endpoint_i] != eligible[219]
+        or not calendar[endpoint_i] < eligible[220]
+    ):
         raise ValueError("SPLIT_REPRODUCIBILITY_REVIEW: strict boundary purge changed")
     result["development_last_120_label_endpoint"] = str(calendar[endpoint_i].date())
     return result
@@ -299,8 +338,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sector-dir", type=Path, default=Path("data/processed/shenwan"))
     args = parser.parse_args()
-    print(json.dumps(audit_local_policy(args.sector_dir), ensure_ascii=False,
-                     indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            audit_local_policy(args.sector_dir), ensure_ascii=False, indent=2, sort_keys=True
+        )
+    )
     return 0
 
 

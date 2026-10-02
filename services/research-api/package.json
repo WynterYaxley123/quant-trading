@@ -1,6 +1,7 @@
 {
   "name": "@quant-trading/research-api",
   "private": true,
+  "license": "MIT",
   "version": "1.0.0",
   "type": "module",
   "engines": { "node": ">=24" },

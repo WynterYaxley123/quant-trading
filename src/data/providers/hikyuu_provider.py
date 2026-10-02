@@ -10,12 +10,12 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping, Sequence
 from datetime import date, datetime
-from typing import Mapping, Sequence
 
 import pandas as pd
 
-from ..schema import DataIntegrityError, normalize_frame, validate_frame
+from ..schema import normalize_frame, validate_frame
 from .base import DataProvider, ProviderCapabilities, ProviderUnavailable
 
 __all__ = ["HikyuuProvider", "kdata_to_frame"]
@@ -64,7 +64,9 @@ def kdata_to_frame(kdata, symbol: str, **extra) -> pd.DataFrame:
             }
         )
     if not rows:
-        return pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume", "amount"])
+        return pd.DataFrame(
+            columns=["date", "symbol", "open", "high", "low", "close", "volume", "amount"]
+        )
     df = normalize_frame(pd.DataFrame(rows), symbol=symbol, **extra)
     return df
 
@@ -130,9 +132,7 @@ class HikyuuProvider(DataProvider):
         """从 hikyuu.ini 读取 datadir，用于 preflight。读不到返回 None。"""
         import configparser
 
-        cfg = self._config_file or os.path.join(
-            os.path.expanduser("~"), ".hikyuu", "hikyuu.ini"
-        )
+        cfg = self._config_file or os.path.join(os.path.expanduser("~"), ".hikyuu", "hikyuu.ini")
         if not os.path.exists(cfg):
             return None
         try:
@@ -173,9 +173,7 @@ class HikyuuProvider(DataProvider):
                 continue
             if stk is not None and getattr(stk, "valid", False):
                 return stk
-        raise ProviderUnavailable(
-            self.name, f"symbol {symbol!r} 未在 StockManager 中找到或已失效"
-        )
+        raise ProviderUnavailable(self.name, f"symbol {symbol!r} 未在 StockManager 中找到或已失效")
 
     # -- 取数 ---------------------------------------------------------------
 

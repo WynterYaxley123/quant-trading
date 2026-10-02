@@ -5,20 +5,20 @@ instruments and calendar. This program does not fetch, derive, stage, compact,
 publish or mutate the lake. It distinguishes the old sparse-prior measurement
 from a calendar-adjacent, exact-adjustment/valid-bar measurement.
 """
+
 from __future__ import annotations
 
 import argparse
-from collections import Counter, defaultdict
 import csv
-from datetime import date, datetime, timezone
 import hashlib
 import json
 import math
 import os
-from pathlib import Path
 import sys
 import uuid
-
+from collections import Counter, defaultdict
+from datetime import date, datetime, timezone
+from pathlib import Path
 
 START = date(2025, 4, 10)
 CUTOFF = date(2026, 9, 24)
@@ -26,14 +26,33 @@ MIN_VALID = 5
 MIN_COVERAGE = 0.80
 CDR = "689009.SH"
 FIELDS = (
-    "trade_date", "industry_code", "symbol", "canonical_symbol", "exchange",
-    "asset_type", "membership_eligible", "instrument_resolved",
-    "identity_source", "identity_observed_at", "bar_available", "bar_valid",
-    "adjustment_available", "adj_is_exact", "return_valid", "invalid_reason",
-    "source_provenance", "prev_session", "prev_bar_available",
-    "prev_adj_is_exact", "stored_list_date", "list_date_provenance",
-    "stored_delist_date", "delist_date_provenance",
-    "adj_close", "prev_adj_close", "return_value",
+    "trade_date",
+    "industry_code",
+    "symbol",
+    "canonical_symbol",
+    "exchange",
+    "asset_type",
+    "membership_eligible",
+    "instrument_resolved",
+    "identity_source",
+    "identity_observed_at",
+    "bar_available",
+    "bar_valid",
+    "adjustment_available",
+    "adj_is_exact",
+    "return_valid",
+    "invalid_reason",
+    "source_provenance",
+    "prev_session",
+    "prev_bar_available",
+    "prev_adj_is_exact",
+    "stored_list_date",
+    "list_date_provenance",
+    "stored_delist_date",
+    "delist_date_provenance",
+    "adj_close",
+    "prev_adj_close",
+    "return_value",
 )
 
 
@@ -43,16 +62,25 @@ def valid_bar(row: tuple | None) -> bool:
         return False
     adj_close, _exact, volume, op, high, low, close, _source = row
     values = (op, high, low, close, adj_close)
-    return (all(isinstance(v, (float, int)) and math.isfinite(v) and v > 0
-                for v in values)
-            and isinstance(volume, (float, int)) and math.isfinite(volume)
-            and volume > 0 and high >= max(op, close) and low <= min(op, close))
+    return (
+        all(isinstance(v, (float, int)) and math.isfinite(v) and v > 0 for v in values)
+        and isinstance(volume, (float, int))
+        and math.isfinite(volume)
+        and volume > 0
+        and high >= max(op, close)
+        and low <= min(op, close)
+    )
 
 
-def classify(instrument: dict | None, current: tuple | None,
-             previous: tuple | None, *, symbol: str | None = None,
-             known_prev_symbols: set[str] | None = None,
-             window_symbols: set[str] | None = None) -> str | None:
+def classify(
+    instrument: dict | None,
+    current: tuple | None,
+    previous: tuple | None,
+    *,
+    symbol: str | None = None,
+    known_prev_symbols: set[str] | None = None,
+    window_symbols: set[str] | None = None,
+) -> str | None:
     """A single primary reason per member-session; UNKNOWN beats guessed dates."""
     if instrument is None:
         if symbol is not None and known_prev_symbols is not None and symbol in known_prev_symbols:
@@ -93,19 +121,28 @@ def legacy_return_valid(current: tuple | None, last_available: tuple | None) -> 
     if current is None or last_available is None or current[1] is not True:
         return False
     c, p = current[0], last_available[0]
-    return (isinstance(c, (float, int)) and isinstance(p, (float, int))
-            and math.isfinite(c) and math.isfinite(p) and c > 0 and p > 0
-            and math.isfinite(c / p - 1.0))
+    return (
+        isinstance(c, (float, int))
+        and isinstance(p, (float, int))
+        and math.isfinite(c)
+        and math.isfinite(p)
+        and c > 0
+        and p > 0
+        and math.isfinite(c / p - 1.0)
+    )
 
 
-def stored_date_diagnostics(instrument: dict | None, day: date,
-                            reason: str | None) -> tuple[bool, bool]:
+def stored_date_diagnostics(
+    instrument: dict | None, day: date, reason: str | None
+) -> tuple[bool, bool]:
     """Flag suspicious stored dates; never change eligibility or classify PIT."""
     if not instrument or reason not in ("MEMBERSHIP_ONLY_NO_MARKET_DATA", "BAR_MISSING"):
         return False, False
     listed, delisted = instrument.get("list_date"), instrument.get("delist_date")
-    return (isinstance(listed, date) and day < listed,
-            isinstance(delisted, date) and day > delisted)
+    return (
+        isinstance(listed, date) and day < listed,
+        isinstance(delisted, date) and day > delisted,
+    )
 
 
 def _outside_repo(path: Path) -> Path:
@@ -139,13 +176,14 @@ def audit(lake: Path, output: Path) -> dict:
     if len(sessions) != len(set(sessions)) or not sessions or sessions[-1] != CUTOFF:
         raise ValueError("CALENDAR_CUTOFF_OR_DUPLICATE_BLOCKER")
 
-    membership = load("industry_members", start=date(2020, 1, 1), end=CUTOFF,
-                      data_root=str(lake))
-    membership = membership.filter((pl.col("source") == "sw")
-                                   & (pl.col("classification_system") == "sw"))
+    membership = load("industry_members", start=date(2020, 1, 1), end=CUTOFF, data_root=str(lake))
+    membership = membership.filter(
+        (pl.col("source") == "sw") & (pl.col("classification_system") == "sw")
+    )
     snapshots = defaultdict(dict)
     for symbol, code, snap in membership.select(
-            "symbol", "industry_code", "as_of_date").iter_rows():
+        "symbol", "industry_code", "as_of_date"
+    ).iter_rows():
         if not code or len(code) != 6 or snap is None:
             raise ValueError("MEMBERSHIP_CONTRACT_BLOCKER")
         if symbol in snapshots[snap]:
@@ -155,14 +193,25 @@ def audit(lake: Path, output: Path) -> dict:
     if not snapshot_days or snapshot_days[0] > sessions[0]:
         raise ValueError("NO_MEMBERSHIP_AT_WINDOW_START")
 
-    bars = load("daily_bars", start=START, end=CUTOFF, adjust="hfq",
-                strict_adj=False, data_root=str(lake))
+    bars = load(
+        "daily_bars", start=START, end=CUTOFF, adjust="hfq", strict_adj=False, data_root=str(lake)
+    )
     bar_count, bar_symbols = bars.height, bars["symbol"].n_unique()
     window_symbols = set(bars["symbol"].unique().to_list())
     if bars.select("symbol", "trade_date").is_duplicated().any():
         raise ValueError("DUPLICATE_DAILY_BAR_BLOCKER")
-    bars = bars.select("trade_date", "symbol", "adj_close", "adj_is_exact",
-                       "volume", "open", "high", "low", "close", "source")
+    bars = bars.select(
+        "trade_date",
+        "symbol",
+        "adj_close",
+        "adj_is_exact",
+        "volume",
+        "open",
+        "high",
+        "low",
+        "close",
+        "source",
+    )
     rows_iter = iter(bars.sort("trade_date", "symbol").iter_rows())
     next_bar = next(rows_iter, None)
     prior_rows: dict[str, tuple] = {}
@@ -194,7 +243,10 @@ def audit(lake: Path, output: Path) -> dict:
         writer = csv.DictWriter(handle, fieldnames=FIELDS)
         writer.writeheader()
         for day in sessions:
-            while snapshot_cursor + 1 < len(snapshot_days) and snapshot_days[snapshot_cursor + 1] <= day:
+            while (
+                snapshot_cursor + 1 < len(snapshot_days)
+                and snapshot_days[snapshot_cursor + 1] <= day
+            ):
                 snapshot_cursor += 1
                 current_snapshot = snapshot_days[snapshot_cursor]
             active = snapshots[current_snapshot]
@@ -217,9 +269,14 @@ def audit(lake: Path, output: Path) -> dict:
                 for symbol in sorted(symbols):
                     instrument = instruments.get(symbol)
                     cur, prev = current_rows.get(symbol), prior_rows.get(symbol)
-                    reason = classify(instrument, cur, prev, symbol=symbol,
-                                      known_prev_symbols=known_prev_symbols,
-                                      window_symbols=window_symbols)
+                    reason = classify(
+                        instrument,
+                        cur,
+                        prev,
+                        symbol=symbol,
+                        known_prev_symbols=known_prev_symbols,
+                        window_symbols=window_symbols,
+                    )
                     is_valid = reason is None
                     valid += is_valid
                     if legacy_return_valid(cur, last_available.get(symbol)):
@@ -235,44 +292,65 @@ def audit(lake: Path, output: Path) -> dict:
                         reasons[reason] += 1
                         invalid_symbols.append(symbol)
                     stored_pre_list, stored_post_delist = stored_date_diagnostics(
-                        instrument, day, reason)
+                        instrument, day, reason
+                    )
                     if stored_post_delist:
                         stored_post_delist_missing_members += 1
                         stored_post_delist_gap = True
                     if stored_pre_list:
                         stored_pre_list_missing_members += 1
-                    if (reason in ("MEMBERSHIP_ONLY_NO_MARKET_DATA", "BAR_MISSING")
-                            and not stored_post_delist):
+                    if (
+                        reason in ("MEMBERSHIP_ONLY_NO_MARKET_DATA", "BAR_MISSING")
+                        and not stored_post_delist
+                    ):
                         missing_not_stored_post_delist[symbol] += 1
-                    writer.writerow({
-                        "trade_date": day.isoformat(), "industry_code": code,
-                        "symbol": symbol, "canonical_symbol": symbol,
-                        "exchange": exchange,
-                        "asset_type": instrument.get("asset_type") if instrument else None,
-                        "membership_eligible": True,
-                        "instrument_resolved": instrument is not None,
-                        "identity_source": instrument.get("source") if instrument else None,
-                        "identity_observed_at": str(instrument.get("fetched_at")) if instrument else None,
-                        "bar_available": cur is not None, "bar_valid": valid_bar(cur),
-                        "adjustment_available": cur is not None and cur[1] is True,
-                        "adj_is_exact": cur[1] if cur else None,
-                        "return_valid": is_valid, "invalid_reason": reason,
-                        "source_provenance": f"membership=sw@{current_snapshot};bar={cur[7] if cur else 'UNKNOWN'}",
-                        "prev_session": previous_session.isoformat() if previous_session else None,
-                        "prev_bar_available": prev is not None,
-                        "prev_adj_is_exact": prev[1] if prev else None,
-                        "stored_list_date": instrument.get("list_date") if instrument else None,
-                        "list_date_provenance": "UNVERIFIED_FIELD_LEVEL" if instrument else "UNKNOWN",
-                        "stored_delist_date": instrument.get("delist_date") if instrument else None,
-                        "delist_date_provenance": "UNVERIFIED_FIELD_LEVEL" if instrument else "UNKNOWN",
-                        "adj_close": cur[0] if cur else None,
-                        "prev_adj_close": prev[0] if prev else None,
-                        "return_value": cur[0] / prev[0] - 1.0 if is_valid else None,
-                    })
+                    writer.writerow(
+                        {
+                            "trade_date": day.isoformat(),
+                            "industry_code": code,
+                            "symbol": symbol,
+                            "canonical_symbol": symbol,
+                            "exchange": exchange,
+                            "asset_type": instrument.get("asset_type") if instrument else None,
+                            "membership_eligible": True,
+                            "instrument_resolved": instrument is not None,
+                            "identity_source": instrument.get("source") if instrument else None,
+                            "identity_observed_at": str(instrument.get("fetched_at"))
+                            if instrument
+                            else None,
+                            "bar_available": cur is not None,
+                            "bar_valid": valid_bar(cur),
+                            "adjustment_available": cur is not None and cur[1] is True,
+                            "adj_is_exact": cur[1] if cur else None,
+                            "return_valid": is_valid,
+                            "invalid_reason": reason,
+                            "source_provenance": f"membership=sw@{current_snapshot};bar={cur[7] if cur else 'UNKNOWN'}",
+                            "prev_session": previous_session.isoformat()
+                            if previous_session
+                            else None,
+                            "prev_bar_available": prev is not None,
+                            "prev_adj_is_exact": prev[1] if prev else None,
+                            "stored_list_date": instrument.get("list_date") if instrument else None,
+                            "list_date_provenance": "UNVERIFIED_FIELD_LEVEL"
+                            if instrument
+                            else "UNKNOWN",
+                            "stored_delist_date": instrument.get("delist_date")
+                            if instrument
+                            else None,
+                            "delist_date_provenance": "UNVERIFIED_FIELD_LEVEL"
+                            if instrument
+                            else "UNKNOWN",
+                            "adj_close": cur[0] if cur else None,
+                            "prev_adj_close": prev[0] if prev else None,
+                            "return_value": cur[0] / prev[0] - 1.0 if is_valid else None,
+                        }
+                    )
                     member_rows += 1
                 eligible = len(symbols)
                 passed = valid >= MIN_VALID and valid / eligible >= MIN_COVERAGE
-                baseline_passed = legacy_valid >= MIN_VALID and legacy_valid / eligible >= MIN_COVERAGE
+                baseline_passed = (
+                    legacy_valid >= MIN_VALID and legacy_valid / eligible >= MIN_COVERAGE
+                )
                 valid_dates += passed
                 legacy_valid_dates += baseline_passed
                 per_industry[code]["sessions"] += 1
@@ -336,10 +414,16 @@ def audit(lake: Path, output: Path) -> dict:
         "invalid_industry_days_by_date": dict(by_date.most_common()),
         "invalid_member_symbols_in_invalid_industries": dict(by_symbol.most_common()),
         "one_symbol_marginal_repair_opportunities": dict(marginal_symbols.most_common()),
-        "one_symbol_marginal_not_stored_post_delist": dict(marginal_not_stored_post_delist.most_common()),
-        "missing_bar_not_stored_post_delist_by_symbol": dict(missing_not_stored_post_delist.most_common()),
-        "per_industry": {code: {**v, "mean_coverage": v["coverage_sum"] / v["sessions"]}
-                         for code, v in sorted(per_industry.items())},
+        "one_symbol_marginal_not_stored_post_delist": dict(
+            marginal_not_stored_post_delist.most_common()
+        ),
+        "missing_bar_not_stored_post_delist_by_symbol": dict(
+            missing_not_stored_post_delist.most_common()
+        ),
+        "per_industry": {
+            code: {**v, "mean_coverage": v["coverage_sum"] / v["sessions"]}
+            for code, v in sorted(per_industry.items())
+        },
         "matrix_file": matrix.name,
         "matrix_sha256": _digest(matrix),
         "row_level_data_repo_external": True,
@@ -360,11 +444,17 @@ def audit(lake: Path, output: Path) -> dict:
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(summary_temp, summary)
-    return {"summary_path": str(summary), "matrix_path": str(matrix),
-            "sessions": len(sessions), "industry_sessions": total_dates,
-            "valid": valid_dates, "invalid": total_dates - valid_dates,
-            "legacy_valid": legacy_valid_dates, "member_sessions": member_rows,
-            "matrix_sha256": report["matrix_sha256"]}
+    return {
+        "summary_path": str(summary),
+        "matrix_path": str(matrix),
+        "sessions": len(sessions),
+        "industry_sessions": total_dates,
+        "valid": valid_dates,
+        "invalid": total_dates - valid_dates,
+        "legacy_valid": legacy_valid_dates,
+        "member_sessions": member_rows,
+        "matrix_sha256": report["matrix_sha256"],
+    }
 
 
 def main() -> int:

@@ -19,8 +19,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Iterator, Sequence
 from datetime import date, datetime, timedelta
-from typing import Iterable, Sequence
+from typing import cast
 
 __all__ = [
     "TradingCalendar",
@@ -42,7 +43,7 @@ def _to_date(d: object) -> date:
         return datetime.strptime(s, "%Y%m%d").date()
     # hikyuu.Datetime
     if hasattr(d, "year") and hasattr(d, "month") and hasattr(d, "day"):
-        return date(int(d.year), int(d.month), int(d.day))  # type: ignore[attr-defined]
+        return date(int(d.year), int(d.month), int(d.day))
     raise TypeError(f"无法识别的日期类型: {type(d).__name__}")
 
 
@@ -92,7 +93,7 @@ class TradingCalendar:
     不引入未来日期。
     """
 
-    def __init__(self, days: Iterable[object]):
+    def __init__(self, days: Iterable[object]) -> None:
         norm = sorted({_to_date(d) for d in days})
         self._days: tuple[date, ...] = tuple(norm)
         self._pos: dict[date, int] = {d: i for i, d in enumerate(self._days)}
@@ -100,16 +101,13 @@ class TradingCalendar:
     def __len__(self) -> int:
         return len(self._days)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[date]:
         return iter(self._days)
 
     def __repr__(self) -> str:  # pragma: no cover - 调试用
         if not self._days:
             return "TradingCalendar(empty)"
-        return (
-            f"TradingCalendar(n={len(self._days)}, "
-            f"{self._days[0]}..{self._days[-1]})"
-        )
+        return f"TradingCalendar(n={len(self._days)}, {self._days[0]}..{self._days[-1]})"
 
     @property
     def days(self) -> tuple[date, ...]:
@@ -137,8 +135,7 @@ class TradingCalendar:
         j = i + n
         if j < 0 or j >= len(self._days):
             raise IndexError(
-                f"交易日偏移越界: {d} {n:+d} → 下标 {j}，"
-                f"可用范围 [0, {len(self._days) - 1}]"
+                f"交易日偏移越界: {d} {n:+d} → 下标 {j}，可用范围 [0, {len(self._days) - 1}]"
             )
         return self._days[j]
 
@@ -148,13 +145,13 @@ class TradingCalendar:
         return [d for d in self._days if s <= d <= e]
 
     @classmethod
-    def from_kdata(cls, kdata) -> "TradingCalendar":
+    def from_kdata(cls, kdata: object) -> "TradingCalendar":
         """从 Hikyuu ``KData`` 对象构造日历（推荐路径）。
 
         使用 ``kd.get_datetime_list()``，该序列已自动排除周末与休市日。
         """
         dts = kdata.get_datetime_list() if hasattr(kdata, "get_datetime_list") else kdata
-        return cls(dts)
+        return cls(cast(Iterable[object], dts))
 
     @classmethod
     def from_dates(cls, dates: Sequence[object]) -> "TradingCalendar":

@@ -14,12 +14,19 @@ import numpy as np
 import pandas as pd
 
 from research.sector_index_baseline import (
-    ADMISSION, FEATURE_WARMUP, MAX_HORIZON, audit_signal_range, load_and_audit,
+    ADMISSION,
+    FEATURE_WARMUP,
+    MAX_HORIZON,
+    audit_signal_range,
+    load_and_audit,
 )
 from research.sector_research_split import UNLOCKED, strict_budget
 from src.data.loaders.shenwan_sector_loader import load_sector_catalog, load_sector_panel
 from strategies.sw_sector_rotation.src.model.model import (
-    DEFAULT_TOP_N, DEFAULT_TRAIN_MONTHS, FORWARD_WINDOWS, MIN_TRAIN_DATES,
+    DEFAULT_TOP_N,
+    DEFAULT_TRAIN_MONTHS,
+    FORWARD_WINDOWS,
+    MIN_TRAIN_DATES,
 )
 
 EXCLUDED_DIAGNOSTIC_CODE = "801193"
@@ -32,11 +39,13 @@ POLICY_SIGNAL_COUNTS = {
 }
 
 
-def sample_budget_policy(name: str, phase_counts: tuple[int, int, int],
-                         eligible_sessions: int, *, cadence: int = 10) -> dict:
+def sample_budget_policy(
+    name: str, phase_counts: tuple[int, int, int], eligible_sessions: int, *, cadence: int = 10
+) -> dict:
     """Session arithmetic only; counts are proposals, not adequacy claims."""
-    if len(phase_counts) != 3 or any(isinstance(n, bool) or not isinstance(n, int) or n < 1
-                                       for n in phase_counts):
+    if len(phase_counts) != 3 or any(
+        isinstance(n, bool) or not isinstance(n, int) or n < 1 for n in phase_counts
+    ):
         raise ValueError("three positive phase signal counts are required")
     if isinstance(cadence, bool) or not isinstance(cadence, int) or cadence < 1:
         raise ValueError("cadence must be a positive session count")
@@ -70,10 +79,17 @@ def prediction_metric_contract() -> dict:
         "version": "sector-index-prediction-metrics-v1",
         "status": "FROZEN_DEFINITIONS_ONLY",
         "prediction_horizons_sessions": dict(FORWARD_WINDOWS),
-        "metric_names": [f"{prefix}_{horizon}" for prefix in (
-            "IC", "RankIC", "Top5_forward_return", "Universe_forward_return",
-            "Top5_minus_universe",
-        ) for horizon in horizons],
+        "metric_names": [
+            f"{prefix}_{horizon}"
+            for prefix in (
+                "IC",
+                "RankIC",
+                "Top5_forward_return",
+                "Universe_forward_return",
+                "Top5_minus_universe",
+            )
+            for horizon in horizons
+        ],
         "label": "sector_close[t+h]/sector_close[t]-1",
         "signal_time": "t_after_close",
         "minimum_sectors_per_date_horizon": MIN_METRIC_SECTORS,
@@ -111,9 +127,11 @@ def missing_blocks(calendar: pd.DatetimeIndex, valid: np.ndarray) -> list[dict]:
     starts = np.r_[0, np.flatnonzero(np.diff(missing) > 1) + 1]
     ends = np.r_[starts[1:] - 1, len(missing) - 1]
     return [
-        {"start": str(calendar[missing[a]].date()),
-         "end": str(calendar[missing[b]].date()),
-         "sessions": int(b - a + 1)}
+        {
+            "start": str(calendar[missing[a]].date()),
+            "end": str(calendar[missing[b]].date()),
+            "sessions": int(b - a + 1),
+        }
         for a, b in zip(starts, ends)
     ]
 
@@ -134,11 +152,14 @@ def _terminal_continuous_start(calendar: pd.DatetimeIndex, good: np.ndarray) -> 
     return str(calendar[(int(bad[-1]) + 1) if len(bad) else 0].date())
 
 
-def _history_masks(calendar: pd.DatetimeIndex, availability: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def _history_masks(
+    calendar: pd.DatetimeIndex, availability: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     """As-of sector readiness; excludes all future prices and labels."""
     n_dates, n_sectors = availability.shape
-    bad_prefix = np.vstack((np.zeros(n_sectors, dtype=int),
-                            np.cumsum(~availability, axis=0, dtype=int)))
+    bad_prefix = np.vstack(
+        (np.zeros(n_sectors, dtype=int), np.cumsum(~availability, axis=0, dtype=int))
+    )
     factor = np.zeros((n_dates, n_sectors), dtype=bool)
     training = np.zeros((n_dates, n_sectors), dtype=bool)
     for i in range(n_dates):
@@ -163,9 +184,13 @@ def _history_masks(calendar: pd.DatetimeIndex, availability: np.ndarray) -> tupl
     return factor, training
 
 
-def _scenario_stage_summary(calendar: pd.DatetimeIndex, availability: np.ndarray,
-                            factor: np.ndarray, training: np.ndarray,
-                            columns: list[int]) -> dict:
+def _scenario_stage_summary(
+    calendar: pd.DatetimeIndex,
+    availability: np.ndarray,
+    factor: np.ndarray,
+    training: np.ndarray,
+    columns: list[int],
+) -> dict:
     full = availability[:, columns].all(axis=1)
     factor_full = factor[:, columns].all(axis=1)
     training_full = training[:, columns].all(axis=1)
@@ -179,8 +204,9 @@ def _scenario_stage_summary(calendar: pd.DatetimeIndex, availability: np.ndarray
     eligible = training_full & label_full
     return {
         "raw_all_sector_valid_sessions": int(full.sum()),
-        "latest_first_complete_date": str(max(calendar[np.flatnonzero(availability[:, j])[0]]
-                                              for j in columns).date()),
+        "latest_first_complete_date": str(
+            max(calendar[np.flatnonzero(availability[:, j])[0]] for j in columns).date()
+        ),
         "continuous_common_start": _terminal_continuous_start(calendar, full),
         "continuous_common_end": str(calendar[-1].date()) if full[-1] else None,
         "factor_ready": _first_last_count(calendar, factor_full),
@@ -200,15 +226,23 @@ def audit_universe_feasibility(processed_dir: Path) -> dict:
     if len(codes) != 124 or EXCLUDED_DIAGNOSTIC_CODE not in codes:
         raise ValueError("formal 124-sector catalog changed; diagnostic cannot proceed")
     panel = load_sector_panel(
-        codes, metadata["common_start_date"], metadata["common_end_date"],
-        processed_dir=processed_dir, allow_invalid_for_audit=True,
+        codes,
+        metadata["common_start_date"],
+        metadata["common_end_date"],
+        processed_dir=processed_dir,
+        allow_invalid_for_audit=True,
     )
     calendar = pd.DatetimeIndex(sorted(panel["date"].unique()))
-    if (len(calendar) != 1158 or str(calendar[0].date()) != metadata["common_start_date"]
-            or str(calendar[-1].date()) != metadata["common_end_date"]):
+    if (
+        len(calendar) != 1158
+        or str(calendar[0].date()) != metadata["common_start_date"]
+        or str(calendar[-1].date()) != metadata["common_end_date"]
+    ):
         raise ValueError("verified common calendar changed")
     availability_frame = panel.pivot(index="date", columns="sector_code", values="is_valid_ohlc")
-    availability = availability_frame.reindex(index=calendar, columns=codes).eq(True).to_numpy(dtype=bool)
+    availability = (
+        availability_frame.reindex(index=calendar, columns=codes).eq(True).to_numpy(dtype=bool)
+    )
     factor, training = _history_masks(calendar, availability)
     u0_cols = list(range(len(codes)))
     u1_codes = [code for code in codes if code != EXCLUDED_DIAGNOSTIC_CODE]
@@ -220,9 +254,12 @@ def audit_universe_feasibility(processed_dir: Path) -> dict:
     u0_formal = load_and_audit(processed_dir)
     u1_panel = panel.loc[panel["sector_code"].isin(u1_codes)]
     u1_structural = audit_signal_range(u1_panel, u1_codes, metadata)
-    if (u0_stage["signal_eligible"]["session_count"] != 239
-            or u0_formal["signal_only_session_count"] != 239
-            or u1_stage["signal_eligible"]["session_count"] != u1_structural["signal_only_session_count"]):
+    if (
+        u0_stage["signal_eligible"]["session_count"] != 239
+        or u0_formal["signal_only_session_count"] != 239
+        or u1_stage["signal_eligible"]["session_count"]
+        != u1_structural["signal_only_session_count"]
+    ):
         raise ValueError("universe feasibility does not reconcile to existing signal audit")
 
     focal = codes.index(EXCLUDED_DIAGNOSTIC_CODE)
@@ -234,17 +271,21 @@ def audit_universe_feasibility(processed_dir: Path) -> dict:
             continue
         gaps = missing_blocks(calendar, availability[:, j])
         if gaps:
-            other_bottlenecks.append({"sector_code": code,
-                                      "unavailable_sessions": sum(b["sessions"] for b in gaps),
-                                      "last_unavailable": gaps[-1]["end"]})
+            other_bottlenecks.append(
+                {
+                    "sector_code": code,
+                    "unavailable_sessions": sum(b["sessions"] for b in gaps),
+                    "last_unavailable": gaps[-1]["end"],
+                }
+            )
     other_bottlenecks.sort(key=lambda item: (-item["unavailable_sessions"], item["sector_code"]))
 
     # U2 membership is based on the complete *past* only. The raw calendar
     # must have enough later sessions to make labels eventually observable,
     # but a future sector bar never decides ex-ante membership.
     asof_count = training.sum(axis=1)
-    u2_signal_mask = (asof_count >= MIN_METRIC_SECTORS)
-    u2_signal_mask[len(calendar) - MAX_HORIZON:] = False
+    u2_signal_mask = asof_count >= MIN_METRIC_SECTORS
+    u2_signal_mask[len(calendar) - MAX_HORIZON :] = False
     u2_positions = np.flatnonzero(u2_signal_mask)
     if not len(u2_positions):
         raise ValueError("dynamic diagnostic has no signal dates")
@@ -264,8 +305,10 @@ def audit_universe_feasibility(processed_dir: Path) -> dict:
     budgets = {
         scenario: {
             "strict_three_way_nonempty": strict_budget(count, MAX_HORIZON),
-            "policies": {name: sample_budget_policy(name, phases, count)
-                         for name, phases in POLICY_SIGNAL_COUNTS.items()},
+            "policies": {
+                name: sample_budget_policy(name, phases, count)
+                for name, phases in POLICY_SIGNAL_COUNTS.items()
+            },
         }
         for scenario, count in signal_counts.items()
     }
@@ -275,49 +318,68 @@ def audit_universe_feasibility(processed_dir: Path) -> dict:
     return {
         "status": "SAMPLE_BUDGET_DECISION_REQUIRED",
         "data_snapshot_id": metadata["data_snapshot_id"],
-        "formal_universe": {"mode": "FIXED_124_CURRENT_RULE", "sector_count": 124,
-                            "sector_codes_unchanged": True},
-        "common_calendar": {"start": str(calendar[0].date()), "end": str(calendar[-1].date()),
-                            "trading_sessions": len(calendar)},
-        "U0": {"status": "FORMAL_CURRENT_RULE", **u0_stage,
-               "signal_eligible_sessions": signal_counts["U0"]},
-        "U1": {"status": "DIAGNOSTIC_ONLY_NOT_APPROVED_UNIVERSE_CHANGE",
-               "excluded_sector": EXCLUDED_DIAGNOSTIC_CODE,
-               "sector_count": len(u1_codes), **u1_stage,
-               "common_unavailable_blocks": u1_common_gaps,
-               "signal_eligible_sessions": signal_counts["U1"],
-               "requires": "UNIVERSE_CHANGE_REQUIRES_READMISSION"},
-        "U2": {"status": "DIAGNOSTIC_ONLY_NOT_APPROVED_DYNAMIC_UNIVERSE",
-               "retained_catalog_sector_count": len(codes),
-               "raw_dates_with_at_least_six_valid_bars": int((availability.sum(axis=1) >= MIN_METRIC_SECTORS).sum()),
-               "signal_eligible": _first_last_count(calendar, u2_signal_mask),
-               "signal_eligible_sessions": signal_counts["U2"],
-               "asof_ready_sector_count": {
-                   "min": int(u2_sector_counts.min()),
-                   "median": float(np.median(u2_sector_counts)),
-                   "max": int(u2_sector_counts.max()),
-               },
-               "retrospective_all_horizon_endpoint_count": {
-                   "min": int(future_endpoint_counts[u2_positions].min()),
-                   "median": float(np.median(future_endpoint_counts[u2_positions])),
-                   "max": int(future_endpoint_counts[u2_positions].max()),
-               },
-               "membership_rule": "past_complete_history_only; future_endpoints_diagnostic_not_membership",
-               "minimum_sector_count_policy": "NOT_APPROVED; six is only a metric-definition floor",
-               "requires": "DYNAMIC_UNIVERSE_POLICY_AND_READMISSION"},
+        "formal_universe": {
+            "mode": "FIXED_124_CURRENT_RULE",
+            "sector_count": 124,
+            "sector_codes_unchanged": True,
+        },
+        "common_calendar": {
+            "start": str(calendar[0].date()),
+            "end": str(calendar[-1].date()),
+            "trading_sessions": len(calendar),
+        },
+        "U0": {
+            "status": "FORMAL_CURRENT_RULE",
+            **u0_stage,
+            "signal_eligible_sessions": signal_counts["U0"],
+        },
+        "U1": {
+            "status": "DIAGNOSTIC_ONLY_NOT_APPROVED_UNIVERSE_CHANGE",
+            "excluded_sector": EXCLUDED_DIAGNOSTIC_CODE,
+            "sector_count": len(u1_codes),
+            **u1_stage,
+            "common_unavailable_blocks": u1_common_gaps,
+            "signal_eligible_sessions": signal_counts["U1"],
+            "requires": "UNIVERSE_CHANGE_REQUIRES_READMISSION",
+        },
+        "U2": {
+            "status": "DIAGNOSTIC_ONLY_NOT_APPROVED_DYNAMIC_UNIVERSE",
+            "retained_catalog_sector_count": len(codes),
+            "raw_dates_with_at_least_six_valid_bars": int(
+                (availability.sum(axis=1) >= MIN_METRIC_SECTORS).sum()
+            ),
+            "signal_eligible": _first_last_count(calendar, u2_signal_mask),
+            "signal_eligible_sessions": signal_counts["U2"],
+            "asof_ready_sector_count": {
+                "min": int(u2_sector_counts.min()),
+                "median": float(np.median(u2_sector_counts)),
+                "max": int(u2_sector_counts.max()),
+            },
+            "retrospective_all_horizon_endpoint_count": {
+                "min": int(future_endpoint_counts[u2_positions].min()),
+                "median": float(np.median(future_endpoint_counts[u2_positions])),
+                "max": int(future_endpoint_counts[u2_positions].max()),
+            },
+            "membership_rule": "past_complete_history_only; future_endpoints_diagnostic_not_membership",
+            "minimum_sector_count_policy": "NOT_APPROVED; six is only a metric-definition floor",
+            "requires": "DYNAMIC_UNIVERSE_POLICY_AND_READMISSION",
+        },
         "sector_801193": {
             "first_available": str(focal_presence.min().date()) if len(focal_presence) else None,
             "last_unavailable": blocks[-1]["end"] if blocks else None,
             "unavailable_sessions": sum(block["sessions"] for block in blocks),
             "missing_block_count": len(blocks),
-            "largest_missing_block": max(blocks, key=lambda block: block["sessions"]) if blocks else None,
+            "largest_missing_block": max(blocks, key=lambda block: block["sessions"])
+            if blocks
+            else None,
             "missing_blocks": blocks,
             "cause_classification": "UNKNOWN_FROM_LOCAL_OHLCVA_ONLY",
         },
         "other_continuity_bottlenecks": {
             "affected_sector_count": len(other_bottlenecks),
-            "unaffected_sector_codes": sorted(set(u1_codes) - {
-                item["sector_code"] for item in other_bottlenecks}),
+            "unaffected_sector_codes": sorted(
+                set(u1_codes) - {item["sector_code"] for item in other_bottlenecks}
+            ),
             "first_ten_sectors": other_bottlenecks[:10],
             "shared_unavailable_blocks_for_fixed_123": u1_common_gaps,
         },
@@ -344,8 +406,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sector-dir", type=Path, default=Path("data/processed/shenwan"))
     args = parser.parse_args()
-    print(json.dumps(audit_universe_feasibility(args.sector_dir), ensure_ascii=False,
-                     indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            audit_universe_feasibility(args.sector_dir),
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+    )
     return 0
 
 

@@ -18,8 +18,7 @@ from strategies.sw_sector_rotation.src.risk.sector_rotation import (
     compute_offdiag_correlation_mean,
     compute_risk_state,
 )
-from strategies.sw_sector_rotation.tests.conftest import make_market_frame, make_sector_panel
-
+from strategies.sw_sector_rotation.tests.conftest import make_sector_panel
 
 # ---------------------------------------------------------------------------
 # RiskState 结构
@@ -71,9 +70,7 @@ def test_market_breadth_all_below_ma20_is_red():
     frames = {}
     for i in range(n):
         # 先涨后暴跌，确保收盘价低于 MA20
-        close = np.concatenate(
-            [np.linspace(100, 150, days - 30), np.linspace(150, 60, 30)]
-        )
+        close = np.concatenate([np.linspace(100, 150, days - 30), np.linspace(150, 60, 30)])
         frames[f"S{i:02d}"] = pd.DataFrame(
             {
                 "open": close,
@@ -92,7 +89,7 @@ def test_market_breadth_all_below_ma20_is_red():
 
 def test_market_breadth_all_above_ma20_is_green():
     """全部行业在 MA20 上方时 breadth=1 → 绿灯。"""
-    panel = make_sector_panel(n_sectors=12, n_days=300, seed=99)
+    panel = make_sector_panel(n_sectors=12, n_days=300, seed=99)  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
     # 构造持续上涨
     frames = {}
     for i in range(12):
@@ -123,9 +120,7 @@ def test_new_high_low_ratio_red_when_more_lows():
     days = 300
     frames = {}
     for i in range(12):
-        close = np.concatenate(
-            [np.linspace(50, 200, days - 40), np.linspace(200, 80, 40)]
-        )
+        close = np.concatenate([np.linspace(50, 200, days - 40), np.linspace(200, 80, 40)])
         frames[f"S{i:02d}"] = pd.DataFrame(
             {
                 "open": close,
@@ -250,9 +245,7 @@ def test_correlation_not_including_diagonal_regression():
 
 def test_correlation_handles_nan():
     """含 NaN 的非对角元素应被忽略。"""
-    corr = pd.DataFrame(
-        [[1.0, 0.4, np.nan], [0.4, 1.0, 0.2], [np.nan, 0.2, 1.0]]
-    )
+    corr = pd.DataFrame([[1.0, 0.4, np.nan], [0.4, 1.0, 0.2], [np.nan, 0.2, 1.0]])
     assert compute_offdiag_correlation_mean(corr) == pytest.approx(0.3)
 
 
@@ -306,12 +299,8 @@ def test_cross_sectional_vol_uses_dynamic_threshold():
 def test_thresholds_overridable():
     """阈值可通过参数覆盖。"""
     panel = make_sector_panel(n_sectors=12, n_days=300)
-    strict = compute_risk_state(
-        panel, thresholds={"volume_concentration_red_above": 0.99}
-    )
-    loose = compute_risk_state(
-        panel, thresholds={"volume_concentration_red_above": 0.0}
-    )
+    strict = compute_risk_state(panel, thresholds={"volume_concentration_red_above": 0.99})
+    loose = compute_risk_state(panel, thresholds={"volume_concentration_red_above": 0.0})
     assert loose.red_lights >= strict.red_lights
     assert loose.details["volume_concentration"] == "red"
 

@@ -13,22 +13,20 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
 from urllib.parse import urlparse
 
 import pandas as pd
-
 
 PROVIDER = "shenwan_research_official"
 DEFAULT_RAW_DIR = Path("data/raw/shenwan")
 MANIFEST_FILENAME = "manifest.json"
 STOCK_CLASSIFICATION_FILENAME = "StockClassifyUse_stock.xls"
 STOCK_CLASSIFICATION_URL = (
-    "https://www.swsresearch.com/swindex/pdf/SwClass2021/"
-    "StockClassifyUse_stock.xls"
+    "https://www.swsresearch.com/swindex/pdf/SwClass2021/StockClassifyUse_stock.xls"
 )
 
 MANIFEST_REQUIRED_FIELDS = frozenset(
@@ -59,9 +57,7 @@ CANONICAL_CLASSIFICATION_COLUMNS = (
 )
 
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-_CLASSIFICATION_REQUIRED_COLUMNS = frozenset(
-    {"股票代码", "计入日期", "行业代码", "更新日期"}
-)
+_CLASSIFICATION_REQUIRED_COLUMNS = frozenset({"股票代码", "计入日期", "行业代码", "更新日期"})
 
 
 class ShenwanRawDataError(ValueError):
@@ -105,11 +101,7 @@ def discover_raw_files(raw_dir: str | Path = DEFAULT_RAW_DIR) -> tuple[Path, ...
         raise ShenwanRawDataError(f"raw 路径不是目录: {root}")
     return tuple(
         sorted(
-            (
-                path
-                for path in root.iterdir()
-                if path.is_file() and path.name != MANIFEST_FILENAME
-            ),
+            (path for path in root.iterdir() if path.is_file() and path.name != MANIFEST_FILENAME),
             key=lambda path: path.name,
         )
     )
@@ -142,28 +134,19 @@ def _record_from_mapping(item: object, *, index: int) -> RawFileRecord:
     missing = MANIFEST_REQUIRED_FIELDS.difference(item)
     unknown = set(item).difference(MANIFEST_REQUIRED_FIELDS)
     if missing:
-        raise ShenwanRawDataError(
-            f"manifest files[{index}] 缺少字段: {sorted(missing)}"
-        )
+        raise ShenwanRawDataError(f"manifest files[{index}] 缺少字段: {sorted(missing)}")
     if unknown:
-        raise ShenwanRawDataError(
-            f"manifest files[{index}] 含未知字段: {sorted(unknown)}"
-        )
+        raise ShenwanRawDataError(f"manifest files[{index}] 含未知字段: {sorted(unknown)}")
 
     record = RawFileRecord(**item)
     if record.provider != PROVIDER:
-        raise ShenwanRawDataError(
-            f"manifest files[{index}] provider 必须为 {PROVIDER!r}"
-        )
+        raise ShenwanRawDataError(f"manifest files[{index}] provider 必须为 {PROVIDER!r}")
     if not _is_official_url(record.source_url):
         raise ShenwanRawDataError(
-            f"manifest files[{index}] source_url 不是申万官方 HTTPS: "
-            f"{record.source_url!r}"
+            f"manifest files[{index}] source_url 不是申万官方 HTTPS: {record.source_url!r}"
         )
     if Path(record.original_filename).name != record.original_filename:
-        raise ShenwanRawDataError(
-            f"manifest files[{index}] original_filename 不得包含路径"
-        )
+        raise ShenwanRawDataError(f"manifest files[{index}] original_filename 不得包含路径")
     if not _SHA256_RE.fullmatch(record.sha256):
         raise ShenwanRawDataError(f"manifest files[{index}] sha256 格式无效")
     if record.classification_version is not None and (
@@ -192,9 +175,7 @@ def load_manifest(raw_dir: str | Path = DEFAULT_RAW_DIR) -> tuple[RawFileRecord,
     if not isinstance(payload, dict):
         raise ShenwanRawDataError("manifest 顶层必须是对象")
     if set(payload) != {"schema_version", "files"}:
-        raise ShenwanRawDataError(
-            "manifest 顶层字段必须且只能包含 schema_version 与 files"
-        )
+        raise ShenwanRawDataError("manifest 顶层字段必须且只能包含 schema_version 与 files")
     if payload["schema_version"] != 1:
         raise ShenwanRawDataError(
             f"不支持的 manifest schema_version: {payload['schema_version']!r}"
@@ -203,8 +184,7 @@ def load_manifest(raw_dir: str | Path = DEFAULT_RAW_DIR) -> tuple[RawFileRecord,
         raise ShenwanRawDataError("manifest files 必须是数组")
 
     records = tuple(
-        _record_from_mapping(item, index=index)
-        for index, item in enumerate(payload["files"])
+        _record_from_mapping(item, index=index) for index, item in enumerate(payload["files"])
     )
     names = [record.original_filename for record in records]
     if len(names) != len(set(names)):
@@ -283,9 +263,7 @@ def register_raw_file(
     manifest_path = root / MANIFEST_FILENAME
     records = list(load_manifest(root)) if manifest_path.exists() else []
     if any(existing.original_filename == filename for existing in records):
-        raise ShenwanRawDataError(
-            f"manifest 已登记 {filename!r}；为保留可追溯性，不自动覆盖"
-        )
+        raise ShenwanRawDataError(f"manifest 已登记 {filename!r}；为保留可追溯性，不自动覆盖")
     records.append(record)
     write_manifest(records, root)
     return record
@@ -305,9 +283,7 @@ def verify_manifest(
         discovered = {path.name for path in discover_raw_files(root)}
         unregistered = discovered.difference(registered)
         if unregistered:
-            raise ShenwanRawDataError(
-                f"raw 目录存在未登记文件: {sorted(unregistered)}"
-            )
+            raise ShenwanRawDataError(f"raw 目录存在未登记文件: {sorted(unregistered)}")
     for record in records:
         path = root / record.original_filename
         if not path.is_file():
@@ -382,28 +358,18 @@ def parse_stock_classification(
         raise ShenwanRawDataError(f"官方分类文件缺少字段: {sorted(missing)}")
 
     canonical = pd.DataFrame(index=raw.index)
-    canonical["symbol"] = _clean_code_column(
-        raw["股票代码"], name="股票代码", pad=6
-    )
-    canonical["sector_code"] = _clean_code_column(
-        raw["行业代码"], name="行业代码", pad=None
-    )
+    canonical["symbol"] = _clean_code_column(raw["股票代码"], name="股票代码", pad=6)
+    canonical["sector_code"] = _clean_code_column(raw["行业代码"], name="行业代码", pad=None)
     if "行业名称" in raw.columns:
         canonical["sector_name"] = raw["行业名称"].astype("string").str.strip()
     else:
         canonical["sector_name"] = pd.Series(pd.NA, index=raw.index, dtype="string")
-    canonical["effective_from"] = _parse_date_column(
-        raw["计入日期"], name="计入日期"
-    )
+    canonical["effective_from"] = _parse_date_column(raw["计入日期"], name="计入日期")
     canonical["effective_to"] = pd.NaT
     canonical["available_at"] = pd.NaT
-    canonical["source_updated_at"] = _parse_date_column(
-        raw["更新日期"], name="更新日期"
-    )
+    canonical["source_updated_at"] = _parse_date_column(raw["更新日期"], name="更新日期")
     canonical["classification_version"] = (
-        record.classification_version
-        if record.classification_version is not None
-        else pd.NA
+        record.classification_version if record.classification_version is not None else pd.NA
     )
     canonical["source_provider"] = record.provider
     canonical["source_url"] = record.source_url

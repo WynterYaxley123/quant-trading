@@ -110,7 +110,7 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
                     "D_TEST_OUTPUT"
                     if name.startswith("tests/") or "/tests/" in name
                     else "A_CLI_OUTPUT"
-                    if name.startswith(("scripts/", "research/", "services/"))
+                    if name.startswith(("scripts/", "research/", "services/", "examples/"))
                     or name.endswith(("cli.py", "feishu.py", "runtime_smoke.py"))
                     else "C_REVIEW_INTERNAL"
                 )

@@ -4,6 +4,7 @@ Synthetic fixtures only. No network, no lake, no Validation data, no real market
 rows. These pin the semantics the user froze, so a later change cannot silently
 alter them.
 """
+
 from __future__ import annotations
 
 import sys
@@ -31,11 +32,17 @@ SHANGHAI = timezone(timedelta(hours=8))
 
 
 def row(symbol, code, snapshot, source="sw", system="sw"):
-    return {"symbol": symbol, "industry_code": code, "as_of_date": snapshot,
-            "source": source, "classification_system": system}
+    return {
+        "symbol": symbol,
+        "industry_code": code,
+        "as_of_date": snapshot,
+        "source": source,
+        "classification_system": system,
+    }
 
 
 # --- the frozen contract identity -------------------------------------------
+
 
 def test_approved_contracts_are_the_frozen_identities():
     assert PRODUCTION_DATA_CONTRACTS_V1 == {
@@ -60,11 +67,14 @@ def test_coverage_gates_remain_frozen():
 
 # --- TIME_VARYING_ASOF_MEMBERSHIP_UNIVERSE ----------------------------------
 
+
 def test_asof_takes_the_snapshot_in_force_not_the_latest():
-    rows = mem.shenwan_rows([
-        row("600000.SH", "480100", date(2020, 1, 23)),
-        row("600000.SH", "480200", date(2021, 7, 30)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "480100", date(2020, 1, 23)),
+            row("600000.SH", "480200", date(2021, 7, 30)),
+        ]
+    )
     early = mem.session_universe(rows, date(2021, 1, 4))
     late = mem.session_universe(rows, date(2022, 1, 4))
     assert early.members["600000.SH"] == "4801"
@@ -80,10 +90,12 @@ def test_future_snapshot_never_reaches_a_past_session():
 
 
 def test_retired_industry_absent_from_a_later_session():
-    rows = mem.shenwan_rows([
-        row("600000.SH", "210200", date(2020, 1, 23)),   # retired at the 2021 break
-        row("600000.SH", "220800", date(2021, 7, 30)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "210200", date(2020, 1, 23)),  # retired at the 2021 break
+            row("600000.SH", "220800", date(2021, 7, 30)),
+        ]
+    )
     assert mem.session_universe(rows, date(2021, 1, 4)).taxonomy_active_count == 1
     codes_2021 = set(mem.session_universe(rows, date(2021, 1, 4)).members.values())
     codes_2022 = set(mem.session_universe(rows, date(2022, 1, 4)).members.values())
@@ -91,27 +103,32 @@ def test_retired_industry_absent_from_a_later_session():
 
 
 def test_union_is_not_used_as_a_daily_universe():
-    rows = mem.shenwan_rows([
-        row("600000.SH", "210200", date(2020, 1, 23)),
-        row("600001.SH", "220800", date(2021, 7, 30)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "210200", date(2020, 1, 23)),
+            row("600001.SH", "220800", date(2021, 7, 30)),
+        ]
+    )
     daily = mem.session_universe(rows, date(2021, 1, 4))
     assert set(daily.members) == {"600000.SH"}, "a later member leaked into an earlier session"
 
 
 def test_non_shenwan_axes_are_rejected():
     """EastMoney's 3/4-digit board codes are a different taxonomy."""
-    rows = mem.shenwan_rows([
-        row("600000.SH", "480100", date(2020, 1, 23), source="eastmoney"),
-        row("600001.SH", "480100", date(2020, 1, 23), system="eastmoney"),
-        row("600002.SH", "480100", date(2020, 1, 23)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "480100", date(2020, 1, 23), source="eastmoney"),
+            row("600001.SH", "480100", date(2020, 1, 23), system="eastmoney"),
+            row("600002.SH", "480100", date(2020, 1, 23)),
+        ]
+    )
     assert [r.symbol for r in rows] == ["600002.SH"]
 
 
 def test_short_board_codes_are_not_shenwan():
-    rows = mem.shenwan_rows([row("600000.SH", "4801", date(2020, 1, 23)),
-                             row("600001.SH", "480100", date(2020, 1, 23))])
+    rows = mem.shenwan_rows(
+        [row("600000.SH", "4801", date(2020, 1, 23)), row("600001.SH", "480100", date(2020, 1, 23))]
+    )
     assert [r.symbol for r in rows] == ["600001.SH"]
 
 
@@ -129,13 +146,15 @@ def test_level_hierarchy_is_prefix_based():
 
 
 def test_taxonomy_counts_are_derived_never_hardcoded():
-    rows = mem.shenwan_rows([
-        row("600000.SH", "110100", date(2020, 1, 23)),
-        row("600001.SH", "110200", date(2020, 1, 23)),
-        row("600000.SH", "220100", date(2021, 7, 30)),
-        row("600001.SH", "220200", date(2021, 7, 30)),
-        row("600002.SH", "330100", date(2021, 7, 30)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "110100", date(2020, 1, 23)),
+            row("600001.SH", "110200", date(2020, 1, 23)),
+            row("600000.SH", "220100", date(2021, 7, 30)),
+            row("600001.SH", "220200", date(2021, 7, 30)),
+            row("600002.SH", "330100", date(2021, 7, 30)),
+        ]
+    )
     counts = mem.taxonomy_counts(rows, [date(2021, 1, 4), date(2022, 1, 4)])
     assert counts["observed_active_counts"] == [2, 3]
     assert counts["taxonomy_active_last"] == 3
@@ -158,12 +177,14 @@ def test_measured_regime_labels_are_labels_not_thresholds():
 
 def test_universe_resolution_ignores_the_measured_regime_constants():
     """A synthetic 4-industry taxonomy must resolve normally, with no 118/162 branch."""
-    rows = mem.shenwan_rows([
-        row("600000.SH", "110100", date(2020, 1, 23)),
-        row("600001.SH", "110200", date(2020, 1, 23)),
-        row("600002.SH", "110300", date(2020, 1, 23)),
-        row("600003.SH", "110400", date(2020, 1, 23)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "110100", date(2020, 1, 23)),
+            row("600001.SH", "110200", date(2020, 1, 23)),
+            row("600002.SH", "110300", date(2020, 1, 23)),
+            row("600003.SH", "110400", date(2020, 1, 23)),
+        ]
+    )
     universe = mem.session_universe(rows, date(2021, 1, 4))
     assert universe.taxonomy_active_count == 4
     assert len(universe.members) == 4
@@ -171,12 +192,15 @@ def test_universe_resolution_ignores_the_measured_regime_constants():
 
 # --- INCLUDE_BJ_AS_INDUSTRY_CONSTITUENTS ------------------------------------
 
+
 def test_bj_members_are_required_symbols_not_filtered():
-    rows = mem.shenwan_rows([
-        row("600000.SH", "220900", date(2020, 1, 23)),
-        row("832317.BJ", "220900", date(2020, 1, 23)),
-        row("430047.BJ", "220900", date(2020, 1, 23)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "220900", date(2020, 1, 23)),
+            row("832317.BJ", "220900", date(2020, 1, 23)),
+            row("430047.BJ", "220900", date(2020, 1, 23)),
+        ]
+    )
     required = mem.required_symbols(rows, [date(2021, 1, 4)])
     assert "832317.BJ" in required and "430047.BJ" in required
 
@@ -195,11 +219,13 @@ def test_bj_accounting_reports_share_so_exclusion_cannot_be_silent():
 
 
 def test_historical_only_members_are_surfaced():
-    rows = mem.shenwan_rows([
-        row("600000.SH", "220900", date(2020, 1, 23)),
-        row("600001.SH", "220900", date(2020, 1, 23)),
-        row("600000.SH", "220900", date(2021, 7, 30)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            row("600000.SH", "220900", date(2020, 1, 23)),
+            row("600001.SH", "220900", date(2020, 1, 23)),
+            row("600000.SH", "220900", date(2021, 7, 30)),
+        ]
+    )
     only = mem.historical_only_symbols(rows, [date(2020, 6, 1), date(2022, 1, 4)])
     assert only == ("600001.SH",)
 
@@ -220,66 +246,93 @@ EXEC = date(2026, 9, 25)
 
 
 def bar(**over):
-    base = {"symbol": "510300.SH", "trade_date": EXEC, "open": 4.10, "high": 4.20,
-            "low": 4.05, "close": 4.15, "volume": 1_000_000, "amount": 4_100_000.0,
-            "fetched_at": datetime.combine(EXEC, datetime.min.time(), SHANGHAI) + timedelta(hours=15, minutes=30)}
+    base = {
+        "symbol": "510300.SH",
+        "trade_date": EXEC,
+        "open": 4.10,
+        "high": 4.20,
+        "low": 4.05,
+        "close": 4.15,
+        "volume": 1_000_000,
+        "amount": 4_100_000.0,
+        "fetched_at": datetime.combine(EXEC, datetime.min.time(), SHANGHAI)
+        + timedelta(hours=15, minutes=30),
+    }
     base.update(over)
     return base
 
 
 def test_all_five_clauses_satisfied_passes():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar())
+    verdict = trad.evaluate(
+        etf_code="510300.SH", admitted=True, signal_date=SIGNAL, execution_date=EXEC, bar=bar()
+    )
     assert verdict.status == trad.PASS
     assert verdict.tradable is True
     assert verdict.reason == "ALL_FIVE_CLAUSES_SATISFIED"
 
 
 def test_verdict_always_carries_the_evidence_qualifier():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar())
+    verdict = trad.evaluate(
+        etf_code="510300.SH", admitted=True, signal_date=SIGNAL, execution_date=EXEC, bar=bar()
+    )
     assert verdict.qualifier == trad.TRADABILITY_QUALIFIER
     assert "NOT_REALTIME" in verdict.qualifier
     assert verdict.contract == "ETF_BAR_DERIVED_TRADABILITY_V1"
 
 
-@pytest.mark.parametrize("field,value,reason", [
-    ("open", 0.0, "T1_OPEN_NOT_POSITIVE"),
-    ("open", -1.0, "T1_OPEN_NOT_POSITIVE"),
-    ("open", None, "T1_OPEN_NOT_POSITIVE"),
-    ("volume", 0, "T1_VOLUME_NOT_POSITIVE"),
-    ("volume", -5, "T1_VOLUME_NOT_POSITIVE"),
-    ("amount", 0.0, "T1_AMOUNT_NOT_POSITIVE"),
-    ("amount", None, "T1_AMOUNT_NOT_POSITIVE"),
-])
+@pytest.mark.parametrize(
+    "field,value,reason",
+    [
+        ("open", 0.0, "T1_OPEN_NOT_POSITIVE"),
+        ("open", -1.0, "T1_OPEN_NOT_POSITIVE"),
+        ("open", None, "T1_OPEN_NOT_POSITIVE"),
+        ("volume", 0, "T1_VOLUME_NOT_POSITIVE"),
+        ("volume", -5, "T1_VOLUME_NOT_POSITIVE"),
+        ("amount", 0.0, "T1_AMOUNT_NOT_POSITIVE"),
+        ("amount", None, "T1_AMOUNT_NOT_POSITIVE"),
+    ],
+)
 def test_each_missing_clause_blocks(field, value, reason):
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar(**{field: value}))
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=EXEC,
+        bar=bar(**{field: value}),
+    )
     assert verdict.status == trad.BLOCKED
     assert verdict.reason == reason
 
 
 def test_missing_bar_blocks():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=None)
+    verdict = trad.evaluate(
+        etf_code="510300.SH", admitted=True, signal_date=SIGNAL, execution_date=EXEC, bar=None
+    )
     assert verdict.status == trad.BLOCKED and verdict.reason == "T1_BAR_MISSING"
 
 
 def test_not_admitted_blocks():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=False, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar())
+    verdict = trad.evaluate(
+        etf_code="510300.SH", admitted=False, signal_date=SIGNAL, execution_date=EXEC, bar=bar()
+    )
     assert verdict.reason == "INSTRUMENT_NOT_ADMITTED"
 
 
 def test_same_day_execution_is_a_lookahead_and_blocks():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=SIGNAL, bar=bar(trade_date=SIGNAL))
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=SIGNAL,
+        bar=bar(trade_date=SIGNAL),
+    )
     assert verdict.reason == "EXECUTION_DATE_NOT_AFTER_SIGNAL_DATE"
 
 
 def test_no_execution_session_blocks():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=None, bar=None)
+    verdict = trad.evaluate(
+        etf_code="510300.SH", admitted=True, signal_date=SIGNAL, execution_date=None, bar=None
+    )
     assert verdict.reason == "NO_EXECUTION_SESSION"
 
 
@@ -287,33 +340,58 @@ def test_t1_close_cannot_substitute_for_t1_open():
     """A T+1 bar with no open at all must block, not fall back to close."""
     without_open = bar()
     del without_open["open"]
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=without_open)
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=EXEC,
+        bar=without_open,
+    )
     assert verdict.status == trad.BLOCKED and verdict.reason == "T1_OPEN_NOT_POSITIVE"
 
 
 def test_t2_open_cannot_substitute_for_t1():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar(trade_date=date(2026, 9, 28)))
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=EXEC,
+        bar=bar(trade_date=date(2026, 9, 28)),
+    )
     assert verdict.reason == "T1_BAR_DATE_MISMATCH"
 
 
 def test_previous_close_cannot_substitute_for_t1():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar(trade_date=SIGNAL))
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=EXEC,
+        bar=bar(trade_date=SIGNAL),
+    )
     assert verdict.reason == "T1_BAR_DATE_MISMATCH"
 
 
 def test_other_symbol_bar_cannot_substitute():
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar(symbol="510500.SH"))
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=EXEC,
+        bar=bar(symbol="510500.SH"),
+    )
     assert verdict.reason == "T1_BAR_SYMBOL_MISMATCH"
 
 
 def test_unfinalized_same_session_bar_blocks():
     early = datetime.combine(EXEC, datetime.min.time(), SHANGHAI) + timedelta(hours=14, minutes=30)
-    verdict = trad.evaluate(etf_code="510300.SH", admitted=True, signal_date=SIGNAL,
-                            execution_date=EXEC, bar=bar(fetched_at=early))
+    verdict = trad.evaluate(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        execution_date=EXEC,
+        bar=bar(fetched_at=early),
+    )
     assert verdict.reason == "T1_BAR_NOT_FINALIZED"
 
 
@@ -331,16 +409,24 @@ def test_next_session_resolution_uses_the_real_calendar_not_a_timedelta():
 
 
 def test_evaluate_for_sessions_blocks_when_calendar_has_no_next_session():
-    verdict = trad.evaluate_for_sessions(etf_code="510300.SH", admitted=True,
-                                         signal_date=date(2026, 9, 24),
-                                         sessions=[date(2026, 9, 24)], bars_by_date={})
+    verdict = trad.evaluate_for_sessions(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=date(2026, 9, 24),
+        sessions=[date(2026, 9, 24)],
+        bars_by_date={},
+    )
     assert verdict.status == trad.BLOCKED
     assert verdict.reason == "NO_NEXT_SESSION_IN_CALENDAR"
 
 
 def test_evaluate_for_sessions_passes_with_a_finalized_next_bar():
     sessions = [SIGNAL, EXEC]
-    verdict = trad.evaluate_for_sessions(etf_code="510300.SH", admitted=True,
-                                         signal_date=SIGNAL, sessions=sessions,
-                                         bars_by_date={EXEC: bar()})
+    verdict = trad.evaluate_for_sessions(
+        etf_code="510300.SH",
+        admitted=True,
+        signal_date=SIGNAL,
+        sessions=sessions,
+        bars_by_date={EXEC: bar()},
+    )
     assert verdict.status == trad.PASS

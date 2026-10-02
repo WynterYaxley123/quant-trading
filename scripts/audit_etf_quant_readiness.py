@@ -4,19 +4,20 @@ Consumes the repo-external, pinned-CNEquity constituent matrix, never the lake
 directly. Uses the existing frozen Source-C date gate and 19-factor engine.
 It never emits a formal signal, fit, intent, fill, NAV or performance result.
 """
+
 from __future__ import annotations
 
 import argparse
-from collections import Counter, defaultdict
 import csv
-from datetime import date, datetime, timezone
 import hashlib
-from itertools import groupby
 import json
 import math
 import os
-from pathlib import Path
 import uuid
+from collections import Counter, defaultdict
+from datetime import date, datetime, timezone
+from itertools import groupby
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -25,7 +26,6 @@ from strategies.etf_quant.config import FACTORS_19
 from strategies.etf_quant.data.source_c import industry_date
 from strategies.etf_quant.domain import StrategyConfig
 from strategies.etf_quant.factors import compute_close_factors
-
 
 CONTRACT = "ETF_QUANT_RETROSPECTIVE_READINESS_AUDIT_V1"
 
@@ -64,8 +64,9 @@ def advance_source_c(state: dict, day: date, code: str, rows: list[dict]) -> dic
     if len(symbols) != len(set(symbols)) or not symbols:
         raise ValueError("DUPLICATE_OR_EMPTY_CONSTITUENT_GROUP")
     eligible = len(rows)
-    startable = [r for r in rows if _flag(r["bar_valid"])
-                 and _flag(r["adj_is_exact"]) and r["adj_close"]]
+    startable = [
+        r for r in rows if _flag(r["bar_valid"]) and _flag(r["adj_is_exact"]) and r["adj_close"]
+    ]
     previous = state.get(code)
     if previous is None:
         previous = {"started": False, "broken": False, "level": None}
@@ -75,13 +76,20 @@ def advance_source_c(state: dict, day: date, code: str, rows: list[dict]) -> dic
     if not started:
         valid = len(startable)
         ratio = valid / eligible
-        passed = valid >= 5 and ratio >= .8
+        passed = valid >= 5 and ratio >= 0.8
         if passed:
             previous.update(started=True, level=1000.0)
-        return {"date": day, "industry_code": code, "eligible": eligible,
-                "valid": valid, "coverage": ratio, "date_gate_valid": passed,
-                "source_c_valid": passed, "close": previous["level"] if passed else None,
-                "reason": "BASE_INIT" if passed else "BASE_INSUFFICIENT_COVERAGE"}
+        return {
+            "date": day,
+            "industry_code": code,
+            "eligible": eligible,
+            "valid": valid,
+            "coverage": ratio,
+            "date_gate_valid": passed,
+            "source_c_valid": passed,
+            "close": previous["level"] if passed else None,
+            "reason": "BASE_INIT" if passed else "BASE_INSUFFICIENT_COVERAGE",
+        }
 
     valid_rows = [r for r in rows if _flag(r["return_valid"])]
     closes = {r["symbol"]: float(r["adj_close"]) for r in valid_rows}
@@ -98,12 +106,21 @@ def advance_source_c(state: dict, day: date, code: str, rows: list[dict]) -> dic
             raise ValueError("SOURCE_C_LEVEL_INVALID")
         previous["level"] = level
     usable = result.valid_date and not previous["broken"]
-    return {"date": day, "industry_code": code, "eligible": eligible,
-            "valid": result.valid, "coverage": result.coverage_ratio,
-            "date_gate_valid": result.valid_date, "source_c_valid": usable,
-            "close": previous["level"] if usable else None,
-            "reason": "RECURSIVE_PREFIX_BROKEN" if previous["broken"] else
-                      "INSUFFICIENT_COVERAGE" if not result.valid_date else None}
+    return {
+        "date": day,
+        "industry_code": code,
+        "eligible": eligible,
+        "valid": result.valid,
+        "coverage": result.coverage_ratio,
+        "date_gate_valid": result.valid_date,
+        "source_c_valid": usable,
+        "close": previous["level"] if usable else None,
+        "reason": "RECURSIVE_PREFIX_BROKEN"
+        if previous["broken"]
+        else "INSUFFICIENT_COVERAGE"
+        if not result.valid_date
+        else None,
+    }
 
 
 def _write_json(outdir: Path, name: str, value: dict) -> Path:
@@ -125,9 +142,11 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
     summary_path = _external(summary_path, directory=False)
     outdir = _external(outdir, directory=True)
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
-    if (summary.get("contract") != "PRODUCTION_CONSTITUENT_COVERAGE_MATRIX_V3"
-            or summary.get("matrix_file") != matrix_path.name
-            or summary.get("matrix_sha256") != _sha256(matrix_path)):
+    if (
+        summary.get("contract") != "PRODUCTION_CONSTITUENT_COVERAGE_MATRIX_V3"
+        or summary.get("matrix_file") != matrix_path.name
+        or summary.get("matrix_sha256") != _sha256(matrix_path)
+    ):
         raise ValueError("MATRIX_INPUT_HASH_OR_CONTRACT_BLOCKER")
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid.uuid4().hex[:8]
     state: dict[str, dict] = {}
@@ -135,19 +154,31 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
     unresolved_with_bar = 0
     with matrix_path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
-        needed = {"trade_date", "industry_code", "symbol", "instrument_resolved",
-                  "bar_available", "bar_valid", "adj_is_exact", "return_valid",
-                  "adj_close", "prev_adj_close"}
+        needed = {
+            "trade_date",
+            "industry_code",
+            "symbol",
+            "instrument_resolved",
+            "bar_available",
+            "bar_valid",
+            "adj_is_exact",
+            "return_valid",
+            "adj_close",
+            "prev_adj_close",
+        }
         if not needed.issubset(reader.fieldnames or []):
             raise ValueError("MATRIX_COLUMNS_BLOCKER")
         last_key = None
-        for (day_s, code), group in groupby(reader, key=lambda r: (r["trade_date"], r["industry_code"])):
+        for (day_s, code), group in groupby(
+            reader, key=lambda r: (r["trade_date"], r["industry_code"])
+        ):
             key = day_s, code
             if last_key is not None and key <= last_key:
                 raise ValueError("MATRIX_DATE_INDUSTRY_ORDER_BLOCKER")
             rows = list(group)
-            unresolved_with_bar += sum(not _flag(r["instrument_resolved"]) and _flag(r["bar_available"])
-                                       for r in rows)
+            unresolved_with_bar += sum(
+                not _flag(r["instrument_resolved"]) and _flag(r["bar_available"]) for r in rows
+            )
             records.append(advance_source_c(state, date.fromisoformat(day_s), code, rows))
             last_key = key
     if len(records) != summary["industry_sessions"]:
@@ -172,15 +203,23 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
             values = factors[code].iloc[i]
             per_factor.update(k for k, v in flags.items() if v)
             all_ready = all(flags.values())
-            row = {"trade_date": day.isoformat(), "industry_code": code,
-                   "source_c_valid": bool(pd.notna(closes.iloc[i][code])),
-                   "source_c_close": float(closes.iloc[i][code]) if pd.notna(closes.iloc[i][code]) else None,
-                   "lookback_ready": bool(contiguous.iloc[i][code]),
-                   **{name + "_finite": value for name, value in flags.items()},
-                   **{name: float(values[name]) if flags[name] else None for name in FACTORS_19},
-                   "all_required_factors_ready": all_ready,
-                   "invalid_reason": None if all_ready else "SOURCE_C_LEVEL_INVALID" if pd.isna(closes.iloc[i][code])
-                                     else "FACTOR_LOOKBACK_INCOMPLETE"}
+            row = {
+                "trade_date": day.isoformat(),
+                "industry_code": code,
+                "source_c_valid": bool(pd.notna(closes.iloc[i][code])),
+                "source_c_close": float(closes.iloc[i][code])
+                if pd.notna(closes.iloc[i][code])
+                else None,
+                "lookback_ready": bool(contiguous.iloc[i][code]),
+                **{name + "_finite": value for name, value in flags.items()},
+                **{name: float(values[name]) if flags[name] else None for name in FACTORS_19},
+                "all_required_factors_ready": all_ready,
+                "invalid_reason": None
+                if all_ready
+                else "SOURCE_C_LEVEL_INVALID"
+                if pd.isna(closes.iloc[i][code])
+                else "FACTOR_LOOKBACK_INCOMPLETE",
+            }
             factor_rows.append(row)
             if i == len(days) - 1:
                 signal_ready[code] = flags
@@ -212,10 +251,17 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
             end = days[position[day] + h]
             eligible = 0
             for code in codes:
-                source_start, source_end = closes.at[pd.Timestamp(day), code], closes.at[pd.Timestamp(end), code]
+                source_start, source_end = (
+                    closes.at[pd.Timestamp(day), code],
+                    closes.at[pd.Timestamp(end), code],
+                )
                 if not math.isfinite(source_start) or not math.isfinite(source_end):
                     drop_reasons["SOURCE_C_START_OR_LABEL_END_INVALID"] += 1
-                elif not np.isfinite(factors[code].loc[pd.Timestamp(day), list(spec.factor_names)].to_numpy(dtype=float)).all():
+                elif not np.isfinite(
+                    factors[code]
+                    .loc[pd.Timestamp(day), list(spec.factor_names)]
+                    .to_numpy(dtype=float)
+                ).all():
                     drop_reasons["FEATURE_NONFINITE"] += 1
                 else:
                     eligible += 1
@@ -224,29 +270,42 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
             full_dates += eligible == len(codes)
         individually_mature[h] = dict(per_industry)
         horizon_reports[str(h)] = {
-            "label_cutoff": cutoff.isoformat(), "window_start": window_start.isoformat(),
-            "candidate_training_dates": len(candidate_days), "label_end_mature_dates": len(candidate_days),
+            "label_cutoff": cutoff.isoformat(),
+            "window_start": window_start.isoformat(),
+            "candidate_training_dates": len(candidate_days),
+            "label_end_mature_dates": len(candidate_days),
             "training_dates_full_frozen_universe": full_dates,
             "training_observations_full_frozen_universe": full_dates * len(codes),
             "eligible_individual_observations": sum(per_industry.values()),
             "feature_dimensions": len(spec.factor_names),
-            "signal_date_feature_ready_industries": sum(all(signal_ready[c][f] for f in spec.factor_names) for c in codes),
+            "signal_date_feature_ready_industries": sum(
+                all(signal_ready[c][f] for f in spec.factor_names) for c in codes
+            ),
             "drop_reasons_industry_observations": dict(drop_reasons),
             "minimum_training_days": spec.minimum_valid_training_days,
             "actual_ridge_fit": False,
         }
 
-    diagnostic_common = [code for code in codes if all(
-        all(signal_ready[code][f] for f in spec.factor_names)
-        and individually_mature[int(spec.horizon)].get(code, 0) >= spec.minimum_valid_training_days
-        for spec in config.horizons)]
+    diagnostic_common = [
+        code
+        for code in codes
+        if all(
+            all(signal_ready[code][f] for f in spec.factor_names)
+            and individually_mature[int(spec.horizon)].get(code, 0)
+            >= spec.minimum_valid_training_days
+            for spec in config.horizons
+        )
+    ]
     for spec in config.horizons:
         h = int(spec.horizon)
         horizon_reports[str(h)]["training_dates_diagnostic_common_universe"] = sum(
             set(diagnostic_common).issubset(eligible)
-            for eligible in eligible_by_horizon_date[h].values())
+            for eligible in eligible_by_horizon_date[h].values()
+        )
         horizon_reports[str(h)]["training_observations_diagnostic_common_universe"] = (
-            horizon_reports[str(h)]["training_dates_diagnostic_common_universe"] * len(diagnostic_common))
+            horizon_reports[str(h)]["training_dates_diagnostic_common_universe"]
+            * len(diagnostic_common)
+        )
     report = {
         "contract": CONTRACT,
         "classification": "HISTORICAL_ENGINEERING_VALIDATION_ONLY",
@@ -255,15 +314,22 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
         "performance_read": False,
         "processed_at": datetime.now(timezone.utc).isoformat(),
         "fixed_data_cutoff": days[-1].isoformat(),
-        "source_matrix": str(matrix_path), "source_matrix_sha256": summary["matrix_sha256"],
-        "factor_matrix": str(factor_path), "factor_matrix_sha256": _sha256(factor_path),
-        "sessions": len(days), "industries": len(codes),
+        "source_matrix": str(matrix_path),
+        "source_matrix_sha256": summary["matrix_sha256"],
+        "factor_matrix": str(factor_path),
+        "factor_matrix_sha256": _sha256(factor_path),
+        "sessions": len(days),
+        "industries": len(codes),
         "industry_sessions": len(records),
         "source_c_usable_industry_sessions": int(closes.notna().to_numpy().sum()),
         "source_c_usable_industries_at_cutoff": int(closes.iloc[-1].notna().sum()),
         "factor_finite_counts": dict(per_factor),
-        "all_19_finite_industry_sessions": sum(r["all_required_factors_ready"] for r in factor_rows),
-        "all_19_finite_industries_at_cutoff": sum(r["all_required_factors_ready"] for r in factor_rows[-len(codes):]),
+        "all_19_finite_industry_sessions": sum(
+            r["all_required_factors_ready"] for r in factor_rows
+        ),
+        "all_19_finite_industries_at_cutoff": sum(
+            r["all_required_factors_ready"] for r in factor_rows[-len(codes) :]
+        ),
         "unresolved_identity_with_market_bar_member_sessions": unresolved_with_bar,
         "horizons": horizon_reports,
         "diagnostic_common_universe": diagnostic_common,
@@ -272,11 +338,14 @@ def audit(matrix_path: Path, summary_path: Path, outdir: Path) -> dict:
         "availability_warning": "Historical membership publication times UNKNOWN; data observed after fixed cutoff; no ex-ante model fit or prediction asserted.",
     }
     path = _write_json(outdir, f"etf_quant_readiness_{run_id}.json", report)
-    return {"report": str(path), "factor_matrix": str(factor_path),
-            "source_c_usable": report["source_c_usable_industry_sessions"],
-            "source_c_cutoff_industries": report["source_c_usable_industries_at_cutoff"],
-            "all_19_finite_cutoff_industries": report["all_19_finite_industries_at_cutoff"],
-            "diagnostic_common_universe_size": len(diagnostic_common)}
+    return {
+        "report": str(path),
+        "factor_matrix": str(factor_path),
+        "source_c_usable": report["source_c_usable_industry_sessions"],
+        "source_c_cutoff_industries": report["source_c_usable_industries_at_cutoff"],
+        "all_19_finite_cutoff_industries": report["all_19_finite_industries_at_cutoff"],
+        "diagnostic_common_universe_size": len(diagnostic_common),
+    }
 
 
 def main() -> None:

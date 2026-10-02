@@ -57,9 +57,7 @@ def test_rsrs_returns_series_aligned_to_index(market_frame):
 def test_rsrs_nan_before_warmup(market_frame):
     """前 m 个位置应是 NaN（z-score 窗口未满）。"""
     m = 120
-    rsrs = compute_rsrs(
-        market_frame["close"], market_frame["high"], market_frame["low"], n=18, m=m
-    )
+    rsrs = compute_rsrs(market_frame["close"], market_frame["high"], market_frame["low"], n=18, m=m)
     assert rsrs.iloc[:m].isna().all()
     assert rsrs.iloc[m:].notna().any(), "窗口满后应有非 NaN 值"
 
@@ -74,9 +72,7 @@ def test_rsrs_equals_zscore_times_beta_times_r2():
     """核心公式核对：RSRS = z × beta × R²。"""
     frame = make_market_frame(n_days=500, seed=6)
     n, m = 18, 150
-    beta, r2 = rolling_ols_beta_r2(
-        frame["high"].to_numpy(), frame["low"].to_numpy(), n
-    )
+    beta, r2 = rolling_ols_beta_r2(frame["high"].to_numpy(), frame["low"].to_numpy(), n)
     rsrs = compute_rsrs(frame["close"], frame["high"], frame["low"], n=n, m=m)
 
     checked = 0
@@ -105,17 +101,13 @@ def test_rsrs_zscore_window_excludes_current_value():
     n, m = 18, 150
     t = 400
 
-    beta_before, _ = rolling_ols_beta_r2(
-        frame["high"].to_numpy(), frame["low"].to_numpy(), n
-    )
+    beta_before, _ = rolling_ols_beta_r2(frame["high"].to_numpy(), frame["low"].to_numpy(), n)
     win_before = pd.Series(beta_before[t - m : t]).dropna()
 
     modified = frame.copy()
     modified.iloc[t, modified.columns.get_loc("high")] *= 3.0
     modified.iloc[t, modified.columns.get_loc("low")] *= 3.0
-    beta_after, _ = rolling_ols_beta_r2(
-        modified["high"].to_numpy(), modified["low"].to_numpy(), n
-    )
+    beta_after, _ = rolling_ols_beta_r2(modified["high"].to_numpy(), modified["low"].to_numpy(), n)
     win_after = pd.Series(beta_after[t - m : t]).dropna()
 
     # 窗口 [t-m, t) 只覆盖到 t-1，t 自身改动不应影响它

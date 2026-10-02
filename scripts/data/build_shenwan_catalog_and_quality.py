@@ -9,9 +9,7 @@ import csv
 import glob
 import hashlib
 import json
-import os
-import re
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 RAW = Path("/workspace/data/raw/shenwan")
@@ -99,9 +97,7 @@ def main() -> int:
     # ---------- Task B: history manifest + quality ----------
     hist_files = sorted(glob.glob(str(HIST_DIR / "*.json")))
     if len(hist_files) != len(l2):
-        raise SystemExit(
-            f"history file count {len(hist_files)} != catalog L2 count {len(l2)}"
-        )
+        raise SystemExit(f"history file count {len(hist_files)} != catalog L2 count {len(l2)}")
 
     name_by_code = {r["swindexcode"]: r["swindexname"] for r in l2}
     manifest: list[dict] = []
@@ -256,9 +252,7 @@ def main() -> int:
         ],
     }
     rep_path = PROC / "shenwan_l2_ohlcva_quality_report.json"
-    rep_path.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    rep_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"quality report: {rep_path}")
     print(json.dumps(q, ensure_ascii=False, indent=2))
     return 0

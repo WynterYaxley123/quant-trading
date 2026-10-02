@@ -14,8 +14,12 @@ from research import sector_development_baseline as baseline
 from research.sector_development_protocol import prediction_metric_contract
 from strategies.sw_sector_rotation.src.factors.sector_rotation import TRAIN_FEATURES_PRICE
 from strategies.sw_sector_rotation.src.model.model import (
-    DEFAULT_ALPHA, DEFAULT_TOP_N, DEFAULT_TRAIN_MONTHS, FORWARD_WINDOWS,
-    FUSION_WEIGHTS, MIN_TRAIN_DATES,
+    DEFAULT_ALPHA,
+    DEFAULT_TOP_N,
+    DEFAULT_TRAIN_MONTHS,
+    FORWARD_WINDOWS,
+    FUSION_WEIGHTS,
+    MIN_TRAIN_DATES,
 )
 
 
@@ -24,10 +28,15 @@ def synthetic_cross_section():
     codes = [f"{i:06d}" for i in range(124)]
     scores = {code: float(i) for i, code in enumerate(codes)}
     fused = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
-    return codes, {h: scores for h in FORWARD_WINDOWS.values()}, fused, {
-        h: {code: float(i) / 1000 for i, code in enumerate(codes)}
-        for h in FORWARD_WINDOWS.values()
-    }
+    return (
+        codes,
+        {h: scores for h in FORWARD_WINDOWS.values()},
+        fused,
+        {
+            h: {code: float(i) / 1000 for i, code in enumerate(codes)}
+            for h in FORWARD_WINDOWS.values()
+        },
+    )
 
 
 def test_frozen_feature_names_and_order():
@@ -109,12 +118,14 @@ def test_aggregate_uses_all_100_dates_and_exact_names():
     names = prediction_metric_contract()["metric_names"]
     rows = [
         {"ordinal": ordinal, "metric": name, "value": float(ordinal)}
-        for ordinal in range(1, 101) for name in names
+        for ordinal in range(1, 101)
+        for name in names
     ]
     aggregate = baseline.aggregate_metrics(pd.DataFrame(rows))
     assert list(aggregate) == names
-    assert all(item["valid_dates"] == 100 and item["null_dates"] == 0
-               for item in aggregate.values())
+    assert all(
+        item["valid_dates"] == 100 and item["null_dates"] == 0 for item in aggregate.values()
+    )
     assert aggregate["IC_10"]["mean"] == pytest.approx(50.5)
     assert aggregate["IC_10"]["median"] == pytest.approx(50.5)
     assert aggregate["IC_10"]["std"] == pytest.approx(np.std(np.arange(1, 101), ddof=0))
@@ -122,8 +133,11 @@ def test_aggregate_uses_all_100_dates_and_exact_names():
 
 def test_aggregate_rejects_sealed_or_incomplete_grid():
     names = prediction_metric_contract()["metric_names"]
-    rows = [{"ordinal": ordinal, "metric": name, "value": 0.0}
-            for ordinal in range(1, 101) for name in names]
+    rows = [
+        {"ordinal": ordinal, "metric": name, "value": 0.0}
+        for ordinal in range(1, 101)
+        for name in names
+    ]
     rows[-1]["ordinal"] = 221
     with pytest.raises(ValueError, match="non-Development"):
         baseline.aggregate_metrics(pd.DataFrame(rows))
@@ -134,19 +148,31 @@ def test_every_candidate_training_row_must_have_realized_label():
     signal = calendar[200]
     horizon = 40
     good_origins = calendar[150:161]
-    assert baseline.assert_training_labels_realized(
-        calendar, good_origins, signal, horizon, 124) == 11 * 124
+    assert (
+        baseline.assert_training_labels_realized(calendar, good_origins, signal, horizon, 124)
+        == 11 * 124
+    )
     with pytest.raises(ValueError, match="RESEARCH_LEAKAGE_BLOCKER"):
-        baseline.assert_training_labels_realized(
-            calendar, calendar[161:162], signal, horizon, 124)
+        baseline.assert_training_labels_realized(calendar, calendar[161:162], signal, horizon, 124)
 
 
 def test_gate_rejects_wrong_image_before_data_access(monkeypatch, tmp_path):
-    monkeypatch.setattr(baseline, "_git", lambda repo, *args: (
-        baseline.EXPECTED_BRANCH if args[0] == "branch" else
-        "commit" if args[0] == "rev-parse" else ""))
-    monkeypatch.setattr(baseline, "audit_local_policy", lambda path: (_ for _ in ()).throw(
-        AssertionError("data should not be read")))
+    monkeypatch.setattr(
+        baseline,
+        "_git",
+        lambda repo, *args: (
+            baseline.EXPECTED_BRANCH
+            if args[0] == "branch"
+            else "commit"
+            if args[0] == "rev-parse"
+            else ""
+        ),
+    )
+    monkeypatch.setattr(
+        baseline,
+        "audit_local_policy",
+        lambda path: (_ for _ in ()).throw(AssertionError("data should not be read")),
+    )
     with pytest.raises(ValueError, match="ENVIRONMENT_STABILITY_BLOCKER"):
         baseline.pre_run_gate(tmp_path, tmp_path, "wrong")
 
@@ -162,35 +188,67 @@ def test_git_gate_uses_nonpersistent_exact_workspace_trust(monkeypatch, tmp_path
     monkeypatch.setattr(baseline.subprocess, "run", fake_run)
     assert baseline._git(tmp_path, "branch", "--show-current") == "branch"
     assert seen["argv"] == [
-        "git", "-c", f"safe.directory={tmp_path.resolve()}", "branch", "--show-current",
+        "git",
+        "-c",
+        f"safe.directory={tmp_path.resolve()}",
+        "branch",
+        "--show-current",
     ]
     assert seen["cwd"] == tmp_path
 
 
 def test_gate_rejects_dirty_worktree(monkeypatch, tmp_path):
-    monkeypatch.setattr(baseline, "_git", lambda repo, *args: (
-        baseline.EXPECTED_BRANCH if args[0] == "branch" else
-        "commit" if args[0] == "rev-parse" else " M data/file"))
+    monkeypatch.setattr(
+        baseline,
+        "_git",
+        lambda repo, *args: (
+            baseline.EXPECTED_BRANCH
+            if args[0] == "branch"
+            else "commit"
+            if args[0] == "rev-parse"
+            else " M data/file"
+        ),
+    )
     with pytest.raises(ValueError, match="RESEARCH_BASELINE_STATE_MISMATCH"):
         baseline.pre_run_gate(tmp_path, tmp_path, baseline.EXPECTED_IMAGE_ID)
 
 
+@pytest.mark.external_runtime
 def test_gate_rejects_hash_and_snapshot_mismatch(monkeypatch, tmp_path):
-    monkeypatch.setattr(baseline, "_git", lambda repo, *args: (
-        baseline.EXPECTED_BRANCH if args[0] == "branch" else
-        "commit" if args[0] == "rev-parse" else ""))
+    monkeypatch.setattr(
+        baseline,
+        "_git",
+        lambda repo, *args: (
+            baseline.EXPECTED_BRANCH
+            if args[0] == "branch"
+            else "commit"
+            if args[0] == "rev-parse"
+            else ""
+        ),
+    )
     actual = json.loads(Path("data/processed/shenwan/sector_admission.json").read_text())
-    monkeypatch.setattr(baseline, "audit_local_policy", lambda path: {
-        "split_policy_hash": "wrong", "prediction_config_hash": baseline.EXPECTED_PREDICTION_HASH,
-        "synthetic_portfolio_config_hash": None, "data_snapshot_id": actual["data_snapshot_id"],
-    })
+    monkeypatch.setattr(
+        baseline,
+        "audit_local_policy",
+        lambda path: {
+            "split_policy_hash": "wrong",
+            "prediction_config_hash": baseline.EXPECTED_PREDICTION_HASH,
+            "synthetic_portfolio_config_hash": None,
+            "data_snapshot_id": actual["data_snapshot_id"],
+        },
+    )
     with pytest.raises(ValueError, match="RESEARCH_PROTOCOL_HASH_MISMATCH"):
         baseline.pre_run_gate(tmp_path, tmp_path, baseline.EXPECTED_IMAGE_ID)
-    monkeypatch.setattr(baseline, "audit_local_policy", lambda path: {
-        "split_policy_hash": baseline.EXPECTED_SPLIT_HASH,
-        "prediction_config_hash": baseline.EXPECTED_PREDICTION_HASH,
-        "synthetic_portfolio_config_hash": None, "data_snapshot_id": "wrong",
-    })
+    monkeypatch.setattr(
+        baseline,
+        "audit_local_policy",
+        lambda path: {
+            "split_policy_hash": baseline.EXPECTED_SPLIT_HASH,
+            "prediction_config_hash": baseline.EXPECTED_PREDICTION_HASH,
+            "synthetic_portfolio_config_hash": None,
+            "data_snapshot_id": "wrong",
+        },
+    )
     with pytest.raises(ValueError, match="sector snapshot changed"):
         baseline.pre_run_gate(tmp_path, tmp_path, baseline.EXPECTED_IMAGE_ID)
 
@@ -199,9 +257,12 @@ def test_writer_rejects_validation_rows_before_creating_directory(tmp_path):
     output = baseline.DevelopmentOutput(
         predictions=pd.DataFrame([{"ordinal": 221}]),
         per_date_metrics=pd.DataFrame([{"ordinal": 1, "metric": "IC_10"}]),
-        aggregate_metrics={}, training_diagnostics=pd.DataFrame([{"ordinal": 1}]),
-        data_quality_diagnostics={}, metadata={
-            "phase": "DEVELOPMENT", "executable": False,
+        aggregate_metrics={},
+        training_diagnostics=pd.DataFrame([{"ordinal": 1}]),
+        data_quality_diagnostics={},
+        metadata={
+            "phase": "DEVELOPMENT",
+            "executable": False,
             "synthetic_portfolio_enabled": False,
         },
     )
@@ -210,16 +271,26 @@ def test_writer_rejects_validation_rows_before_creating_directory(tmp_path):
     assert not (tmp_path / "new").exists()
 
 
+@pytest.mark.external_runtime
 def test_no_network_or_etf_path_in_gate(monkeypatch):
     def forbidden(*args, **kwargs):
         raise AssertionError("network must not be used")
 
     monkeypatch.setattr(socket.socket, "connect", forbidden)
-    monkeypatch.setattr(baseline, "_git", lambda repo, *args: (
-        baseline.EXPECTED_BRANCH if args[0] == "branch" else
-        "commit" if args[0] == "rev-parse" else ""))
+    monkeypatch.setattr(
+        baseline,
+        "_git",
+        lambda repo, *args: (
+            baseline.EXPECTED_BRANCH
+            if args[0] == "branch"
+            else "commit"
+            if args[0] == "rev-parse"
+            else ""
+        ),
+    )
     gate = baseline.pre_run_gate(
-        Path("data/processed/shenwan"), Path.cwd(), baseline.EXPECTED_IMAGE_ID)
+        Path("data/processed/shenwan"), Path.cwd(), baseline.EXPECTED_IMAGE_ID
+    )
     assert gate["gate"] == "PASS"
     assert gate["sector_count"] == 124
     assert gate["validation_access"] == gate["final_oos_access"] == "SEALED"

@@ -34,8 +34,8 @@ Legacy 会把所有行业分数统一乘以 ``confidence``，但这**不改变�
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Mapping
 
 import numpy as np
 import pandas as pd
@@ -117,9 +117,7 @@ def compute_offdiag_correlation_mean(corr_matrix: pd.DataFrame) -> float:
     return float(off.mean())
 
 
-def _aligned_closes(
-    prices: Mapping[str, pd.DataFrame], lookback_days: int
-) -> dict[str, pd.Series]:
+def _aligned_closes(prices: Mapping[str, pd.DataFrame], lookback_days: int) -> dict[str, pd.Series]:
     end = max(p.index.max() for p in prices.values())
     start = end - pd.Timedelta(days=lookback_days * 2)
     out = {}
@@ -162,8 +160,12 @@ def compute_risk_state(
     if historical_cross_vols is not None and not np.isfinite(historical_cross_vols).all():
         raise ValueError("historical_cross_vols 含 NaN/Inf")
     for name, frame in prices.items():
-        if (not isinstance(frame.index, pd.DatetimeIndex) or frame.index.has_duplicates
-                or frame.index.hasnans or not frame.index.is_monotonic_increasing):
+        if (
+            not isinstance(frame.index, pd.DatetimeIndex)
+            or frame.index.has_duplicates
+            or frame.index.hasnans
+            or not frame.index.is_monotonic_increasing
+        ):
             raise ValueError(f"{name}: risk 日期不合法")
         for col in ("close", "amount"):
             if col not in frame or not np.isfinite(frame[col].to_numpy(dtype=float)).all():
@@ -180,9 +182,14 @@ def compute_risk_state(
         )
 
     endpoints = {frame.index[-1] for frame in prices.values() if not frame.empty}
-    if (any(len(frame) < th["min_history"] for frame in prices.values()) or len(endpoints) != 1
-            or (as_of is not None and endpoints != {pd.Timestamp(as_of)})):
-        return RiskState(0, 1.0, metrics={"error": "insufficient or stale data"}, status="INSUFFICIENT_DATA")
+    if (
+        any(len(frame) < th["min_history"] for frame in prices.values())
+        or len(endpoints) != 1
+        or (as_of is not None and endpoints != {pd.Timestamp(as_of)})
+    ):
+        return RiskState(
+            0, 1.0, metrics={"error": "insufficient or stale data"}, status="INSUFFICIENT_DATA"
+        )
 
     closes = _aligned_closes(prices, 60)
 
@@ -252,7 +259,7 @@ def compute_risk_state(
     for name, c in closes.items():
         r = c.pct_change(fill_method=None).dropna()
         if len(r) >= th["corr_lookback_days"]:
-            ret_frames[name] = r.iloc[-int(th["corr_lookback_days"]):]
+            ret_frames[name] = r.iloc[-int(th["corr_lookback_days"]) :]
     if len(ret_frames) >= th["min_sectors"]:
         corr_matrix = pd.DataFrame(ret_frames).corr()
         avg_corr = compute_offdiag_correlation_mean(corr_matrix)

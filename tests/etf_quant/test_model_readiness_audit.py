@@ -1,5 +1,5 @@
 """Synthetic tests only: retrospective fit must keep the full cross-section."""
-from datetime import date
+
 import importlib.util
 from pathlib import Path
 
@@ -8,7 +8,6 @@ import pandas as pd
 import pytest
 
 from strategies.etf_quant.domain import StrategyConfig
-
 
 PATH = Path(__file__).resolve().parents[2] / "scripts" / "audit_etf_quant_models.py"
 SPEC = importlib.util.spec_from_file_location("etf_quant_model_audit", PATH)
@@ -24,16 +23,24 @@ def fixture():
     rows = []
     for t, day in enumerate(sessions):
         for i, code in enumerate(universe):
-            rows.append({"trade_date": day, "industry_code": code,
-                         "source_c_close": 100.0 + t + i * .1 + .01 * t * i,
-                         **{f: float(i + t / 100 + j / 10) for j, f in enumerate(spec.factor_names)}})
+            rows.append(
+                {
+                    "trade_date": day,
+                    "industry_code": code,
+                    "source_c_close": 100.0 + t + i * 0.1 + 0.01 * t * i,
+                    **{f: float(i + t / 100 + j / 10) for j, f in enumerate(spec.factor_names)},
+                }
+            )
     frame = pd.DataFrame(rows).set_index(["trade_date", "industry_code"]).sort_index()
     cutoff = sessions[-1 - int(spec.horizon)]
     start = cutoff - pd.DateOffset(months=6)
     days = [d for d in sessions if start <= d <= cutoff]
-    report = {"label_cutoff": cutoff.date().isoformat(), "window_start": start.date().isoformat(),
-              "candidate_training_dates": len(days),
-              "training_dates_diagnostic_common_universe": len(days)}
+    report = {
+        "label_cutoff": cutoff.date().isoformat(),
+        "window_start": start.date().isoformat(),
+        "candidate_training_dates": len(days),
+        "training_dates_diagnostic_common_universe": len(days),
+    }
     return frame, sessions, universe, spec, report
 
 

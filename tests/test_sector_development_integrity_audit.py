@@ -8,7 +8,10 @@ import pytest
 
 from research.sector_development_baseline import EXPECTED_FEATURES, evaluate_date
 from research.sector_development_integrity_audit import (
-    endpoint, independent_metrics, label_from_bars, ordered_top,
+    endpoint,
+    independent_metrics,
+    label_from_bars,
+    ordered_top,
 )
 from strategies.sw_sector_rotation.src.model.model import CrossSectionalRidgeModel
 
@@ -32,35 +35,55 @@ def test_label_uses_same_sector_forward_close_and_exact_calendar_endpoint():
 def test_stacked_x_and_y_keep_sector_and_date_identity():
     dates = pd.bdate_range("2025-01-01", periods=3)
     panel = {
-        "B": pd.DataFrame({"d5": [30.0, 40.0, 50.0],
-                           "fwd10": [300.0, 400.0, 500.0]}, index=dates),
-        "A": pd.DataFrame({"d5": [1.0, 2.0, 3.0],
-                           "fwd10": [10.0, 20.0, 30.0]}, index=dates),
+        "B": pd.DataFrame({"d5": [30.0, 40.0, 50.0], "fwd10": [300.0, 400.0, 500.0]}, index=dates),
+        "A": pd.DataFrame({"d5": [1.0, 2.0, 3.0], "fwd10": [10.0, 20.0, 30.0]}, index=dates),
     }
     model = CrossSectionalRidgeModel(min_train_dates=1)
     actual = model.fit_period("short", panel, ["d5"], [dates[0], dates[2]])
     expected_x = np.array([[1.0], [3.0], [30.0], [50.0]])
     expected_y = np.array([10.0, 30.0, 300.0, 500.0])
     assert actual is not None
-    np.testing.assert_allclose(actual.predict(expected_x),
-                               model.models["short"].predict(expected_x))
+    np.testing.assert_allclose(
+        actual.predict(expected_x), model.models["short"].predict(expected_x)
+    )
     # The exact sector-major/date-order pair reproduces the fitted parameters.
     from strategies.sw_sector_rotation.src.model.model import NumPyRidge
+
     independent = NumPyRidge(alpha=model.alpha).fit(expected_x, expected_y)
     np.testing.assert_allclose(actual.coef_, independent.coef_, atol=1e-12, rtol=0)
     assert actual.intercept_ == pytest.approx(independent.intercept_)
     assert model.training_coverage["short"]["samples_by_date"] == {
-        str(dates[0].date()): 2, str(dates[2].date()): 2}
+        str(dates[0].date()): 2,
+        str(dates[2].date()): 2,
+    }
 
 
 def test_frozen_feature_order_is_explicit_and_predict_rejects_reorder():
     assert EXPECTED_FEATURES == (
-        "d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60",
-        "p120", "align", "v5", "v20", "vc", "rev5", "rev10", "dd20",
-        "dd60", "rsi")
+        "d5",
+        "d10",
+        "d20",
+        "d60",
+        "d120",
+        "p5",
+        "p10",
+        "p20",
+        "p60",
+        "p120",
+        "align",
+        "v5",
+        "v20",
+        "vc",
+        "rev5",
+        "rev10",
+        "dd20",
+        "dd60",
+        "rsi",
+    )
     dates = pd.bdate_range("2025-01-01", periods=2)
-    panel = {"A": pd.DataFrame({"d5": [1.0, 2.0], "d10": [3.0, 4.0],
-                                 "fwd10": [0.1, 0.2]}, index=dates)}
+    panel = {
+        "A": pd.DataFrame({"d5": [1.0, 2.0], "d10": [3.0, 4.0], "fwd10": [0.1, 0.2]}, index=dates)
+    }
     model = CrossSectionalRidgeModel(min_train_dates=1)
     assert model.fit_period("short", panel, ["d5", "d10"], [dates[0]]) is not None
     with pytest.raises(ValueError, match="schema/order"):
@@ -71,7 +94,8 @@ def test_descending_rank_fused_top5_and_spread_direction():
     scores = {"B": 0.4, "A": 0.4, "C": 0.1, "D": 0.0, "E": -0.1, "F": -0.2}
     assert ordered_top(scores) == ["A", "B", "C", "D", "E"]
     metrics = independent_metrics(
-        np.array([0.0, 1.0, 2.0]), np.array([0.3, 0.2, 0.1]),
+        np.array([0.0, 1.0, 2.0]),
+        np.array([0.3, 0.2, 0.1]),
         np.array([0.1, 0.2]),
     )
     assert metrics["Top5_minus_universe"] == pytest.approx(0.15 - 0.2)

@@ -37,10 +37,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Mapping, Protocol, Sequence, runtime_checkable
 import math
 import warnings
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, field
+from typing import Any, Protocol, runtime_checkable
 
 import pandas as pd
 
@@ -62,17 +63,42 @@ __all__ = [
 #: 实测确认存在的 Hikyuu 2.8.2 API（用于文档与测试断言）。
 VERIFIED_HIKYUU_API: dict[str, tuple[str, ...]] = {
     "Portfolio": (
-        "run", "query", "set_param", "get_param", "se", "af", "tm",
-        "real_sys_list", "performance", "reset",
+        "run",
+        "query",
+        "set_param",
+        "get_param",
+        "se",
+        "af",
+        "tm",
+        "real_sys_list",
+        "performance",
+        "reset",
     ),
     "SelectorBase": (
-        "add_stock_list", "add_sys", "calculate", "get_selected",
-        "set_scores_filter", "add_scores_filter", "reset", "name",
+        "add_stock_list",
+        "add_sys",
+        "calculate",
+        "get_selected",
+        "set_scores_filter",
+        "add_scores_filter",
+        "reset",
+        "name",
     ),
     "AllocateFundsBase": ("set_param", "get_param", "reset", "query", "name"),
     "System": (
-        "run", "query", "set_param", "get_param", "get_stock",
-        "st", "sp", "mm", "tp", "pg", "to", "ev", "clone",
+        "run",
+        "query",
+        "set_param",
+        "get_param",
+        "get_stock",
+        "st",
+        "sp",
+        "mm",
+        "tp",
+        "pg",
+        "to",
+        "ev",
+        "clone",
     ),
 }
 
@@ -162,9 +188,7 @@ def kdata_to_market_frame(kdata: Any) -> pd.DataFrame:
         try:
             datetimes = [k.datetime for k in kdata]
         except Exception as exc:  # pragma: no cover - 依赖具体版本
-            raise TypeError(
-                "无法从 KData 读取日期，请确认 Hikyuu 版本与 KData 类型"
-            ) from exc
+            raise TypeError("无法从 KData 读取日期，请确认 Hikyuu 版本与 KData 类型") from exc
 
     data = {}
     for kfield, col in _KFIELD_TO_CANONICAL.items():
@@ -247,12 +271,10 @@ def targets_to_system_weights(targets: Sequence[SectorWeightTarget]) -> list[dic
     """
     _validate_targets(targets)
     if any(not t.symbol for t in targets):
-        warnings.warn("跳过缺少 symbol 的 legacy target；不得作为完整订单", RuntimeWarning, stacklevel=2)
-    return [
-        {"symbol": t.symbol, "weight": float(t.target_weight)}
-        for t in targets
-        if t.symbol
-    ]
+        warnings.warn(
+            "跳过缺少 symbol 的 legacy target；不得作为完整订单", RuntimeWarning, stacklevel=2
+        )
+    return [{"symbol": t.symbol, "weight": float(t.target_weight)} for t in targets if t.symbol]
 
 
 def build_stock_selector_input(

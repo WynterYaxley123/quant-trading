@@ -124,6 +124,25 @@ Shadow 是基于真实 finalized 数据的向前内部模拟，不是券商 pape
 
 ## Quick Start
 
+### Portable contributor start
+
+首次贡献无需生产行情或仓外 runtime。默认 `.devcontainer` 提供独立的
+Python 3.12.11 / Node 24.19.0 / pnpm 11.25.0 开发环境；完整依赖固定在
+`requirements-dev.lock.txt`，不修改冻结生产镜像。容器内从仓库根目录执行：
+
+~~~sh
+ruff check .
+ruff format --check .
+python scripts/engineering/typecheck.py
+python -m pytest -m "not external_runtime"
+python -m examples.minimal_demo
+~~~
+
+示例标记为 **SYNTHETIC DEMO ONLY**，复用既有 Ridge、成熟度、融合、排名与
+权重函数；不需要真实数据，不产生账户或交易记录。Mypy 使用明确的遗留问题
+清单与严格新代码检查；通过 staged gate 不表示历史类型问题已经全部清零。
+安装与 Git hooks 见[贡献指南](CONTRIBUTING.md)，运行环境配置见[工程指南](docs/engineering/README.md)。
+
 ### Requirements
 
 使用已验收的 Windows / PowerShell 环境：
@@ -272,6 +291,9 @@ Git 保存源码、锁定配置、文档、测试和审查过的安全元数据�
 
 ## Documentation
 
+- [活跃文档入口](docs/README.md) · [历史审计逻辑归档](docs/archive/README.md)
+- [贡献与质量检查](CONTRIBUTING.md) · [合成示例](examples/minimal_demo/README.md)
+
 - [统一控制台操作说明](docs/unified_console.md)
 - [ETF V1 合同与历史审计索引](docs/etf_quant/README.md)
 - [冻结模型对账](docs/etf_quant/codex_frozen_model_contract_reconciliation_v1.md)
@@ -287,6 +309,6 @@ Git 保存源码、锁定配置、文档、测试和审查过的安全元数据�
 
 ## License / Data Rights
 
-仓库目前没有统一的所有者软件许可授权；可见代码不等于获得使用、再许可或再分发许可。所有者许可决定保持 **REVIEW_REQUIRED**。
+仓库自有代码和文档采用 [MIT License](LICENSE)。第三方版权和许可声明继续保留，根目录 MIT 授权不改变第三方条款。
 
 第三方组件保留各自许可证，参见[第三方声明](THIRD_PARTY_NOTICES.md)和[Dashboard notices](dashboard/THIRD_PARTY_NOTICES.md)。市场数据权利与软件许可分开，数据再分发 clearance 保持 **REVIEW_REQUIRED**；本仓库不宣称来源数据的再分发权。

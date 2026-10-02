@@ -1,23 +1,54 @@
 """Approved B40-with-cash is opt-in; frozen strict APIs retain their behavior."""
+
 import pytest
 
 from strategies.etf_quant.mapping.partial import select_mappings_partial
-from strategies.etf_quant.portfolio import AllocationStatus, RebalanceStatus, rebalance_decision, size_targets
+from strategies.etf_quant.portfolio import (
+    AllocationStatus,
+    RebalanceStatus,
+    rebalance_decision,
+    size_targets,
+)
 from strategies.etf_quant.portfolio.partial import rebalance_decision_v2
 from strategies.etf_quant.portfolio.policy import (
-    BenchmarkExposureVector, IndustryCandidate, POLICY_B40_WITH_CASH,
-    evaluate_policy, base_target_weights,
+    POLICY_B40_WITH_CASH,
+    BenchmarkExposureVector,
+    IndustryCandidate,
+    base_target_weights,
+    evaluate_policy,
 )
-
 
 SIGNALS = (("3706", 2.4), ("3703", 1.8), ("4901", 1.2), ("4803", 1.1), ("3701", 1.0))
 
 
-def candidate(code, score, *, etf=None, mapping_type="PROXY_EXPOSURE", exposure=50.0,
-              second=20.0, largest=True, quality="COMPLETE_WEIGHT_SET",
-              liquidity="LIQUIDITY_ADMISSION_PASS", amount=1e7):
-    return IndustryCandidate(code, code, score, etf or code + ".SH", "BM-" + code,
-        mapping_type, exposure, second, exposure - second, largest, quality, liquidity, amount)
+def candidate(
+    code,
+    score,
+    *,
+    etf=None,
+    mapping_type="PROXY_EXPOSURE",
+    exposure=50.0,
+    second=20.0,
+    largest=True,
+    quality="COMPLETE_WEIGHT_SET",
+    liquidity="LIQUIDITY_ADMISSION_PASS",
+    amount=1e7,
+):
+    return IndustryCandidate(
+        code,
+        code,
+        score,
+        etf or code + ".SH",
+        "BM-" + code,
+        mapping_type,
+        exposure,
+        second,
+        exposure - second,
+        largest,
+        quality,
+        liquidity,
+        amount,
+    )
 
 
 def pools():
@@ -25,8 +56,10 @@ def pools():
     for code, score in SIGNALS:
         result[code] = [candidate(code, score)]
     result["3706"] = [candidate("3706", 2.4, exposure=44.83, second=49.43, largest=False)]
-    result["4901"] = [candidate("4901", 1.2, mapping_type="STRICT_MAPPING", exposure=100., second=0.),
-                       candidate("4901", 1.2, etf="PROXY.SH", exposure=99.)]
+    result["4901"] = [
+        candidate("4901", 1.2, mapping_type="STRICT_MAPPING", exposure=100.0, second=0.0),
+        candidate("4901", 1.2, etf="PROXY.SH", exposure=99.0),
+    ]
     return result
 
 
@@ -35,7 +68,9 @@ def select(p):
 
 
 def test_frozen_default_count_and_five_member_rebalance_unchanged():
-    assert size_targets({str(i): 1.0 for i in range(4)}).status is AllocationStatus.INSUFFICIENT_ASSETS
+    assert (
+        size_targets({str(i): 1.0 for i in range(4)}).status is AllocationStatus.INSUFFICIENT_ASSETS
+    )
     with pytest.raises(ValueError):
         rebalance_decision((), ("A", "B", "C", "D"))
     assert rebalance_decision((), ("A", "B", "C", "D", "E")) is RebalanceStatus.REQUIRED
@@ -55,23 +90,30 @@ def test_partial_requires_explicit_opt_in_and_preserves_strict_precedence():
 
 def test_cash_not_redistributed_and_no_synthetic_instrument():
     selected = select(pools())
-    vectors = {c.benchmark_code: BenchmarkExposureVector(c.benchmark_code, {c.l2_code: 100.0})
-               for c in selected if c.etf_code}
+    vectors = {
+        c.benchmark_code: BenchmarkExposureVector(c.benchmark_code, {c.l2_code: 100.0})
+        for c in selected
+        if c.etf_code
+    }
     result = evaluate_policy(POLICY_B40_WITH_CASH, list(selected), vectors)
     reference = base_target_weights(list(selected))
     assert result.cash_weight == pytest.approx(reference["3706"])
     assert result.cash_weight + result.risk_asset_weight == pytest.approx(1.0)
     assert "CASH" not in result.etf_weights
-    assert result.etf_weights == {c.l2_code: pytest.approx(reference[c.l2_code])
-                                  for c in selected if c.etf_code}
+    assert result.etf_weights == {
+        c.l2_code: pytest.approx(reference[c.l2_code]) for c in selected if c.etf_code
+    }
 
 
-@pytest.mark.parametrize("quality,liquidity,amount", [
-    ("INCOMPLETE_WEIGHT_SET", "LIQUIDITY_ADMISSION_PASS", 1e7),
-    ("COMPLETE_WEIGHT_SET", "BLOCKED", 1e7),
-    ("COMPLETE_WEIGHT_SET", "LIQUIDITY_ADMISSION_PASS", float("nan")),
-    ("COMPLETE_WEIGHT_SET", "LIQUIDITY_ADMISSION_PASS", None),
-])
+@pytest.mark.parametrize(
+    "quality,liquidity,amount",
+    [
+        ("INCOMPLETE_WEIGHT_SET", "LIQUIDITY_ADMISSION_PASS", 1e7),
+        ("COMPLETE_WEIGHT_SET", "BLOCKED", 1e7),
+        ("COMPLETE_WEIGHT_SET", "LIQUIDITY_ADMISSION_PASS", float("nan")),
+        ("COMPLETE_WEIGHT_SET", "LIQUIDITY_ADMISSION_PASS", None),
+    ],
+)
 def test_incomplete_or_unliquid_proxy_fails_closed(quality, liquidity, amount):
     p = pools()
     p["3703"] = [candidate("3703", 1.8, quality=quality, liquidity=liquidity, amount=amount)]
@@ -81,8 +123,9 @@ def test_incomplete_or_unliquid_proxy_fails_closed(quality, liquidity, amount):
 
 def test_strict_failure_cannot_downgrade_to_proxy():
     p = pools()
-    p["4901"][0] = candidate("4901", 1.2, mapping_type="STRICT_MAPPING", exposure=100.,
-                              second=0., liquidity="BLOCKED")
+    p["4901"][0] = candidate(
+        "4901", 1.2, mapping_type="STRICT_MAPPING", exposure=100.0, second=0.0, liquidity="BLOCKED"
+    )
     assert select(p)[2].etf_code is None
 
 
@@ -120,7 +163,10 @@ def test_execution_member_transitions_both_directions_and_cash_is_not_member():
     five = (*four, "E")
     assert rebalance_decision_v2(five, four, execution_policy=policy) is RebalanceStatus.REQUIRED
     assert rebalance_decision_v2(four, five, execution_policy=policy) is RebalanceStatus.REQUIRED
-    assert rebalance_decision_v2(four, tuple(reversed(four)), execution_policy=policy) is RebalanceStatus.NO_REBALANCE
+    assert (
+        rebalance_decision_v2(four, tuple(reversed(four)), execution_policy=policy)
+        is RebalanceStatus.NO_REBALANCE
+    )
     with pytest.raises(ValueError):
         rebalance_decision_v2(four, (*four, "CASH"), execution_policy=policy)
     with pytest.raises(ValueError):

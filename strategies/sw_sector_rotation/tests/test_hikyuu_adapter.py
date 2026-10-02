@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 import pytest
 
@@ -33,7 +32,6 @@ from strategies.sw_sector_rotation.src.model.ranking import (
     sector_scores_to_weights,
 )
 
-
 # ---------------------------------------------------------------------------
 # 假 KData（不依赖 Hikyuu）
 # ---------------------------------------------------------------------------
@@ -42,7 +40,7 @@ from strategies.sw_sector_rotation.src.model.ranking import (
 class _Bar:
     """模拟 Hikyuu KRecord 的数值接口。"""
 
-    def __init__(self, dt, o, h, l, c, v, a):
+    def __init__(self, dt, o, h, l, c, v, a):  # noqa: E741 -- Established OHLC low-price name in frozen numerical helper.
         self.datetime = dt
         self.open = o
         self.high = h
@@ -60,9 +58,7 @@ class _FakeKData:
         self._bars = []
         for i, d in enumerate(dates):
             c = 100.0 + i
-            self._bars.append(
-                _Bar(d.to_pydatetime(), c - 0.5, c + 1.0, c - 1.0, c, 1e6, 1e8 * c)
-            )
+            self._bars.append(_Bar(d.to_pydatetime(), c - 0.5, c + 1.0, c - 1.0, c, 1e6, 1e8 * c))
 
     def __len__(self):
         return len(self._bars)
@@ -291,10 +287,7 @@ def test_hikyuu_api_actually_exists_in_framework():
 
 def test_adapter_documents_wiring_reason():
     assert AdaptersNotWiredReason.DATA_NOT_INITIALIZED == "DATA_NOT_INITIALIZED"
-    assert (
-        AdaptersNotWiredReason.SELECTOR_SUBCLASS_PENDING
-        == "SELECTOR_SUBCLASS_PENDING"
-    )
+    assert AdaptersNotWiredReason.SELECTOR_SUBCLASS_PENDING == "SELECTOR_SUBCLASS_PENDING"
 
 
 def test_adapter_does_not_import_hikyuu_at_module_level():
@@ -314,12 +307,12 @@ def test_core_strategy_does_not_import_frameworks():
     """纯核心（factors/model/ranking/strategy/risk/portfolio）不得 import 框架。"""
     from pathlib import Path
 
-    import strategies.sw_sector_rotation.src.factors.sector_rotation as f
-    import strategies.sw_sector_rotation.src.factors.rsrs as r
     import strategies.sw_sector_rotation.src.factors.macro_pit as mp
-    import strategies.sw_sector_rotation.src.risk.sector_rotation as risk
-    import strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping as port
+    import strategies.sw_sector_rotation.src.factors.rsrs as r
+    import strategies.sw_sector_rotation.src.factors.sector_rotation as f
     import strategies.sw_sector_rotation.src.model.model as model
+    import strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping as port
+    import strategies.sw_sector_rotation.src.risk.sector_rotation as risk
     import strategies.sw_sector_rotation.src.strategy as strat
 
     banned = ("import hikyuu", "from hikyuu", "import rqalpha", "from rqalpha")

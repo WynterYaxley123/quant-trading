@@ -11,6 +11,12 @@ from __future__ import annotations
 
 import pytest
 
+from strategies.sw_sector_rotation.src.model.ranking import (
+    build_etf_candidates,
+    rank_sectors,
+    sector_scores_to_weights,
+    select_top,
+)
 from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import (
     NOT_IMPLEMENTED,
     RELATION_DIRECT,
@@ -21,13 +27,6 @@ from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import (
     normalize_scores_to_weights,
     passthrough_sector_weights,
 )
-from strategies.sw_sector_rotation.src.model.ranking import (
-    build_etf_candidates,
-    rank_sectors,
-    sector_scores_to_weights,
-    select_top,
-)
-
 
 # ---------------------------------------------------------------------------
 # 排名
@@ -176,9 +175,9 @@ def test_top5_to_top3_logic_not_migrated():
 
     # ranking 模块不得 import 风险模块（风险必须与 ranking 解耦）
     text = Path(rk.__file__).read_text(encoding="utf-8")
-    assert "import" not in text or "strategies.sw_sector_rotation.src.risk" not in text.replace("``strategies.sw_sector_rotation.src.risk", ""), (
-        "ranking 不得 import 风险模块"
-    )
+    assert "import" not in text or "strategies.sw_sector_rotation.src.risk" not in text.replace(
+        "``strategies.sw_sector_rotation.src.risk", ""
+    ), "ranking 不得 import 风险模块"
     assert "RiskState" not in text, "ranking 不得依赖 RiskState"
 
     # 行为验证：无论选几个，权重总和恒为 1.0（不擅自降低总敞口）
