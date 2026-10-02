@@ -21,7 +21,7 @@ export interface AppData {
   health: Health | null;
   healthLoading: boolean;
   healthError: ResearchApiError | null;
-  artifactState: 'AVAILABLE' | 'NOT_CONFIGURED' | null;
+  artifactState: 'AVAILABLE' | 'NOT_CONFIGURED' | 'DEGRADED' | null;
   retry: () => void;
 }
 
@@ -36,10 +36,10 @@ export function AppDataProvider({ children, enabled=true }: { children: ReactNod
   const shell = useResource(async (signal) => {
     // ETF rendering never opens a Research artifact or depends on its availability.
     if(!enabled) return {capabilities:null,status:null,runs:[]};
-    const [capabilities, status, runs] = await Promise.all([
+    const status = await api.getResearchStatus(signal);
+    const [capabilities, runs] = await Promise.all([
       api.getCapabilities(signal),
-      api.getResearchStatus(signal),
-      api.getRuns(signal),
+      status.artifactState === 'DEGRADED' ? Promise.resolve([]) : api.getRuns(signal),
     ]);
     return { capabilities, status, runs };
   }, [api,enabled]);
@@ -55,7 +55,7 @@ export function AppDataProvider({ children, enabled=true }: { children: ReactNod
     health: health.data,
     healthLoading: health.loading,
     healthError: health.error,
-    artifactState: enabled && shell.data ? (shell.data.runs.length ? 'AVAILABLE' : 'NOT_CONFIGURED') : null,
+    artifactState: enabled && shell.data ? shell.data.status?.artifactState ?? (shell.data.runs.length ? 'AVAILABLE' : 'NOT_CONFIGURED') : null,
     retry: () => { health.retry(); shell.retry(); },
   };
 

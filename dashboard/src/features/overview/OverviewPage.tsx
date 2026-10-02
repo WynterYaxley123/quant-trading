@@ -1,4 +1,6 @@
 import { getResearchApi } from '@/api';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { FilterBar, RunFilter } from '@/components/research/FilterBar';
 import type { CandidateSummary, Integrity } from '@/api/contracts';
 import { useAppData } from '@/app/AppDataProvider';
 import { CandidateCard } from '@/components/research/CandidateCard';
@@ -18,8 +20,10 @@ import { classificationLabel, horizonLabel, phaseLabel, yesNo } from '@/lib/labe
  */
 export function OverviewPage() {
   const { status, runs, loading: shellLoading } = useAppData();
+  const search = useSearch({ strict: false }) as {run?:string};
+  const navigate = useNavigate({from:'/'});
   const api = getResearchApi();
-  const currentRun = runs[0] ?? null;
+  const currentRun = search.run ? runs.find((run) => run.runId === search.run) ?? null : runs[0] ?? null;
 
   const details = useResource(async (signal) => {
     if (!currentRun) return { candidates: [] as CandidateSummary[], integrity: null as Integrity | null };
@@ -36,6 +40,25 @@ export function OverviewPage() {
         title="概览"
         description="申万行业指数研究的当前状态。这里只展示 Development（开发集）候选结果，尚未经 Validation 验证，不可执行、不可交易。"
       />
+
+      <FilterBar>
+        <RunFilter runs={runs} value={currentRun?.runId ?? ''}
+          onChange={(run) => void navigate({search:(prev) => ({...prev,run}),replace:true})} />
+      </FilterBar>
+      {search.run && !currentRun ? <p role="alert">所选运行不在获准的 Development 清单中，请选择一个获准运行。</p> : null}
+
+      <section aria-label="获准 Development 工作区">
+        <StatusCardGrid>
+          <StatusCard label="研究工作区" value={status?.artifactId ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+          <StatusCard label="批准状态" value={status?.approvalState ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+          <StatusCard label="获准运行数" value={status?.availableRunCount ?? runs.length} />
+          <StatusCard label="完整性" value={status?.integrityStatus ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+          <StatusCard label="候选方案" value={status?.candidateAvailability ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+          <StatusCard label="Development 指标" value={status?.metricsAvailability ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+          <StatusCard label="诊断产物" value={status?.diagnosticsAvailability ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+        </StatusCardGrid>
+        <p className="mt-3 text-xs text-muted-foreground">DEVELOPMENT ONLY · READ-ONLY · Research U0_FIXED_124 与 ETF Quant 的 107 个准入行业是两个独立范围。</p>
+      </section>
 
       <section aria-label="研究状态">
         <StatusCardGrid>

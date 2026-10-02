@@ -73,6 +73,17 @@ export function ResearchIntegrityPage() {
         <EmptyState description="所选运行没有研究完整性记录。" />
       ) : (
         <>
+          <section aria-label="产物批准与完整性校验">
+            <StatusCardGrid>
+              <StatusCard label="工作区身份" value={detail.data.integrity.artifactId ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+              <StatusCard label="产物批准" value={detail.data.integrity.approvalState ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+              <StatusCard label="Manifest" value={detail.data.integrity.manifestStatus ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+              <StatusCard label="内容 Hash 校验" value={detail.data.integrity.hashStatus ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+              <StatusCard label="API 产物 Schema" value={detail.data.integrity.schemaStatus ?? 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+              <StatusCard label="只读边界" value={detail.data.integrity.readOnly ? 'READ-ONLY' : 'NOT_AVAILABLE_FOR_THIS_RUN'} />
+            </StatusCardGrid>
+            <p className="mt-3 text-xs text-muted-foreground">完整性校验只涵盖获准 Development 产物。Validation / Final OOS：SEALED；未读取其表现。</p>
+          </section>
           <section aria-label="研究状态标记">
             <StatusCardGrid>
               <StatusCard
@@ -98,6 +109,7 @@ export function ResearchIntegrityPage() {
                 <CardTitle>研究定义</CardTitle>
               </CardHeader>
               <CardContent className="divide-y divide-border">
+                <KeyValue label="Metadata 批准 Hash"><HashText value={detail.data.integrity.metadataHash} /></KeyValue>
                 <KeyValue label="研究标签">
                   {researchLabel(detail.data.integrity.researchLabel)}
                 </KeyValue>

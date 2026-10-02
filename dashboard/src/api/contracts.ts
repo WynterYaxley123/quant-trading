@@ -70,7 +70,7 @@ export const healthSchema = z.object({
 export type Health = z.infer<typeof healthSchema>;
 
 export const capabilitiesSchema = z.object({
-  artifactState: z.enum(['AVAILABLE', 'NOT_CONFIGURED']).optional(),
+  artifactState: z.enum(['AVAILABLE', 'NOT_CONFIGURED', 'DEGRADED']).optional(),
   readOnly: z.boolean(),
   mutations: z.boolean(),
   candidateComparison: z.boolean(),
@@ -86,7 +86,20 @@ export const capabilitiesSchema = z.object({
 export type Capabilities = z.infer<typeof capabilitiesSchema>;
 
 export const researchStatusSchema = z.object({
-  artifactState: z.enum(['AVAILABLE', 'NOT_CONFIGURED']).optional(),
+  artifactState: z.enum(['AVAILABLE', 'NOT_CONFIGURED', 'DEGRADED']).optional(),
+  artifactId: z.string().nullable().optional(),
+  artifactPhase: z.literal('DEVELOPMENT').nullable().optional(),
+  approvalState: z.enum(['APPROVED', 'NOT_CONFIGURED', 'REJECTED']).optional(),
+  activeRunId: z.string().nullable().optional(),
+  availableRunCount: z.number().int().nonnegative().optional(),
+  integrityStatus: z.enum(['PASS', 'FAIL', 'NOT_CONFIGURED']).optional(),
+  candidateAvailability: z.enum(['AVAILABLE', 'NOT_CONFIGURED', 'DEGRADED']).optional(),
+  metricsAvailability: z.enum(['AVAILABLE', 'NOT_CONFIGURED', 'DEGRADED']).optional(),
+  diagnosticsAvailability: z.enum(['AVAILABLE', 'NOT_CONFIGURED', 'DEGRADED']).optional(),
+  readOnly: z.literal(true).optional(),
+  sealedValidation: z.literal(true).optional(),
+  sealedFinalOos: z.literal(true).optional(),
+  artifactError: z.object({code:z.string(),message:z.string()}).nullable().optional(),
   researchLabel: z.string(),
   phase: z.string(),
   validation: z.string(),
@@ -108,6 +121,7 @@ export type ResearchStatus = z.infer<typeof researchStatusSchema>;
 /* ------------------------------------------------------------------ */
 
 export const runSummarySchema = z.object({
+  createdAt: z.string().optional(),
   runId: z.string().min(1),
   phase: z.string(),
   iteration: z.number().int().nonnegative(),
@@ -307,6 +321,16 @@ export type Diagnostics = z.infer<typeof diagnosticsSchema>;
 /* ------------------------------------------------------------------ */
 
 export const integritySchema = z.object({
+  artifactId: z.string().optional(),
+  approvalState: z.literal('APPROVED').optional(),
+  metadataHash: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+  manifestStatus: z.literal('PASS').optional(),
+  hashStatus: z.literal('PASS').optional(),
+  schemaStatus: z.literal('PASS').optional(),
+  verifiedContentFileCount: z.number().int().positive().optional(),
+  readOnly: z.literal(true).optional(),
+  sealedValidation: z.literal(true).optional(),
+  sealedFinalOos: z.literal(true).optional(),
   researchLabel: z.string(),
   phase: z.string(),
   validation: z.string(),

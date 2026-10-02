@@ -34,6 +34,27 @@ function emptyResearch() {
 
 describe('unified console observation', () => {
   for (const path of ['/', '/candidates', '/development', '/sectors', '/diagnostics', '/integrity']) {
+    it(`keeps a healthy API distinct from an invalid artifact at ${path} and retries only observations`, async () => {
+      const port = emptyResearch();
+      const original = port.getResearchStatus;
+      const status = vi.fn(async () => ({...await original(),artifactState:'DEGRADED' as const,
+        phase:'DEGRADED',approvalState:'REJECTED' as const,
+        artifactError:{code:'RESEARCH_ARTIFACT_HASH_MISMATCH',message:'Metadata SHA256 does not match its approval'}}));
+      port.getResearchStatus = status;
+      await renderApp(path,port);
+      expect(await screen.findByText('SERVICE READY · ARTIFACT INVALID · DEGRADED')).toBeInTheDocument();
+      expect(within(screen.getByRole('region',{name:'控制台服务'})).getAllByText('READY')).toHaveLength(3);
+      expect(screen.queryByText('API DISCONNECTED')).not.toBeInTheDocument();
+      expect(screen.queryByText('未配置获准的 Development 研究产物。')).not.toBeInTheDocument();
+      expect(port.getRuns).not.toHaveBeenCalled();
+      const before=status.mock.calls.length;
+      await userEvent.click(screen.getByRole('button',{name:'重新校验产物'}));
+      await screen.findByText('SERVICE READY · ARTIFACT INVALID · DEGRADED');
+      expect(status.mock.calls.length).toBeGreaterThan(before);
+      for(const request of [port.getCandidates,port.getIntegrity,port.getMetrics,port.getPredictions,port.getDailyMetrics,port.getDiagnostics]) expect(request).not.toHaveBeenCalled();
+    });
+  }
+  for (const path of ['/', '/candidates', '/development', '/sectors', '/diagnostics', '/integrity']) {
     it(`renders a connected empty state at ${path} without requesting run results`, async () => {
       const port = emptyResearch();
       await renderApp(path, port);
