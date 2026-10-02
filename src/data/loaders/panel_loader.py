@@ -13,9 +13,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Mapping, Sequence
 
 import pandas as pd
 
@@ -38,7 +38,7 @@ class MarketDataRequest:
     #: K线周期
     ktype: str = "DAY"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.symbols:
             raise ValueError("MarketDataRequest.symbols 不能为空")
 
@@ -108,9 +108,11 @@ def load_panel(
             if request.asset_types is not None:
                 # 资产类型过滤：provider 未提供 asset_type 列时按子类判断
                 at = df.get("asset_type")
-                if at is not None and len(at) and str(at.iloc[0]).upper() not in {
-                    a.upper() for a in request.asset_types
-                }:
+                if (
+                    at is not None
+                    and len(at)
+                    and str(at.iloc[0]).upper() not in {a.upper() for a in request.asset_types}
+                ):
                     result.missing[sym] = (
                         f"资产类型 {at.iloc[0]} 不在请求范围 {sorted(request.asset_types)}"
                     )

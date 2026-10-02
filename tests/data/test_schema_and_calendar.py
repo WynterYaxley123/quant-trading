@@ -20,7 +20,6 @@ from src.data.schema import (
     validate_frame,
 )
 
-
 # --- fixtures -------------------------------------------------------------
 
 

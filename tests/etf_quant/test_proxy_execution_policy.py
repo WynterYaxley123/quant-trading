@@ -1,4 +1,4 @@
-﻿"""PROXY_EXECUTION_POLICY_V1 contract tests.
+"""PROXY_EXECUTION_POLICY_V1 contract tests.
 
 These make the round's policy semantics executable rather than asserted. The three claims that matter
 most, and that a plausible implementation would get wrong:
@@ -13,6 +13,7 @@ most, and that a plausible implementation would get wrong:
 3. **A four-asset policy is refused by the unmodified frozen contract**, not merely sized differently.
    That is an integration fact, and it is asserted here rather than left to prose.
 """
+
 from __future__ import annotations
 
 import json
@@ -47,8 +48,10 @@ from strategies.etf_quant.portfolio.policy import (
     softmax,
 )
 
-RUNTIME = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
-                            r"D:\QuantForge\runtime\etf-quant-v1")) / "proxy-policy-finalization-v1"
+RUNTIME = (
+    Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT", r"D:\QuantForge\runtime\etf-quant-v1"))
+    / "proxy-policy-finalization-v1"
+)
 
 #: Deterministic synthetic signal set. Scores are chosen so that one industry takes a cap breach,
 #: which is what forces the two cap rules apart.
@@ -57,12 +60,20 @@ SCORES = {"L1": 2.4, "L2": 1.8, "L3": 1.2, "L4": 1.1, "L5": 1.0}
 
 def cand(code, *, exposure=50.0, largest=True, second=20.0, etf=None, amount=1e9, score=None):
     return IndustryCandidate(
-        l2_code=code, l2_name=f"name-{code}", final_score=SCORES.get(code, 1.0) if score is None else score,
-        etf_code=etf or f"{code}.ETF", benchmark_code=f"BM-{code}", mapping_type="PROXY_EXPOSURE",
-        target_l2_exposure=exposure, second_largest_l2_exposure=second,
-        dominance_margin=exposure - second, target_is_largest_l2=largest,
-        weight_quality="COMPLETE_WEIGHT_SET", liquidity_status="LIQUIDITY_ADMISSION_PASS",
-        mean_amount_cny=amount)
+        l2_code=code,
+        l2_name=f"name-{code}",
+        final_score=SCORES.get(code, 1.0) if score is None else score,
+        etf_code=etf or f"{code}.ETF",
+        benchmark_code=f"BM-{code}",
+        mapping_type="PROXY_EXPOSURE",
+        target_l2_exposure=exposure,
+        second_largest_l2_exposure=second,
+        dominance_margin=exposure - second,
+        target_is_largest_l2=largest,
+        weight_quality="COMPLETE_WEIGHT_SET",
+        liquidity_status="LIQUIDITY_ADMISSION_PASS",
+        mean_amount_cny=amount,
+    )
 
 
 def vectors_for(candidates, *, own=100.0, leak=None):
@@ -83,13 +94,16 @@ def vectors_for(candidates, *, own=100.0, leak=None):
 # Frozen allocator delegation
 # ---------------------------------------------------------------------------
 
+
 def test_capped_sizing_delegates_to_the_frozen_allocator():
     """The policy module must not carry its own cap rule."""
     candidates = [cand(c) for c in SCORES]
     scores = {c.l2_code: c.final_score for c in candidates}
     mine = base_target_weights(candidates)
-    theirs = {t.asset_id: t.target_weight for t in
-              size_targets(scores, max_weight=SINGLE_ETF_CAP, required_assets=5).targets}
+    theirs = {
+        t.asset_id: t.target_weight
+        for t in size_targets(scores, max_weight=SINGLE_ETF_CAP, required_assets=5).targets
+    }
     for code in scores:
         assert mine[code] == pytest.approx(theirs[code], abs=1e-11)
 
@@ -111,14 +125,17 @@ def test_cap_rule_differs_from_naive_remaining_room_redistribution():
     room = {c: SINGLE_ETF_CAP - raw[c] for c in others}
     capacity = math.fsum(room.values())
     naive = {c: raw[c] + (1.0 - SINGLE_ETF_CAP) * room[c] / capacity for c in others}
-    assert any(abs(naive[c] - capped[c]) > 1e-6 for c in others), \
+    assert any(abs(naive[c] - capped[c]) > 1e-6 for c in others), (
         "the naive rule and the frozen allocator must not coincide on this input"
+    )
 
 
 def test_frozen_allocator_refuses_four_assets_with_the_default_count():
     """A four-asset policy is REFUSED, not resized -- the round's key integration fact."""
     scores4 = {k: v for k, v in SCORES.items() if k != "L1"}
-    status, weights, unallocated = frozen_size_status(scores4, cap=SINGLE_ETF_CAP, required_assets=5)
+    status, weights, unallocated = frozen_size_status(
+        scores4, cap=SINGLE_ETF_CAP, required_assets=5
+    )
     assert status == AllocationStatus.INSUFFICIENT_ASSETS.value
     assert weights == {}
     assert unallocated == pytest.approx(1.0)
@@ -126,7 +143,9 @@ def test_frozen_allocator_refuses_four_assets_with_the_default_count():
 
 def test_frozen_allocator_sizes_four_assets_once_the_policy_declares_it():
     scores4 = {k: v for k, v in SCORES.items() if k != "L1"}
-    status, weights, unallocated = frozen_size_status(scores4, cap=SINGLE_ETF_CAP, required_assets=4)
+    status, weights, unallocated = frozen_size_status(
+        scores4, cap=SINGLE_ETF_CAP, required_assets=4
+    )
     assert status == AllocationStatus.READY.value
     assert sum(weights.values()) == pytest.approx(1.0)
     assert unallocated == pytest.approx(0.0, abs=1e-12)
@@ -148,6 +167,7 @@ def test_frozen_size_raises_rather_than_returning_a_zero_portfolio():
 # B40 admission
 # ---------------------------------------------------------------------------
 
+
 def test_b40_threshold_boundary_is_inclusive():
     exact = cand("L1", exposure=MIN_TARGET_EXPOSURE_B40, second=0.0)
     under = cand("L1", exposure=MIN_TARGET_EXPOSURE_B40 - 1e-9, second=0.0)
@@ -164,10 +184,20 @@ def test_b40_rejects_a_non_largest_target():
 
 def test_b40_rejects_incomplete_weight_evidence():
     c = IndustryCandidate(
-        l2_code="L1", l2_name="x", final_score=1.0, etf_code="E", benchmark_code="B",
-        mapping_type="PROXY_EXPOSURE", target_l2_exposure=90.0, second_largest_l2_exposure=5.0,
-        dominance_margin=85.0, target_is_largest_l2=True, weight_quality="INCOMPLETE_WEIGHT_SET",
-        liquidity_status="LIQUIDITY_ADMISSION_PASS", mean_amount_cny=1e9)
+        l2_code="L1",
+        l2_name="x",
+        final_score=1.0,
+        etf_code="E",
+        benchmark_code="B",
+        mapping_type="PROXY_EXPOSURE",
+        target_l2_exposure=90.0,
+        second_largest_l2_exposure=5.0,
+        dominance_margin=85.0,
+        target_is_largest_l2=True,
+        weight_quality="INCOMPLETE_WEIGHT_SET",
+        liquidity_status="LIQUIDITY_ADMISSION_PASS",
+        mean_amount_cny=1e9,
+    )
     assert c.passes_b40 is False
     assert c.b40_rejection_reason() == pol.REASON_WEIGHT_SET_INCOMPLETE
 
@@ -180,13 +210,16 @@ def test_a40_admits_a_non_largest_target_and_b40_does_not():
     b = evaluate_policy(POLICY_B40_RENORMALIZED, candidates, vectors)
     assert "L1" in a.etf_weights
     assert "L1" not in b.etf_weights
-    assert any(code == "L1" and reason == pol.REASON_TARGET_NOT_LARGEST_L2 for code, reason in
-               [(c.l2_code, r) for c, r in b.skipped])
+    assert any(
+        code == "L1" and reason == pol.REASON_TARGET_NOT_LARGEST_L2
+        for code, reason in [(c.l2_code, r) for c, r in b.skipped]
+    )
 
 
 # ---------------------------------------------------------------------------
 # The three policies
 # ---------------------------------------------------------------------------
+
 
 def _four_plus_one():
     """Four B40-eligible industries plus one that fails only the largest-L2 test."""
@@ -286,6 +319,7 @@ def test_no_survivor_is_an_error_not_an_empty_portfolio():
 # Actual exposure / leakage
 # ---------------------------------------------------------------------------
 
+
 def test_actual_exposure_includes_leakage_from_every_held_etf():
     candidates = [cand("L1", exposure=60.0), cand("L2", exposure=60.0)]
     vectors = {
@@ -315,8 +349,9 @@ def test_incidental_target_exposure_is_not_counted_as_delivery():
 
 
 def test_fidelity_gap_is_actual_minus_nominal():
-    candidates = [cand("L1", exposure=44.83, largest=False, second=49.43)] + \
-                 [cand(c, exposure=50.0) for c in ("L2", "L3", "L4", "L5")]
+    candidates = [cand("L1", exposure=44.83, largest=False, second=49.43)] + [
+        cand(c, exposure=50.0) for c in ("L2", "L3", "L4", "L5")
+    ]
     vectors = {
         "BM-L1": BenchmarkExposureVector("BM-L1", {"L1": 44.83, "3705": 49.43, "rest": 5.74}),
         "BM-L2": BenchmarkExposureVector("BM-L2", {"L2": 50.0, "rest": 50.0}),
@@ -361,6 +396,7 @@ def test_liquidity_never_enters_the_alpha_weights():
 # ---------------------------------------------------------------------------
 # Cash semantics
 # ---------------------------------------------------------------------------
+
 
 def test_cash_is_not_an_asset_class():
     candidates, vectors = _four_plus_one()
@@ -417,6 +453,7 @@ def test_an_industry_becoming_executable_changes_the_member_set():
 # Model integrity
 # ---------------------------------------------------------------------------
 
+
 def test_the_model_ranking_is_never_modified_by_a_policy():
     candidates, vectors = _four_plus_one()
     for policy in (POLICY_A40_FULLY_INVESTED, POLICY_B40_RENORMALIZED, POLICY_B40_WITH_CASH):
@@ -443,6 +480,7 @@ def test_softmax_rejects_empty_input():
 # Artifact contracts (skipped when the runtime artifacts are absent)
 # ---------------------------------------------------------------------------
 
+
 def _load(rel):
     path = RUNTIME / rel
     if not path.exists():
@@ -450,6 +488,7 @@ def _load(rel):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@pytest.mark.external_runtime
 def test_policy_contract_declares_no_model_or_strict_change():
     contract = _load("policies/policy_comparison_v1.json")
     assert contract["policies"]["B40_WITH_CASH"]["cash_weight"] == pytest.approx(0.35, abs=1e-9)
@@ -458,6 +497,7 @@ def test_policy_contract_declares_no_model_or_strict_change():
     assert contract["classification"] == "EX_POST_ENGINEERING_PROXY_ANALYSIS"
 
 
+@pytest.mark.external_runtime
 def test_cash_policy_artifact_keeps_strict_result_intact():
     doc = _load("policies/policy_comparison_v1.json")
     assert doc["policies"]["B40_WITH_CASH"]["cash_weight"] > 0

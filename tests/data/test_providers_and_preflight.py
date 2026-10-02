@@ -23,7 +23,6 @@ from src.data.providers import (
 )
 from src.data.schema import DataIntegrityError
 
-
 # --- 假 provider ----------------------------------------------------------
 
 
@@ -216,7 +215,11 @@ def _make_hikyuu_dir(tmp_path, *, db_codes, h5_codes, lastdates=None):
         transCount = tables.Int64Col(pos=6)
 
     for mkt, prefix in (("SH", "sh"), ("SZ", "sz")):
-        codes = [c for c in h5_codes if (c.startswith("5") and mkt == "SH") or (not c.startswith("5") and mkt == "SZ")]
+        codes = [
+            c
+            for c in h5_codes
+            if (c.startswith("5") and mkt == "SH") or (not c.startswith("5") and mkt == "SZ")
+        ]
         path = os.path.join(dest, f"{prefix}_day.h5")
         f = tables.open_file(path, "w")
         grp = f.create_group("/", "data")
@@ -237,8 +240,7 @@ def _make_hikyuu_dir(tmp_path, *, db_codes, h5_codes, lastdates=None):
 
 
 def test_preflight_passes_on_consistent_data(tmp_path):
-    dest = _make_hikyuu_dir(tmp_path, db_codes=["510300", "159934"],
-                           h5_codes=["510300", "159934"])
+    dest = _make_hikyuu_dir(tmp_path, db_codes=["510300", "159934"], h5_codes=["510300", "159934"])
     rep = preflight(dest)
     assert rep.db_stock_count == 2
     assert rep.h5_table_count == 2
@@ -251,23 +253,24 @@ def test_preflight_missing_db_raises(tmp_path):
 
 def test_preflight_detects_stock_without_kdata(tmp_path):
     """这正是会导致 StockManager.reload() 段错误的场景。"""
-    dest = _make_hikyuu_dir(tmp_path, db_codes=["510300", "159934", "512660"],
-                            h5_codes=["510300", "159934"])
+    dest = _make_hikyuu_dir(
+        tmp_path, db_codes=["510300", "159934", "512660"], h5_codes=["510300", "159934"]
+    )
     with pytest.raises(HikyuuDataIntegrityError, match="无 K线表"):
         preflight(dest)
 
 
 def test_preflight_detects_orphan_h5_table(tmp_path):
-    dest = _make_hikyuu_dir(tmp_path, db_codes=["510300"],
-                            h5_codes=["510300", "159934"])
+    dest = _make_hikyuu_dir(tmp_path, db_codes=["510300"], h5_codes=["510300", "159934"])
     with pytest.raises(HikyuuDataIntegrityError, match="无对应 valid 证券"):
         preflight(dest)
 
 
 def test_preflight_detects_invalid_last_date(tmp_path):
     """99999999 是误用 stock.endDate 的典型症状。"""
-    dest = _make_hikyuu_dir(tmp_path, db_codes=["510300"], h5_codes=["510300"],
-                            lastdates={"SH": 99999999})
+    dest = _make_hikyuu_dir(
+        tmp_path, db_codes=["510300"], h5_codes=["510300"], lastdates={"SH": 99999999}
+    )
     with pytest.raises(HikyuuDataIntegrityError, match="lastDate"):
         preflight(dest)
 

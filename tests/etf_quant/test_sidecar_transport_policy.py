@@ -12,15 +12,15 @@ They pin the behaviour established by the runtime transport audit
 * TLS verification must remain enabled;
 * a failed smoke must never yield an admitted artifact.
 """
+
 from __future__ import annotations
 
 import importlib.util
-import json
 import os
-from pathlib import Path
 import ssl
 import sys
 import types
+from pathlib import Path
 
 import pytest
 
@@ -43,16 +43,28 @@ def policy():
     return _load("proxy_policy")
 
 
-ALL_KEYS = ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY",
-            "http_proxy", "https_proxy", "all_proxy", "no_proxy")
+ALL_KEYS = (
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "ALL_PROXY",
+    "NO_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "all_proxy",
+    "no_proxy",
+)
 
 
 @pytest.fixture
 def ambient(monkeypatch):
     """The exact ambient state measured on the audit host."""
     for key in ALL_KEYS:
-        monkeypatch.setenv(key, "http://127.0.0.1:10808" if "PROXY" in key.upper() and "NO_" not in key.upper()
-                           else "localhost,127.0.0.1,::1,[::1]")
+        monkeypatch.setenv(
+            key,
+            "http://127.0.0.1:10808"
+            if "PROXY" in key.upper() and "NO_" not in key.upper()
+            else "localhost,127.0.0.1,::1,[::1]",
+        )
     return dict(os.environ)
 
 
@@ -107,9 +119,11 @@ def test_inherit_policy_leaves_a_clean_environment_alone(policy, monkeypatch):
 
 # --- TLS must never be weakened by this fix --------------------------------
 
+
+@pytest.mark.external_runtime
 def test_pinned_upstream_client_keeps_tls_verification_enabled():
     """Uses the pinned source's own SSLContext; no network is performed."""
-    cnequity = pytest.importorskip("cnequity")
+    cnequity = pytest.importorskip("cnequity")  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
     from cnequity.adapters.sw.industry_history import sw_ssl_context
 
     context = sw_ssl_context()
@@ -129,11 +143,16 @@ def test_no_verify_false_anywhere_in_sidecar_sources():
 
 # --- failure must never look like success ----------------------------------
 
+
 def test_blocked_smoke_report_is_not_mistaken_for_pass():
     runner = _load("runner")
-    blocked = {"status": "NETWORK_METADATA_SMOKE_BLOCKED", "exception_class": "RemoteProtocolError",
-               "exception_chain": [{"class": "httpx.RemoteProtocolError", "message": "peer closed"}],
-               "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT", "retries": 0}
+    blocked = {
+        "status": "NETWORK_METADATA_SMOKE_BLOCKED",
+        "exception_class": "RemoteProtocolError",
+        "exception_chain": [{"class": "httpx.RemoteProtocolError", "message": "peer closed"}],
+        "tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT",
+        "retries": 0,
+    }
     assert "BLOCKED" in blocked["status"]
     assert blocked["retries"] == 0
     assert runner.exception_chain(RuntimeError("x"))[0]["class"] == "builtins.RuntimeError"
@@ -148,7 +167,10 @@ def test_exception_chain_preserves_cause_links():
             raise RuntimeError("outer") from inner
     except RuntimeError as error:
         chain = runner.exception_chain(error)
-    assert [link["class"] for link in chain] == ["builtins.RuntimeError", "ssl.SSLCertVerificationError"]
+    assert [link["class"] for link in chain] == [
+        "builtins.RuntimeError",
+        "ssl.SSLCertVerificationError",
+    ]
     assert "local issuer" in chain[1]["message"]
 
 
@@ -161,8 +183,9 @@ def test_smoke_report_is_persisted_even_when_evidence_write_fails(monkeypatch, t
     """
     runner = _load("runner")
     monkeypatch.setattr(runner, "external_root", lambda path: tmp_path)
-    monkeypatch.setattr(runner, "atomic_bytes",
-                        lambda *a, **k: (_ for _ in ()).throw(OSError("SYNTHETIC_IO")))
+    monkeypatch.setattr(
+        runner, "atomic_bytes", lambda *a, **k: (_ for _ in ()).throw(OSError("SYNTHETIC_IO"))
+    )
 
     failing = types.ModuleType("cnequity.adapters.sw.industry_history")
 
@@ -187,9 +210,21 @@ def test_smoke_uses_strict_tls_and_defaults_to_direct_policy():
     assert 'tls_verification": "STRICT_UPSTREAM_SSL_CONTEXT"' in source
     assert "def smoke_metadata(root, policy=POLICY_DIRECT)" in source
     assert "with proxy_policy(policy):" in source
-    assert "sw_client(timeout=30.)" in source
+    # Parse the call contract so whitespace/float formatting is irrelevant.
+    import ast
+
+    calls = [n for n in ast.walk(ast.parse(source)) if isinstance(n, ast.Call)]
+    assert any(
+        isinstance(call.func, ast.Name)
+        and call.func.id == "sw_client"
+        and any(
+            k.arg == "timeout" and isinstance(k.value, ast.Constant) and k.value.value == 30.0
+            for k in call.keywords
+        )
+        for call in calls
+    )
 
 
 def test_default_cli_policy_is_direct_not_inherit():
     source = (SIDECAR / "runner.py").read_text(encoding="utf-8")
-    assert 'default=POLICY_DIRECT' in source
+    assert "default=POLICY_DIRECT" in source

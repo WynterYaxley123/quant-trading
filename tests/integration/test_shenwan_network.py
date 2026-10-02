@@ -9,7 +9,6 @@ import requests
 
 from src.data.providers.shenwan_official import STOCK_CLASSIFICATION_URL
 
-
 pytestmark = [pytest.mark.integration, pytest.mark.network]
 
 

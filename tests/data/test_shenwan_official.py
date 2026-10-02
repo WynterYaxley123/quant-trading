@@ -129,9 +129,7 @@ def test_parse_preserves_unknown_pit_fields_and_blocks_admission(tmp_path, monke
     assert pd.isna(frame.loc[0, "effective_to"])
     assert pd.isna(frame.loc[0, "available_at"])
     assert pd.isna(frame.loc[0, "classification_version"])
-    assert frame.loc[0, "source_retrieved_at"] == pd.Timestamp(
-        "2026-09-20T10:00:00+08:00"
-    )
+    assert frame.loc[0, "source_retrieved_at"] == pd.Timestamp("2026-09-20T10:00:00+08:00")
     assert frame.loc[0, "source_url"] == STOCK_CLASSIFICATION_URL
     assert frame.loc[0, "source_updated_at"] == pd.Timestamp("2022-01-01")
     with pytest.raises(ShenwanAdmissionError, match="available_at"):
@@ -141,9 +139,7 @@ def test_parse_preserves_unknown_pit_fields_and_blocks_admission(tmp_path, monke
 def test_unknown_retrieval_time_also_blocks_admission(tmp_path, monkeypatch):
     raw = tmp_path / STOCK_CLASSIFICATION_FILENAME
     raw.write_bytes(b"xls placeholder")
-    record = RawFileRecord(
-        **{**_record(raw, version="SW2021").__dict__, "retrieved_at": None}
-    )
+    record = RawFileRecord(**{**_record(raw, version="SW2021").__dict__, "retrieved_at": None})
     write_manifest((record,), tmp_path)
     source = pd.DataFrame(
         {

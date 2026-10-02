@@ -73,9 +73,7 @@ def _ensure_hikyuu_loaded(config_file: str | None = None):
     sm = hikyuu.StockManager.instance()
     if len(sm) == 0:
         # 先做结构一致性检查 —— 不一致会导致 reload 段错误（实测 exit 139）
-        cfg = config_file or os.path.join(
-            os.path.expanduser("~"), ".hikyuu", "hikyuu.ini"
-        )
+        cfg = config_file or os.path.join(os.path.expanduser("~"), ".hikyuu", "hikyuu.ini")
         import configparser
 
         dest = None
@@ -203,8 +201,7 @@ def equity_curve_from_tm(tm, dates=None) -> pd.DataFrame:
     return pd.DataFrame(
         {
             "date": [
-                f"{int(d.year):04d}-{int(d.month):02d}-{int(d.day):02d}"
-                for d in dates_out[:n]
+                f"{int(d.year):04d}-{int(d.month):02d}-{int(d.day):02d}" for d in dates_out[:n]
             ],
             "equity": values[:n],
         }
@@ -237,13 +234,15 @@ def positions_from_tm(tm, dates, stock) -> pd.DataFrame:
     for d in dates:
         p = tm.get_position(d, stock)
         funds = tm.get_funds(d)
-        rows.append({
-            "datetime": f"{int(d.year):04d}-{int(d.month):02d}-{int(d.day):02d}",
-            "symbol": str(stock.market).lower() + str(stock.code),
-            "number": float(p.number),
-            "cash": float(funds.cash),
-            "market_value": float(funds.market_value),
-        })
+        rows.append(
+            {
+                "datetime": f"{int(d.year):04d}-{int(d.month):02d}-{int(d.day):02d}",
+                "symbol": str(stock.market).lower() + str(stock.code),
+                "number": float(p.number),
+                "cash": float(funds.cash),
+                "market_value": float(funds.market_value),
+            }
+        )
     return pd.DataFrame(rows, columns=["datetime", "symbol", "number", "cash", "market_value"])
 
 
@@ -469,7 +468,7 @@ def _annualized(
     vol = float(rets.std(ddof=1) * np.sqrt(252))
     n_years = len(rets) / 252.0
     total = a[-1] / a[0]
-    if total <= 0 or n_years <= 0:
+    if total <= 0 or n_years <= 0:  # noqa: SIM108 -- Keep explicit numerical branches for contract review.
         ann = None
     else:
         ann = float(total ** (1.0 / n_years) - 1.0)

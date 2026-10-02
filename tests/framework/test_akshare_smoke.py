@@ -14,6 +14,8 @@ import socket
 
 import pytest
 
+pytestmark = pytest.mark.external_runtime
+
 
 # 顶层 import：若失败则为包级故障
 akshare = pytest.importorskip("akshare", reason="akshare not importable")

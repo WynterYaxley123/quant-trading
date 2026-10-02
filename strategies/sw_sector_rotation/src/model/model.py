@@ -41,11 +41,12 @@ long       120
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import warnings
+from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
+from numpy.typing import ArrayLike
 
 from ..common.temporal_integrity import validate_train_features
 
@@ -91,7 +92,7 @@ class NumPyRidge:
         是否拟合截距，默认 True。
     """
 
-    def __init__(self, alpha: float = DEFAULT_ALPHA, fit_intercept: bool = True):
+    def __init__(self, alpha: float = DEFAULT_ALPHA, fit_intercept: bool = True) -> None:
         if not np.isfinite(alpha) or alpha < 0:
             raise ValueError(f"alpha 必须 >= 0, 收到 {alpha}")
         self.alpha = float(alpha)
@@ -100,7 +101,8 @@ class NumPyRidge:
         self.intercept_: float = 0.0
         self.n_features_in_: int | None = None
 
-    def fit(self, X, y) -> "NumPyRidge":
+    def fit(self, X: ArrayLike, y: ArrayLike) -> "NumPyRidge":
+        """Fit finite raw features; failed retries clear the previous fitted state."""
         # 失败的重新训练不可留下上一窗口的模型。
         self.coef_, self.intercept_, self.n_features_in_ = None, 0.0, None
         X = np.asarray(X, dtype=float)
@@ -112,9 +114,7 @@ class NumPyRidge:
         if not np.isfinite(X).all() or not np.isfinite(y).all():
             raise ValueError("Ridge 输入含 NaN/Inf")
         if X.shape[0] != y.shape[0]:
-            raise ValueError(
-                f"X 与 y 样本数不一致: {X.shape[0]} vs {y.shape[0]}"
-            )
+            raise ValueError(f"X 与 y 样本数不一致: {X.shape[0]} vs {y.shape[0]}")
         n_features = X.shape[1]
         try:
             with np.errstate(over="raise", invalid="raise", divide="raise"):
@@ -132,7 +132,11 @@ class NumPyRidge:
                     raise ValueError("Ridge 数值秩不足；特征尺度超出可靠求解范围")
                 intercept = float(y_mean - X_mean @ coef)
                 fitted = X @ coef + intercept
-                if not np.isfinite(coef).all() or not np.isfinite(intercept) or not np.isfinite(fitted).all():
+                if (
+                    not np.isfinite(coef).all()
+                    or not np.isfinite(intercept)
+                    or not np.isfinite(fitted).all()
+                ):
                     raise ValueError("Ridge 求解产生非有限结果")
         except (FloatingPointError, np.linalg.LinAlgError) as exc:
             raise ValueError("Ridge 数值求解失败") from exc
@@ -141,7 +145,7 @@ class NumPyRidge:
         self.n_features_in_ = n_features
         return self
 
-    def predict(self, X) -> np.ndarray:
+    def predict(self, X: ArrayLike) -> np.ndarray:
         if self.coef_ is None:
             raise RuntimeError("NumPyRidge 尚未 fit")
         X = np.asarray(X, dtype=float)
@@ -150,9 +154,7 @@ class NumPyRidge:
         if X.ndim != 2 or not np.isfinite(X).all():
             raise ValueError("Ridge predict 需要有限二维数据")
         if X.shape[1] != self.n_features_in_:
-            raise ValueError(
-                f"特征数不匹配: 模型期望 {self.n_features_in_}, 收到 {X.shape[1]}"
-            )
+            raise ValueError(f"特征数不匹配: 模型期望 {self.n_features_in_}, 收到 {X.shape[1]}")
         with np.errstate(over="raise", invalid="raise"):
             result = X @ self.coef_ + self.intercept_
         if not np.isfinite(result).all():
@@ -230,11 +232,19 @@ class CrossSectionalRidgeModel:
         if not feature_names or len(set(feature_names)) != len(feature_names):
             raise ValueError("feature schema 必须非空且无重复")
         validate_train_features(feature_names)
-        if any(n.startswith("fwd") or n in {"sector", "sector_code", "symbol", "date"} for n in feature_names):
+        if any(
+            n.startswith("fwd") or n in {"sector", "sector_code", "symbol", "date"}
+            for n in feature_names
+        ):
             raise ValueError("feature schema 不得包含 label 或行业标识")
         for name, frame in panel.items():
-            if (not isinstance(frame.index, pd.DatetimeIndex) or frame.index.has_duplicates
-                    or frame.index.hasnans or not frame.index.is_monotonic_increasing or frame.columns.has_duplicates):
+            if (
+                not isinstance(frame.index, pd.DatetimeIndex)
+                or frame.index.has_duplicates
+                or frame.index.hasnans
+                or not frame.index.is_monotonic_increasing
+                or frame.columns.has_duplicates
+            ):
                 raise ValueError(f"{name}: panel index/columns 不合法")
             missing = set(feature_names) - set(frame.columns)
             if missing:
@@ -289,14 +299,20 @@ class CrossSectionalRidgeModel:
             ys.append(sel[label_col].to_numpy(dtype=float))
 
         coverage = {
-            "samples_by_date": counts_by_date, "samples_by_sector": counts_by_sector,
-            "dropped_nan_rows": dropped, "n_train_dates": len(counts_by_date),
+            "samples_by_date": counts_by_date,
+            "samples_by_sector": counts_by_sector,
+            "dropped_nan_rows": dropped,
+            "n_train_dates": len(counts_by_date),
             "n_train_samples": sum(counts_by_sector.values()),
             "weighting": "one_weight_per_date_sector_sample",
         }
         self.training_coverage[period] = coverage
         if any(n != len(panel) for n in counts_by_date.values()):
-            warnings.warn("sector coverage 不一致；保留逐样本权重，详见 training_coverage", RuntimeWarning, stacklevel=2)
+            warnings.warn(
+                "sector coverage 不一致；保留逐样本权重，详见 training_coverage",
+                RuntimeWarning,
+                stacklevel=2,
+            )
         if not xs or len(counts_by_date) < self.min_train_dates:
             return None
         X = np.vstack(xs)
@@ -380,9 +396,15 @@ class CrossSectionalRidgeModel:
         再按权重加权平均。返回按融合分数降序的 ``[(sector, score), ...]``。
         只使用各周期都存在的行业。
         """
-        missing = [p for p in self.forward_windows if p not in results or results[p] is None or not results[p].scores]
+        missing = [
+            p
+            for p in self.forward_windows
+            if p not in results or results[p] is None or not results[p].scores
+        ]
         if missing:
-            warnings.warn(f"horizon unavailable: {missing}; 不生成融合排名", RuntimeWarning, stacklevel=2)
+            warnings.warn(
+                f"horizon unavailable: {missing}; 不生成融合排名", RuntimeWarning, stacklevel=2
+            )
             return []
         available = {p: results[p] for p in self.forward_windows}
         if len({r.predict_date for r in available.values()}) != 1:
@@ -402,7 +424,9 @@ class CrossSectionalRidgeModel:
             return []
         common = sorted(common)
         if any(set(r.scores) != set(common) for r in available.values()):
-            warnings.warn("horizon sector coverage 不一致，融合仅取交集", RuntimeWarning, stacklevel=2)
+            warnings.warn(
+                "horizon sector coverage 不一致，融合仅取交集", RuntimeWarning, stacklevel=2
+            )
 
         fused: dict[str, float] = {s: 0.0 for s in common}
         total_w = 0.0
@@ -415,7 +439,7 @@ class CrossSectionalRidgeModel:
             magnitude = max(float(np.max(np.abs(vals))), 1.0)
             vals = vals / magnitude
             std = vals.std()
-            if std > 1e-12 / magnitude:
+            if std > 1e-12 / magnitude:  # noqa: SIM108 -- Keep explicit numerical branches for contract review.
                 z = (vals - vals.mean()) / std
             else:
                 z = np.zeros_like(vals)

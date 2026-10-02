@@ -35,9 +35,7 @@ __all__ = ["compute_rsrs", "rolling_ols_beta_r2"]
 _EPS = 1e-10
 
 
-def rolling_ols_beta_r2(
-    high: np.ndarray, low: np.ndarray, n: int
-) -> tuple[np.ndarray, np.ndarray]:
+def rolling_ols_beta_r2(high: np.ndarray, low: np.ndarray, n: int) -> tuple[np.ndarray, np.ndarray]:
     """滚动 OLS 回归 ``low = alpha + beta * high``，返回 (beta, r2) 序列。
 
     位置 ``t < n-1`` 为 NaN。``var(high) ~ 0`` 时 beta/r2 记为 NaN。
@@ -52,7 +50,7 @@ def rolling_ols_beta_r2(
 
     for t in range(n - 1, n_points):
         h = high[t - n + 1 : t + 1]
-        l = low[t - n + 1 : t + 1]
+        l = low[t - n + 1 : t + 1]  # noqa: E741 -- Established OHLC low-price name in frozen numerical helper.
         h_mean = h.mean()
         l_mean = l.mean()
         h_d = h - h_mean

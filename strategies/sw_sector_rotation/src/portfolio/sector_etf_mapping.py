@@ -25,12 +25,12 @@ legacy ``strategy.py`` 在红灯 ≥ 3 时把 Top5 缩到 Top3，再归一化到
 
 from __future__ import annotations
 
-from typing import Mapping, Sequence
-from dataclasses import dataclass
-from datetime import date
 import math
 import re
 import warnings
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from datetime import date
 
 __all__ = [
     "NOT_IMPLEMENTED",
@@ -56,10 +56,16 @@ RELATION_COMPOSITE = "composite"
 RELATION_PROXY = "proxy"
 _VALID_RELATIONS = {RELATION_DIRECT, RELATION_COMPOSITE, RELATION_PROXY}
 
-MAPPING_STATUSES = frozenset({
-    "VALIDATED", "UNKNOWN", "NO_SUITABLE_ETF", "NOT_LISTED_YET",
-    "MULTIPLE_CANDIDATES", "SOURCE_INSUFFICIENT",
-})
+MAPPING_STATUSES = frozenset(
+    {
+        "VALIDATED",
+        "UNKNOWN",
+        "NO_SUITABLE_ETF",
+        "NOT_LISTED_YET",
+        "MULTIPLE_CANDIDATES",
+        "SOURCE_INSUFFICIENT",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -95,9 +101,7 @@ def _date(value: str | None) -> date | None:
     return date.fromisoformat(value)
 
 
-def validate_mapping_evidence(
-    rows: Sequence[MappingEvidence], catalog: Mapping[str, str]
-) -> None:
+def validate_mapping_evidence(rows: Sequence[MappingEvidence], catalog: Mapping[str, str]) -> None:
     """Reject fabricated dates, unverifiable primary relationships and ambiguity."""
     if not rows:
         raise ValueError("mapping 必须显式包含 UNKNOWN 行，不能用空表暗示全覆盖")
@@ -109,9 +113,9 @@ def validate_mapping_evidence(
             raise ValueError(f"无效 mapping_status: {r.mapping_status}")
         if r.etf_code is not None and not re.fullmatch(r"(sh|sz)\d{6}", r.etf_code):
             raise ValueError(f"ETF 代码必须含市场前缀: {r.etf_code}")
-        start, end, listed = map(_date, (
-            r.mapping_effective_from, r.mapping_effective_to, r.etf_listing_date
-        ))
+        start, end, listed = map(
+            _date, (r.mapping_effective_from, r.mapping_effective_to, r.etf_listing_date)
+        )
         if start and end and end < start:
             raise ValueError("mapping effective_to 早于 effective_from")
         if r.source_sha256 is not None and not re.fullmatch(r"[0-9a-f]{64}", r.source_sha256):
@@ -122,9 +126,15 @@ def validate_mapping_evidence(
             raise ValueError("只有 VALIDATED 关系可标记 primary")
         if r.mapping_status == "VALIDATED":
             required = (
-                r.etf_code, r.etf_name, r.market, r.tracking_index_code,
-                r.tracking_index_name, r.mapping_effective_from,
-                r.etf_listing_date, r.source_provider, r.source_retrieved_at,
+                r.etf_code,
+                r.etf_name,
+                r.market,
+                r.tracking_index_code,
+                r.tracking_index_name,
+                r.mapping_effective_from,
+                r.etf_listing_date,
+                r.source_provider,
+                r.source_retrieved_at,
                 r.evidence_type,
             )
             if not all(required) or not (r.source_url or r.source_file):
@@ -140,15 +150,23 @@ def validate_mapping_evidence(
     for code, candidates in grouped.items():
         primaries = [r for r in candidates if r.is_primary]
         for i, left in enumerate(primaries):
-            for right in primaries[i + 1:]:
-                left_start, right_start = _date(left.mapping_effective_from), _date(right.mapping_effective_from)
-                left_end, right_end = _date(left.mapping_effective_to), _date(right.mapping_effective_to)
+            for right in primaries[i + 1 :]:
+                left_start, right_start = (
+                    _date(left.mapping_effective_from),
+                    _date(right.mapping_effective_from),
+                )
+                left_end, right_end = (
+                    _date(left.mapping_effective_to),
+                    _date(right.mapping_effective_to),
+                )
                 if (left_end is None or right_start <= left_end) and (
                     right_end is None or left_start <= right_end
                 ):
                     raise ValueError(f"{code}: 同期 primary ETF 不唯一")
-        if len(candidates) > 1 and not primaries and not all(
-            r.mapping_status == "MULTIPLE_CANDIDATES" for r in candidates
+        if (
+            len(candidates) > 1
+            and not primaries
+            and not all(r.mapping_status == "MULTIPLE_CANDIDATES" for r in candidates)
         ):
             raise ValueError(f"{code}: 多候选未明确标记 MULTIPLE_CANDIDATES")
 
@@ -158,11 +176,16 @@ def resolve_primary_mapping(
 ) -> MappingEvidence | None:
     """Resolve only an explicitly validated primary active on this date."""
     day = _date(as_of)
-    matches = [r for r in rows if r.sector_code == sector_code and r.is_primary
-               and r.mapping_status == "VALIDATED"
-               and _date(r.mapping_effective_from) is not None
-               and day >= _date(r.mapping_effective_from)
-               and (r.mapping_effective_to is None or day <= _date(r.mapping_effective_to))]
+    matches = [
+        r
+        for r in rows
+        if r.sector_code == sector_code
+        and r.is_primary
+        and r.mapping_status == "VALIDATED"
+        and _date(r.mapping_effective_from) is not None
+        and day >= _date(r.mapping_effective_from)
+        and (r.mapping_effective_to is None or day <= _date(r.mapping_effective_to))
+    ]
     if len(matches) > 1:
         raise ValueError(f"{sector_code}: primary ETF 不唯一")
     if not matches:
@@ -171,8 +194,13 @@ def resolve_primary_mapping(
 
 
 def daily_mapping_availability(
-    rows: Sequence[MappingEvidence], sector_code: str, as_of: str,
-    *, execution_date: str | None, bar: Mapping | None, sector_bar_valid: bool,
+    rows: Sequence[MappingEvidence],
+    sector_code: str,
+    as_of: str,
+    *,
+    execution_date: str | None,
+    bar: Mapping | None,
+    sector_bar_valid: bool,
 ) -> dict:
     """Use the signal session and the *next* execution session separately."""
     from src.data.providers.etf_local import valid_daily_open
@@ -182,19 +210,23 @@ def daily_mapping_availability(
     if execution_date is None and bar is not None:
         raise ValueError("无下一交易日时不得提供 ETF bar")
     r = resolve_primary_mapping(rows, sector_code, as_of)
-    if r is not None and execution_date is not None:
+    if r is not None and execution_date is not None:  # noqa: SIM102 -- Preserve independently documented frozen validation branches.
         if resolve_primary_mapping(rows, sector_code, execution_date) != r:
             r = None
     active = r is not None
     listed = active and _date(as_of) >= _date(r.etf_listing_date)
     has_bar = bool(
-        active and execution_date is not None and bar is not None
+        active
+        and execution_date is not None
+        and bar is not None
         and bar.get("date") == execution_date
         and bar.get("etf_code") == r.etf_code
     )
     tradable = has_bar and valid_daily_open(bar)
     return {
-        "sector_code": sector_code, "date": as_of, "execution_date": execution_date,
+        "sector_code": sector_code,
+        "date": as_of,
+        "execution_date": execution_date,
         "sector_bar_valid": bool(sector_bar_valid),
         "is_mapping_active": active,
         "is_listed": listed,
@@ -206,7 +238,8 @@ def daily_mapping_availability(
 
 
 def mapping_admission(
-    rows: Sequence[MappingEvidence], catalog: Mapping[str, str],
+    rows: Sequence[MappingEvidence],
+    catalog: Mapping[str, str],
     executable_counts: Sequence[int],
 ) -> str:
     """A conservative gate: missing evidence never becomes READY."""
@@ -338,6 +371,5 @@ def apply_risk_budget(*args, **kwargs):
     —— 那并不降低总敞口，只是增加集中度。
     """
     raise RiskBudgetNotImplemented(
-        f"apply_risk_budget 当前为 {NOT_IMPLEMENTED}，"
-        "风险敞口调整策略待 ChatGPT 设计后实现。"
+        f"apply_risk_budget 当前为 {NOT_IMPLEMENTED}，风险敞口调整策略待 ChatGPT 设计后实现。"
     )

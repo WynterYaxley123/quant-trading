@@ -8,6 +8,7 @@
   - 执行回测
   - 创建模拟交易
 """
+
 import sys
 
 import pytest
@@ -47,18 +48,21 @@ def test_import_scipy():
     assert scipy.__version__
 
 
+@pytest.mark.external_runtime
 def test_import_akshare():
     import akshare
 
     assert akshare.__version__
 
 
+@pytest.mark.external_runtime
 def test_import_hikyuu():
     import hikyuu
 
     assert hikyuu.__version__ if hasattr(hikyuu, "__version__") else True
 
 
+@pytest.mark.external_runtime
 def test_import_rqalpha():
     import rqalpha
 
@@ -76,7 +80,7 @@ def test_pytest_available():
 
 @pytest.mark.parametrize(
     "modname",
-    ["yaml", "requests", "dotenv", "jupyter"],
+    ["yaml", "requests", "dotenv", pytest.param("jupyter", marks=pytest.mark.external_runtime)],
 )
 def test_import_support_modules(modname):
     """辅助依赖可导入（jupyter 为命令，用 importlib 探测）"""

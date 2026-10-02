@@ -11,17 +11,29 @@ import pytest
 from src.data.loaders import load_sector_catalog, load_sector_ohlcva, load_sector_panel
 from src.data.providers.shenwan_official import ShenwanRawDataError, sha256_file
 from src.data.providers.shenwan_sector import (
-    _violations, audit_coverage, candidate_research_range,
-    load_history_manifest, load_raw_catalog, parse_classification_with_intervals,
-    parse_sector_ohlcva, snapshot_id,
+    _violations,
+    audit_coverage,
+    candidate_research_range,
+    load_history_manifest,
+    load_raw_catalog,
+    parse_classification_with_intervals,
+    parse_sector_ohlcva,
+    snapshot_id,
 )
 from src.data.providers.shenwan_sector_admission import evaluate_admission
 
 
 def _response(rows, count, *, next_url=None, previous_url=None):
-    return {"code": "200", "message": "ok", "data": {
-        "count": count, "next": next_url, "previous": previous_url, "results": rows,
-    }}
+    return {
+        "code": "200",
+        "message": "ok",
+        "data": {
+            "count": count,
+            "next": next_url,
+            "previous": previous_url,
+            "results": rows,
+        },
+    }
 
 
 def _fixture(tmp_path: Path):
@@ -48,27 +60,47 @@ def _fixture(tmp_path: Path):
     for code, name in (("801012", "农产品加工"), ("801014", "饲料")):
         bars = []
         for date in ("2024-01-02", "2024-01-03", "2024-01-04"):
-            bars.append({
-                "swindexcode": code, "bargaindate": date,
-                "openindex": 10, "maxindex": 11, "minindex": 9, "closeindex": 10.5,
-                "bargainamount": None, "bargainsum": None,
-            })
+            bars.append(
+                {
+                    "swindexcode": code,
+                    "bargaindate": date,
+                    "openindex": 10,
+                    "maxindex": 11,
+                    "minindex": 9,
+                    "closeindex": 10.5,
+                    "bargainamount": None,
+                    "bargainsum": None,
+                }
+            )
         path = history_dir / f"{code}.json"
         path.write_text(json.dumps({"code": "200", "data": bars}), encoding="utf-8")
-        manifest_files.append({
-            "sector_code": code, "sector_name": name,
-            "source_url": f"https://www.swsresearch.com/institute-sw/api/index_publish/trend/?swindexcode={code}&period=DAY",
-            "retrieved_at": "2026-09-20T19:16:00+08:00",
-            "sha256": sha256_file(path), "row_count": 3,
-            "start_date": "2024-01-02", "end_date": "2024-01-04",
-            "raw_path": f"data/raw/shenwan/sector_history/{code}.json",
-        })
+        manifest_files.append(
+            {
+                "sector_code": code,
+                "sector_name": name,
+                "source_url": f"https://www.swsresearch.com/institute-sw/api/index_publish/trend/?swindexcode={code}&period=DAY",
+                "retrieved_at": "2026-09-20T19:16:00+08:00",
+                "sha256": sha256_file(path),
+                "row_count": 3,
+                "start_date": "2024-01-02",
+                "end_date": "2024-01-04",
+                "raw_path": f"data/raw/shenwan/sector_history/{code}.json",
+            }
+        )
     manifest = tmp_path / "history_manifest.json"
-    manifest.write_text(json.dumps({
-        "schema_version": 1, "provider": "shenwan_research_official",
-        "period": "DAY", "sector_count": 2,
-        "retrieved_at": "2026-09-20T19:16:00+08:00", "files": manifest_files,
-    }), encoding="utf-8")
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "provider": "shenwan_research_official",
+                "period": "DAY",
+                "sector_count": 2,
+                "retrieved_at": "2026-09-20T19:16:00+08:00",
+                "files": manifest_files,
+            }
+        ),
+        encoding="utf-8",
+    )
     return root, manifest
 
 
@@ -92,7 +124,9 @@ def test_catalog_rejects_missing_level_evidence_or_duplicate(tmp_path):
     page.write_text(json.dumps(payload))
     with pytest.raises(ShenwanRawDataError, match="indextype"):
         load_raw_catalog(raw, retrieved_at=None)
-    payload["data"]["next"] = "http://www.swsresearch.com/api/index_publish/current/?indextype=二级行业"
+    payload["data"]["next"] = (
+        "http://www.swsresearch.com/api/index_publish/current/?indextype=二级行业"
+    )
     payload["data"]["results"][0]["swindexname"] = ""
     page.write_text(json.dumps(payload))
     with pytest.raises(ShenwanRawDataError, match="代码/名称"):
@@ -184,19 +218,24 @@ def test_nullable_volume_amount_and_invalid_bounds():
 
 def test_classification_derived_intervals_remain_separate(monkeypatch):
     from src.data.providers import shenwan_sector as module
-    source = pd.DataFrame({
-        "symbol": ["000001", "000001", "000002"],
-        "sector_code": ["440101", "480101", "440101"],
-        "sector_name": [pd.NA] * 3,
-        "effective_from": pd.to_datetime(["2001-01-01", "2014-02-21", "2020-01-01"]),
-        "effective_to": [pd.NaT] * 3, "available_at": [pd.NaT] * 3,
-        "source_updated_at": pd.to_datetime(["2024-01-01"] * 3),
-        "classification_version": [pd.NA] * 3,
-        "source_provider": ["official"] * 3, "source_url": ["https://www.swsresearch.com/file"] * 3,
-        "source_retrieved_at": [pd.NaT] * 3,
-        "source_filename": ["StockClassifyUse_stock.xls"] * 3,
-        "source_sha256": ["a" * 64] * 3,
-    })
+
+    source = pd.DataFrame(
+        {
+            "symbol": ["000001", "000001", "000002"],
+            "sector_code": ["440101", "480101", "440101"],
+            "sector_name": [pd.NA] * 3,
+            "effective_from": pd.to_datetime(["2001-01-01", "2014-02-21", "2020-01-01"]),
+            "effective_to": [pd.NaT] * 3,
+            "available_at": [pd.NaT] * 3,
+            "source_updated_at": pd.to_datetime(["2024-01-01"] * 3),
+            "classification_version": [pd.NA] * 3,
+            "source_provider": ["official"] * 3,
+            "source_url": ["https://www.swsresearch.com/file"] * 3,
+            "source_retrieved_at": [pd.NaT] * 3,
+            "source_filename": ["StockClassifyUse_stock.xls"] * 3,
+            "source_sha256": ["a" * 64] * 3,
+        }
+    )
     monkeypatch.setattr(module, "parse_stock_classification", lambda _: source)
     frame = parse_classification_with_intervals("unused")
     assert frame.loc[0, "effective_to_derived"] == pd.Timestamp("2014-02-21")
@@ -216,53 +255,115 @@ def test_snapshot_id_stable_under_mapping_order_and_changes_on_hash():
 
 
 def test_admission_fixed_and_blocked():
-    catalog = pd.DataFrame({"sector_code": ["801012"], "sector_name": ["农业"], "sector_level": [2]})
-    market = pd.DataFrame({"sector_code": ["801012"], "date": pd.to_datetime(["2024-01-02"]), "is_valid_ohlc": [True]})
-    classification = pd.DataFrame({
-        "classification_version": [pd.NA], "effective_from": [pd.Timestamp("2021-01-01")],
-        "effective_to_official": [pd.NaT], "available_at": [pd.NaT],
-    })
-    decision = evaluate_admission(catalog, market, classification, provenance_verified=True,
-                                  candidate_start="2024-01-02", candidate_end="2024-01-02")
+    catalog = pd.DataFrame(
+        {"sector_code": ["801012"], "sector_name": ["农业"], "sector_level": [2]}
+    )
+    market = pd.DataFrame(
+        {"sector_code": ["801012"], "date": pd.to_datetime(["2024-01-02"]), "is_valid_ohlc": [True]}
+    )
+    classification = pd.DataFrame(
+        {
+            "classification_version": [pd.NA],
+            "effective_from": [pd.Timestamp("2021-01-01")],
+            "effective_to_official": [pd.NaT],
+            "available_at": [pd.NaT],
+        }
+    )
+    decision = evaluate_admission(
+        catalog,
+        market,
+        classification,
+        provenance_verified=True,
+        candidate_start="2024-01-02",
+        candidate_end="2024-01-02",
+    )
     assert decision.level == "FIXED_CLASSIFICATION_RESEARCH" and not decision.strict_pit
-    denied = evaluate_admission(catalog, market, classification, provenance_verified=False,
-                                candidate_start="2024-01-02", candidate_end="2024-01-02")
+    denied = evaluate_admission(
+        catalog,
+        market,
+        classification,
+        provenance_verified=False,
+        candidate_start="2024-01-02",
+        candidate_end="2024-01-02",
+    )
     assert denied.level == "DATA_NOT_ADMISSIBLE"
     classification.loc[0, "classification_version"] = "verified-version"
     classification.loc[0, "effective_to_official"] = pd.Timestamp("2024-12-31")
     classification.loc[0, "available_at"] = pd.Timestamp("2021-01-02")
-    strict = evaluate_admission(catalog, market, classification, provenance_verified=True,
-                                candidate_start="2024-01-02", candidate_end="2024-01-02",
-                                classification_version_proven=True, publication_timing_proven=True,
-                                no_future_classification_leakage_proven=True)
+    strict = evaluate_admission(
+        catalog,
+        market,
+        classification,
+        provenance_verified=True,
+        candidate_start="2024-01-02",
+        candidate_end="2024-01-02",
+        classification_version_proven=True,
+        publication_timing_proven=True,
+        no_future_classification_leakage_proven=True,
+    )
     assert strict.level == "STRICT_PIT" and strict.strict_pit
 
 
 def test_loader_panel_no_fill_and_rejects_invalid(tmp_path):
     root = tmp_path / "processed"
     root.mkdir()
-    pd.DataFrame({"sector_code": ["801012", "801014"], "sector_name": ["农业", "饲料"],
-                  "sector_level": [2, 2], **{col: [None, None] for col in (
-                      "classification_version", "effective_from", "effective_to", "available_at",
-                      "source_provider", "source_url", "source_retrieved_at", "source_filename", "source_sha256")}}).to_csv(root / "sector_catalog.csv", index=False)
+    pd.DataFrame(
+        {
+            "sector_code": ["801012", "801014"],
+            "sector_name": ["农业", "饲料"],
+            "sector_level": [2, 2],
+            **{
+                col: [None, None]
+                for col in (
+                    "classification_version",
+                    "effective_from",
+                    "effective_to",
+                    "available_at",
+                    "source_provider",
+                    "source_url",
+                    "source_retrieved_at",
+                    "source_filename",
+                    "source_sha256",
+                )
+            },
+        }
+    ).to_csv(root / "sector_catalog.csv", index=False)
     base = {
-        "sector_name": "农业", "open": 10, "high": 11, "low": 9, "close": 10.5,
-        "volume": None, "amount": None, "source_provider": "official", "source_url": "https://www.swsresearch.com/",
-        "source_retrieved_at": None, "source_filename": "file", "source_sha256": "a" * 64,
-        "source_snapshot": "a" * 64, "source_row": 0, "is_valid_ohlc": True,
+        "sector_name": "农业",
+        "open": 10,
+        "high": 11,
+        "low": 9,
+        "close": 10.5,
+        "volume": None,
+        "amount": None,
+        "source_provider": "official",
+        "source_url": "https://www.swsresearch.com/",
+        "source_retrieved_at": None,
+        "source_filename": "file",
+        "source_sha256": "a" * 64,
+        "source_snapshot": "a" * 64,
+        "source_row": 0,
+        "is_valid_ohlc": True,
         "quality_violations": "",
     }
-    pd.DataFrame([
-        {**base, "sector_code": "801012", "date": "2024-01-02"},
-        {**base, "sector_code": "801012", "date": "2024-01-03"},
-        {**base, "sector_code": "801014", "date": "2024-01-03", "sector_name": "饲料"},
-    ]).to_csv(root / "sector_ohlcva.csv", index=False)
-    (root / "sector_admission.json").write_text(json.dumps({
-        "data_snapshot_id": "snapshot", "canonical_hashes": {
-            name: sha256_file(root / name)
-            for name in ("sector_catalog.csv", "sector_ohlcva.csv")
-        },
-    }))
+    pd.DataFrame(
+        [
+            {**base, "sector_code": "801012", "date": "2024-01-02"},
+            {**base, "sector_code": "801012", "date": "2024-01-03"},
+            {**base, "sector_code": "801014", "date": "2024-01-03", "sector_name": "饲料"},
+        ]
+    ).to_csv(root / "sector_ohlcva.csv", index=False)
+    (root / "sector_admission.json").write_text(
+        json.dumps(
+            {
+                "data_snapshot_id": "snapshot",
+                "canonical_hashes": {
+                    name: sha256_file(root / name)
+                    for name in ("sector_catalog.csv", "sector_ohlcva.csv")
+                },
+            }
+        )
+    )
     assert len(load_sector_catalog(root)) == 2
     assert len(load_sector_ohlcva("801012", processed_dir=root)) == 2
     panel = load_sector_panel(["801012", "801014"], "2024-01-02", "2024-01-03", processed_dir=root)
@@ -294,10 +395,13 @@ def test_loader_panel_no_fill_and_rejects_invalid(tmp_path):
 
 def test_candidate_range_counts_sessions_and_reserves_forward_labels():
     days = pd.bdate_range("2021-01-01", periods=500)
-    market = pd.DataFrame({
-        "date": days, "sector_code": ["801012"] * len(days),
-        "is_valid_ohlc": [True] * len(days),
-    })
+    market = pd.DataFrame(
+        {
+            "date": days,
+            "sector_code": ["801012"] * len(days),
+            "is_valid_ohlc": [True] * len(days),
+        }
+    )
     summary = {"common_start_date": str(days[0].date()), "common_end_date": str(days[-1].date())}
     start, end = candidate_research_range(market, summary)
     assert start is not None and end == str(days[-121].date())

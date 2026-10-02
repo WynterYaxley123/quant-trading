@@ -161,16 +161,21 @@ def test_level_a_smoke_runs_real_backtest(datadir):
     assert res.positions["datetime"].tolist() == res.equity_curve["date"].tolist()
     assert res.positions["number"].nunique() > 1
     assert res.positions["cash"].nunique() > 1
-    assert ((res.positions["cash"] + res.positions["market_value"]
-             - res.equity_curve["equity"]).abs() < .02).all()
+    assert (
+        (res.positions["cash"] + res.positions["market_value"] - res.equity_curve["equity"]).abs()
+        < 0.02
+    ).all()
 
 
 def test_level_a_writes_standard_output(datadir, tmp_path):
-    from src.backtesting import BacktestRequest, RESULT_FILES, run_backtest
+    from src.backtesting import RESULT_FILES, BacktestRequest, run_backtest
 
     req = BacktestRequest(
-        strategy="sw_sector_rotation", framework="hikyuu",
-        start_date="2023-01-01", end_date="2023-12-31", initial_cash=100_000.0,
+        strategy="sw_sector_rotation",
+        framework="hikyuu",
+        start_date="2023-01-01",
+        end_date="2023-12-31",
+        initial_cash=100_000.0,
     )
     res = run_backtest(req)
     out = res.write(str(tmp_path))
@@ -185,8 +190,11 @@ def test_level_a_limitations_are_recorded(datadir):
     from src.backtesting import BacktestRequest, run_backtest
 
     req = BacktestRequest(
-        strategy="sw_sector_rotation", framework="hikyuu",
-        start_date="2022-01-01", end_date="2022-12-31", initial_cash=100_000.0,
+        strategy="sw_sector_rotation",
+        framework="hikyuu",
+        start_date="2022-01-01",
+        end_date="2022-12-31",
+        initial_cash=100_000.0,
     )
     res = run_backtest(req)
     lim = " ".join(res.metadata.limitations)
@@ -200,8 +208,11 @@ def test_short_window_annualized_is_none_not_zero(datadir):
     from src.backtesting import BacktestRequest, run_backtest
 
     req = BacktestRequest(
-        strategy="sw_sector_rotation", framework="hikyuu",
-        start_date="2024-11-01", end_date="2024-12-31", initial_cash=100_000.0,
+        strategy="sw_sector_rotation",
+        framework="hikyuu",
+        start_date="2024-11-01",
+        end_date="2024-12-31",
+        initial_cash=100_000.0,
     )
     res = run_backtest(req)
     assert res.metrics.annual_return is None

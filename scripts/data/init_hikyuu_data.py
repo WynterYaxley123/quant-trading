@@ -29,7 +29,7 @@ import os
 import sqlite3
 import sys
 import time
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 # --- 常量 -----------------------------------------------------------------
 
@@ -77,15 +77,9 @@ def ensure_config(dest: str = DEFAULT_DEST, *, force: bool = False) -> str:
     if force or dest not in text:
         import re
 
-        text = re.sub(
-            r"^(tmpdir\s*=\s*).*$", rf"\g<1>{dest}/tmp", text, flags=re.M
-        )
-        text = re.sub(
-            r"^(datadir\s*=\s*).*$", rf"\g<1>{dest}", text, flags=re.M
-        )
-        text = re.sub(
-            r"^(db\s*=\s*).*stock\.db\s*$", rf"\g<1>{dest}/stock.db", text, flags=re.M
-        )
+        text = re.sub(r"^(tmpdir\s*=\s*).*$", rf"\g<1>{dest}/tmp", text, flags=re.M)
+        text = re.sub(r"^(datadir\s*=\s*).*$", rf"\g<1>{dest}", text, flags=re.M)
+        text = re.sub(r"^(db\s*=\s*).*stock\.db\s*$", rf"\g<1>{dest}/stock.db", text, flags=re.M)
         text = re.sub(
             r"^((?:sh|sz|bj)_(?:day|min|min5|time|trans)\s*=\s*).*$",
             lambda m: m.group(1) + dest + "/" + os.path.basename(m.group(0)),
@@ -205,11 +199,7 @@ def prune_stock_db(conn: sqlite3.Connection, dest: str) -> tuple[int, int]:
     cur = conn.cursor()
     rows = cur.execute("select stockid, marketid, code from stock").fetchall()
     mkt = {1: "SH", 2: "SZ", 3: "BJ"}
-    drop = [
-        sid
-        for sid, mid, code in rows
-        if (mkt.get(mid, "?") + code) not in present
-    ]
+    drop = [sid for sid, mid, code in rows if (mkt.get(mid, "?") + code) not in present]
     if drop:
         cur.executemany("delete from stock where stockid=?", [(i,) for i in drop])
     conn.commit()
@@ -228,7 +218,6 @@ def update_market_last_date(conn: sqlite3.Connection) -> None:
     因此这里从 HDF5 实际读取每个市场的最新日期。
     """
     import tables
-
     from hikyuu.data.common_sqlite3 import update_last_date
 
     marketid_map = ((1, "SH", "sh"), (2, "SZ", "sz"), (3, "BJ", "bj"))

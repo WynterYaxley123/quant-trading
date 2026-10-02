@@ -65,8 +65,9 @@ def build_smoke_system(symbol: str, config: SmokeConfig | None = None):
 
     tm = hikyuu.crtTM(init_cash=cfg.init_cash)
     # 双均线金叉买入 / 死叉卖出（确定性、无调参）
-    sg = hikyuu.SG_Cross(hikyuu.MA(hikyuu.CLOSE(), cfg.fast_n),
-                         hikyuu.MA(hikyuu.CLOSE(), cfg.slow_n))
+    sg = hikyuu.SG_Cross(
+        hikyuu.MA(hikyuu.CLOSE(), cfg.fast_n), hikyuu.MA(hikyuu.CLOSE(), cfg.slow_n)
+    )
     mm = hikyuu.MM_FixedCount(cfg.buy_count)
     st = hikyuu.ST_FixedPercent(cfg.stop_loss_pct)
 

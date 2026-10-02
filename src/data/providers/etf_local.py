@@ -20,12 +20,14 @@ def valid_daily_open(bar: dict | pd.Series | None) -> bool:
     if bar is None:
         return False
     try:
-        o, h, l, c = (float(bar[k]) for k in ("open", "high", "low", "close"))
+        o, h, l, c = (float(bar[k]) for k in ("open", "high", "low", "close"))  # noqa: E741 -- Established OHLC low-price name in frozen numerical helper.
     except (KeyError, TypeError, ValueError):
         return False
     from math import isfinite
 
-    return all(isfinite(x) and x > 0 for x in (o, h, l, c)) and h >= max(o, l, c) and l <= min(o, h, c)
+    return (
+        all(isfinite(x) and x > 0 for x in (o, h, l, c)) and h >= max(o, l, c) and l <= min(o, h, c)
+    )
 
 
 def read_local_etf_snapshot(data_dir: Path | str) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -41,8 +43,7 @@ def read_local_etf_snapshot(data_dir: Path | str) -> tuple[pd.DataFrame, pd.Data
     uri = f"file:{(root / 'stock.db').resolve().as_posix()}?mode=ro"
     with sqlite3.connect(uri, uri=True) as db:
         stocks = db.execute(
-            "select marketid, code, name, type, valid, startDate "
-            "from stock order by marketid, code"
+            "select marketid, code, name, type, valid, startDate from stock order by marketid, code"
         ).fetchall()
     metadata: list[dict] = []
     bars: list[dict] = []
@@ -60,25 +61,29 @@ def read_local_etf_snapshot(data_dir: Path | str) -> tuple[pd.DataFrame, pd.Data
             table = h5.get_node(f"/data/{market.upper()}{code}")
             for raw in table.iterrows():
                 stamp = str(int(raw["datetime"]) // 10000)
-                bars.append({
-                    "etf_code": symbol,
-                    "date": f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}",
-                    "open": int(raw["openPrice"]) / 1000,
-                    "high": int(raw["highPrice"]) / 1000,
-                    "low": int(raw["lowPrice"]) / 1000,
-                    "close": int(raw["closePrice"]) / 1000,
-                })
+                bars.append(
+                    {
+                        "etf_code": symbol,
+                        "date": f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}",
+                        "open": int(raw["openPrice"]) / 1000,
+                        "high": int(raw["highPrice"]) / 1000,
+                        "low": int(raw["lowPrice"]) / 1000,
+                        "close": int(raw["closePrice"]) / 1000,
+                    }
+                )
         own_dates = [row["date"] for row in bars if row["etf_code"] == symbol]
-        metadata.append({
-            "etf_code": symbol,
-            "market": market,
-            "name": name,
-            "listing_date": None,
-            "listing_date_evidence": "UNKNOWN",
-            "hikyuu_stock_start_date": str(stock_start) if stock_start else None,
-            "local_data_start": min(own_dates) if own_dates else None,
-            "local_data_end": max(own_dates) if own_dates else None,
-            "last_available_date": max(own_dates) if own_dates else None,
-            "bar_count": len(own_dates),
-        })
+        metadata.append(
+            {
+                "etf_code": symbol,
+                "market": market,
+                "name": name,
+                "listing_date": None,
+                "listing_date_evidence": "UNKNOWN",
+                "hikyuu_stock_start_date": str(stock_start) if stock_start else None,
+                "local_data_start": min(own_dates) if own_dates else None,
+                "local_data_end": max(own_dates) if own_dates else None,
+                "last_available_date": max(own_dates) if own_dates else None,
+                "bar_count": len(own_dates),
+            }
+        )
     return pd.DataFrame(metadata), pd.DataFrame(bars)

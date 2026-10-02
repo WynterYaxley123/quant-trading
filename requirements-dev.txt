@@ -1,0 +1,19 @@
+# Independent developer/CI environment. Never install into quant-research.
+# Scientific versions match the frozen numerical contract; framework-only
+# Hikyuu/RQAlpha/AKShare remain in the maintainer runtime, not portable CI.
+numpy==2.3.5
+pandas==2.3.3
+scipy==1.16.3
+PyYAML==6.0.3
+requests==2.34.2
+pytest==8.4.2
+ruff==0.13.2
+mypy==1.18.2
+pre-commit==4.3.0
+pandas-stubs==2.3.2.250926
+types-PyYAML==6.0.12.20250915
+types-requests==2.32.4.20250913
+# HDF5 preflight tests use tiny generated files, not market datasets.
+tables==3.11.1
+matplotlib==3.10.9
+python-dotenv==1.1.1

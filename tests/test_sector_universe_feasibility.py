@@ -11,8 +11,12 @@ import pandas as pd
 import pytest
 
 from research.sector_universe_feasibility import (
-    POLICY_SIGNAL_COUNTS, _history_masks, audit_universe_feasibility,
-    missing_blocks, prediction_metric_contract, sample_budget_policy,
+    POLICY_SIGNAL_COUNTS,
+    _history_masks,
+    audit_universe_feasibility,
+    missing_blocks,
+    prediction_metric_contract,
+    sample_budget_policy,
 )
 from src.data.loaders.shenwan_sector_loader import load_sector_catalog
 from strategies.sw_sector_rotation.src.model.model import NumPyRidge
@@ -23,9 +27,11 @@ def actual():
     return audit_universe_feasibility(Path("data/processed/shenwan"))
 
 
+@pytest.mark.external_runtime
 def test_u0_reproduces_formal_239_sessions(actual):
     assert actual["formal_universe"] == {
-        "mode": "FIXED_124_CURRENT_RULE", "sector_count": 124,
+        "mode": "FIXED_124_CURRENT_RULE",
+        "sector_count": 124,
         "sector_codes_unchanged": True,
     }
     assert actual["U0"]["signal_eligible_sessions"] == 239
@@ -34,6 +40,7 @@ def test_u0_reproduces_formal_239_sessions(actual):
     assert actual["common_calendar"]["trading_sessions"] == 1158
 
 
+@pytest.mark.external_runtime
 def test_801193_missing_diagnostics_are_deterministic(actual):
     gap = actual["sector_801193"]
     assert gap["first_available"] == "2022-03-02"
@@ -41,7 +48,9 @@ def test_801193_missing_diagnostics_are_deterministic(actual):
     assert gap["unavailable_sessions"] == 336
     assert gap["missing_block_count"] == 9
     assert gap["largest_missing_block"] == {
-        "start": "2022-08-05", "end": "2023-09-06", "sessions": 266,
+        "start": "2022-08-05",
+        "end": "2023-09-06",
+        "sessions": 266,
     }
     assert sum(block["sessions"] for block in gap["missing_blocks"]) == 336
     assert gap["cause_classification"] == "UNKNOWN_FROM_LOCAL_OHLCVA_ONLY"
@@ -54,6 +63,7 @@ def test_missing_blocks_use_trading_sessions_not_calendar_days():
     assert blocks[0]["end"] == str(dates[1].date())
 
 
+@pytest.mark.external_runtime
 def test_other_sectors_have_separate_continuity_bottleneck(actual):
     other = actual["other_continuity_bottlenecks"]
     assert other["affected_sector_count"] == 122
@@ -64,6 +74,7 @@ def test_other_sectors_have_separate_continuity_bottleneck(actual):
     assert shared[-1]["end"] == "2023-09-08"
 
 
+@pytest.mark.external_runtime
 def test_u1_is_counterfactual_and_formal_catalog_stays_124(actual):
     assert actual["U1"]["sector_count"] == 123
     assert actual["U1"]["status"] == "DIAGNOSTIC_ONLY_NOT_APPROVED_UNIVERSE_CHANGE"
@@ -76,16 +87,20 @@ def test_u1_is_counterfactual_and_formal_catalog_stays_124(actual):
     assert "801193" in set(catalog["sector_code"].astype(str))
 
 
+@pytest.mark.external_runtime
 def test_u1_factor_training_and_label_ranges_are_separate(actual):
     u1 = actual["U1"]
     assert u1["factor_ready"]["start"] == "2022-11-03"
     assert u1["training_ready"]["start"] == "2025-03-21"
     assert u1["label_ready"]["end"] == "2026-03-27"
     assert u1["signal_eligible"] == {
-        "start": "2025-03-21", "end": "2026-03-27", "session_count": 247,
+        "start": "2025-03-21",
+        "end": "2026-03-27",
+        "session_count": 247,
     }
 
 
+@pytest.mark.external_runtime
 def test_u2_is_diagnostic_only_with_asof_sector_counts(actual):
     u2 = actual["U2"]
     assert u2["status"] == "DIAGNOSTIC_ONLY_NOT_APPROVED_DYNAMIC_UNIVERSE"
@@ -105,12 +120,15 @@ def test_dynamic_membership_does_not_depend_on_future_prices():
     np.testing.assert_array_equal(original[:451], changed[:451])
 
 
-@pytest.mark.parametrize("name,required,deficit,decisions", [
-    ("A", 380, 141, (6, 4, 4)),
-    ("B", 400, 161, (8, 4, 4)),
-    ("C", 460, 221, (10, 6, 6)),
-    ("D", 480, 241, (12, 6, 6)),
-])
+@pytest.mark.parametrize(
+    "name,required,deficit,decisions",
+    [
+        ("A", 380, 141, (6, 4, 4)),
+        ("B", 400, 161, (8, 4, 4)),
+        ("C", 460, 221, (10, 6, 6)),
+        ("D", 480, 241, (12, 6, 6)),
+    ],
+)
 def test_sample_budget_and_ten_session_decision_arithmetic(name, required, deficit, decisions):
     budget = sample_budget_policy(name, POLICY_SIGNAL_COUNTS[name], 239)
     assert budget["required_eligible_sessions"] == required
@@ -125,10 +143,13 @@ def test_mathematical_nonempty_is_not_research_adequacy():
     assert minimum["mathematically_feasible"] is True
     assert minimum["research_adequacy_approved"] is False
     assert minimum["nominal_10_session_decision_counts"] == {
-        "development": 1, "validation": 1, "final_oos": 1,
+        "development": 1,
+        "validation": 1,
+        "final_oos": 1,
     }
 
 
+@pytest.mark.external_runtime
 def test_u1_and_u2_are_mathematically_nonempty_but_no_candidate_policy_fits(actual):
     for scenario in ("U1", "U2"):
         budget = actual["sample_budgets"][scenario]
@@ -137,10 +158,14 @@ def test_u1_and_u2_are_mathematically_nonempty_but_no_candidate_policy_fits(actu
         assert all(not row["mathematically_feasible"] for row in budget["policies"].values())
 
 
+@pytest.mark.external_runtime
 def test_u0_additional_raw_sessions_use_verified_120_session_tail(actual):
     assert actual["u0_raw_to_last_signal_tail_sessions"] == 120
     assert actual["u0_additional_raw_sessions_if_continuity_persists"] == {
-        "A": 141, "B": 161, "C": 221, "D": 241,
+        "A": 141,
+        "B": 161,
+        "C": 221,
+        "D": 241,
     }
 
 
@@ -155,15 +180,19 @@ def test_prediction_metric_contract_is_deterministic_and_non_executable():
     assert first["etf_costs"] is None
 
 
+@pytest.mark.external_runtime
 def test_synthetic_semantics_and_oos_remain_unfrozen(actual):
     assert actual["rebalance_semantics"] == "REFERENCE_10_SESSIONS_ANCHOR_NOT_FROZEN"
-    assert actual["synthetic_holding_semantics"] == "SYNTHETIC_PORTFOLIO_SEMANTICS_REQUIRES_APPROVAL"
+    assert (
+        actual["synthetic_holding_semantics"] == "SYNTHETIC_PORTFOLIO_SEMANTICS_REQUIRES_APPROVAL"
+    )
     assert actual["strategy_config_hash"] is None
     assert actual["oos_status"] == "UNLOCKED_UNOPENED"
     assert actual["oos_signal_start"] is None
     assert actual["oos_signal_end"] is None
 
 
+@pytest.mark.external_runtime
 def test_audit_cannot_fit_model_or_compute_performance(monkeypatch):
     def forbidden(*args, **kwargs):
         raise AssertionError("model or performance operation is out of scope")
@@ -176,6 +205,7 @@ def test_audit_cannot_fit_model_or_compute_performance(monkeypatch):
     assert result["strategy_parameters_changed"] is False
 
 
+@pytest.mark.external_runtime
 def test_no_etf_network_or_docker_process_dependency(monkeypatch):
     original_csv = pd.read_csv
     original_text = Path.read_text
@@ -198,4 +228,7 @@ def test_no_etf_network_or_docker_process_dependency(monkeypatch):
     monkeypatch.setattr(socket.socket, "connect", forbidden)
     monkeypatch.setattr(subprocess, "run", forbidden)
     monkeypatch.setattr(subprocess, "Popen", forbidden)
-    assert audit_universe_feasibility(Path("data/processed/shenwan"))["U0"]["signal_eligible_sessions"] == 239
+    assert (
+        audit_universe_feasibility(Path("data/processed/shenwan"))["U0"]["signal_eligible_sessions"]
+        == 239
+    )

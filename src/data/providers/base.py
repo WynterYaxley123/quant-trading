@@ -6,8 +6,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Mapping, Sequence
 
 import pandas as pd
 
@@ -19,7 +19,7 @@ class ProviderUnavailable(RuntimeError):
     调用方据此决定是否 fallback 到下一 provider。
     """
 
-    def __init__(self, provider: str, reason: str):
+    def __init__(self, provider: str, reason: str) -> None:
         self.provider = provider
         self.reason = reason
         super().__init__(f"provider {provider!r} 不可用: {reason}")

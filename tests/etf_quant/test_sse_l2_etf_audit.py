@@ -5,6 +5,7 @@ committed); what is committed is a metadata registry. These tests pin the
 registry's decision rule to the frozen admission contract so a later edit cannot
 turn it into a name-based or evidence-free verdict.
 """
+
 from __future__ import annotations
 
 import json
@@ -93,9 +94,12 @@ def test_unverifiable_benchmarks_never_count_as_pass():
 def test_insufficient_evidence_rows_are_declared_not_silently_dropped():
     doc = manifest()
     declared = doc["insufficient_evidence_count"]
-    observed = sum(1 for code in TARGETS
-                   for row in candidates()["per_industry"][code]["rows"]
-                   if row["admission_status"] == "INSUFFICIENT_EVIDENCE")
+    observed = sum(
+        1
+        for code in TARGETS
+        for row in candidates()["per_industry"][code]["rows"]
+        if row["admission_status"] == "INSUFFICIENT_EVIDENCE"
+    )
     assert declared == observed
 
 
@@ -103,6 +107,9 @@ def test_verdict_totals_match_the_rows():
     doc = manifest()
     rows = [row for code in TARGETS for row in candidates()["per_industry"][code]["rows"]]
     assert doc["candidate_count"] == len(rows)
-    assert doc["verified_pass_count"] == sum(1 for r in rows if r["admission_status"] == "VERIFIED_PASS")
-    assert doc["verified_rejected_count"] == sum(1 for r in rows
-                                                 if r["admission_status"] == "VERIFIED_REJECTED")
+    assert doc["verified_pass_count"] == sum(
+        1 for r in rows if r["admission_status"] == "VERIFIED_PASS"
+    )
+    assert doc["verified_rejected_count"] == sum(
+        1 for r in rows if r["admission_status"] == "VERIFIED_REJECTED"
+    )

@@ -29,6 +29,7 @@ untouched, because the only thing changed here is the ambient proxy environment
 for the duration of one call. It does not patch the pinned upstream source, does
 not touch global/Windows proxy settings, and does not introduce any data provider.
 """
+
 from __future__ import annotations
 
 import os
@@ -36,8 +37,14 @@ from contextlib import contextmanager
 
 #: Every spelling httpx 0.25.x / urllib consult when `trust_env` is in effect.
 PROXY_ENVIRONMENT_KEYS = (
-    "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY",
-    "http_proxy", "https_proxy", "all_proxy", "no_proxy",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "ALL_PROXY",
+    "NO_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "all_proxy",
+    "no_proxy",
 )
 
 #: The lake's own upstreams are domestic. A direct connection is correct; a

@@ -18,11 +18,11 @@ from __future__ import annotations
 
 from .schema import (
     CANONICAL_COLUMNS,
-    REQUIRED_COLUMNS,
     OPTIONAL_COLUMNS,
+    REQUIRED_COLUMNS,
     DataIntegrityError,
-    validate_frame,
     normalize_frame,
+    validate_frame,
 )
 
 __all__ = [

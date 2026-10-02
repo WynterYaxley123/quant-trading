@@ -18,15 +18,21 @@ _ROOT = Path(__file__).resolve().parents[2]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from src.data.loaders.shenwan_sector_loader import load_sector_catalog, load_sector_panel  # noqa: E402
+from scripts.data.verify_etf_evidence import verify_etf_evidence  # noqa: E402
+from src.data.loaders.shenwan_sector_loader import (  # noqa: E402
+    load_sector_catalog,
+    load_sector_panel,
+)
 from src.data.providers.etf_local import read_local_etf_snapshot  # noqa: E402
 from src.data.providers.shenwan_official import sha256_file  # noqa: E402
 from src.data.providers.shenwan_sector import candidate_research_range  # noqa: E402
 from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import (  # noqa: E402
-    MappingEvidence, daily_mapping_availability, mapping_admission,
-    resolve_primary_mapping, validate_mapping_evidence,
+    MappingEvidence,
+    daily_mapping_availability,
+    mapping_admission,
+    resolve_primary_mapping,
+    validate_mapping_evidence,
 )
-from scripts.data.verify_etf_evidence import verify_etf_evidence  # noqa: E402
 
 
 class EvidenceIntegrityFailure(RuntimeError):
@@ -41,7 +47,9 @@ class ProxyAdmissionEvidence:
     sector_code: str
     mapping_kind: str = "PROXY_MAPPING"
     official_direct_equivalence: bool = False
-    methodology_official: bool = False  # official index basic info is not an archived methodology version
+    methodology_official: bool = (
+        False  # official index basic info is not an archived methodology version
+    )
     methodology_historical_version_confirmed: bool = False
     methodology_available_at: str | None = None
     methodology_available_before_signal: bool = False
@@ -91,20 +99,25 @@ def current_proxy_status(e: ProxyAdmissionEvidence) -> str:
         return "PROXY_CURRENT_INSUFFICIENT"
     if e.composition_source_type == "ETF_REPLICATION_BASKET_PROXY":
         strong_observed = (
-            e.count_share is not None and e.count_share >= 90
+            e.count_share is not None
+            and e.count_share >= 90
             and e.unclassified_count == 0
             and e.other_l2_count / e.constituent_count <= 0.10
         )
     elif e.composition_source_type == "TOP10_ONLY_PROXY":
         strong_observed = (
-            e.count_share is not None and e.count_share >= 80
-            and e.weight_share is not None and e.weight_share >= 85
+            e.count_share is not None
+            and e.count_share >= 80
+            and e.weight_share is not None
+            and e.weight_share >= 85
             and e.unclassified_count <= 1
         )
     elif e.composition_source_type == "FULL_INDEX_CONSTITUENTS_WITH_WEIGHTS":
         strong_observed = (
-            e.count_share is not None and e.count_share >= 90
-            and e.weight_share is not None and e.weight_share >= 90
+            e.count_share is not None
+            and e.count_share >= 90
+            and e.weight_share is not None
+            and e.weight_share >= 90
             and e.unclassified_count == 0
             and e.other_l2_count / e.constituent_count <= 0.10
         )
@@ -114,30 +127,47 @@ def current_proxy_status(e: ProxyAdmissionEvidence) -> str:
 
 
 def historical_proxy_admissible(
-    e: ProxyAdmissionEvidence, research_date: str, *, require_historical_sw: bool = True,
+    e: ProxyAdmissionEvidence,
+    research_date: str,
+    *,
+    require_historical_sw: bool = True,
 ) -> bool:
     """Point-in-time gate. A later snapshot or an unproven interval never backfills t."""
     t = date.fromisoformat(research_date)
     if e.mapping_kind != "PROXY_MAPPING" or e.official_direct_equivalence:
         return False
-    if (not e.methodology_official or not e.methodology_historical_version_confirmed
-            or not e.composition_source_official):
+    if (
+        not e.methodology_official
+        or not e.methodology_historical_version_confirmed
+        or not e.composition_source_official
+    ):
         return False
     m_available = _on_date(e.methodology_available_at)
     m_start, m_end = _on_date(e.methodology_valid_from), _on_date(e.methodology_valid_to)
-    if (m_available is None or m_start is None or m_end is None
-            or m_available > t or not m_start <= t <= m_end
-            or (m_available == t and not e.methodology_available_before_signal)):
+    if (
+        m_available is None
+        or m_start is None
+        or m_end is None
+        or m_available > t
+        or not m_start <= t <= m_end
+        or (m_available == t and not e.methodology_available_before_signal)
+    ):
         return False
     # PCF is an ETF creation basket, and Top10 is a subset. Neither proves the full index.
     if e.composition_source_type != "FULL_INDEX_CONSTITUENTS_WITH_WEIGHTS":
         return False
-    if (e.count_share is None or e.count_share < 90
-            or e.weight_share is None or e.weight_share < 90
-            or e.constituent_count <= 0 or e.unclassified_count != 0
-            or e.count_share > 100 or e.weight_share > 100
-            or not 0 <= e.other_l2_count <= e.constituent_count
-            or e.other_l2_count / e.constituent_count > 0.10):
+    if (
+        e.count_share is None
+        or e.count_share < 90
+        or e.weight_share is None
+        or e.weight_share < 90
+        or e.constituent_count <= 0
+        or e.unclassified_count != 0
+        or e.count_share > 100
+        or e.weight_share > 100
+        or not 0 <= e.other_l2_count <= e.constituent_count
+        or e.other_l2_count / e.constituent_count > 0.10
+    ):
         return False
     observed, available = _on_date(e.composition_as_of_date), _on_date(e.composition_available_at)
     if observed is None or available is None or observed > t or available > t:
@@ -156,22 +186,37 @@ def historical_proxy_admissible(
     r_available = _on_date(e.relationship_evidence_available_at)
     continuity_proven = _on_date(e.relationship_continuity_proven_at)
     continuity_through = _on_date(e.relationship_continuity_valid_through)
-    if (r_start is None or r_start > t or (r_end is not None and t > r_end)
-            or e.relationship_continuity_status != "PROVEN_CONTINUOUS"
-            or r_available is None or r_available > t
-            or (r_available == t and not e.relationship_available_before_signal)
-            or continuity_proven is None or continuity_proven > t
-            or continuity_through is None or continuity_through < t
-            or (continuity_proven == t and not e.relationship_available_before_signal)):
+    if (
+        r_start is None
+        or r_start > t
+        or (r_end is not None and t > r_end)
+        or e.relationship_continuity_status != "PROVEN_CONTINUOUS"
+        or r_available is None
+        or r_available > t
+        or (r_available == t and not e.relationship_available_before_signal)
+        or continuity_proven is None
+        or continuity_proven > t
+        or continuity_through is None
+        or continuity_through < t
+        or (continuity_proven == t and not e.relationship_available_before_signal)
+    ):
         return False
     # A search finding no index-change notice is not affirmative continuity proof.
     if require_historical_sw:
-        s_start, s_end = _on_date(e.sw_classification_valid_from), _on_date(e.sw_classification_valid_to)
+        s_start, s_end = (
+            _on_date(e.sw_classification_valid_from),
+            _on_date(e.sw_classification_valid_to),
+        )
         s_available = _on_date(e.sw_classification_available_at)
-        if (e.sw_classification_status != "HISTORICAL_PIT"
-                or s_start is None or s_end is None or s_available is None
-                or not s_start <= t <= s_end or s_available > t
-                or (s_available == t and not e.sw_classification_available_before_signal)):
+        if (
+            e.sw_classification_status != "HISTORICAL_PIT"
+            or s_start is None
+            or s_end is None
+            or s_available is None
+            or not s_start <= t <= s_end
+            or s_available > t
+            or (s_available == t and not e.sw_classification_available_before_signal)
+        ):
             return False
     return True
 
@@ -184,7 +229,9 @@ def _read_rows(path: Path) -> list[dict[str, str]]:
 
 
 def _load_official_evidence(
-    repo_root: Path, evidence_dir: Path, catalog: dict[str, str],
+    repo_root: Path,
+    evidence_dir: Path,
+    catalog: dict[str, str],
 ) -> dict:
     """Audit local catalog, field provenance, raw histories and legacy reviews."""
     integrity = verify_etf_evidence(repo_root)
@@ -211,7 +258,8 @@ def _load_official_evidence(
     registered = {
         (code, d["document"]): d
         for code, entry in manifest.items()
-        for d in [entry, *entry.get("extra_docs", [])] if d.get("document")
+        for d in [entry, *entry.get("extra_docs", [])]
+        if d.get("document")
     }
     if set(codes) != set(manifest):
         problems.append("evidence catalog/manifest ETF code sets differ")
@@ -222,12 +270,16 @@ def _load_official_evidence(
         if record is None or not item["on_disk"].lower() == "true":
             problems.append(f"{code}: supporting document is not registered/on disk: {document}")
             continue
-        if (item["sha256"] != record.get("sha256")
-                or item["source_url"] != record.get("source_url")
-                or item["size_bytes"] != str(record.get("bytes"))):
+        if (
+            item["sha256"] != record.get("sha256")
+            or item["source_url"] != record.get("source_url")
+            or item["size_bytes"] != str(record.get("bytes"))
+        ):
             problems.append(f"{code}: supporting document provenance mismatch: {document}")
         by_code.setdefault(code, []).append(item)
-    if len(sources) != len(registered) or len({(x["etf_code"], x["document"]) for x in sources}) != len(sources):
+    if len(sources) != len(registered) or len(
+        {(x["etf_code"], x["document"]) for x in sources}
+    ) != len(sources):
         problems.append("evidence_sources must list each registered document exactly once")
     required_fields = {
         "etf_name": "fund_identity",
@@ -250,25 +302,34 @@ def _load_official_evidence(
         for field, tag in required_fields.items():
             if row[field] and tag not in tags:
                 problems.append(f"{code}: {field} lacks field-level official provenance")
-        for field in ("official_listing_date", "fund_establishment_date", "mapping_effective_from",
-                      "mapping_effective_to"):
+        for field in (
+            "official_listing_date",
+            "fund_establishment_date",
+            "mapping_effective_from",
+            "mapping_effective_to",
+        ):
             if row[field]:
                 try:
                     date.fromisoformat(row[field])
                 except ValueError:
                     problems.append(f"{code}: invalid {field} date")
-        if row["tracking_relationship"] == "CURRENT_RELATIONSHIP_ONLY" and row["mapping_effective_from"]:
+        if (
+            row["tracking_relationship"] == "CURRENT_RELATIONSHIP_ONLY"
+            and row["mapping_effective_from"]
+        ):
             problems.append(f"{code}: current relationship was backfilled")
-        if row["evidence_status"] == "PARTIAL_EVIDENCE":
+        if row["evidence_status"] == "PARTIAL_EVIDENCE":  # noqa: SIM102 -- Preserve independently documented frozen validation branches.
             if catalog.get(row["sector_code"]) != row["sector_name"]:
                 problems.append(f"{code}: partial candidate not in canonical Level-2 catalog")
-        if row["evidence_status"] == "VALIDATED":
+        if row["evidence_status"] == "VALIDATED":  # noqa: SIM102 -- Preserve independently documented frozen validation branches.
             if not row["mapping_effective_from"] or "shenwan_l2_direct_equivalence" not in tags:
                 problems.append(f"{code}: VALIDATED lacks historical Layer-2 evidence")
 
     raw_manifest_path = repo_root / "data/raw/etf/manifest_etf_daily_raw.json"
     if not raw_manifest_path.is_file():
-        raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: missing {raw_manifest_path}")
+        raise EvidenceIntegrityFailure(
+            f"DATA_EVIDENCE_INTEGRITY_FAILURE: missing {raw_manifest_path}"
+        )
     history_manifest = json.loads(raw_manifest_path.read_text(encoding="utf-8"))
     history_root = repo_root / "data/raw/etf"
     if not set(history_manifest).issubset(codes):
@@ -280,14 +341,22 @@ def _load_official_evidence(
             problems.append(f"{code}: unsafe raw filename")
             continue
         path = history_root / filename
-        if not path.is_file() or sha256_file(path) != meta["sha256"] or path.stat().st_size != meta["bytes"]:
+        if (
+            not path.is_file()
+            or sha256_file(path) != meta["sha256"]
+            or path.stat().st_size != meta["bytes"]
+        ):
             problems.append(f"{code}: raw file SHA256/size mismatch")
             continue
         history = _read_rows(path)
         dates = [r["date"] for r in history]
-        if (not dates or len(history) != meta["row_count"]
-                or min(dates) != meta["start_date"] or max(dates) != meta["end_date"]
-                or list(history[0]) != meta["columns"]):
+        if (
+            not dates
+            or len(history) != meta["row_count"]
+            or min(dates) != meta["start_date"]
+            or max(dates) != meta["end_date"]
+            or list(history[0]) != meta["columns"]
+        ):
             problems.append(f"{code}: raw row count/date range/columns mismatch")
         history_total += len(history)
     for row in rows:
@@ -298,17 +367,23 @@ def _load_official_evidence(
                 problems.append(f"{code}: unexpected missing raw history")
             if code == "159915" and "local Hikyuu only" not in row["history_source"]:
                 problems.append(f"{code}: independent raw absence is not disclosed")
-        elif (row["history_filename"] != raw["file"]
-              or row["history_sha256"] != raw["sha256"]
-              or row["history_start_date"] != raw["start_date"]
-              or row["history_end_date"] != raw["end_date"]
-              or row["history_row_count"] != str(raw["row_count"])):
+        elif (
+            row["history_filename"] != raw["file"]
+            or row["history_sha256"] != raw["sha256"]
+            or row["history_start_date"] != raw["start_date"]
+            or row["history_end_date"] != raw["end_date"]
+            or row["history_row_count"] != str(raw["row_count"])
+        ):
             problems.append(f"{code}: catalog/raw manifest link mismatch")
     if problems:
         raise EvidenceIntegrityFailure("DATA_EVIDENCE_INTEGRITY_FAILURE: " + "; ".join(problems))
     return {
-        "catalog": rows, "sources": sources, "legacy": legacy, "reference": reference,
-        "integrity": integrity, "raw_file_count": len(history_manifest),
+        "catalog": rows,
+        "sources": sources,
+        "legacy": legacy,
+        "reference": reference,
+        "integrity": integrity,
+        "raw_file_count": len(history_manifest),
         "raw_total_rows": history_total,
     }
 
@@ -321,23 +396,25 @@ def _evidence_diagnostics(evidence: dict, sector_codes: dict[str, str]) -> dict:
     for row in rows:
         if row["evidence_status"] != "PARTIAL_EVIDENCE":
             continue
-        partial.append({
-            "etf_code": row["etf_code"],
-            "etf_name": row["etf_name"],
-            "tracking_index_code": row["tracking_index_code"] or None,
-            "tracking_index_name": row["tracking_index_name"],
-            "candidate_sector_code": row["sector_code"],
-            "candidate_sector_name": row["sector_name"],
-            "layer1_evidence": row["tracking_relationship"],
-            "layer2_evidence": "NOT_PROVEN",
-            "official_listing_date": row["official_listing_date"],
-            "mapping_effective_from": row["mapping_effective_from"] or None,
-            "final_evidence_status": row["evidence_status"],
-            "missing_evidence": [
-                "official tracking-index-to-Shenwan-Level-2 equivalence",
-                "historical mapping_effective_from",
-            ],
-        })
+        partial.append(
+            {
+                "etf_code": row["etf_code"],
+                "etf_name": row["etf_name"],
+                "tracking_index_code": row["tracking_index_code"] or None,
+                "tracking_index_name": row["tracking_index_name"],
+                "candidate_sector_code": row["sector_code"],
+                "candidate_sector_name": row["sector_name"],
+                "layer1_evidence": row["tracking_relationship"],
+                "layer2_evidence": "NOT_PROVEN",
+                "official_listing_date": row["official_listing_date"],
+                "mapping_effective_from": row["mapping_effective_from"] or None,
+                "final_evidence_status": row["evidence_status"],
+                "missing_evidence": [
+                    "official tracking-index-to-Shenwan-Level-2 equivalence",
+                    "historical mapping_effective_from",
+                ],
+            }
+        )
     candidate_sectors = {item["candidate_sector_code"] for item in partial}
     legacy = Counter(row["final_evidence_status"] for row in evidence["legacy"])
     reference = Counter(row["official_evidence_status"] for row in evidence["reference"])
@@ -350,16 +427,29 @@ def _evidence_diagnostics(evidence: dict, sector_codes: dict[str, str]) -> dict:
         "supporting_document_count": len(evidence["sources"]),
         "raw_etf_integrity_count": evidence["raw_file_count"],
         "raw_etf_total_rows": evidence["raw_total_rows"],
-        "official_identity_complete_count": sum(bool(r["etf_name"] and r["fund_manager"]) for r in rows),
+        "official_identity_complete_count": sum(
+            bool(r["etf_name"] and r["fund_manager"]) for r in rows
+        ),
         "official_listing_complete_count": sum(bool(r["official_listing_date"]) for r in rows),
         "fund_establishment_complete_count": sum(bool(r["fund_establishment_date"]) for r in rows),
         "tracking_index_name_complete_count": sum(bool(r["tracking_index_name"]) for r in rows),
         "tracking_index_code_complete_count": sum(bool(r["tracking_index_code"]) for r in rows),
-        "mapping_effective_from_complete_count_official": sum(bool(r["mapping_effective_from"]) for r in rows),
-        "mapping_effective_to_complete_count_official": sum(bool(r["mapping_effective_to"]) for r in rows),
-        "official_evidence_status_counts": {status: statuses[status] for status in (
-            "VALIDATED", "PARTIAL_EVIDENCE", "NOT_DIRECT_MAPPING", "CONFLICT", "UNVERIFIED"
-        )},
+        "mapping_effective_from_complete_count_official": sum(
+            bool(r["mapping_effective_from"]) for r in rows
+        ),
+        "mapping_effective_to_complete_count_official": sum(
+            bool(r["mapping_effective_to"]) for r in rows
+        ),
+        "official_evidence_status_counts": {
+            status: statuses[status]
+            for status in (
+                "VALIDATED",
+                "PARTIAL_EVIDENCE",
+                "NOT_DIRECT_MAPPING",
+                "CONFLICT",
+                "UNVERIFIED",
+            )
+        },
         "partial_candidate_sector_count": len(candidate_sectors),
         "partial_candidate_coverage_ratio": len(candidate_sectors) / len(sector_codes),
         "partial_candidate_notice": "CANDIDATE ONLY; NOT ADMITTED FOR BACKTEST",
@@ -373,15 +463,20 @@ def _evidence_diagnostics(evidence: dict, sector_codes: dict[str, str]) -> dict:
 
 
 def _load_proxy_evidence(
-    repo_root: Path, evidence_dir: Path, official: dict,
-    sector_codes: dict[str, str], sector_admission: str,
+    repo_root: Path,
+    evidence_dir: Path,
+    official: dict,
+    sector_codes: dict[str, str],
+    sector_admission: str,
 ) -> list[ProxyAdmissionEvidence]:
     """Read the six reconciled Layer-2 rows without changing the direct mapping."""
     rows = _read_rows(evidence_dir / "six_candidate_second_layer_evidence.csv")
     sources = _read_rows(evidence_dir / "six_candidate_second_layer_sources.csv")
     directories = {
-        "ann": "etf_announcements", "cons": "index_constituents",
-        "meth": "index_methodology", "sw": "sw_l2_constituents",
+        "ann": "etf_announcements",
+        "cons": "index_constituents",
+        "meth": "index_methodology",
+        "sw": "sw_l2_constituents",
         "sw_l2_constituents": "sw_l2_constituents",
     }
     raw_root = repo_root / "data/raw/etf_evidence"
@@ -389,37 +484,63 @@ def _load_proxy_evidence(
     for source in sources:
         filename, directory = source["file"], directories.get(source["dir"])
         if not directory or Path(filename).name != filename:
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: unsafe Layer-2 source {filename}")
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: unsafe Layer-2 source {filename}"
+            )
         path = raw_root / directory / filename
-        if (not path.is_file() or sha256_file(path) != source["sha256"]
-                or path.stat().st_size != int(source["bytes"])):
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: Layer-2 SHA/size {path}")
+        if (
+            not path.is_file()
+            or sha256_file(path) != source["sha256"]
+            or path.stat().st_size != int(source["bytes"])
+        ):
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: Layer-2 SHA/size {path}"
+            )
         source_by_sha.setdefault(source["sha256"], []).append(source)
     catalog_by_code = {r["etf_code"]: r for r in official["catalog"]}
     sw_snapshot = next((s for s in sources if s["key"] == "sws_l2_all"), None)
     if sw_snapshot is None:
-        raise EvidenceIntegrityFailure("DATA_EVIDENCE_INTEGRITY_FAILURE: missing fixed SW snapshot source")
+        raise EvidenceIntegrityFailure(
+            "DATA_EVIDENCE_INTEGRITY_FAILURE: missing fixed SW snapshot source"
+        )
     sw_observed_at = datetime.fromisoformat(sw_snapshot["retrieved_at"]).date().isoformat()
-    expected = {r["etf_code"] for r in official["catalog"] if r["evidence_status"] == "PARTIAL_EVIDENCE"}
+    expected = {
+        r["etf_code"] for r in official["catalog"] if r["evidence_status"] == "PARTIAL_EVIDENCE"
+    }
     if len(rows) != len({r["etf_code"] for r in rows}) or {r["etf_code"] for r in rows} != expected:
-        raise EvidenceIntegrityFailure("DATA_EVIDENCE_INTEGRITY_FAILURE: Layer-2 candidate code set differs")
+        raise EvidenceIntegrityFailure(
+            "DATA_EVIDENCE_INTEGRITY_FAILURE: Layer-2 candidate code set differs"
+        )
     out = []
     for row in rows:
         code = row["etf_code"]
         layer1 = catalog_by_code[code]
-        if (row["candidate_sw_l2_code"] != layer1["sector_code"]
-                or row["candidate_sw_l2_name"] != sector_codes.get(row["candidate_sw_l2_code"])):
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} sector mismatch")
+        if row["candidate_sw_l2_code"] != layer1["sector_code"] or row[
+            "candidate_sw_l2_name"
+        ] != sector_codes.get(row["candidate_sw_l2_code"]):
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} sector mismatch"
+            )
         if row["official_listing_date"] != layer1["official_listing_date"]:
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} listing source mismatch")
-        method = next((s for s in source_by_sha.get(row["methodology_sha256"], [])
-                       if s["dir"] == "meth"), None)
-        composition = next((s for s in source_by_sha.get(row["constituents_sha256"], [])
-                            if s["dir"] == "cons"), None)
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} listing source mismatch"
+            )
+        method = next(
+            (s for s in source_by_sha.get(row["methodology_sha256"], []) if s["dir"] == "meth"),
+            None,
+        )
+        composition = next(
+            (s for s in source_by_sha.get(row["constituents_sha256"], []) if s["dir"] == "cons"),
+            None,
+        )
         if row["methodology_sha256"] and (method is None or method["dir"] != "meth"):
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} methodology source")
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} methodology source"
+            )
         if row["constituents_sha256"] and (composition is None or composition["dir"] != "cons"):
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} composition source")
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} composition source"
+            )
         if composition is None:
             source_type = "NO_CONSTITUENT_EVIDENCE"
             coverage_type = "NONE"
@@ -430,13 +551,21 @@ def _load_proxy_evidence(
             source_type = "TOP10_ONLY_PROXY"
             coverage_type = "TOP10_NOT_FULL_INDEX"
         else:
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} unknown composition type")
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} unknown composition type"
+            )
         as_of = row["constituents_as_of_date"] or None
         if as_of:
             date.fromisoformat(as_of)
-        retrieved = datetime.fromisoformat(composition["retrieved_at"]).date().isoformat() if composition else None
+        retrieved = (
+            datetime.fromisoformat(composition["retrieved_at"]).date().isoformat()
+            if composition
+            else None
+        )
         if as_of and retrieved and as_of > retrieved:
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} future-dated source")
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} future-dated source"
+            )
         documented = row["earliest_tracking_document_date"] or None
         if documented:
             date.fromisoformat(documented)
@@ -446,52 +575,77 @@ def _load_proxy_evidence(
         other = int(row["other_l2_count"])
         unclassified = int(row["unclassified_count"])
         if classified + unclassified != total or candidate + other != classified:
-            raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} constituent counts")
-        if row["candidate_l2_count_share"] and abs(float(row["candidate_l2_count_share"]) - 100 * candidate / total) > 0.02:
+            raise EvidenceIntegrityFailure(
+                f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} constituent counts"
+            )
+        if (
+            row["candidate_l2_count_share"]
+            and abs(float(row["candidate_l2_count_share"]) - 100 * candidate / total) > 0.02
+        ):
             raise EvidenceIntegrityFailure(f"DATA_EVIDENCE_INTEGRITY_FAILURE: {code} count share")
-        out.append(ProxyAdmissionEvidence(
-            etf_code=code, sector_code=row["candidate_sw_l2_code"],
-            official_direct_equivalence=row["official_direct_sw_equivalence"].lower() == "true",
-            methodology_official=bool(method and method["provider"] == "csindex.com.cn"),
-            composition_source_type=source_type,
-            composition_coverage_type=coverage_type,
-            composition_source_official=bool(composition and composition["provider"] in {
-                "sse.com.cn", "csindex.com.cn"
-            }),
-            composition_as_of_date=as_of, composition_available_at=retrieved,
-            constituent_count=total, classified_count=classified,
-            count_share=float(row["candidate_l2_count_share"]) if row["candidate_l2_count_share"] else None,
-            weight_share=float(row["candidate_l2_weight_share"]) if row["candidate_l2_weight_share"] else None,
-            other_l2_count=other, other_l2_summary=row["other_l2_summary"] or None,
-            unclassified_count=unclassified,
-            relationship_documented_from=documented,
-            official_listing_date=row["official_listing_date"] or None,
-            tradable_start_candidate=row["tradable_mapping_start_candidate"] or None,
-            relationship_continuity_status=row["historical_relationship_status"],
-            index_change_event_found=row["index_change_event_found"].lower() == "true",
-            index_change_search_note=row["index_change_search_note"] or None,
-            sw_classification_status=sector_admission,
-            sw_classification_available_at=sw_observed_at,
-        ))
+        out.append(
+            ProxyAdmissionEvidence(
+                etf_code=code,
+                sector_code=row["candidate_sw_l2_code"],
+                official_direct_equivalence=row["official_direct_sw_equivalence"].lower() == "true",
+                methodology_official=bool(method and method["provider"] == "csindex.com.cn"),
+                composition_source_type=source_type,
+                composition_coverage_type=coverage_type,
+                composition_source_official=bool(
+                    composition and composition["provider"] in {"sse.com.cn", "csindex.com.cn"}
+                ),
+                composition_as_of_date=as_of,
+                composition_available_at=retrieved,
+                constituent_count=total,
+                classified_count=classified,
+                count_share=float(row["candidate_l2_count_share"])
+                if row["candidate_l2_count_share"]
+                else None,
+                weight_share=float(row["candidate_l2_weight_share"])
+                if row["candidate_l2_weight_share"]
+                else None,
+                other_l2_count=other,
+                other_l2_summary=row["other_l2_summary"] or None,
+                unclassified_count=unclassified,
+                relationship_documented_from=documented,
+                official_listing_date=row["official_listing_date"] or None,
+                tradable_start_candidate=row["tradable_mapping_start_candidate"] or None,
+                relationship_continuity_status=row["historical_relationship_status"],
+                index_change_event_found=row["index_change_event_found"].lower() == "true",
+                index_change_search_note=row["index_change_search_note"] or None,
+                sw_classification_status=sector_admission,
+                sw_classification_available_at=sw_observed_at,
+            )
+        )
     return out
 
 
 def _proxy_diagnostics(
-    evidence: list[ProxyAdmissionEvidence], candidate_dates: list[str],
+    evidence: list[ProxyAdmissionEvidence],
+    candidate_dates: list[str],
 ) -> dict:
     details = []
     for item in evidence:
         status = current_proxy_status(item)
         observed = item.composition_as_of_date
         if item.composition_valid_from and item.composition_valid_to:
-            historical_dates = [day for day in candidate_dates
-                                if item.composition_valid_from <= day <= item.composition_valid_to]
+            historical_dates = [
+                day
+                for day in candidate_dates
+                if item.composition_valid_from <= day <= item.composition_valid_to
+            ]
         else:
             historical_dates = [day for day in candidate_dates if day == observed]
-        available_dates = [day for day in historical_dates
-                           if item.composition_available_at and item.composition_available_at <= day
-                           and (item.composition_available_at < day or item.available_before_signal)]
-        historical_admissible = any(historical_proxy_admissible(item, day) for day in available_dates)
+        available_dates = [
+            day
+            for day in historical_dates
+            if item.composition_available_at
+            and item.composition_available_at <= day
+            and (item.composition_available_at < day or item.available_before_signal)
+        ]
+        historical_admissible = any(
+            historical_proxy_admissible(item, day) for day in available_dates
+        )
         reasons = []
         if item.composition_source_type == "NO_CONSTITUENT_EVIDENCE":
             reasons.append("no official constituent snapshot")
@@ -524,34 +678,47 @@ def _proxy_diagnostics(
             ]
         elif status == "PROXY_CURRENT_MIXED":
             priority = "EXCLUDE_SINGLE_SECTOR_PROXY"
-            needed = ["new full-index evidence would have to reverse the observed multi-sector breadth"]
+            needed = [
+                "new full-index evidence would have to reverse the observed multi-sector breadth"
+            ]
         else:
             priority = "DEFER_CURRENT_AND_HISTORICAL_RESEARCH"
             needed = [
                 "official methodology and full current constituents with weights first",
                 "historical temporal and classification evidence only if current proxy is viable",
             ]
-        details.append({
-            **asdict(item),
-            "current_status": status,
-            "temporal_status": "PROXY_HISTORICALLY_SUPPORTED" if historical_admissible else "PROXY_HISTORICALLY_INSUFFICIENT",
-            "historical_composition_evidence_available": bool(available_dates),
-            "earliest_historical_proxy_evidence_date": min(available_dates) if available_dates else None,
-            "latest_historical_proxy_evidence_date": max(available_dates) if available_dates else None,
-            "proxy_currently_admissible": bool(observed and historical_proxy_admissible(
-                item, observed, require_historical_sw=False
-            )),
-            "proxy_historical_backtest_admissible": historical_admissible,
-            "evidence_acquisition_priority": priority,
-            "reason": reasons,
-            "remaining_evidence_needed": needed,
-        })
+        details.append(
+            {
+                **asdict(item),
+                "current_status": status,
+                "temporal_status": "PROXY_HISTORICALLY_SUPPORTED"
+                if historical_admissible
+                else "PROXY_HISTORICALLY_INSUFFICIENT",
+                "historical_composition_evidence_available": bool(available_dates),
+                "earliest_historical_proxy_evidence_date": min(available_dates)
+                if available_dates
+                else None,
+                "latest_historical_proxy_evidence_date": max(available_dates)
+                if available_dates
+                else None,
+                "proxy_currently_admissible": bool(
+                    observed
+                    and historical_proxy_admissible(item, observed, require_historical_sw=False)
+                ),
+                "proxy_historical_backtest_admissible": historical_admissible,
+                "evidence_acquisition_priority": priority,
+                "reason": reasons,
+                "remaining_evidence_needed": needed,
+            }
+        )
     counts = Counter(d["current_status"] for d in details)
     historical_count = sum(d["proxy_historical_backtest_admissible"] for d in details)
     return {
         "proxy_mapping_admission": (
-            "PROXY_MAPPING_HISTORICALLY_SUPPORTED" if historical_count
-            else "PROXY_MAPPING_CURRENT_ONLY" if counts["PROXY_CURRENT_STRONG"]
+            "PROXY_MAPPING_HISTORICALLY_SUPPORTED"
+            if historical_count
+            else "PROXY_MAPPING_CURRENT_ONLY"
+            if counts["PROXY_CURRENT_STRONG"]
             else "PROXY_MAPPING_NOT_ADMISSIBLE"
         ),
         "proxy_current_strong_count": counts["PROXY_CURRENT_STRONG"],
@@ -559,8 +726,11 @@ def _proxy_diagnostics(
         "proxy_current_insufficient_count": counts["PROXY_CURRENT_INSUFFICIENT"],
         "proxy_currently_admissible_count": sum(d["proxy_currently_admissible"] for d in details),
         "proxy_historical_admissible_count": historical_count,
-        "proxy_current_only_count": sum(d["current_status"] == "PROXY_CURRENT_STRONG"
-                                        and not d["proxy_historical_backtest_admissible"] for d in details),
+        "proxy_current_only_count": sum(
+            d["current_status"] == "PROXY_CURRENT_STRONG"
+            and not d["proxy_historical_backtest_admissible"]
+            for d in details
+        ),
         "proxy_candidate_diagnostic_count": len(details),
         "proxy_formal_executable_count": 0,  # proxy execution resolver is intentionally not enabled
         "proxy_formal_execution_notice": "TEMPORAL ADMISSION IS NOT EXECUTION INTEGRATION",
@@ -573,8 +743,11 @@ def _mapping_rows(path: Path | None, catalog: pd.DataFrame) -> list[MappingEvide
     if path is None:
         # Explicitly unknown; the legacy example is not tracking evidence.
         return [
-            MappingEvidence(str(r.sector_code), str(r.sector_name),
-                            notes="No locally verified ETF tracking/effective-date evidence")
+            MappingEvidence(
+                str(r.sector_code),
+                str(r.sector_name),
+                notes="No locally verified ETF tracking/effective-date evidence",
+            )
             for r in catalog.itertuples()
         ]
     frame = pd.read_csv(path, dtype=str, keep_default_na=False)
@@ -597,40 +770,60 @@ def _mapping_rows(path: Path | None, catalog: pd.DataFrame) -> list[MappingEvide
 
 
 def build(
-    *, sector_dir: Path, hikyuu_dir: Path, output_dir: Path,
-    mapping_file: Path | None = None, evidence_dir: Path | None = None,
+    *,
+    sector_dir: Path,
+    hikyuu_dir: Path,
+    output_dir: Path,
+    mapping_file: Path | None = None,
+    evidence_dir: Path | None = None,
 ) -> dict:
     sector_meta = json.loads((sector_dir / "sector_admission.json").read_text(encoding="utf-8"))
-    if sector_meta.get("admission_level") != "FIXED_CLASSIFICATION_RESEARCH" or sector_meta.get("strict_pit") is not False:
+    if (
+        sector_meta.get("admission_level") != "FIXED_CLASSIFICATION_RESEARCH"
+        or sector_meta.get("strict_pit") is not False
+    ):
         raise ValueError("sector admission changed; do not silently upgrade PIT semantics")
     catalog = load_sector_catalog(sector_dir)
     codes = {str(r.sector_code): str(r.sector_name) for r in catalog.itertuples()}
     evidence = _load_official_evidence(
-        _ROOT, evidence_dir or _ROOT / "data/processed/shenwan_etf_mapping", codes,
+        _ROOT,
+        evidence_dir or _ROOT / "data/processed/shenwan_etf_mapping",
+        codes,
     )
     diagnostics = _evidence_diagnostics(evidence, codes)
     rows = _mapping_rows(mapping_file, catalog)
     validate_mapping_evidence(rows, codes)
     etfs, bars = read_local_etf_snapshot(hikyuu_dir)
     etf_meta = {r.etf_code: r for r in etfs.itertuples()}
-    bar_lookup = {(r.etf_code, r.date): {
-        "etf_code": r.etf_code, "date": r.date,
-        "open": r.open, "high": r.high, "low": r.low, "close": r.close,
-    } for r in bars.itertuples()}
+    bar_lookup = {
+        (r.etf_code, r.date): {
+            "etf_code": r.etf_code,
+            "date": r.date,
+            "open": r.open,
+            "high": r.high,
+            "low": r.low,
+            "close": r.close,
+        }
+        for r in bars.itertuples()
+    }
 
     common_start, common_end = sector_meta["common_start_date"], sector_meta["common_end_date"]
     panel = load_sector_panel(list(codes), common_start, common_end, processed_dir=sector_dir)
     sector_start, sector_end = candidate_research_range(panel, sector_meta)
     if (sector_start, sector_end) != (
-        sector_meta["research_eligible_start"], sector_meta["research_eligible_end"]
+        sector_meta["research_eligible_start"],
+        sector_meta["research_eligible_end"],
     ):
         raise ValueError("sector candidate range differs from verified canonical metadata")
     all_dates = sorted(panel["date"].dt.strftime("%Y-%m-%d").unique().tolist())
     next_session = {day: all_dates[i + 1] for i, day in enumerate(all_dates[:-1])}
     candidate_dates = [day for day in all_dates if sector_start <= day <= sector_end]
     proxy_evidence = _load_proxy_evidence(
-        _ROOT, evidence_dir or _ROOT / "data/processed/shenwan_etf_mapping",
-        evidence, codes, sector_meta["admission_level"],
+        _ROOT,
+        evidence_dir or _ROOT / "data/processed/shenwan_etf_mapping",
+        evidence,
+        codes,
+        sector_meta["admission_level"],
     )
     proxy_report = _proxy_diagnostics(proxy_evidence, candidate_dates)
     audit_dates = sorted(set(candidate_dates) | {common_end})
@@ -644,9 +837,15 @@ def build(
         for code in codes:
             mapping = resolve_primary_mapping(rows, code, day)
             etf_code = mapping.etf_code if mapping else None
-            bar = bar_lookup.get((etf_code, execution_date)) if etf_code and execution_date else None
+            bar = (
+                bar_lookup.get((etf_code, execution_date)) if etf_code and execution_date else None
+            )
             availability = daily_mapping_availability(
-                rows, code, day, execution_date=execution_date, bar=bar,
+                rows,
+                code,
+                day,
+                execution_date=execution_date,
+                bar=bar,
                 sector_bar_valid=sector_valid.get((code, day), False),
             )
             availability["etf_code"] = etf_code
@@ -654,23 +853,26 @@ def build(
             daily.append(availability)
     daily_frame = pd.DataFrame(daily)
     candidate = daily_frame.loc[daily_frame["date"].isin(candidate_dates)]
-    coverage = candidate.groupby("date").agg(
-        mapped_sector_count=("is_mapping_active", "sum"),
-        available_sector_count=("is_etf_executable", "sum"),
-        executable_sector_count=("is_executable", "sum"),
-        sector_factor_count=("sector_bar_valid", "sum"),
-    ).reset_index()
+    coverage = (
+        candidate.groupby("date")
+        .agg(
+            mapped_sector_count=("is_mapping_active", "sum"),
+            available_sector_count=("is_etf_executable", "sum"),
+            executable_sector_count=("is_executable", "sum"),
+            sector_factor_count=("sector_bar_valid", "sum"),
+        )
+        .reset_index()
+    )
     for col in ("mapped", "available", "executable"):
         coverage[f"{col}_ratio"] = coverage[f"{col}_sector_count"] / len(codes)
     counts = coverage["executable_sector_count"].astype(int).tolist()
     level = mapping_admission(rows, codes, counts)
-    mapped_codes = sorted({r.sector_code for r in rows if r.mapping_status == "VALIDATED" and r.is_primary})
+    mapped_codes = sorted(
+        {r.sector_code for r in rows if r.mapping_status == "VALIDATED" and r.is_primary}
+    )
     etf_codes = [r.etf_code for r in rows if r.sector_code in mapped_codes and r.is_primary]
     duplicates = sorted({code for code in etf_codes if etf_codes.count(code) > 1})
-    complete_dates = [
-        day for day, count in zip(coverage["date"], counts)
-        if count >= 5
-    ]
+    complete_dates = [day for day, count in zip(coverage["date"], counts) if count >= 5]
     report = {
         "status": level,
         "mapping_admission": level,
@@ -685,24 +887,29 @@ def build(
         "unmapped_sector_count": len(codes) - len(mapped_codes),
         "unmapped_sectors": [
             {"sector_code": code, "sector_name": name}
-            for code, name in codes.items() if code not in mapped_codes
+            for code, name in codes.items()
+            if code not in mapped_codes
         ],
         "mapping_coverage_ratio": len(mapped_codes) / len(codes),
         "strict_validated_coverage_ratio": len(mapped_codes) / len(codes),
         "validated_primary_etf_count": len(etf_codes),
-        "formal_executable_universe_count": int(daily_frame.loc[
-            daily_frame["date"].eq(common_end), "is_executable"
-        ].sum()) + proxy_report["proxy_formal_executable_count"],
+        "formal_executable_universe_count": int(
+            daily_frame.loc[daily_frame["date"].eq(common_end), "is_executable"].sum()
+        )
+        + proxy_report["proxy_formal_executable_count"],
         "unique_etf_count": len(set(etf_codes)),
         "duplicate_etfs_across_sectors": duplicates,
-        "multiple_candidate_sectors": sorted({
-            r.sector_code for r in rows if r.mapping_status == "MULTIPLE_CANDIDATES"
-        }),
+        "multiple_candidate_sectors": sorted(
+            {r.sector_code for r in rows if r.mapping_status == "MULTIPLE_CANDIDATES"}
+        ),
         "listing_date_complete_count": sum(bool(r.etf_listing_date) for r in rows if r.is_primary),
-        "mapping_effective_from_complete_count": sum(bool(r.mapping_effective_from) for r in rows if r.is_primary),
+        "mapping_effective_from_complete_count": sum(
+            bool(r.mapping_effective_from) for r in rows if r.is_primary
+        ),
         "mapping_provenance_complete_count": sum(
             bool(r.source_provider and r.source_retrieved_at and (r.source_url or r.source_file))
-            for r in rows if r.is_primary
+            for r in rows
+            if r.is_primary
         ),
         "local_etf_count": len(etfs),
         "local_listing_date_known_count": int(etfs["listing_date"].notna().sum()),
@@ -716,17 +923,21 @@ def build(
             "listing_source": "official evidence; not Hikyuu first bar",
         },
         "latest_common_date": common_end,
-        "latest_executable_sector_count": int(daily_frame.loc[
-            daily_frame["date"].eq(common_end), "is_executable"
-        ].sum()),
+        "latest_executable_sector_count": int(
+            daily_frame.loc[daily_frame["date"].eq(common_end), "is_executable"].sum()
+        ),
         "candidate_session_count": len(counts),
         "historical_executable_min": min(counts) if counts else None,
         "historical_executable_median": statistics.median(counts) if counts else None,
         "historical_executable_mean": statistics.mean(counts) if counts else None,
         "historical_executable_max": max(counts) if counts else None,
         "historical_executable_coverage_ratio_min": min(counts) / len(codes) if counts else None,
-        "historical_executable_coverage_ratio_median": statistics.median(counts) / len(codes) if counts else None,
-        "historical_executable_coverage_ratio_mean": statistics.mean(counts) / len(codes) if counts else None,
+        "historical_executable_coverage_ratio_median": statistics.median(counts) / len(codes)
+        if counts
+        else None,
+        "historical_executable_coverage_ratio_mean": statistics.mean(counts) / len(codes)
+        if counts
+        else None,
         "historical_executable_coverage_ratio_max": max(counts) / len(codes) if counts else None,
         "days_with_executable_ge_5": sum(c >= 5 for c in counts),
         "days_with_executable_lt_5": sum(c < 5 for c in counts),
@@ -734,12 +945,10 @@ def build(
         "sector_only_eligible_end": sector_end,
         "sector_plus_etf_candidate_start": min(complete_dates) if complete_dates else None,
         "sector_plus_etf_candidate_end": max(complete_dates) if complete_dates else None,
-        "sector_801193_missing_candidate_sessions": len(candidate_dates) - sum(
-            sector_valid.get(("801193", day), False) for day in candidate_dates
-        ),
-        "sector_801193_missing_common_sessions": len(all_dates) - sum(
-            sector_valid.get(("801193", day), False) for day in all_dates
-        ),
+        "sector_801193_missing_candidate_sessions": len(candidate_dates)
+        - sum(sector_valid.get(("801193", day), False) for day in candidate_dates),
+        "sector_801193_missing_common_sessions": len(all_dates)
+        - sum(sector_valid.get(("801193", day), False) for day in all_dates),
         "candidate_range_note": (
             "Existing sector-only rule reserves 120 prior sessions for features, "
             "six calendar months for training with a 120-session label/purge boundary, "
@@ -755,7 +964,9 @@ def build(
         ],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame([asdict(r) for r in rows]).to_csv(output_dir / "etf_mapping_evidence.csv", index=False)
+    pd.DataFrame([asdict(r) for r in rows]).to_csv(
+        output_dir / "etf_mapping_evidence.csv", index=False
+    )
     etfs.to_csv(output_dir / "etf_local_metadata.csv", index=False)
     daily_frame.to_csv(output_dir / "etf_daily_availability.csv", index=False)
     coverage.to_csv(output_dir / "etf_daily_coverage.csv", index=False)
@@ -770,13 +981,23 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sector-dir", type=Path, default=Path("data/processed/shenwan"))
     parser.add_argument("--hikyuu-dir", type=Path, default=Path("data/hikyuu"))
-    parser.add_argument("--output-dir", type=Path, default=Path("data/processed/shenwan_etf_mapping"))
+    parser.add_argument(
+        "--output-dir", type=Path, default=Path("data/processed/shenwan_etf_mapping")
+    )
     parser.add_argument("--mapping-file", type=Path, default=None)
     args = parser.parse_args()
-    print(json.dumps(build(
-        sector_dir=args.sector_dir, hikyuu_dir=args.hikyuu_dir,
-        output_dir=args.output_dir, mapping_file=args.mapping_file,
-    ), ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            build(
+                sector_dir=args.sector_dir,
+                hikyuu_dir=args.hikyuu_dir,
+                output_dir=args.output_dir,
+                mapping_file=args.mapping_file,
+            ),
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
     return 0
 
 

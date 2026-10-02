@@ -21,11 +21,11 @@ Hikyuu 相关 import 只出现在 ``hikyuu_runner`` / ``testing`` 与
 from __future__ import annotations
 
 from .result import (
-    BacktestResult,
+    RESULT_FILES,
+    UNSUPPORTED,
     BacktestMetadata,
     BacktestMetrics,
-    UNSUPPORTED,
-    RESULT_FILES,
+    BacktestResult,
     now_run_id,
 )
 from .runner import (

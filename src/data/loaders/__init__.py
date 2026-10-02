@@ -8,8 +8,8 @@
 from __future__ import annotations
 
 from .panel_loader import (
-    MarketDataRequest,
     LoadResult,
+    MarketDataRequest,
     load_panel,
 )
 from .shenwan_sector_loader import (
@@ -19,6 +19,10 @@ from .shenwan_sector_loader import (
 )
 
 __all__ = [
-    "MarketDataRequest", "LoadResult", "load_panel",
-    "load_sector_catalog", "load_sector_ohlcva", "load_sector_panel",
+    "MarketDataRequest",
+    "LoadResult",
+    "load_panel",
+    "load_sector_catalog",
+    "load_sector_ohlcva",
+    "load_sector_panel",
 ]

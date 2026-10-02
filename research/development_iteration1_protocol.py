@@ -15,39 +15,56 @@ import numpy as np
 import pandas as pd
 
 from research.sector_development_baseline import (
-    EXPECTED_FEATURES, EXPECTED_PREDICTION_HASH, EXPECTED_SNAPSHOT,
+    EXPECTED_FEATURES,
+    EXPECTED_PREDICTION_HASH,
+    EXPECTED_SNAPSHOT,
     EXPECTED_SPLIT_HASH,
 )
 from research.sector_development_protocol import (
-    canonical_hash, guard_evaluation, prediction_config_hash,
-    prediction_config_payload, split_policy_hash,
+    canonical_hash,
+    guard_evaluation,
+    prediction_config_hash,
+    prediction_config_payload,
+    split_policy_hash,
 )
 
 PROTOCOL_NAME = "DEVELOPMENT_ITERATION_1_PREREGISTERED"
 FROZEN_CANDIDATE_IDS = ("D0", "D1", "D2", "D3")
 FROZEN_CANDIDATES = (
-    {"id": "D0", "x_preprocessing": "NONE",
-     "training_target": "ABSOLUTE_FORWARD_RETURN"},
-    {"id": "D1", "x_preprocessing": "TRAIN_ONLY_COLUMN_STANDARDIZATION",
-     "training_target": "ABSOLUTE_FORWARD_RETURN"},
-    {"id": "D2", "x_preprocessing": "NONE",
-     "training_target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN"},
-    {"id": "D3", "x_preprocessing": "TRAIN_ONLY_COLUMN_STANDARDIZATION",
-     "training_target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN"},
+    {"id": "D0", "x_preprocessing": "NONE", "training_target": "ABSOLUTE_FORWARD_RETURN"},
+    {
+        "id": "D1",
+        "x_preprocessing": "TRAIN_ONLY_COLUMN_STANDARDIZATION",
+        "training_target": "ABSOLUTE_FORWARD_RETURN",
+    },
+    {
+        "id": "D2",
+        "x_preprocessing": "NONE",
+        "training_target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+    },
+    {
+        "id": "D3",
+        "x_preprocessing": "TRAIN_ONLY_COLUMN_STANDARDIZATION",
+        "training_target": "CROSS_SECTIONAL_EXCESS_FORWARD_RETURN",
+    },
 )
 COMPARISON_WEIGHTS = {10: 0.25, 40: 0.50, 120: 0.25}
 
 # Set only after the canonical payload is frozen. Never derive this constant
 # dynamically at import: a future runner must fail closed on semantic drift.
-FROZEN_DEVELOPMENT_ITERATION1_PROTOCOL_HASH = "f2080f56a3f4a77ff983d5b9cc14c0f1427f4d2c84fb1d9fc89b9a2a3cb12125"
+FROZEN_DEVELOPMENT_ITERATION1_PROTOCOL_HASH = (
+    "f2080f56a3f4a77ff983d5b9cc14c0f1427f4d2c84fb1d9fc89b9a2a3cb12125"
+)
 
 
 def development_iteration1_payload() -> dict:
     """One canonical, result-free protocol identity; no data or performance I/O."""
     baseline = prediction_config_payload()
-    if (split_policy_hash() != EXPECTED_SPLIT_HASH
-            or prediction_config_hash() != EXPECTED_PREDICTION_HASH
-            or tuple(baseline["features"]) != EXPECTED_FEATURES):
+    if (
+        split_policy_hash() != EXPECTED_SPLIT_HASH
+        or prediction_config_hash() != EXPECTED_PREDICTION_HASH
+        or tuple(baseline["features"]) != EXPECTED_FEATURES
+    ):
         raise ValueError("ITERATION1_BASELINE_IDENTITY_MISMATCH")
     return {
         "protocol_name": PROTOCOL_NAME,
@@ -104,10 +121,19 @@ def development_iteration1_payload() -> dict:
                 "train_apply": "(X_train-mean)/std",
                 "prediction_apply": "(X_predict-SAME_training_mean)/SAME_training_std",
                 "zero_std_policy": "all_scaled_values_zero_for_that_column",
-                "forbidden_fit_sources": ["prediction_date_cross_section", "global_dataset",
-                                          "future_rows", "validation", "final_oos"],
-                "required_diagnostics": ["scaler_training_rows", "per_feature_mean",
-                                         "per_feature_std", "zero_std_features"],
+                "forbidden_fit_sources": [
+                    "prediction_date_cross_section",
+                    "global_dataset",
+                    "future_rows",
+                    "validation",
+                    "final_oos",
+                ],
+                "required_diagnostics": [
+                    "scaler_training_rows",
+                    "per_feature_mean",
+                    "per_feature_std",
+                    "zero_std_features",
+                ],
             },
             "cross_sectional_excess_training_target": {
                 "base_label": "close[t+h]/close[t]-1",
@@ -129,17 +155,26 @@ def development_iteration1_payload() -> dict:
         },
         "comparison": {
             "primary": "Weighted_RankIC",
-            "primary_terms": [["mean(RankIC_10)", 0.25],
-                              ["mean(RankIC_40)", 0.50],
-                              ["mean(RankIC_120)", 0.25]],
+            "primary_terms": [
+                ["mean(RankIC_10)", 0.25],
+                ["mean(RankIC_40)", 0.50],
+                ["mean(RankIC_120)", 0.25],
+            ],
             "secondary_tie_break": "Weighted_Spread",
-            "secondary_terms": [["mean(Top5_minus_universe_10)", 0.25],
-                                ["mean(Top5_minus_universe_40)", 0.50],
-                                ["mean(Top5_minus_universe_120)", 0.25]],
+            "secondary_terms": [
+                ["mean(Top5_minus_universe_10)", 0.25],
+                ["mean(Top5_minus_universe_40)", 0.50],
+                ["mean(Top5_minus_universe_120)", 0.25],
+            ],
             "missing_horizon_mean": "comparison_null_ineligible",
             "exact_double_tie": "no_arbitrary_winner_both_remain_for_review_if_eligible",
-            "forbidden_selection": ["best_single_horizon", "best_date", "maximum_return",
-                                    "120d_outlier", "subjective_visual_choice"],
+            "forbidden_selection": [
+                "best_single_horizon",
+                "best_date",
+                "maximum_return",
+                "120d_outlier",
+                "subjective_visual_choice",
+            ],
         },
         "promotion": {
             "rule": "Weighted_RankIC > 0 AND Weighted_Spread > 0",
@@ -169,38 +204,51 @@ def verify_frozen_iteration1_protocol(*, supplied_hash: str | None = None) -> di
     """Hard fail if the committed payload or a supplied runner hash drifts."""
     payload = development_iteration1_payload()
     actual = development_iteration1_protocol_hash(payload)
-    if (actual != FROZEN_DEVELOPMENT_ITERATION1_PROTOCOL_HASH
-            or (supplied_hash is not None and supplied_hash != actual)):
+    if actual != FROZEN_DEVELOPMENT_ITERATION1_PROTOCOL_HASH or (
+        supplied_hash is not None and supplied_hash != actual
+    ):
         raise ValueError("DEVELOPMENT_ITERATION1_PROTOCOL_HASH_MISMATCH")
-    if (tuple(item["id"] for item in payload["candidate_family"]["candidates"])
-            != FROZEN_CANDIDATE_IDS
-            or payload["candidate_family"]["total_budget"] != 4
-            or payload["candidate_family"]["new_beyond_baseline"] != 3
-            or payload["candidate_family"]["candidates"] != list(FROZEN_CANDIDATES)):
+    if (
+        tuple(item["id"] for item in payload["candidate_family"]["candidates"])
+        != FROZEN_CANDIDATE_IDS
+        or payload["candidate_family"]["total_budget"] != 4
+        or payload["candidate_family"]["new_beyond_baseline"] != 3
+        or payload["candidate_family"]["candidates"] != list(FROZEN_CANDIDATES)
+    ):
         raise ValueError("DEVELOPMENT_ITERATION1_CANDIDATE_BUDGET_MISMATCH")
     return payload
 
 
-def guard_iteration1_scope(candidate_id: str, phase: str, ordinals: Sequence[int],
-                           *, supplied_hash: str) -> dict:
+def guard_iteration1_scope(
+    candidate_id: str, phase: str, ordinals: Sequence[int], *, supplied_hash: str
+) -> dict:
     """Structural guard for a future runner; does not authorize its execution."""
     payload = verify_frozen_iteration1_protocol(supplied_hash=supplied_hash)
     if candidate_id not in FROZEN_CANDIDATE_IDS:
         raise ValueError("DEVELOPMENT_ITERATION1_CANDIDATE_BUDGET_EXCEEDED")
     guard_evaluation(phase, ordinals)
-    return next(item for item in payload["candidate_family"]["candidates"]
-                if item["id"] == candidate_id)
+    return next(
+        item for item in payload["candidate_family"]["candidates"] if item["id"] == candidate_id
+    )
 
 
-def assert_training_chronology(feature_dates: Sequence, label_end_dates: Sequence,
-                               signal_date) -> None:
+def assert_training_chronology(
+    feature_dates: Sequence, label_end_dates: Sequence, signal_date
+) -> None:
     """No selected training row can consume a feature or label after signal."""
     origins, ends = pd.DatetimeIndex(feature_dates), pd.DatetimeIndex(label_end_dates)
     signal = pd.Timestamp(signal_date)
-    if (len(origins) != len(ends) or origins.hasnans or ends.hasnans
-            or pd.isna(signal) or origins.tz is not None or ends.tz is not None
-            or bool((origins > signal).any()) or bool((ends > signal).any())
-            or bool((ends < origins).any())):
+    if (
+        len(origins) != len(ends)
+        or origins.hasnans
+        or ends.hasnans
+        or pd.isna(signal)
+        or origins.tz is not None
+        or ends.tz is not None
+        or bool((origins > signal).any())
+        or bool((ends > signal).any())
+        or bool((ends < origins).any())
+    ):
         raise ValueError("RESEARCH_LEAKAGE_BLOCKER: invalid Iteration-1 training chronology")
 
 
@@ -208,9 +256,15 @@ def standardize_train_predict(x_train, x_predict):
     """D1/D3: fit per-column population statistics on legal X_train only."""
     train = np.asarray(x_train, dtype=float)
     predict = np.asarray(x_predict, dtype=float)
-    if (train.ndim != 2 or predict.ndim != 2 or not train.shape[0]
-            or not train.shape[1] or train.shape[1] != predict.shape[1]
-            or not np.isfinite(train).all() or not np.isfinite(predict).all()):
+    if (
+        train.ndim != 2
+        or predict.ndim != 2
+        or not train.shape[0]
+        or not train.shape[1]
+        or train.shape[1] != predict.shape[1]
+        or not np.isfinite(train).all()
+        or not np.isfinite(predict).all()
+    ):
         raise ValueError("Iteration-1 scaler requires finite aligned 2D matrices")
     mean = train.mean(axis=0)
     std = train.std(axis=0, ddof=0)
@@ -222,9 +276,12 @@ def standardize_train_predict(x_train, x_predict):
     scaled_predict[:, zero] = 0.0
     if not np.isfinite(scaled_train).all() or not np.isfinite(scaled_predict).all():
         raise ValueError("Iteration-1 scaler generated non-finite values")
-    diagnostics = {"scaler_training_rows": int(train.shape[0]),
-                   "per_feature_mean": mean.tolist(), "per_feature_std": std.tolist(),
-                   "zero_std_features": np.flatnonzero(zero).astype(int).tolist()}
+    diagnostics = {
+        "scaler_training_rows": int(train.shape[0]),
+        "per_feature_mean": mean.tolist(),
+        "per_feature_std": std.tolist(),
+        "zero_std_features": np.flatnonzero(zero).astype(int).tolist(),
+    }
     return scaled_train, scaled_predict, diagnostics
 
 
@@ -238,8 +295,13 @@ def cross_sectional_excess_training_target(raw_y, training_feature_dates, *, hor
         raise ValueError("Iteration-1 excess target requires one frozen horizon")
     y = np.asarray(raw_y, dtype=float)
     dates = pd.DatetimeIndex(training_feature_dates)
-    if (y.ndim != 1 or len(y) != len(dates) or dates.hasnans or dates.tz is not None
-            or not np.isfinite(y).all()):
+    if (
+        y.ndim != 1
+        or len(y) != len(dates)
+        or dates.hasnans
+        or dates.tz is not None
+        or not np.isfinite(y).all()
+    ):
         raise ValueError("Iteration-1 excess target requires finite aligned rows")
     excess = np.empty_like(y)
     for date in dates.unique():
@@ -268,7 +330,13 @@ def weighted_spread(metric_means: Mapping[str, float | None]) -> float | None:
 
 def eligible_for_further_review(rankic: float | None, spread: float | None) -> bool:
     """Strict conjunction; a missing value or least-bad score never promotes."""
-    return (rankic is not None and spread is not None
-            and not isinstance(rankic, bool) and not isinstance(spread, bool)
-            and isfinite(float(rankic)) and isfinite(float(spread))
-            and rankic > 0 and spread > 0)
+    return (
+        rankic is not None
+        and spread is not None
+        and not isinstance(rankic, bool)
+        and not isinstance(spread, bool)
+        and isfinite(float(rankic))
+        and isfinite(float(spread))
+        and rankic > 0
+        and spread > 0
+    )

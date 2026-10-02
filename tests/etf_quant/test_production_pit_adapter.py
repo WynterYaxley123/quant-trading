@@ -17,29 +17,33 @@ production evidence. The distinction is reported, never blurred.
 These tests skip, loudly, when the runtime artifacts are absent. They never silently
 pass.
 """
+
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta, timezone
 import json
 import os
-from pathlib import Path
 import shutil
+from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
 from types import SimpleNamespace
 
 import pandas as pd
 import pytest
+from test_registry_sidecar import registry_doc
 
 from strategies.etf_quant.domain import IndustryRanking
 from strategies.etf_quant.domain.industry_level import default_taxonomy
-from strategies.etf_quant.mapping.pit import IDENTITY, load_pit_evidence, select_pit_mappings
+from strategies.etf_quant.mapping.pit import load_pit_evidence, select_pit_mappings
 from strategies.etf_quant.mapping.registry import load_registry
-from strategies.etf_quant.runtime.storage import GateError, digest, json_bytes
+from strategies.etf_quant.runtime.storage import GateError, json_bytes
 
-from test_registry_sidecar import registry_doc
+pytestmark = pytest.mark.external_runtime
 
 TZ = timezone(timedelta(hours=8))
-RUNTIME = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
-                            r"D:\QuantForge\runtime\etf-quant-v1")) / "production-pit-evidence-v1"
+RUNTIME = (
+    Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT", r"D:\QuantForge\runtime\etf-quant-v1"))
+    / "production-pit-evidence-v1"
+)
 BOOK = RUNTIME / "adapter-tests" / "production_evidence_book_v1.json"
 SOURCE_ROOT = RUNTIME / "adapter-sources"
 REGISTRY = RUNTIME / "reports" / "production_pit_evidence_registry_v1.json"
@@ -71,24 +75,52 @@ def _provider(etf_codes, *, cutoff: date, amount_by_etf=None):
     """Synthetic micro-structure wide enough for the real 20-session gate."""
     days = _sessions(cutoff, 40)
     bars, instruments, status = [], [], []
-    for index, symbol in enumerate(sorted(etf_codes)):
-        instruments.append({"symbol": symbol, "asset_type": "etf",
-                            "list_date": date(2015, 1, 1), "delist_date": None,
-                            "prev_symbol": None})
+    for index, symbol in enumerate(sorted(etf_codes)):  # noqa: B007 -- Retain established loop identity for provenance review.
+        instruments.append(
+            {
+                "symbol": symbol,
+                "asset_type": "etf",
+                "list_date": date(2015, 1, 1),
+                "delist_date": None,
+                "prev_symbol": None,
+            }
+        )
         for day in days:
             amount = 1.0e9
             if amount_by_etf and symbol in amount_by_etf:
                 amount = amount_by_etf[symbol]
-            bars.append({"symbol": symbol, "trade_date": day, "open": 1.0, "high": 1.1,
-                         "low": 0.9, "close": 1.0, "volume": 1.0e6, "amount": amount,
-                         "source": "tdx_protocol"})
-            status.append({"symbol": symbol, "trade_date": day, "is_trading": True,
-                           "status": "normal", "source": "eastmoney"})
+            bars.append(
+                {
+                    "symbol": symbol,
+                    "trade_date": day,
+                    "open": 1.0,
+                    "high": 1.1,
+                    "low": 0.9,
+                    "close": 1.0,
+                    "volume": 1.0e6,
+                    "amount": amount,
+                    "source": "tdx_protocol",
+                }
+            )
+            status.append(
+                {
+                    "symbol": symbol,
+                    "trade_date": day,
+                    "is_trading": True,
+                    "status": "normal",
+                    "source": "eastmoney",
+                }
+            )
     return SimpleNamespace(
-        sessions=days, cutoff=cutoff,
+        sessions=days,
+        cutoff=cutoff,
         created_at=datetime(cutoff.year, cutoff.month, cutoff.day, 17, tzinfo=TZ),
-        tables={"etf_bars": pd.DataFrame(bars), "instruments": pd.DataFrame(instruments),
-                "trading_status": pd.DataFrame(status)})
+        tables={
+            "etf_bars": pd.DataFrame(bars),
+            "instruments": pd.DataFrame(instruments),
+            "trading_status": pd.DataFrame(status),
+        },
+    )
 
 
 def _copy_book(tmp_path) -> Path:
@@ -115,13 +147,13 @@ def _empty_registry(tmp_path):
 
 
 def _rankings(codes):
-    return tuple(IndustryRanking(index + 1, code, 5 - index)
-                 for index, code in enumerate(codes))
+    return tuple(IndustryRanking(index + 1, code, 5 - index) for index, code in enumerate(codes))
 
 
 # ---------------------------------------------------------------------------
 # The real book loads through the unmodified adapter
 # ---------------------------------------------------------------------------
+
 
 def test_production_book_loads_through_the_existing_adapter(tmp_path):
     book, _path, _root = _book(tmp_path)
@@ -171,6 +203,7 @@ def test_production_prefix_at_the_simulated_cutoff_is_non_empty(tmp_path):
 # Full admission path on the real book
 # ---------------------------------------------------------------------------
 
+
 def test_simulated_future_cutoff_runs_strict_proxy_cash_on_real_evidence(tmp_path):
     book, _path, _root = _book(tmp_path)
     registry = _empty_registry(tmp_path)
@@ -179,8 +212,9 @@ def test_simulated_future_cutoff_runs_strict_proxy_cash_on_real_evidence(tmp_pat
     rankings = _rankings(industries[:5])
     etfs = {record.etf_code for record in book.records}
     provider = _provider(etfs, cutoff=SIMULATED_CUTOFF)
-    result = select_pit_mappings(registry, rankings, provider, book,
-                                 signal_at=datetime(2026, 11, 2, 18, tzinfo=TZ))
+    result = select_pit_mappings(
+        registry, rankings, provider, book, signal_at=datetime(2026, 11, 2, 18, tzinfo=TZ)
+    )
     assert result["status"] == "READY"
     assert len(result["slots"]) == 5
     # With an empty strict registry every slot must be decided by evidence or cash.
@@ -199,10 +233,12 @@ def test_real_evidence_is_never_visible_at_the_historical_cutoff(tmp_path):
     rankings = _rankings(list(taxonomy.named_industry_codes)[:5])
     etfs = {record.etf_code for record in book.records}
     provider = _provider(etfs, cutoff=HISTORICAL_CUTOFF)
-    result = select_pit_mappings(registry, rankings, provider, book,
-                                 signal_at=datetime(2026, 9, 24, 18, tzinfo=TZ))
+    result = select_pit_mappings(
+        registry, rankings, provider, book, signal_at=datetime(2026, 9, 24, 18, tzinfo=TZ)
+    )
     assert all(slot["etf_code"] is None for slot in result["slots"]), (
-        "no production evidence may be admitted on 2026-09-24")
+        "no production evidence may be admitted on 2026-09-24"
+    )
     assert result["selected"] == []
 
 
@@ -256,6 +292,7 @@ def test_an_unknown_official_host_is_refused(tmp_path):
 # The strict path is untouched
 # ---------------------------------------------------------------------------
 
+
 def test_strict_path_still_refuses_a_pit_book(tmp_path):
     from strategies.etf_quant.runtime import shadow
 
@@ -267,14 +304,21 @@ def test_strict_path_still_refuses_a_pit_book(tmp_path):
     etfs = {record.etf_code for record in book.records}
     provider = _provider(etfs, cutoff=SIMULATED_CUTOFF)
     with pytest.raises(GateError, match="STRICT_PATH_PIT_EVIDENCE_FORBIDDEN"):
-        shadow.daily_cycle(provider, registry, tmp_path / "runtime",
-                           now=datetime(2026, 11, 2, 18, tzinfo=TZ), code_commit="d" * 40,
-                           classification_version="SWCLASS2021", pit_evidence=book)
+        shadow.daily_cycle(
+            provider,
+            registry,
+            tmp_path / "runtime",
+            now=datetime(2026, 11, 2, 18, tzinfo=TZ),
+            code_commit="d" * 40,
+            classification_version="SWCLASS2021",
+            pit_evidence=book,
+        )
 
 
 # ---------------------------------------------------------------------------
 # Registry cross-check
 # ---------------------------------------------------------------------------
+
 
 def test_registry_counts_agree_with_the_book(tmp_path):
     _require_artifacts()

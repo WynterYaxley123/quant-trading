@@ -76,8 +76,12 @@ export function audit() {
   let remote;
   try {const u=new URL(url);remote={name:'origin',scheme:u.protocol,host:u.hostname,path:u.pathname,embedded_credentials:!!(u.username||u.password)};}
   catch {remote={name:'origin',scheme:'OTHER',embedded_credentials:/:[^/@\s]+@/.test(url)};}
-  const firewall=git(['diff','--name-only','457b432056ebc894992de330a3b480c062e90bcc']).trim().split('\n').filter(Boolean)
-    .filter(n=>/^(?:research\/|strategies\/sw_sector_rotation\/|src\/data\/|scripts\/data\/|docker\/|\.devcontainer\/|docker-compose|requirements|docs\/research\/)/.test(n));
+  // The historical firewall prohibited all infrastructure edits. Public engineering
+  // now permits tooling/formatting there while preserving the certified ETF bytes.
+  const integrity=JSON.parse(readFileSync(path.join(repo,'reports/etf_quant/autonomous_code_integrity_v1.json'),'utf8'));
+  const firewall=Object.entries(integrity.files).filter(([name,expected])=>
+    createHash('sha256').update(readFileSync(path.join(repo,name))).digest('hex')!==expected
+  ).map(([name])=>name);
   const report={status:candidates.length||forbidden.length||sealed.length||firewall.length||remote.embedded_credentials?'BLOCKED':'PASS',
     scanner:'BUILTIN_READ_ONLY_PATTERN_AND_PATH_AUDIT_NOT_A_THIRD_PARTY_CERTIFICATION',
     reviewed_legacy_dummy_template_sha256:'2077e82fcc7bfbccf7eb0f671d597addc90ff9221fae04edef07a81d1178dd2a',
@@ -86,7 +90,8 @@ export function audit() {
     new_secret_candidates:candidates.filter(c=>c.scope==='new').length,history_secret_candidates:candidates.filter(c=>c.scope==='history').length,
     candidates,forbidden_paths:forbidden,sealed_paths_not_read:sealed,large_files_over_500kb:large,firewall_changes:firewall,remote,
     runtime_data_tracked:forbidden.some(c=>c.scope==='tracked'),credential_values_printed:false,
-    public_licensing_review:'REVIEW_REQUIRED_NO_REPOSITORY_LICENSE_GRANT'};
+    firewall_policy:'CERTIFIED_IMPLEMENTATION_BYTES_UNCHANGED',
+    public_licensing_review:'MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE'};
   return report;
 }
 

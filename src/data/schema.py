@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 
 import pandas as pd
 
@@ -77,9 +77,7 @@ def normalize_frame(
     ``docs/data/market_data_policy.md``。
     """
     if not isinstance(frame, pd.DataFrame):
-        raise DataIntegrityError(
-            f"normalize_frame 需要 DataFrame，收到 {type(frame).__name__}"
-        )
+        raise DataIntegrityError(f"normalize_frame 需要 DataFrame，收到 {type(frame).__name__}")
 
     df = frame.copy()
 
@@ -104,9 +102,7 @@ def normalize_frame(
 
     # 3. date 规范化
     if "date" not in df.columns:
-        raise DataIntegrityError(
-            "行情数据缺少 date 列（可用别名：Date/日期）"
-        )
+        raise DataIntegrityError("行情数据缺少 date 列（可用别名：Date/日期）")
     df.loc[:, "date"] = pd.to_datetime(df["date"]).dt.normalize()
 
     # 4. 补齐常量列
@@ -196,9 +192,7 @@ def validate_frame(
         bad = (hi < lo) | (op > hi) | (op < lo) | (cl > hi) | (cl < lo)
         if bad.any():
             idx = frame.index[bad][:5].tolist()
-            raise DataIntegrityError(
-                f"OHLC 边界不一致（low<=o/c<=high 被违反），行索引示例: {idx}"
-            )
+            raise DataIntegrityError(f"OHLC 边界不一致（low<=o/c<=high 被违反），行索引示例: {idx}")
 
 
 def _is_finite_number(v: object) -> bool:

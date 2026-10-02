@@ -1,4 +1,5 @@
 """Source-C construction tests. Synthetic fixtures only; no lake, no network."""
+
 from __future__ import annotations
 
 import sys
@@ -16,8 +17,13 @@ from strategies.etf_quant.data import source_c as sc  # noqa: E402
 
 
 def member(symbol, code, snapshot=date(2020, 1, 23)):
-    return {"symbol": symbol, "industry_code": code, "as_of_date": snapshot,
-            "source": "sw", "classification_system": "sw"}
+    return {
+        "symbol": symbol,
+        "industry_code": code,
+        "as_of_date": snapshot,
+        "source": "sw",
+        "classification_system": "sw",
+    }
 
 
 SESSION = date(2026, 9, 24)
@@ -28,11 +34,11 @@ def five_members(code="220900"):
 
 
 def flat_prices(symbols, close=10.0, prev=10.0, exact=True):
-    return ({s: close for s in symbols}, {s: prev for s in symbols},
-            {s: exact for s in symbols})
+    return ({s: close for s in symbols}, {s: prev for s in symbols}, {s: exact for s in symbols})
 
 
 # --- constituent return arithmetic ------------------------------------------
+
 
 def test_exact_adjusted_return_is_computed():
     value, reason = sc.constituent_return(close=11.0, prev_close=10.0, adj_is_exact=True)
@@ -51,11 +57,14 @@ def test_missing_adj_flag_is_not_exact():
         assert value is None and reason == sc.REASON_NOT_EXACT
 
 
-@pytest.mark.parametrize("close,prev,expected", [
-    (None, 10.0, sc.REASON_NO_BAR),
-    (10.0, None, sc.REASON_PREV_MISSING),
-    (None, None, sc.REASON_NO_BAR),
-])
+@pytest.mark.parametrize(
+    "close,prev,expected",
+    [
+        (None, 10.0, sc.REASON_NO_BAR),
+        (10.0, None, sc.REASON_PREV_MISSING),
+        (None, None, sc.REASON_NO_BAR),
+    ],
+)
 def test_missing_prices_are_distinguished(close, prev, expected):
     """No bar and no prior close are different facts and must not be collapsed."""
     value, reason = sc.constituent_return(close=close, prev_close=prev, adj_is_exact=True)
@@ -76,12 +85,19 @@ def test_non_finite_prices_are_rejected(bad):
 
 # --- the frozen coverage gate -----------------------------------------------
 
+
 def test_five_valid_of_five_passes():
     rows = five_members()
     symbols = [r.symbol for r in rows]
     closes, prevs, exact = flat_prices(symbols)
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.valid == 5 and item.eligible == 5
     assert item.coverage_ratio == pytest.approx(1.0)
     assert item.status == sc.VALID and item.industry_return == pytest.approx(0.0)
@@ -92,8 +108,14 @@ def test_four_valid_of_five_fails_the_count_gate():
     symbols = [r.symbol for r in rows]
     closes, prevs, exact = flat_prices(symbols)
     closes[symbols[0]] = None
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.valid == 4 and item.status == sc.INVALID
     assert item.industry_return is None
 
@@ -104,14 +126,26 @@ def test_ratio_gate_uses_full_membership_as_denominator():
     closes, prevs, exact = flat_prices(symbols)
     for s in symbols[:2]:
         closes[s] = None
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.valid == 8 and item.coverage_ratio == pytest.approx(0.80)
     assert item.status == sc.VALID, "0.80 is inclusive per the frozen gate"
 
-    closes[symbols[2]] = None            # now 7/10 = 0.70
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    closes[symbols[2]] = None  # now 7/10 = 0.70
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.status == sc.INVALID
     assert item.industry_return is None
 
@@ -122,9 +156,15 @@ def test_non_exact_constituents_lower_the_ratio_and_never_enter_the_mean():
     closes, prevs, exact = flat_prices(symbols)
     for s in symbols[:2]:
         exact[s] = False
-    closes[symbols[0]] = 99.0            # a wild return that must NOT leak in
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    closes[symbols[0]] = 99.0  # a wild return that must NOT leak in
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.valid == 8
     assert item.coverage_ratio == pytest.approx(0.80)
     assert item.status == sc.VALID
@@ -139,8 +179,14 @@ def test_ratio_gate_blocks_the_mean_when_coverage_is_insufficient():
     for s in symbols[:5]:
         exact[s] = False
     closes[symbols[0]] = 99.0
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.valid == 5
     assert item.coverage_ratio == pytest.approx(0.50)
     assert item.status == sc.INVALID
@@ -152,17 +198,24 @@ def test_equal_weight_mean_is_arithmetic_not_geometric():
     closes = dict.fromkeys(symbols, 10.0)
     prevs = dict.fromkeys(symbols, 10.0)
     exact = dict.fromkeys(symbols, True)
-    closes["600000.SH"] = 11.0            # +10%
-    closes["600001.SH"] = 9.0             # -10%
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    closes["600000.SH"] = 11.0  # +10%
+    closes["600001.SH"] = 9.0  # -10%
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.industry_return == pytest.approx(0.0)
 
 
 def test_invalid_date_holds_the_level_and_is_not_a_zero_return():
     valid = sc.IndustryDate(SESSION, "2209", 5, 5, 1.0, 0.10, sc.VALID, {})
-    invalid = sc.IndustryDate(date(2026, 9, 25), "2209", 5, 1, 0.2, None, sc.INVALID,
-                              {sc.REASON_NOT_EXACT: 4})
+    invalid = sc.IndustryDate(
+        date(2026, 9, 25), "2209", 5, 1, 0.2, None, sc.INVALID, {sc.REASON_NOT_EXACT: 4}
+    )
     levels = sc.index_levels([valid, invalid])
     assert levels[0]["index_level"] == pytest.approx(1100.0)
     assert levels[1]["index_level"] == pytest.approx(1100.0), "an invalid date moved the level"
@@ -190,17 +243,21 @@ def test_series_carries_its_identity_and_disclaimer():
 
 # --- session build + as-of interaction --------------------------------------
 
+
 def test_build_session_uses_asof_membership_only():
-    rows = mem.shenwan_rows([
-        member("600000.SH", "220900", date(2020, 1, 23)),
-        member("600001.SH", "220900", date(2020, 1, 23)),
-        member("600000.SH", "220900", date(2020, 1, 23)),
-        member("600002.SH", "330100", date(2020, 1, 23)),
-    ])
+    rows = mem.shenwan_rows(
+        [
+            member("600000.SH", "220900", date(2020, 1, 23)),
+            member("600001.SH", "220900", date(2020, 1, 23)),
+            member("600000.SH", "220900", date(2020, 1, 23)),
+            member("600002.SH", "330100", date(2020, 1, 23)),
+        ]
+    )
     symbols = [r.symbol for r in rows]
     closes, prevs, exact = flat_prices(symbols)
-    items = sc.build_session(rows=rows, session=SESSION, closes=closes,
-                             prev_closes=prevs, adj_exact=exact)
+    items = sc.build_session(
+        rows=rows, session=SESSION, closes=closes, prev_closes=prevs, adj_exact=exact
+    )
     assert [i.industry_code for i in items] == ["2209", "3301"]
     assert items[0].eligible == 2 and items[1].eligible == 1
     assert all(i.status == sc.INVALID for i in items), "fewer than 5 constituents must not pass"
@@ -211,10 +268,11 @@ def test_bj_constituents_count_toward_eligible_and_lower_the_ratio():
     symbols = [f"60000{i}.SH" for i in range(5)] + ["832317.BJ", "833874.BJ"]
     rows = mem.shenwan_rows([member(s, "220900") for s in symbols])
     closes, prevs, exact = flat_prices(symbols)
-    closes["832317.BJ"] = None            # a BJ name with no bar
+    closes["832317.BJ"] = None  # a BJ name with no bar
     closes["833874.BJ"] = None
-    items = sc.build_session(rows=rows, session=SESSION, closes=closes,
-                             prev_closes=prevs, adj_exact=exact)
+    items = sc.build_session(
+        rows=rows, session=SESSION, closes=closes, prev_closes=prevs, adj_exact=exact
+    )
     assert items[0].eligible == 7, "BJ members were dropped from the denominator"
     assert items[0].valid == 5
     assert items[0].coverage_ratio == pytest.approx(5 / 7)
@@ -225,8 +283,9 @@ def test_bj_impact_report_quantifies_the_cost_of_the_policy():
     rows = mem.shenwan_rows([member(s, "220900") for s in symbols])
     closes, prevs, exact = flat_prices(symbols)
     closes["832317.BJ"] = None
-    report = sc.bj_coverage_impact(rows=rows, session=SESSION, closes=closes,
-                                   prev_closes=prevs, adj_exact=exact)
+    report = sc.bj_coverage_impact(
+        rows=rows, session=SESSION, closes=closes, prev_closes=prevs, adj_exact=exact
+    )
     assert report["total_bj_members"] == 2
     assert report["total_bj_missing"] == 1
     assert report["industries_affected"] == 1
@@ -239,10 +298,18 @@ def test_reasons_are_recorded_so_a_low_ratio_is_explainable():
     exact[symbols[1]] = False
     prevs[symbols[2]] = None
     closes[symbols[3]] = 0.0
-    item = sc.industry_date(session=SESSION, industry_code="2209", constituents=symbols,
-                            closes=closes, prev_closes=prevs, adj_exact=exact)
+    item = sc.industry_date(
+        session=SESSION,
+        industry_code="2209",
+        constituents=symbols,
+        closes=closes,
+        prev_closes=prevs,
+        adj_exact=exact,
+    )
     assert item.valid == 2 and item.status == sc.INVALID
     assert item.reasons == {
-        sc.REASON_NO_BAR: 1, sc.REASON_NOT_EXACT: 1,
-        sc.REASON_PREV_MISSING: 1, sc.REASON_NON_POSITIVE: 1,
+        sc.REASON_NO_BAR: 1,
+        sc.REASON_NOT_EXACT: 1,
+        sc.REASON_PREV_MISSING: 1,
+        sc.REASON_NON_POSITIVE: 1,
     }

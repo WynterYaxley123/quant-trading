@@ -26,43 +26,42 @@ self_improver / meta_learner / daemon / 飞书 / cron 等全部基础设施。
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Mapping, Sequence
 
 import numpy as np
 import pandas as pd
 
 from strategies.sw_sector_rotation.src.common.temporal_integrity import (
     TemporalBoundaries,
+    as_of_truncate,
     make_forward_label,
+    signal_timing,
     temporal_boundaries,
     trading_calendar,
     validate_train_features,
-    as_of_truncate,
-    signal_timing,
 )
 from strategies.sw_sector_rotation.src.factors.sector_rotation import (
-    ALL_FEATURES_PRICE,
     TRAIN_FEATURES_PRICE,
     compute_all_price_features,
 )
-from strategies.sw_sector_rotation.src.risk.sector_rotation import RiskState, compute_risk_state
 from strategies.sw_sector_rotation.src.model.model import (
     DEFAULT_ALPHA,
-    DEFAULT_TRAIN_MONTHS,
     DEFAULT_TOP_N,
-    MIN_TRAIN_DATES,
+    DEFAULT_TRAIN_MONTHS,
     FORWARD_WINDOWS,
     FUSION_WEIGHTS,
+    MIN_TRAIN_DATES,
     CrossSectionalRidgeModel,
 )
 from strategies.sw_sector_rotation.src.model.ranking import (
     build_etf_candidates,
     rank_sectors,
-    select_top,
     sector_scores_to_weights,
+    select_top,
 )
+from strategies.sw_sector_rotation.src.risk.sector_rotation import RiskState, compute_risk_state
 
 __all__ = [
     "FLOW_ADJUST_LIMIT",
@@ -104,11 +103,10 @@ class SWSectorRotationConfig:
     flow_posthoc_enabled: bool = False
     include_fundamentals: bool = False  # HARD: 必须保持 False
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.include_fundamentals:
             raise ValueError(
-                "include_fundamentals 必须为 False：无可信 PIT 财报快照，"
-                "加入训练将构成前视偏差。"
+                "include_fundamentals 必须为 False：无可信 PIT 财报快照，加入训练将构成前视偏差。"
             )
         if self.macro_enabled:
             raise ValueError("macro_enabled 尚无真实 PIT 数据接线，必须保持 False")
@@ -126,7 +124,11 @@ class SWSectorRotationConfig:
         if set(self.fusion_weights) != set(self.forward_windows):
             raise ValueError("fusion_weights 与 horizons 不一致")
         weights = np.asarray(list(self.fusion_weights.values()), dtype=float)
-        if not np.isfinite(weights).all() or (weights <= 0).any() or not np.isclose(weights.sum(), 1.0):
+        if (
+            not np.isfinite(weights).all()
+            or (weights <= 0).any()
+            or not np.isclose(weights.sum(), 1.0)
+        ):
             raise ValueError("fusion_weights 必须为有限正数且和为 1")
 
     @classmethod
@@ -134,15 +136,23 @@ class SWSectorRotationConfig:
         """包内 YAML 是默认运行配置；显式 config 对象可用于合成测试。"""
         import yaml
 
-        source = Path(path) if path is not None else Path(__file__).resolve().parents[1] / "config/sw_sector_rotation.yaml"
+        source = (
+            Path(path)
+            if path is not None
+            else Path(__file__).resolve().parents[1] / "config/sw_sector_rotation.yaml"
+        )
         data = yaml.safe_load(source.read_text(encoding="utf-8"))
         model = data["model"]
         optional = data["features"]["optional"]
         return cls(
-            alpha=model["alpha"], train_months=model["train_months"],
-            top_n=model["top_n"], min_train_dates=model["min_train_dates"],
-            forward_windows=dict(model["horizons"]), fusion_weights=dict(model["fusion_weights"]),
-            macro_enabled=optional["macro_pit"], flow_posthoc_enabled=optional["fund_flow_posthoc"],
+            alpha=model["alpha"],
+            train_months=model["train_months"],
+            top_n=model["top_n"],
+            min_train_dates=model["min_train_dates"],
+            forward_windows=dict(model["horizons"]),
+            fusion_weights=dict(model["fusion_weights"]),
+            macro_enabled=optional["macro_pit"],
+            flow_posthoc_enabled=optional["fund_flow_posthoc"],
         )
 
 
@@ -197,9 +207,7 @@ class SWSectorRotationCore:
     ) -> TemporalBoundaries | None:
         """计算某周期的 purged 训练/预测边界。"""
         fwd = self.config.forward_windows[period]
-        return temporal_boundaries(
-            calendar, predict_date, fwd, self.config.train_months
-        )
+        return temporal_boundaries(calendar, predict_date, fwd, self.config.train_months)
 
     # -- 训练 + 推理 --------------------------------------------------------
 
@@ -229,16 +237,12 @@ class SWSectorRotationCore:
         for frame in panel.values():
             labelled_sets.append(set(frame.dropna(subset=[label_col]).index))
         labelled = sorted(set.intersection(*labelled_sets)) if labelled_sets else []
-        train_dates = [
-            d for d in labelled if b.train_start <= d <= b.label_cutoff
-        ]
+        train_dates = [d for d in labelled if b.train_start <= d <= b.label_cutoff]
         model = self.model.fit_period(period, dict(panel), self.feature_names, train_dates)
         if model is None:
             return None
 
-        result = self.model.predict_period(
-            period, dict(panel), self.feature_names, b.pred_date
-        )
+        result = self.model.predict_period(period, dict(panel), self.feature_names, b.pred_date)
         result.train_start = b.train_start
         result.train_end = b.label_cutoff
 
@@ -272,8 +276,12 @@ class SWSectorRotationCore:
         if live_flow is not None and (mode != "inference" or not self.config.flow_posthoc_enabled):
             raise ValueError("live_flow 仅允许在显式启用的 inference 模式使用")
         cal = trading_calendar(calendar)
-        timing = {p: signal_timing(cal, predict_date, w) for p, w in self.config.forward_windows.items()}
-        visible = {name: as_of_truncate(frame, predict_date) for name, frame in market_frames.items()}
+        timing = {
+            p: signal_timing(cal, predict_date, w) for p, w in self.config.forward_windows.items()
+        }
+        visible = {
+            name: as_of_truncate(frame, predict_date) for name, frame in market_frames.items()
+        }
         panel = self.build_panel(visible, calendar=cal[cal <= pd.Timestamp(predict_date)])
         results = {}
         for period in self.config.forward_windows:
@@ -283,7 +291,7 @@ class SWSectorRotationCore:
         flow_applied = False
         if self.config.flow_posthoc_enabled and live_flow:
             flow_applied = True
-            for period, r in results.items():
+            for period, r in results.items():  # noqa: B007 -- Retain established loop identity for provenance review.
                 if not r:
                     continue
                 r["scores"] = {
@@ -297,9 +305,7 @@ class SWSectorRotationCore:
                     for i, (s, v) in enumerate(r["ranking"])
                 ]
 
-        fused = self.model.fuse_periods(
-            {p: r["result"] for p, r in results.items() if r}
-        )
+        fused = self.model.fuse_periods({p: r["result"] for p, r in results.items() if r})
         top = select_top(fused, self.config.top_n)
         weights = sector_scores_to_weights(top)
 

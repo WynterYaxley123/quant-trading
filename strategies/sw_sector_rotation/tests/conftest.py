@@ -80,9 +80,22 @@ def make_sector_panel(
 
 
 _TICKERS = [
-    "ALPHA", "BETA", "GAMMA", "DELTA", "EPSILON", "ZETA",
-    "ETA", "THETA", "IOTA", "KAPPA", "LAMBDA", "MU",
-    "NU", "XI", "OMICRON", "PI",
+    "ALPHA",
+    "BETA",
+    "GAMMA",
+    "DELTA",
+    "EPSILON",
+    "ZETA",
+    "ETA",
+    "THETA",
+    "IOTA",
+    "KAPPA",
+    "LAMBDA",
+    "MU",
+    "NU",
+    "XI",
+    "OMICRON",
+    "PI",
 ]
 
 
@@ -95,9 +108,7 @@ def make_named_panel(
     """生成带语义化名字的 panel（便于断言排名顺序）。"""
     names = _TICKERS[:n_sectors]
     return {
-        name: make_market_frame(
-            n_days=n_days, start=start, seed=seed + i, base_price=100.0 + i
-        )
+        name: make_market_frame(n_days=n_days, start=start, seed=seed + i, base_price=100.0 + i)
         for i, name in enumerate(names)
     }
 

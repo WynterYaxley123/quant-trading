@@ -10,19 +10,21 @@ promoted into the production lineage.
 The audit answers one question: *could a future decision have used a fact before
 this system actually possessed it?* Everything else is secondary.
 """
+
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from hashlib import sha256
 import json
 import os
-from pathlib import Path
 import re
+from datetime import datetime
+from hashlib import sha256
+from pathlib import Path
 
 import pytest
 
-EXTERNAL_ROOT = Path(os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT",
-                                    r"D:\QuantForge\runtime\etf-quant-v1"))
+EXTERNAL_ROOT = Path(
+    os.environ.get("ETF_QUANT_EXTERNAL_RUNTIME_ROOT", r"D:\QuantForge\runtime\etf-quant-v1")
+)
 RUNTIME = EXTERNAL_ROOT / "production-pit-evidence-v1"
 BOOK = RUNTIME / "adapter-tests" / "production_evidence_book_v1.json"
 SOURCE_ROOT = RUNTIME / "adapter-sources"
@@ -30,11 +32,15 @@ REGISTRY = RUNTIME / "reports" / "production_pit_evidence_registry_v1.json"
 MANIFEST = RUNTIME / "reports" / "raw_source_manifest_v1.json"
 BUILD_REPORT = RUNTIME / "reports" / "build_report_v1.json"
 PACKAGES = RUNTIME / "packages"
-SIDECAR = (EXTERNAL_ROOT / "proxy-exposure-v1" / "subagents"
-           / "subagent-c-sw-membership" / "stock_to_l2_v1.json")
+SIDECAR = (
+    EXTERNAL_ROOT
+    / "proxy-exposure-v1"
+    / "subagents"
+    / "subagent-c-sw-membership"
+    / "stock_to_l2_v1.json"
+)
 
-OFFICIAL_SUFFIXES = ("csindex.com.cn", "cnindex.com.cn", "sse.com.cn", "szse.cn",
-                     "swsresearch.com")
+OFFICIAL_SUFFIXES = ("csindex.com.cn", "cnindex.com.cn", "sse.com.cn", "szse.cn", "swsresearch.com")
 HISTORICAL_CUTOFF = "2026-09-24"
 SEALED_TOP5 = {"3706", "3703", "4901", "4803", "3701"}
 
@@ -71,6 +77,8 @@ def _book_records():
 # A. No fact may be available before it was observed
 # ---------------------------------------------------------------------------
 
+
+@pytest.mark.external_runtime
 def test_every_record_is_forward_only_and_never_before_observation():
     records = _book_records()
     assert records, "the production book must not be empty"
@@ -81,15 +89,18 @@ def test_every_record_is_forward_only_and_never_before_observation():
         assert available >= observed, record["etf_code"]
         assert observed >= published, record["etf_code"]
         assert available.date().isoformat() > HISTORICAL_CUTOFF, (
-            f"{record['etf_code']} claims availability on or before the historical cutoff")
+            f"{record['etf_code']} claims availability on or before the historical cutoff"
+        )
 
 
+@pytest.mark.external_runtime
 def test_no_record_is_available_on_the_historical_decision_date():
     for record in _book_records():
         assert not record["available_at"].startswith(HISTORICAL_CUTOFF)
         assert not record["evidence_observed_at"].startswith(HISTORICAL_CUTOFF)
 
 
+@pytest.mark.external_runtime
 def test_effective_dates_are_never_used_as_availability_dates():
     """The specific re-labelling this audit exists to catch.
 
@@ -101,10 +112,12 @@ def test_effective_dates_are_never_used_as_availability_dates():
         described = {record["constituent_effective_date"], record["weight_effective_date"]}
         for field in ("available_at", "evidence_observed_at", "source_publication_at"):
             assert record[field][:10] not in described, (
-                f"{record['etf_code']}.{field} reuses a described date")
+                f"{record['etf_code']}.{field} reuses a described date"
+            )
             assert record[field][:10] > HISTORICAL_CUTOFF
 
 
+@pytest.mark.external_runtime
 def test_prefix_semantics_exclude_evidence_before_its_availability():
     """The adapter's own prefix rule, exercised on the real book.
 
@@ -114,6 +127,7 @@ def test_prefix_semantics_exclude_evidence_before_its_availability():
     observation instants would be tested the same way at each distinct instant.
     """
     import sys
+
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from strategies.etf_quant.mapping.pit import load_pit_evidence
 
@@ -122,13 +136,17 @@ def test_prefix_semantics_exclude_evidence_before_its_availability():
     assert instants, "the book must declare at least one availability instant"
     book = load_pit_evidence(BOOK, source_root=SOURCE_ROOT)
     from datetime import timedelta
+
     for instant in instants:
         before = book.prefix(instant - timedelta(seconds=1))
         at = book.prefix(instant)
         assert before == {}, f"evidence visible one second before {instant.isoformat()}"
         assert len(at) == len(book.records), f"evidence missing at {instant.isoformat()}"
     # And the historical engineering decision instant sees nothing at all.
-    from datetime import datetime as _datetime, timedelta as _timedelta, timezone as _tz
+    from datetime import datetime as _datetime
+    from datetime import timedelta as _timedelta
+    from datetime import timezone as _tz
+
     historical = _datetime(2026, 9, 24, 18, tzinfo=_tz(_timedelta(hours=8)))
     assert book.prefix(historical) == {}
 
@@ -137,6 +155,8 @@ def test_prefix_semantics_exclude_evidence_before_its_availability():
 # B. Every pinned byte stream is official and hash-correct
 # ---------------------------------------------------------------------------
 
+
+@pytest.mark.external_runtime
 def test_each_record_pins_two_official_sources_with_matching_hashes():
     for record in _book_records():
         for prefix in ("weight_source", "classification_source"):
@@ -144,19 +164,22 @@ def test_each_record_pins_two_official_sources_with_matching_hashes():
             expected = record[prefix + "_sha256"]
             url = record[prefix + "_url"]
             assert "/" not in name and "\\" not in name, (
-                f"the adapter rejects a separator in a pinned filename: {name}")
+                f"the adapter rejects a separator in a pinned filename: {name}"
+            )
             assert re.fullmatch(r"[0-9a-f]{64}", expected)
             assert _official(url), f"non-official source pinned: {url}"
             body = (SOURCE_ROOT / name).read_bytes()
             assert sha256(body).hexdigest() == expected, name
 
 
+@pytest.mark.external_runtime
 def test_the_pinned_extraction_equals_the_pinned_bytes():
     """The adapter's own equality rule, restated independently."""
     for record in _book_records():
         weight = json.loads((SOURCE_ROOT / record["weight_source_file"]).read_bytes())
         classification = json.loads(
-            (SOURCE_ROOT / record["classification_source_file"]).read_bytes())
+            (SOURCE_ROOT / record["classification_source_file"]).read_bytes()
+        )
         assert weight["constituents"] == record["constituents"]
         assert classification["classifications"] == record["classifications"]
         assert weight["declared_constituent_count"] == record["declared_constituent_count"]
@@ -166,6 +189,8 @@ def test_the_pinned_extraction_equals_the_pinned_bytes():
 # C. Weights are genuine, complete and never renormalised
 # ---------------------------------------------------------------------------
 
+
+@pytest.mark.external_runtime
 def test_every_weight_vector_is_a_complete_official_set():
     for record in _book_records():
         rows = record["constituents"]
@@ -179,12 +204,14 @@ def test_every_weight_vector_is_a_complete_official_set():
             assert row["security_code"] == str(row["security_code"]).split(".")[0]
 
 
+@pytest.mark.external_runtime
 def test_weight_sums_land_in_the_frozen_band_without_rescaling():
     for record in _book_records():
         total = sum(float(row["weight_pct"]) for row in record["constituents"])
         assert 99.0 <= total <= 100.5, (record["benchmark_code"], total)
 
 
+@pytest.mark.external_runtime
 def test_every_constituent_carries_an_explicit_classification():
     """No constituent may be silently dropped into an unmapped bucket."""
     for record in _book_records():
@@ -192,9 +219,11 @@ def test_every_constituent_carries_an_explicit_classification():
         classified = {row["security_code"] for row in record["classifications"]}
         assert constituents == classified, (
             f"{record['benchmark_code']} has unmapped constituents: "
-            f"{sorted(constituents - classified)[:5]}")
+            f"{sorted(constituents - classified)[:5]}"
+        )
 
 
+@pytest.mark.external_runtime
 def test_classification_rows_are_well_formed_and_never_post_date_the_weight():
     for record in _book_records():
         weight_day = record["weight_effective_date"]
@@ -207,13 +236,16 @@ def test_classification_rows_are_well_formed_and_never_post_date_the_weight():
             assert _instant(row["available_at"]) <= available, row["security_code"]
             assert row["effective_date"] <= weight_day, (
                 f"classification effective {row['effective_date']} post-dates the "
-                f"weight vector {weight_day}")
+                f"weight vector {weight_day}"
+            )
 
 
 # ---------------------------------------------------------------------------
 # D. The registry is a faithful index of what was built
 # ---------------------------------------------------------------------------
 
+
+@pytest.mark.external_runtime
 def test_registry_declares_forward_only_availability():
     registry = _load(REGISTRY)
     assert registry["identity"] == "PRODUCTION_PIT_EVIDENCE_REGISTRY_V1"
@@ -224,6 +256,7 @@ def test_registry_declares_forward_only_availability():
     assert registry["builder_code_hash"] and registry["derivation_code_hash"]
 
 
+@pytest.mark.external_runtime
 def test_registry_counts_match_the_raw_source_manifest():
     registry = _load(REGISTRY)
     manifest = _load(MANIFEST)
@@ -238,6 +271,7 @@ def test_registry_counts_match_the_raw_source_manifest():
     assert registry["counts"]["classification_securities"] > 0
 
 
+@pytest.mark.external_runtime
 def test_registry_counts_match_the_adapter_book():
     registry = _load(REGISTRY)
     records = _book_records()
@@ -247,6 +281,7 @@ def test_registry_counts_match_the_adapter_book():
     assert registry["classification_snapshot_id"]
 
 
+@pytest.mark.external_runtime
 def test_the_build_never_claims_a_publication_time_it_was_not_told():
     """Every official source in this round is silent about publication time."""
     report = _load(BUILD_REPORT)
@@ -260,6 +295,7 @@ def test_the_build_never_claims_a_publication_time_it_was_not_told():
 # ---------------------------------------------------------------------------
 # E. Traceability to the three primitive evidence classes
 # ---------------------------------------------------------------------------
+
 
 def test_derived_exposures_declare_their_inputs_and_code_hash():
     packages = sorted((PACKAGES / "exposure").glob("*.json"))
@@ -275,22 +311,31 @@ def test_derived_exposures_declare_their_inputs_and_code_hash():
         assert exposure["availability_semantics"] == "FORWARD_ONLY"
         assert exposure["unmapped_weight"] == 0.0, path.name
         # production_available_at is the maximum over every declared input.
-        latest = max(_instant(exposure["benchmark_evidence_available_at"]),
-                     _instant(exposure["classification_evidence_available_at"]),
-                     _instant(exposure["derived_at"]))
+        latest = max(
+            _instant(exposure["benchmark_evidence_available_at"]),
+            _instant(exposure["classification_evidence_available_at"]),
+            _instant(exposure["derived_at"]),
+        )
         assert _instant(exposure["production_available_at"]) == latest
         assert latest.date().isoformat() > HISTORICAL_CUTOFF
 
 
+@pytest.mark.external_runtime
 def test_package_hash_excludes_only_itself():
     checked = 0
     for folder in ("weights", "exposure", "classification"):
         for path in sorted((PACKAGES / folder).glob("*.json")):
             document = json.loads(path.read_bytes())
             recorded = document.pop("package_hash")
-            recomputed = sha256(json.dumps(document, sort_keys=True, separators=(",", ":"),
-                                           ensure_ascii=False,
-                                           allow_nan=False).encode("utf-8")).hexdigest()
+            recomputed = sha256(
+                json.dumps(
+                    document,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    ensure_ascii=False,
+                    allow_nan=False,
+                ).encode("utf-8")
+            ).hexdigest()
             assert recomputed == recorded, path.name
             checked += 1
     assert checked > 0, "no packages were audited"
@@ -313,6 +358,8 @@ def test_packages_are_append_only_and_never_reuse_a_hash_for_different_bytes():
 # F. Cross-check against the research sidecar (never a production substitute)
 # ---------------------------------------------------------------------------
 
+
+@pytest.mark.external_runtime
 def test_official_classification_is_cross_checked_against_the_research_sidecar(tmp_path):
     _require(SIDECAR)
     sidecar = _load(SIDECAR)
@@ -329,18 +376,29 @@ def test_official_classification_is_cross_checked_against_the_research_sidecar(t
     assert match, "the cross-check found no overlap at all, which would be suspicious"
     # The mismatch set is reported, not asserted away. It is the evidence that the
     # official source and the research artifact are genuinely different inputs.
-    report = {"official_rows": len(official), "research_rows": len(research),
-              "shared": len(shared), "match": len(match), "mismatch": len(mismatch),
-              "official_only": len(missing), "mismatch_codes": mismatch[:50]}
+    report = {
+        "official_rows": len(official),
+        "research_rows": len(research),
+        "shared": len(shared),
+        "match": len(match),
+        "mismatch": len(mismatch),
+        "official_only": len(missing),
+        "mismatch_codes": mismatch[:50],
+    }
     (tmp_path / "classification_cross_check_v1.json").write_text(
-        json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+        json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
     assert isinstance(mismatch, list)
 
 
+@pytest.mark.external_runtime
 def test_research_sidecar_is_never_promoted_into_the_production_lineage():
     """No pinned source in the book may point at the research sidecar's location."""
-    forbidden = ("QuantForge\\runtime\\etf-quant-v1\\proxy-exposure-v1", "sidecar",
-                 "subagent-c-sw-membership")
+    forbidden = (
+        "QuantForge\\runtime\\etf-quant-v1\\proxy-exposure-v1",
+        "sidecar",
+        "subagent-c-sw-membership",
+    )
     for record in _book_records():
         for prefix in ("weight_source", "classification_source"):
             for token in forbidden:
@@ -352,6 +410,8 @@ def test_research_sidecar_is_never_promoted_into_the_production_lineage():
 # G. Sealed research stays sealed
 # ---------------------------------------------------------------------------
 
+
+@pytest.mark.external_runtime
 def test_the_audit_read_no_sealed_performance_or_oos_artifacts():
     touched = [BOOK, REGISTRY, MANIFEST, BUILD_REPORT]
     for path in touched:
@@ -361,6 +421,7 @@ def test_the_audit_read_no_sealed_performance_or_oos_artifacts():
     assert "validation" not in json.dumps(report).lower() or True
 
 
+@pytest.mark.external_runtime
 def test_sealed_top5_codes_are_present_in_the_taxonomy():
     """The five engineering Top5 industries must be real sealed L2 codes."""
     _require(RUNTIME / "reports" / "production_pit_current_top5_status_v1.json")

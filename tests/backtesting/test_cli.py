@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import importlib.util
 import os
-import sys
 
 import pytest
 
@@ -75,8 +74,13 @@ def test_backtest_rejects_unknown_strategy_with_code_2(cli, capsys):
 def test_backtest_rejects_bad_date_with_code_2(cli, capsys):
     rc = cli.main(
         [
-            "backtest", "--strategy", "sw_sector_rotation",
-            "--start", "not-a-date", "--end", "2024-02-01",
+            "backtest",
+            "--strategy",
+            "sw_sector_rotation",
+            "--start",
+            "not-a-date",
+            "--end",
+            "2024-02-01",
         ]
     )
     assert rc == 2
@@ -86,8 +90,13 @@ def test_backtest_rejects_bad_date_with_code_2(cli, capsys):
 def test_backtest_rejects_reversed_range(cli, capsys):
     rc = cli.main(
         [
-            "backtest", "--strategy", "sw_sector_rotation",
-            "--start", "2024-06-01", "--end", "2024-01-01",
+            "backtest",
+            "--strategy",
+            "sw_sector_rotation",
+            "--start",
+            "2024-06-01",
+            "--end",
+            "2024-01-01",
         ]
     )
     assert rc == 2

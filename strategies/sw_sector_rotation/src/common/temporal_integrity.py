@@ -25,8 +25,8 @@ Legacy china-market-data v5 (release commit 1923f9d0fb00eeece9538ae1d0af9db57bbb
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -117,7 +117,11 @@ def validate_execution_date(signal_date, execution_date) -> None:
 
 def signal_timing(calendar: Sequence, signal_date, forward_days: int) -> dict:
     """标签观察期与交易持有期分开；next session 仅是执行下界，不保证成交。"""
-    if isinstance(forward_days, bool) or not isinstance(forward_days, (int, np.integer)) or forward_days <= 0:
+    if (
+        isinstance(forward_days, bool)
+        or not isinstance(forward_days, (int, np.integer))
+        or forward_days <= 0
+    ):
         raise ValueError("forward_days 必须为正整数")
     cal = trading_calendar(calendar)
     signal = pd.Timestamp(signal_date)
@@ -192,7 +196,9 @@ class TemporalBoundaries:
         return {
             "pred_date": str(self.pred_date.date()),
             "label_cutoff": str(self.label_cutoff.date()),
-            "realized_end": str(self.realized_end.date()) if self.realized_end is not None else None,
+            "realized_end": str(self.realized_end.date())
+            if self.realized_end is not None
+            else None,
             "train_start": str(self.train_start.date()),
             "forward_days": self.forward_days,
         }
@@ -254,16 +260,26 @@ def temporal_boundaries(
 # ---------------------------------------------------------------------------
 
 
-def make_forward_label(close: pd.Series, forward_days: int, *, calendar: Sequence | None = None) -> pd.Series:
+def make_forward_label(
+    close: pd.Series, forward_days: int, *, calendar: Sequence | None = None
+) -> pd.Series:
     """构造未来 ``forward_days`` 日收益标签。
 
     ``label[t] = close[calendar[pos(t)+fwd]] / close[t] - 1``。
     缺失终点保留 NaN，不填价格。省略 calendar 仅适用于完整日历序列；
     核心编排器始终传入公共交易日历，不能用行业自身缺日的行数代替。
     """
-    if isinstance(forward_days, bool) or not isinstance(forward_days, (int, np.integer)) or forward_days <= 0:
+    if (
+        isinstance(forward_days, bool)
+        or not isinstance(forward_days, (int, np.integer))
+        or forward_days <= 0
+    ):
         raise ValueError("forward_days 必须为正整数")
-    if not isinstance(close.index, pd.DatetimeIndex) or close.index.has_duplicates or close.index.hasnans:
+    if (
+        not isinstance(close.index, pd.DatetimeIndex)
+        or close.index.has_duplicates
+        or close.index.hasnans
+    ):
         raise ValueError("label index 必须为唯一、无 NaT 的 DatetimeIndex")
     close = close.sort_index()
     values = close.to_numpy(dtype=float)
@@ -289,11 +305,7 @@ def training_window(
     ``labelled_dates``（即已有已实现标签）中的日期才被保留。
     """
     ld = sorted(pd.Timestamp(d) for d in labelled_dates)
-    window = [
-        d
-        for d in ld
-        if boundaries.train_start <= d <= boundaries.label_cutoff
-    ]
+    window = [d for d in ld if boundaries.train_start <= d <= boundaries.label_cutoff]
     if len(window) < min_observations:
         return []
     return window

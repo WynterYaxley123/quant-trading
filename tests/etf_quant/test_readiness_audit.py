@@ -1,10 +1,10 @@
 """The retrospective audit must preserve frozen Source-C gate and no-resume semantics."""
-from datetime import date
+
 import importlib.util
+from datetime import date
 from pathlib import Path
 
 import pytest
-
 
 PATH = Path(__file__).resolve().parents[2] / "scripts" / "audit_etf_quant_readiness.py"
 SPEC = importlib.util.spec_from_file_location("etf_quant_readiness_audit", PATH)
@@ -14,10 +14,17 @@ SPEC.loader.exec_module(audit)
 
 
 def group(*, current=10.0, previous=9.0, invalid=()):
-    return [{"symbol": f"60000{i}.SH", "bar_valid": "True", "adj_is_exact": "True",
-             "adj_close": str(current), "prev_adj_close": str(previous),
-             "return_valid": "False" if i in invalid else "True"}
-            for i in range(5)]
+    return [
+        {
+            "symbol": f"60000{i}.SH",
+            "bar_valid": "True",
+            "adj_is_exact": "True",
+            "adj_close": str(current),
+            "prev_adj_close": str(previous),
+            "return_valid": "False" if i in invalid else "True",
+        }
+        for i in range(5)
+    ]
 
 
 def test_source_c_base_adjacent_gate_and_broken_prefix():

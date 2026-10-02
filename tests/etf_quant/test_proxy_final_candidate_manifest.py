@@ -1,11 +1,11 @@
 """Metadata-only candidate integrity; never reads market rows or sealed research."""
+
 from __future__ import annotations
 
 import hashlib
 import json
 from math import isclose
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json"
@@ -46,9 +46,17 @@ def test_final_proxy_candidate_integrity_reread():
     assert rows[0]["etf_code"] is None and rows[0]["cash_retained_weight"] == 0.35
     assert len({row["etf_code"] for row in rows if row["etf_code"]}) == 4
     assert all(row["target_exposure_percent"] >= 40 for row in rows if row["etf_code"])
-    assert all(row["liquidity_status"] == "LIQUIDITY_ADMISSION_PASS" for row in rows if row["etf_code"])
-    assert isclose(sum(row["executed_etf_weight"] for row in rows), candidate["risk_asset_weight"], abs_tol=1e-11)
-    assert isclose(sum(row["cash_retained_weight"] for row in rows), candidate["cash_weight"], abs_tol=1e-11)
+    assert all(
+        row["liquidity_status"] == "LIQUIDITY_ADMISSION_PASS" for row in rows if row["etf_code"]
+    )
+    assert isclose(
+        sum(row["executed_etf_weight"] for row in rows),
+        candidate["risk_asset_weight"],
+        abs_tol=1e-11,
+    )
+    assert isclose(
+        sum(row["cash_retained_weight"] for row in rows), candidate["cash_weight"], abs_tol=1e-11
+    )
     assert isclose(candidate["risk_asset_weight"] + candidate["cash_weight"], 1.0)
     assert all(value is False for value in candidate["security_assertions"].values())
     for item in candidate["source_integrity"].values():
@@ -59,17 +67,33 @@ def test_final_proxy_candidate_integrity_reread():
                 # Candidate pins the certified B40 baseline, NOT the authorized
                 # additive T0 lifecycle extension. Neither Candidate nor the
                 # baseline hash is rewritten to make this extension pass.
-                assert expected == "0bc5605d93b8a29fa670b3b9c97c5b8ba79234fe0b28dfaa84639e2c347050a1"
-                extension = json.loads((ROOT / "reports/etf_quant/autonomous_code_integrity_v1.json").read_bytes())
-                assert extension["candidate_sha256"] == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
-                assert extension["certified_baseline_sha"] == "dd96a3ae2b84e1c93bc15f2a748e213d7446ae1b"
+                assert (
+                    expected == "0bc5605d93b8a29fa670b3b9c97c5b8ba79234fe0b28dfaa84639e2c347050a1"
+                )
+                extension = json.loads(
+                    (ROOT / "reports/etf_quant/autonomous_code_integrity_v1.json").read_bytes()
+                )
+                assert (
+                    extension["candidate_sha256"]
+                    == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
+                )
+                assert (
+                    extension["certified_baseline_sha"]
+                    == "dd96a3ae2b84e1c93bc15f2a748e213d7446ae1b"
+                )
                 assert hashlib.sha256(body).hexdigest() == extension["files"][item["path"]]
             else:
                 assert hashlib.sha256(body).hexdigest() == expected
-    original = json.loads((ROOT / candidate["source_integrity"]["reference_portfolio"]["path"])
-                          .read_text(encoding="utf-8"))
+    original = json.loads(
+        (ROOT / candidate["source_integrity"]["reference_portfolio"]["path"]).read_text(
+            encoding="utf-8"
+        )
+    )
     assert original["top5_signal"] == candidate["top5_signal"]
-    assert original["actual_l2_exposure"]["4802"] == candidate["largest_unintended_l2"]["account_weight"]
+    assert (
+        original["actual_l2_exposure"]["4802"]
+        == candidate["largest_unintended_l2"]["account_weight"]
+    )
     for row in rows[1:]:
         source = next(r for r in original["per_industry_mapping"] if r["l2_code"] == row["l2_code"])
         assert source["etf_code"] == row["etf_code"]
@@ -79,17 +103,31 @@ def test_final_proxy_candidate_integrity_reread():
 
 
 def test_runtime_readiness_metadata_cannot_claim_unadmitted_production_evidence():
-    readiness = json.loads((ROOT / "reports/etf_quant/codex_b40_cash_runtime_readiness_v1.json")
-                           .read_text(encoding="utf-8"))
+    readiness = json.loads(
+        (ROOT / "reports/etf_quant/codex_b40_cash_runtime_readiness_v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
     candidate = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    assert readiness["technical_shadow_readiness"] == candidate["technical_shadow_readiness"] == "PASS"
+    assert (
+        readiness["technical_shadow_readiness"] == candidate["technical_shadow_readiness"] == "PASS"
+    )
     assert readiness["etf_quant_proxy_ready_for_shadow"] is candidate["ready_for_shadow"] is True
     assert readiness["shadow_epoch_created"] is candidate["shadow_epoch_created"] is False
     assert readiness["formal_business_records_created"] == 0
-    assert (readiness["production_ready_from"]
-            == candidate["production_ready_from"]
-            == "READY_FOR_NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE")
-    assert readiness["gates"]["production_official_pit_evidence_pack"] == "PASS_REAL_PACKAGE_ADMITTED"
-    assert readiness["candidate_manifest"]["sha256"] == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
-    assert candidate["source_integrity"]["pit_adapter"]["sha256"] == hashlib.sha256(
-        (ROOT / "strategies/etf_quant/mapping/pit.py").read_bytes()).hexdigest()
+    assert (
+        readiness["production_ready_from"]
+        == candidate["production_ready_from"]
+        == "READY_FOR_NEXT_ELIGIBLE_FUTURE_SIGNAL_CYCLE"
+    )
+    assert (
+        readiness["gates"]["production_official_pit_evidence_pack"] == "PASS_REAL_PACKAGE_ADMITTED"
+    )
+    assert (
+        readiness["candidate_manifest"]["sha256"]
+        == hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
+    )
+    assert (
+        candidate["source_integrity"]["pit_adapter"]["sha256"]
+        == hashlib.sha256((ROOT / "strategies/etf_quant/mapping/pit.py").read_bytes()).hexdigest()
+    )

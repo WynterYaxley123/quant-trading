@@ -11,11 +11,18 @@ import pandas as pd
 import pytest
 
 from research.sector_research_split import (
-    UNLOCKED, audit_split, candidate_three_way, label_tail_end, strict_budget,
-    strategy_config_hash, strategy_config_payload, verify_training_label_availability,
+    UNLOCKED,
+    audit_split,
+    candidate_three_way,
+    label_tail_end,
+    strategy_config_hash,
+    strategy_config_payload,
+    strict_budget,
+    verify_training_label_availability,
 )
 from strategies.sw_sector_rotation.src.common.temporal_integrity import (
-    as_of_truncate, temporal_boundaries,
+    as_of_truncate,
+    temporal_boundaries,
 )
 
 
@@ -40,13 +47,17 @@ def _complete_policies():
             "turnover_semantics": "target_weight_difference",
         },
         {
-            "policy_version": "synthetic-test-only", "development_signals": 60,
-            "validation_signals": 40, "final_oos_signals": 40,
+            "policy_version": "synthetic-test-only",
+            "development_signals": 60,
+            "validation_signals": 40,
+            "final_oos_signals": 40,
             "boundary_purge_sessions": 120,
-            "oos_start": "2026-01-01", "oos_end": "2026-03-01",
+            "oos_start": "2026-01-01",
+            "oos_end": "2026-03-01",
         },
         {
-            "mode": "synthetic-test-only", "sector_codes": ["801081", "801193"],
+            "mode": "synthetic-test-only",
+            "sector_codes": ["801081", "801193"],
             "admission_mode": "FIXED_CLASSIFICATION_RESEARCH",
         },
     )
@@ -60,8 +71,10 @@ def test_trading_sessions_not_calendar_days_control_purge():
     assert candidate["validation"]["count"] == 1
     assert candidate["purge_2"]["count"] == 10
     assert candidate["final_oos_candidate"]["count"] == 1
-    assert (pd.Timestamp(candidate["validation"]["start"])
-            - pd.Timestamp(candidate["development"]["end"])).days > 10
+    assert (
+        pd.Timestamp(candidate["validation"]["start"])
+        - pd.Timestamp(candidate["development"]["end"])
+    ).days > 10
 
 
 def test_future_labels_never_enter_training():
@@ -87,6 +100,7 @@ def test_horizon_purge_exact(horizon, minimum, purge):
     assert strict_budget(minimum, horizon)["feasible"] is True
 
 
+@pytest.mark.external_runtime
 def test_combined_baseline_uses_max_horizon(actual):
     assert actual["combined_horizon_sessions"] == 120
     assert actual["combined_three_way"] == strict_budget(239, 120)
@@ -113,6 +127,7 @@ def test_validation_label_end_precedes_oos_signal():
         assert dates[v_last + horizon] == pd.Timestamp(candidate["purge_2"]["end"])
 
 
+@pytest.mark.external_runtime
 def test_actual_239_sessions_make_strict_three_way_impossible(actual):
     assert actual["eligible_signal_start"] == "2025-04-02"
     assert actual["eligible_signal_end"] == "2026-03-27"
@@ -123,12 +138,14 @@ def test_actual_239_sessions_make_strict_three_way_impossible(actual):
     assert actual["combined_strict_date_proof"]["earliest_oos_is_eligible"] is False
 
 
+@pytest.mark.external_runtime
 def test_two_phase_budget_does_not_authorize_dropping_validation(actual):
     assert actual["two_phase_dev_validation"]["signal_slots_after_purge"] == 119
     assert actual["two_phase_dev_final_oos"]["signal_slots_after_purge"] == 119
     assert actual["combined_candidate"] is None
 
 
+@pytest.mark.external_runtime
 def test_oos_remains_unopened_and_unlocked(actual):
     assert actual["oos_status"] == UNLOCKED
     assert actual["oos_signal_start"] is None
@@ -159,9 +176,13 @@ def test_split_dates_do_not_depend_on_returns():
 
 def test_config_hash_deterministic_and_ephemeral_fields_ignored():
     rebalance, holding, split, universe = _complete_policies()
-    payload = strategy_config_payload("snapshot-a", rebalance_policy=rebalance,
-                                      holding_policy=holding, split_policy=split,
-                                      universe_policy=universe)
+    payload = strategy_config_payload(
+        "snapshot-a",
+        rebalance_policy=rebalance,
+        holding_policy=holding,
+        split_policy=split,
+        universe_policy=universe,
+    )
     first = strategy_config_hash(payload)
     assert first is not None and len(first) == 64
     assert strategy_config_hash(payload) == first
@@ -170,8 +191,12 @@ def test_config_hash_deterministic_and_ephemeral_fields_ignored():
 
 def test_data_snapshot_is_included_in_config_hash():
     rebalance, holding, split, universe = _complete_policies()
-    policies = dict(rebalance_policy=rebalance, holding_policy=holding,
-                    split_policy=split, universe_policy=universe)
+    policies = dict(
+        rebalance_policy=rebalance,
+        holding_policy=holding,
+        split_policy=split,
+        universe_policy=universe,
+    )
     a = strategy_config_payload("snapshot-a", **policies)
     b = strategy_config_payload("snapshot-b", **policies)
     assert a["data_snapshot_id"] == "snapshot-a"
@@ -191,40 +216,78 @@ def test_payload_preserves_frozen_signal_definition():
     assert payload["data_admission_mode"] == "FIXED_CLASSIFICATION_RESEARCH"
 
 
+@pytest.mark.external_runtime
 def test_missing_rebalance_or_holding_blocks_config_hash(actual):
     rebalance, holding, split, universe = _complete_policies()
     snapshot = actual["data_snapshot_id"]
     assert strategy_config_hash(strategy_config_payload(snapshot)) is None
-    assert strategy_config_hash(strategy_config_payload(snapshot, rebalance_policy=rebalance)) is None
+    assert (
+        strategy_config_hash(strategy_config_payload(snapshot, rebalance_policy=rebalance)) is None
+    )
     assert strategy_config_hash(strategy_config_payload(snapshot, holding_policy=holding)) is None
-    assert strategy_config_hash(strategy_config_payload(
-        snapshot, rebalance_policy=rebalance, holding_policy=holding)) is None
-    assert strategy_config_hash(strategy_config_payload(
-        snapshot, rebalance_policy=rebalance, holding_policy=holding,
-        split_policy=split)) is None
-    assert strategy_config_hash(strategy_config_payload(
-        snapshot, rebalance_policy=rebalance, holding_policy=holding,
-        universe_policy=universe)) is None
+    assert (
+        strategy_config_hash(
+            strategy_config_payload(snapshot, rebalance_policy=rebalance, holding_policy=holding)
+        )
+        is None
+    )
+    assert (
+        strategy_config_hash(
+            strategy_config_payload(
+                snapshot, rebalance_policy=rebalance, holding_policy=holding, split_policy=split
+            )
+        )
+        is None
+    )
+    assert (
+        strategy_config_hash(
+            strategy_config_payload(
+                snapshot,
+                rebalance_policy=rebalance,
+                holding_policy=holding,
+                universe_policy=universe,
+            )
+        )
+        is None
+    )
     assert actual["strategy_config_hash"] is None
 
 
 def test_incomplete_universe_or_non_strict_split_cannot_hash():
     rebalance, holding, split, universe = _complete_policies()
-    policies = dict(rebalance_policy=rebalance, holding_policy=holding,
-                    split_policy=split, universe_policy=universe)
+    policies = dict(
+        rebalance_policy=rebalance,
+        holding_policy=holding,
+        split_policy=split,
+        universe_policy=universe,
+    )
     assert strategy_config_hash(strategy_config_payload("snapshot-a", **policies)) is not None
-    assert strategy_config_hash(strategy_config_payload(
-        "snapshot-a", **{**policies, "universe_policy": {**universe, "sector_codes": []}})) is None
-    assert strategy_config_hash(strategy_config_payload(
-        "snapshot-a", **{**policies, "split_policy": {
-            **split, "boundary_purge_sessions": 10}})) is None
+    assert (
+        strategy_config_hash(
+            strategy_config_payload(
+                "snapshot-a", **{**policies, "universe_policy": {**universe, "sector_codes": []}}
+            )
+        )
+        is None
+    )
+    assert (
+        strategy_config_hash(
+            strategy_config_payload(
+                "snapshot-a",
+                **{**policies, "split_policy": {**split, "boundary_purge_sessions": 10}},
+            )
+        )
+        is None
+    )
 
 
+@pytest.mark.external_runtime
 def test_actual_training_cutoffs_all_verified(actual):
     assert actual["training_label_availability"] == "PASS"
     assert actual["training_label_checks"] == 239 * 3
 
 
+@pytest.mark.external_runtime
 def test_no_etf_dependency_network_or_docker_process(monkeypatch):
     original_text = Path.read_text
     original_csv = pd.read_csv

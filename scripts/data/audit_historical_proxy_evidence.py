@@ -20,8 +20,10 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.data.admit_shenwan_etf_mapping import (
-    EvidenceIntegrityFailure, ProxyAdmissionEvidence, historical_proxy_admissible,
+from scripts.data.admit_shenwan_etf_mapping import (  # noqa: E402 -- Repository path bootstrap precedes application import.
+    EvidenceIntegrityFailure,
+    ProxyAdmissionEvidence,
+    historical_proxy_admissible,
 )
 
 EVIDENCE_DIR = Path("data/processed/shenwan_etf_mapping")
@@ -31,8 +33,10 @@ RESEARCH_START = "2025-04-02"
 RESEARCH_END = "2026-03-27"
 ETF_CODES = ("512480", "512880", "159852", "159883")
 DIR_ALIASES = {
-    "ann": "etf_announcements", "cons": "index_constituents",
-    "meth": "index_methodology", "sw": "sw_l2_constituents",
+    "ann": "etf_announcements",
+    "cons": "index_constituents",
+    "meth": "index_methodology",
+    "sw": "sw_l2_constituents",
 }
 
 
@@ -71,7 +75,9 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def verify_inputs(root: Path) -> tuple[list[dict], list[dict], list[dict], list[str], list[dict], list[dict], int]:
+def verify_inputs(
+    root: Path,
+) -> tuple[list[dict], list[dict], list[dict], list[str], list[dict], list[dict], int]:
     """Verify bytes/provenance before any temporal or admission calculation."""
     raw = root / RAW_DIR
     manifest = json.loads((raw / "index_evidence_manifest.json").read_text(encoding="utf-8"))
@@ -82,7 +88,11 @@ def verify_inputs(root: Path) -> tuple[list[dict], list[dict], list[dict], list[
         if Path(directory).name != directory or Path(filename).name != filename:
             _fail(f"unsafe manifest path: {key}")
         path = raw / directory / filename
-        if not path.is_file() or path.stat().st_size != item["bytes"] or _sha256(path) != item["sha256"]:
+        if (
+            not path.is_file()
+            or path.stat().st_size != item["bytes"]
+            or _sha256(path) != item["sha256"]
+        ):
             _fail(f"missing/size/SHA mismatch: {key} / {path}")
         if not item.get("source_url") or not item.get("retrieved_at"):
             _fail(f"missing provenance: {key}")
@@ -109,10 +119,13 @@ def verify_inputs(root: Path) -> tuple[list[dict], list[dict], list[dict], list[
 
     for item in sources:
         source = by_file.get(item["file"])
-        if (source is None or source["sha256"] != item["sha256"]
-                or source["bytes"] != int(item["bytes"])
-                or source["source_url"] != item["source_url"]
-                or _wall_time(source["retrieved_at"]) != _wall_time(item["retrieved_at"])):
+        if (
+            source is None
+            or source["sha256"] != item["sha256"]
+            or source["bytes"] != int(item["bytes"])
+            or source["source_url"] != item["source_url"]
+            or _wall_time(source["retrieved_at"]) != _wall_time(item["retrieved_at"])
+        ):
             _fail(f"source/manifest provenance mismatch: {item['file']}")
     source_by_file = {item["file"]: item for item in sources}
     publication_by_file = {item["source_document"]: item for item in publications}
@@ -122,25 +135,38 @@ def verify_inputs(root: Path) -> tuple[list[dict], list[dict], list[dict], list[
         code, filename = item["etf_code"], item["source_document"]
         source = source_by_file.get(filename)
         pub = publication_by_file[filename]
-        if (source is None or source["etf_code"] != code
-                or source["source_url"] != item["source_url"]
-                or source["sha256"] != item["source_sha256"]
-                or pub["etf_code"] != code
-                or pub["snapshot_as_of_date"] != item["composition_source_date"]
-                or pub["report_period_end"] != pub["snapshot_as_of_date"]
-                or pub["publication_basis"] != "PDF_COVER_SENT_DATE_AND_OFFICIAL_URL_DATE"):
+        if (
+            source is None
+            or source["etf_code"] != code
+            or source["source_url"] != item["source_url"]
+            or source["sha256"] != item["source_sha256"]
+            or pub["etf_code"] != code
+            or pub["snapshot_as_of_date"] != item["composition_source_date"]
+            or pub["report_period_end"] != pub["snapshot_as_of_date"]
+            or pub["publication_basis"] != "PDF_COVER_SENT_DATE_AND_OFFICIAL_URL_DATE"
+        ):
             _fail(f"historical source/publication mismatch: {filename}")
         asof, released = _iso(pub["snapshot_as_of_date"]), _iso(pub["official_publication_date"])
         url_date = re.search(r"/(20\d\d-\d\d-\d\d)/", source["source_url"])
-        if (released <= asof or url_date is None or url_date.group(1) != released.isoformat()
-                or released > _wall_time(source["retrieved_at"]).date()):
+        if (
+            released <= asof
+            or url_date is None
+            or url_date.group(1) != released.isoformat()
+            or released > _wall_time(source["retrieved_at"]).date()
+        ):
             _fail(f"unreconciled publication date: {filename}")
-        if (item["classification_basis"] != "FIXED_CLASSIFICATION_COMPARISON"
-                or item["strict_pit"].lower() != "false"):
+        if (
+            item["classification_basis"] != "FIXED_CLASSIFICATION_COMPARISON"
+            or item["strict_pit"].lower() != "false"
+        ):
             _fail(f"classification semantics changed: {filename}")
-        if int(item["classified_count"]) + int(item["unclassified_count"]) != int(item["constituent_count"]):
+        if int(item["classified_count"]) + int(item["unclassified_count"]) != int(
+            item["constituent_count"]
+        ):
             _fail(f"constituent counts do not reconcile: {filename}")
-        if int(item["candidate_l2_count"]) + int(item["other_l2_count"]) != int(item["classified_count"]):
+        if int(item["candidate_l2_count"]) + int(item["other_l2_count"]) != int(
+            item["classified_count"]
+        ):
             _fail(f"sector counts do not reconcile: {filename}")
     if len(calendar) != 24 or len(sources) != 19:
         _fail("calendar/source inventory changed")
@@ -152,11 +178,14 @@ def verify_inputs(root: Path) -> tuple[list[dict], list[dict], list[dict], list[
         interval = coverage_by_key.get(key)
         start = max(_iso(item["composition_effective_from"]), _iso(RESEARCH_START))
         end = min(_iso(item["composition_effective_to"]), _iso(RESEARCH_END))
-        if (interval is None or interval["evidence_interval_start"] != start.isoformat()
-                or interval["evidence_interval_end"] != end.isoformat()
-                or int(interval["coverage_days"]) != (end - start).days
-                or interval["snapshot_source"] != item["source_document"].removesuffix(".pdf")
-                or interval["coverage_complete"].lower() != "true"):
+        if (
+            interval is None
+            or interval["evidence_interval_start"] != start.isoformat()
+            or interval["evidence_interval_end"] != end.isoformat()
+            or int(interval["coverage_days"]) != (end - start).days
+            or interval["snapshot_source"] != item["source_document"].removesuffix(".pdf")
+            or interval["coverage_complete"].lower() != "true"
+        ):
             _fail(f"Hermes temporal-coverage row inconsistent: {key}")
     return evidence, coverage, publications, sessions, calendar, sources, len(manifest)
 
@@ -164,10 +193,13 @@ def verify_inputs(root: Path) -> tuple[list[dict], list[dict], list[dict], list[
 def numeric_purity(row: dict[str, str]) -> bool:
     """Pre-backtest 90/90 screen; still not a formal full-index/PIT admission."""
     total = int(row["constituent_count"])
-    return (total > 0 and 100 * int(row["candidate_l2_count"]) / total >= 90
-            and float(row["candidate_l2_weight_share"]) >= 90
-            and int(row["unclassified_count"]) == 0
-            and 100 * int(row["other_l2_count"]) / total <= 10)
+    return (
+        total > 0
+        and 100 * int(row["candidate_l2_count"]) / total >= 90
+        and float(row["candidate_l2_weight_share"]) >= 90
+        and int(row["unclassified_count"]) == 0
+        and 100 * int(row["other_l2_count"]) / total <= 10
+    )
 
 
 def point_status(t: str, snapshot: str, publication: str) -> str:
@@ -175,47 +207,83 @@ def point_status(t: str, snapshot: str, publication: str) -> str:
     if snapshot > t:
         return "FUTURE_EVIDENCE"
     if snapshot == t:
-        return ("EX_ANTE_AVAILABLE_EVIDENCE_POINT_ONLY" if publication < t
-                else "EX_POST_INTERVAL_VALIDATION_POINT_ONLY")
-    return ("PAST_SNAPSHOT_AVAILABLE_NO_INTERVAL_PROOF" if publication < t
-            else "PAST_SNAPSHOT_NOT_YET_AVAILABLE")
+        return (
+            "EX_ANTE_AVAILABLE_EVIDENCE_POINT_ONLY"
+            if publication < t
+            else "EX_POST_INTERVAL_VALIDATION_POINT_ONLY"
+        )
+    return (
+        "PAST_SNAPSHOT_AVAILABLE_NO_INTERVAL_PROOF"
+        if publication < t
+        else "PAST_SNAPSHOT_NOT_YET_AVAILABLE"
+    )
 
 
 def _regular_announcements(calendar: list[dict], root: Path) -> list[dict]:
-    pairs = {(r["announcement_date"], r["effective_date"]) for r in calendar
-             if r["review_event_type"] == "定期调整"}
+    pairs = {
+        (r["announcement_date"], r["effective_date"])
+        for r in calendar
+        if r["review_event_type"] == "定期调整"
+    }
     expected = {
-        ("2024-11-29", "2024-12-13"), ("2025-05-30", "2025-06-13"),
-        ("2025-11-28", "2025-12-12"), ("2026-05-29", "2026-06-12"),
+        ("2024-11-29", "2024-12-13"),
+        ("2025-05-30", "2025-06-13"),
+        ("2025-11-28", "2025-12-12"),
+        ("2026-05-29", "2026-06-12"),
     }
     if pairs != expected:
         _fail("regular announcement/effective-date pairs changed")
-    details_path = root / RAW_DIR / "index_rebalance_announcements" / "csindex_rebalance_announcement_details.json"
+    details_path = (
+        root
+        / RAW_DIR
+        / "index_rebalance_announcements"
+        / "csindex_rebalance_announcement_details.json"
+    )
     details = json.loads(details_path.read_text(encoding="utf-8"))
-    official_pairs = {(v["publishDate"], effective)
-                      for v in details.values() for effective in v.get("effective_dates_found", [])}
+    official_pairs = {
+        (v["publishDate"], effective)
+        for v in details.values()
+        for effective in v.get("effective_dates_found", [])
+    }
     if not pairs.issubset(official_pairs):
         _fail("calendar dates are not corroborated by official announcement metadata")
-    return [{"announcement_date": announced, "effective_at_close": effective,
-             "first_affected_session": next((r["period_start"] for r in calendar
-                                             if r["announcement_date"] == announced
-                                             and r["period_start"]), None),
-             "index_specific_full_constituents_proven": False}
-            for announced, effective in sorted(pairs)]
+    return [
+        {
+            "announcement_date": announced,
+            "effective_at_close": effective,
+            "first_affected_session": next(
+                (
+                    r["period_start"]
+                    for r in calendar
+                    if r["announcement_date"] == announced and r["period_start"]
+                ),
+                None,
+            ),
+            "index_specific_full_constituents_proven": False,
+        }
+        for announced, effective in sorted(pairs)
+    ]
 
 
 def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
-    evidence, coverage, publications, sessions, calendar, sources, manifest_count = verify_inputs(root)
+    evidence, coverage, publications, sessions, calendar, sources, manifest_count = verify_inputs(
+        root
+    )
     publications_by_file = {r["source_document"]: r for r in publications}
     sources_by_file = {r["file"]: r for r in sources}
     report_rows = []
     for item in evidence:
         pub = publications_by_file[item["source_document"]]
-        report_rows.append({**item, **pub,
-                            "numeric_purity_pass": numeric_purity(item),
-                            "evidence_available_at": pub["official_publication_date"],
-                            "source_retrieved_at": sources_by_file[item["source_document"]]["retrieved_at"],
-                            "source_sidecar_as_of_date": sources_by_file[item["source_document"]]["as_of_date"]})
+        report_rows.append(
+            {
+                **item,
+                **pub,
+                "numeric_purity_pass": numeric_purity(item),
+                "evidence_available_at": pub["official_publication_date"],
+                "source_retrieved_at": sources_by_file[item["source_document"]]["retrieved_at"],
+                "source_sidecar_as_of_date": sources_by_file[item["source_document"]]["as_of_date"],
+            }
+        )
     by_code = defaultdict(list)
     for item in report_rows:
         by_code[item["etf_code"]].append(item)
@@ -230,16 +298,20 @@ def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
         for t in sessions:
             past = [r for r in rows if r["snapshot_as_of_date"] <= t]
             latest = past[-1] if past else rows[0]
-            nominal = next((r for r in rows
-                            if r["composition_effective_from"] <= t
-                            < r["composition_effective_to"]), None)
+            nominal = next(
+                (
+                    r
+                    for r in rows
+                    if r["composition_effective_from"] <= t < r["composition_effective_to"]
+                ),
+                None,
+            )
             if nominal is None:
                 _fail(f"no Hermes interval row for {code} on {t}")
             exact = latest["snapshot_as_of_date"] == t
             published_before_signal = latest["evidence_available_at"] < t
             relationship_document_known = any(
-                r["snapshot_as_of_date"] <= t and r["evidence_available_at"] < t
-                for r in rows
+                r["snapshot_as_of_date"] <= t and r["evidence_available_at"] < t for r in rows
             )
             # The recorded continuity is retrospective, not proven by a
             # versioned relationship document valid and available through t.
@@ -251,13 +323,16 @@ def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
                 and proven_at < t <= proven_through
             )
             candidate = ProxyAdmissionEvidence(
-                etf_code=code, sector_code=latest["candidate_sw_l2_code"],
+                etf_code=code,
+                sector_code=latest["candidate_sw_l2_code"],
                 composition_source_type=latest["composition_source_type"],
                 composition_source_official=True,
                 composition_as_of_date=latest["snapshot_as_of_date"],
                 composition_available_at=latest["evidence_available_at"],
                 constituent_count=int(latest["constituent_count"]),
-                count_share=100 * int(latest["candidate_l2_count"]) / int(latest["constituent_count"]),
+                count_share=100
+                * int(latest["candidate_l2_count"])
+                / int(latest["constituent_count"]),
                 weight_share=float(latest["candidate_l2_weight_share"]),
                 other_l2_count=int(latest["other_l2_count"]),
                 unclassified_count=int(latest["unclassified_count"]),
@@ -265,28 +340,33 @@ def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
                 sw_classification_status="FIXED_CLASSIFICATION_RESEARCH",
             )
             admitted = historical_proxy_admissible(candidate, t)
-            session_rows.append({
-                "etf_code": code, "date": t,
-                "tracking_index_code": latest["tracking_index_code"],
-                "nominal_interval_snapshot_as_of_date": nominal["snapshot_as_of_date"],
-                "nominal_interval_source": nominal["source_document"],
-                "snapshot_as_of_date": nominal["snapshot_as_of_date"],
-                "official_publication_date": nominal["official_publication_date"],
-                "evidence_available_at": nominal["evidence_available_at"],
-                "evidence_status_at_t": point_status(
-                    t, nominal["snapshot_as_of_date"], nominal["evidence_available_at"]),
-                "has_past_snapshot_as_of_t": bool(past),
-                "prior_snapshot_available_at_t": any(
-                    r["snapshot_as_of_date"] <= t and r["evidence_available_at"] < t
-                    for r in rows),
-                "ex_ante_point_coverage": exact and published_before_signal,
-                "ex_post_point_diagnostic": exact and not published_before_signal,
-                "relationship_document_known_at_t": relationship_document_known,
-                "relationship_continuity_known_at_t": continuity_known,
-                "classification_basis": latest["classification_basis"],
-                "numeric_purity_pass_at_latest_snapshot": numeric_purity(latest),
-                "proxy_admissible_at_t": admitted,
-            })
+            session_rows.append(
+                {
+                    "etf_code": code,
+                    "date": t,
+                    "tracking_index_code": latest["tracking_index_code"],
+                    "nominal_interval_snapshot_as_of_date": nominal["snapshot_as_of_date"],
+                    "nominal_interval_source": nominal["source_document"],
+                    "snapshot_as_of_date": nominal["snapshot_as_of_date"],
+                    "official_publication_date": nominal["official_publication_date"],
+                    "evidence_available_at": nominal["evidence_available_at"],
+                    "evidence_status_at_t": point_status(
+                        t, nominal["snapshot_as_of_date"], nominal["evidence_available_at"]
+                    ),
+                    "has_past_snapshot_as_of_t": bool(past),
+                    "prior_snapshot_available_at_t": any(
+                        r["snapshot_as_of_date"] <= t and r["evidence_available_at"] < t
+                        for r in rows
+                    ),
+                    "ex_ante_point_coverage": exact and published_before_signal,
+                    "ex_post_point_diagnostic": exact and not published_before_signal,
+                    "relationship_document_known_at_t": relationship_document_known,
+                    "relationship_continuity_known_at_t": continuity_known,
+                    "classification_basis": latest["classification_basis"],
+                    "numeric_purity_pass_at_latest_snapshot": numeric_purity(latest),
+                    "proxy_admissible_at_t": admitted,
+                }
+            )
 
     claimed = sum(int(r["coverage_days"]) for r in coverage)
     calendar_days = (_iso(RESEARCH_END) - _iso(RESEARCH_START)).days + 1
@@ -300,21 +380,32 @@ def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
             "ex_ante_point_sessions": sum(r["ex_ante_point_coverage"] for r in sr),
             "ex_post_diagnostic_point_sessions": sum(r["ex_post_point_diagnostic"] for r in sr),
             "prior_snapshot_available_sessions_not_interval_proof": sum(
-                r["prior_snapshot_available_at_t"] for r in sr),
+                r["prior_snapshot_available_at_t"] for r in sr
+            ),
             "strict_proxy_admissible_sessions": sum(r["proxy_admissible_at_t"] for r in sr),
             "earliest_ex_ante_proxy_admissible_date": next(
-                (r["date"] for r in sr if r["proxy_admissible_at_t"]), None),
-            "relationship_document_known_sessions": sum(r["relationship_document_known_at_t"] for r in sr),
-            "relationship_continuity_known_sessions": sum(r["relationship_continuity_known_at_t"] for r in sr),
+                (r["date"] for r in sr if r["proxy_admissible_at_t"]), None
+            ),
+            "relationship_document_known_sessions": sum(
+                r["relationship_document_known_at_t"] for r in sr
+            ),
+            "relationship_continuity_known_sessions": sum(
+                r["relationship_continuity_known_at_t"] for r in sr
+            ),
             "numeric_purity_pass_snapshots": sum(numeric_purity(r) for r in er),
             "fixed_proxy_diagnostic_points_with_numeric_purity": [
-                r["date"] for r in sr if r["ex_post_point_diagnostic"]
-                and r["numeric_purity_pass_at_latest_snapshot"]],
+                r["date"]
+                for r in sr
+                if r["ex_post_point_diagnostic"] and r["numeric_purity_pass_at_latest_snapshot"]
+            ],
             "can_use_on_2025_04_02": next(
-                r["proxy_admissible_at_t"] for r in sr if r["date"] == RESEARCH_START),
+                r["proxy_admissible_at_t"] for r in sr if r["date"] == RESEARCH_START
+            ),
             "classification_basis": "FIXED_CLASSIFICATION_COMPARISON",
         }
-    direct = json.loads((root / EVIDENCE_DIR / "etf_mapping_admission.json").read_text(encoding="utf-8"))
+    direct = json.loads(
+        (root / EVIDENCE_DIR / "etf_mapping_admission.json").read_text(encoding="utf-8")
+    )
     summary = {
         "status": "PROXY MAPPING NOT ADMISSIBLE",
         "direct_mapping_result": direct["mapping_admission"],
@@ -323,26 +414,38 @@ def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
         "ex_ante_proxy_mapping_result": "NOT_ADMISSIBLE",
         "fixed_proxy_research_result": "NOT_ADMITTED_FOR_INTERVAL; SNAPSHOT_DIAGNOSTICS_ONLY",
         "formal_executable_universe_count": direct["formal_executable_universe_count"],
-        "research_start": RESEARCH_START, "research_end": RESEARCH_END,
+        "research_start": RESEARCH_START,
+        "research_end": RESEARCH_END,
         "calendar_days_inclusive": calendar_days,
         "entity_calendar_days_inclusive": calendar_days * len(ETF_CODES),
         "hermes_reported_coverage_days": claimed,
         "hermes_denominator_semantics": "4 ETF x 359 half-open calendar days; not trading sessions or point-in-time coverage; final research date omitted",
         "trading_session_count": len(sessions),
         "etf_session_denominator": len(sessions) * len(ETF_CODES),
-        "ex_ante_point_coverage_entity_sessions": sum(r["ex_ante_point_coverage"] for r in session_rows),
-        "ex_post_diagnostic_point_entity_sessions": sum(r["ex_post_point_diagnostic"] for r in session_rows),
-        "ex_ante_strict_admissible_entity_sessions": sum(r["proxy_admissible_at_t"] for r in session_rows),
-        "proxy_ex_ante_candidate_start": None, "proxy_ex_ante_candidate_end": None,
-        "fixed_proxy_research_start": None, "fixed_proxy_research_end": None,
+        "ex_ante_point_coverage_entity_sessions": sum(
+            r["ex_ante_point_coverage"] for r in session_rows
+        ),
+        "ex_post_diagnostic_point_entity_sessions": sum(
+            r["ex_post_point_diagnostic"] for r in session_rows
+        ),
+        "ex_ante_strict_admissible_entity_sessions": sum(
+            r["proxy_admissible_at_t"] for r in session_rows
+        ),
+        "proxy_ex_ante_candidate_start": None,
+        "proxy_ex_ante_candidate_end": None,
+        "fixed_proxy_research_start": None,
+        "fixed_proxy_research_end": None,
         "announcement_events": _regular_announcements(calendar, root),
         "publication_date_complete_count": len(publications),
         "manifest_verified_file_count": manifest_count,
-        "source_sidecar_as_of_missing_count": sum(not r["source_sidecar_as_of_date"] for r in report_rows),
+        "source_sidecar_as_of_missing_count": sum(
+            not r["source_sidecar_as_of_date"] for r in report_rows
+        ),
         "source_sidecar_as_of_mislabeled_count": sum(
             bool(r["source_sidecar_as_of_date"])
             and r["source_sidecar_as_of_date"] != r["snapshot_as_of_date"]
-            for r in report_rows),
+            for r in report_rows
+        ),
         "snapshot_as_of_dates": sorted({r["snapshot_as_of_date"] for r in report_rows}),
         "per_etf": per_etf,
         "limitations": [
@@ -354,21 +457,28 @@ def audit(root: Path = ROOT) -> tuple[dict, list[dict], list[dict]]:
             "ETF daily bars/tradability are not promoted to formal execution when the proxy evidence gate fails.",
         ],
     }
-    publication_rows = [{
-        "etf_code": r["etf_code"], "source_document": r["source_document"],
-        "report_period_end": r["report_period_end"],
-        "snapshot_as_of_date": r["snapshot_as_of_date"],
-        "official_publication_date": r["official_publication_date"],
-        "evidence_available_at": r["evidence_available_at"],
-        "source_retrieved_at": r["source_retrieved_at"],
-        "source_sidecar_as_of_date": r["source_sidecar_as_of_date"] or None,
-        "source_url": r["source_url"], "source_sha256": r["source_sha256"],
-        "numeric_purity_pass": r["numeric_purity_pass"],
-        "candidate_count_share_of_total": round(100 * int(r["candidate_l2_count"]) / int(r["constituent_count"]), 4),
-        "candidate_weight_share": float(r["candidate_l2_weight_share"]),
-        "unclassified_count": int(r["unclassified_count"]),
-        "classification_basis": r["classification_basis"],
-    } for r in report_rows]
+    publication_rows = [
+        {
+            "etf_code": r["etf_code"],
+            "source_document": r["source_document"],
+            "report_period_end": r["report_period_end"],
+            "snapshot_as_of_date": r["snapshot_as_of_date"],
+            "official_publication_date": r["official_publication_date"],
+            "evidence_available_at": r["evidence_available_at"],
+            "source_retrieved_at": r["source_retrieved_at"],
+            "source_sidecar_as_of_date": r["source_sidecar_as_of_date"] or None,
+            "source_url": r["source_url"],
+            "source_sha256": r["source_sha256"],
+            "numeric_purity_pass": r["numeric_purity_pass"],
+            "candidate_count_share_of_total": round(
+                100 * int(r["candidate_l2_count"]) / int(r["constituent_count"]), 4
+            ),
+            "candidate_weight_share": float(r["candidate_l2_weight_share"]),
+            "unclassified_count": int(r["unclassified_count"]),
+            "classification_basis": r["classification_basis"],
+        }
+        for r in report_rows
+    ]
     return summary, publication_rows, session_rows
 
 
@@ -389,7 +499,8 @@ def main() -> int:
     _write_csv(args.output_dir / "four_proxy_publication_audit.csv", publications)
     _write_csv(args.output_dir / "four_proxy_session_audit.csv", sessions)
     (args.output_dir / "four_proxy_readmission.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

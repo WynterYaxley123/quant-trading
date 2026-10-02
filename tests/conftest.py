@@ -24,8 +24,20 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 
-def pytest_configure(config):
+def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line(
         "markers",
         "integration: 需要真实行情数据或 Hikyuu 数据目录的测试（默认不跑）",
     )
+
+
+def pytest_ignore_collect(collection_path: Path, config: pytest.Config) -> bool | None:
+    """Avoid importing frozen frameworks when the portable tier is selected.
+
+    Marker deselection happens after import; these two directories load optional
+    frameworks at collection time. They remain collected in the full suite.
+    """
+    if "not external_runtime" in config.getoption("markexpr"):  # noqa: SIM102 -- Preserve independently documented frozen validation branches.
+        if collection_path in {_ROOT / "tests" / "framework", _ROOT / "tests" / "integration"}:
+            return True
+    return None

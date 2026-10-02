@@ -61,7 +61,7 @@ PUBLISH_RULES = {
 #: 规则 -> (月偏移, 日偏移) 形式的落点。
 _RULE_OFFSETS = {
     "next_month_12": (1, 11),  # 下月 1 日 + 11 天 = 下月 12 日
-    "next_month_10": (1, 9),   # 下月 1 日 + 9 天 = 下月 10 日
+    "next_month_10": (1, 9),  # 下月 1 日 + 9 天 = 下月 10 日
 }
 
 
@@ -124,9 +124,7 @@ def publication_date(column: str, month_ts) -> pd.Timestamp:
     if off is None:
         return _month_end(m)
     months, days = off
-    return pd.Timestamp(year=m.year, month=m.month, day=1) + pd.DateOffset(
-        months=months, days=days
-    )
+    return pd.Timestamp(year=m.year, month=m.month, day=1) + pd.DateOffset(months=months, days=days)
 
 
 def _as_of_ts(as_of_date) -> pd.Timestamp:
@@ -183,9 +181,7 @@ def build_macro_feature_columns(example_snapshot: dict) -> list[str]:
     return sorted(example_snapshot.keys())
 
 
-def add_macro_features(
-    features_df: pd.DataFrame, macro_raw: pd.DataFrame
-) -> pd.DataFrame:
+def add_macro_features(features_df: pd.DataFrame, macro_raw: pd.DataFrame) -> pd.DataFrame:
     """把时点对齐的宏观特征并入行业特征 DataFrame。
 
     对每个日期独立求快照。尚未发布的指标保留 NaN，不伪造零值。
@@ -194,9 +190,7 @@ def add_macro_features(
     if macro_raw is None or macro_raw.empty or features_df.empty:
         return features_df.copy()
 
-    dates = pd.Index(
-        [ix.date() if hasattr(ix, "date") else ix for ix in features_df.index]
-    )
+    dates = pd.Index([ix.date() if hasattr(ix, "date") else ix for ix in features_df.index])
     snapshots = {d: macro_available_at(d, macro_raw) for d in sorted(set(dates))}
     macro_df = pd.DataFrame.from_dict(snapshots, orient="index")
     macro_df.index = pd.to_datetime(macro_df.index)

@@ -17,11 +17,11 @@ risk 逻辑。这些分别属于 hikyuu_runner / 策略包。
 from __future__ import annotations
 
 import importlib
-import os
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Callable, Mapping, Protocol
+from typing import Any
 
 __all__ = [
     "BacktestRequest",
@@ -54,23 +54,19 @@ class BacktestRequestError(ValueError):
 class UnknownFrameworkError(ValueError):
     """请求了未注册的执行框架。"""
 
-    def __init__(self, framework: str, available: list[str]):
+    def __init__(self, framework: str, available: list[str]) -> None:
         self.framework = framework
         self.available = available
-        super().__init__(
-            f"未知执行框架 {framework!r}，当前可用: {available}"
-        )
+        super().__init__(f"未知执行框架 {framework!r}，当前可用: {available}")
 
 
 class UnknownStrategyError(ValueError):
     """请求了不存在的策略。"""
 
-    def __init__(self, strategy: str, available: list[str]):
+    def __init__(self, strategy: str, available: list[str]) -> None:
         self.strategy = strategy
         self.available = available
-        super().__init__(
-            f"未知策略 {strategy!r}，当前可用: {available}"
-        )
+        super().__init__(f"未知策略 {strategy!r}，当前可用: {available}")
 
 
 # --- 策略发现 -------------------------------------------------------------
@@ -180,9 +176,7 @@ def discover_strategies(root: Path | None = None) -> dict[str, StrategySpec]:
 # --- 框架注册 -------------------------------------------------------------
 
 
-def register_framework(
-    name: str, fn: Callable[[Any, StrategySpec], Any]
-) -> None:
+def register_framework(name: str, fn: Callable[[Any, StrategySpec], Any]) -> None:
     """注册一个执行框架。``fn(request, spec) -> BacktestResult``。"""
     _FRAMEWORKS[name] = fn
 
@@ -224,7 +218,7 @@ class BacktestRequest:
     #: 额外框架参数（透传给具体 framework runner）
     extra: Mapping[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.strategy:
             raise BacktestRequestError("strategy 不能为空")
         if not self.framework:
@@ -234,13 +228,9 @@ class BacktestRequest:
         self._start = _coerce_date(self.start_date, "start_date")
         self._end = _coerce_date(self.end_date, "end_date")
         if self._end < self._start:
-            raise BacktestRequestError(
-                f"end_date ({self._end}) 早于 start_date ({self._start})"
-            )
+            raise BacktestRequestError(f"end_date ({self._end}) 早于 start_date ({self._start})")
         if not (isinstance(self.initial_cash, (int, float)) and self.initial_cash > 0):
-            raise BacktestRequestError(
-                f"initial_cash 必须为正数，收到 {self.initial_cash!r}"
-            )
+            raise BacktestRequestError(f"initial_cash 必须为正数，收到 {self.initial_cash!r}")
 
     @property
     def start(self) -> date:

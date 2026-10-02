@@ -63,6 +63,7 @@ ENV/
 env/
 
 # 测试与检查缓存
+.cache/
 dashboard/.cache/
 .pytest_cache/
 .coverage

@@ -35,8 +35,6 @@ RSI
 
 from __future__ import annotations
 
-from typing import Sequence
-
 import numpy as np
 import pandas as pd
 
@@ -141,9 +139,7 @@ def compute_align_feature(frame: pd.DataFrame) -> pd.Series:
     """
     c = frame["close"]
     mas = {m: c.rolling(m).mean() for m in (5, 10, 20, 60)}
-    score = sum(
-        (mas[fast] > mas[slow]).astype(float) * w for fast, slow, w in _ALIGN_WEIGHTS
-    )
+    score = sum((mas[fast] > mas[slow]).astype(float) * w for fast, slow, w in _ALIGN_WEIGHTS)
     return score / 6.0
 
 

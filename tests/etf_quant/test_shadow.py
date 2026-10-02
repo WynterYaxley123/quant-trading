@@ -1,12 +1,14 @@
+import json
 from copy import deepcopy
 from dataclasses import replace
 from datetime import datetime, timedelta
 from decimal import Decimal
-import json
-from pathlib import Path
 
 import pandas as pd
 import pytest
+from test_exports_industry import TZ, industry_provider
+from test_registry_sidecar import provider as etf_provider
+from test_registry_sidecar import registry_doc
 
 from strategies.etf_quant.domain import StrategyConfig
 from strategies.etf_quant.mapping.registry import load_registry
@@ -14,9 +16,6 @@ from strategies.etf_quant.runtime import shadow
 from strategies.etf_quant.runtime.storage import GateError, json_bytes, read_generation
 from strategies.etf_quant.runtime.view import empty_view
 from strategies.etf_quant.simulation.lots import affordable_units
-
-from test_exports_industry import industry_provider, TZ
-from test_registry_sidecar import registry_doc, provider as etf_provider
 
 
 def inputs(tmp_path, end="2026-09-23", empty=False):
@@ -33,15 +32,28 @@ def inputs(tmp_path, end="2026-09-23", empty=False):
     e = etf_provider()
     stock_instruments = p.tables["instruments"]
     p.tables.update(e.tables)
-    p.tables["instruments"] = pd.concat([e.tables["instruments"], stock_instruments], ignore_index=True)
-    p.tables["etf_bars"] = p.tables["etf_bars"].loc[p.tables["etf_bars"].trade_date <= p.cutoff].copy()
-    p.tables["trading_status"] = p.tables["trading_status"].loc[p.tables["trading_status"].trade_date <= p.cutoff].copy()
+    p.tables["instruments"] = pd.concat(
+        [e.tables["instruments"], stock_instruments], ignore_index=True
+    )
+    p.tables["etf_bars"] = (
+        p.tables["etf_bars"].loc[p.tables["etf_bars"].trade_date <= p.cutoff].copy()
+    )
+    p.tables["trading_status"] = (
+        p.tables["trading_status"].loc[p.tables["trading_status"].trade_date <= p.cutoff].copy()
+    )
     p.tables["trading_calendar"] = pd.DataFrame({"trade_date": p.sessions, "is_trading": True})
-    p.tables["benchmark_csi300"] = pd.DataFrame({"trade_date": days, "symbol": "000300.SH", "close": 3000., "frequency": "1d"})
-    p.manifest = {"snapshot_id": "a" * 64, "source_commit": "b" * 40,
-                  "source_version": "SYNTHETIC", "adjustment_rejected_rows": 0}
+    p.tables["benchmark_csi300"] = pd.DataFrame(
+        {"trade_date": days, "symbol": "000300.SH", "close": 3000.0, "frequency": "1d"}
+    )
+    p.manifest = {
+        "snapshot_id": "a" * 64,
+        "source_commit": "b" * 40,
+        "source_version": "SYNTHETIC",
+        "adjustment_rejected_rows": 0,
+    }
     doc, evidence = registry_doc(tmp_path)
-    if empty: doc["entries"] = []
+    if empty:
+        doc["entries"] = []
     path = tmp_path / "registry.json"
     path.write_bytes(json_bytes(doc))
     return p, load_registry(path, evidence_root=evidence)
@@ -58,8 +70,15 @@ def advance(p):
     for name in ("etf_bars", "trading_status"):
         new = e.tables[name].loc[e.tables[name].trade_date == day]
         p.tables[name] = pd.concat([p.tables[name], new], ignore_index=True)
-    p.tables["benchmark_csi300"] = pd.concat([p.tables["benchmark_csi300"],
-        pd.DataFrame([{"trade_date": day, "symbol": "000300.SH", "close": 3010., "frequency": "1d"}])], ignore_index=True)
+    p.tables["benchmark_csi300"] = pd.concat(
+        [
+            p.tables["benchmark_csi300"],
+            pd.DataFrame(
+                [{"trade_date": day, "symbol": "000300.SH", "close": 3010.0, "frequency": "1d"}]
+            ),
+        ],
+        ignore_index=True,
+    )
     p.cutoff = day
     p.sessions = (*p.sessions, (pd.Timestamp(day) + pd.offsets.BDay()).date())
     p.tables["trading_calendar"] = pd.DataFrame({"trade_date": p.sessions, "is_trading": True})
@@ -69,8 +88,14 @@ def advance(p):
 
 
 def run(p, reg, root):
-    return shadow.daily_cycle(p, reg, root, now=p.created_at + timedelta(hours=1), code_commit="d" * 40,
-                              classification_version="SWCLASS2021")
+    return shadow.daily_cycle(
+        p,
+        reg,
+        root,
+        now=p.created_at + timedelta(hours=1),
+        code_commit="d" * 40,
+        classification_version="SWCLASS2021",
+    )
 
 
 def read(root):
@@ -84,7 +109,8 @@ def test_lot_floor_cash_and_minimum_fee():
     assert affordable_units(Decimal(1), Decimal(3), StrategyConfig().costs) == 0
     costs = replace(StrategyConfig().costs, minimum_commission="5")
     assert affordable_units(Decimal(304), Decimal(3), costs) == 0
-    with pytest.raises(ValueError): affordable_units(Decimal(1000), Decimal(1), costs, 0)
+    with pytest.raises(ValueError):
+        affordable_units(Decimal(1000), Decimal(1), costs, 0)
 
 
 def test_empty_mapping_no_epoch_fake_account_or_nav(tmp_path):
@@ -110,14 +136,25 @@ def test_forward_intent_delayed_t1_epoch_no_preepoch_nav_and_idempotency(tmp_pat
     assert len(view["nav"]) == 1 and len(view["holdings"]) == 5 and len(view["trades"]) == 5
     epoch = view["status"]["epoch"]
     assert view["nav"][0]["timestamp"] == epoch["started_at"]
-    assert all(t["processed_at"] == epoch["started_at"] and t["market_execution_at"] < t["processed_at"] for t in view["trades"])
+    assert all(
+        t["processed_at"] == epoch["started_at"] and t["market_execution_at"] < t["processed_at"]
+        for t in view["trades"]
+    )
     assert all(Decimal(p["quantity"]) % 100 == 0 for p in view["holdings"])
     assert Decimal(view["portfolio_summary"]["cash"]) >= 0
     assert view["portfolio_summary"]["daily_return"] is None
-    assert Decimal(view["portfolio_summary"]["total_pnl"]) == Decimal(view["portfolio_summary"]["total_equity"]) - 10000
+    assert (
+        Decimal(view["portfolio_summary"]["total_pnl"])
+        == Decimal(view["portfolio_summary"]["total_equity"]) - 10000
+    )
     assert view["portfolio_summary"]["turnover"] > 0
-    assert all(p["etf_name"] and p["industry_name"] and "unrealized_return" in p for p in view["holdings"])
-    assert all(Decimal(t["total_cash_impact"]) < 0 and t["rebalance_reason"] == "INITIAL_BUILD" for t in view["trades"])
+    assert all(
+        p["etf_name"] and p["industry_name"] and "unrealized_return" in p for p in view["holdings"]
+    )
+    assert all(
+        Decimal(t["total_cash_impact"]) < 0 and t["rebalance_reason"] == "INITIAL_BUILD"
+        for t in view["trades"]
+    )
     pointer_before = (root / "latest.json").read_bytes()
     assert run(q, reg, root)["status"] == "IDEMPOTENT_NO_CHANGE"
     assert (root / "latest.json").read_bytes() == pointer_before
@@ -126,11 +163,28 @@ def test_forward_intent_delayed_t1_epoch_no_preepoch_nav_and_idempotency(tmp_pat
     assert not view["status"]["validation_opened"] and not view["status"]["final_oos_read"]
 
 
-@pytest.mark.parametrize("mutation,code", [
-    (lambda q: q.tables["stock_bars"].loc.__setitem__((0, "adj_close"), 99.), "HISTORICAL_REVISION"),
-    (lambda q: q.tables["instruments"].loc.__setitem__((0, "name"), "SYNTHETIC_CHANGED_LISTING_EVIDENCE"), "HISTORICAL_REVISION"),
-    (lambda q: q.tables["etf_bars"].drop(q.tables["etf_bars"].index[q.tables["etf_bars"].trade_date == q.cutoff], inplace=True), "EXECUTION_BAR"),
-])
+@pytest.mark.parametrize(
+    "mutation,code",
+    [
+        (
+            lambda q: q.tables["stock_bars"].loc.__setitem__((0, "adj_close"), 99.0),
+            "HISTORICAL_REVISION",
+        ),
+        (
+            lambda q: q.tables["instruments"].loc.__setitem__(
+                (0, "name"), "SYNTHETIC_CHANGED_LISTING_EVIDENCE"
+            ),
+            "HISTORICAL_REVISION",
+        ),
+        (
+            lambda q: q.tables["etf_bars"].drop(
+                q.tables["etf_bars"].index[q.tables["etf_bars"].trade_date == q.cutoff],
+                inplace=True,
+            ),
+            "EXECUTION_BAR",
+        ),
+    ],
+)
 def test_failed_run_preserves_latest_and_no_partial_state(tmp_path, mutation, code):
     p, reg = inputs(tmp_path)
     root = tmp_path / "runtime"
@@ -138,7 +192,8 @@ def test_failed_run_preserves_latest_and_no_partial_state(tmp_path, mutation, co
     before = (root / "latest.json").read_bytes()
     q = advance(p)
     mutation(q)
-    with pytest.raises(GateError, match=code): run(q, reg, root)
+    with pytest.raises(GateError, match=code):
+        run(q, reg, root)
     assert (root / "latest.json").read_bytes() == before
     _, state = read(root)
     assert state["portfolio"] is None and state["trades"] == []
@@ -153,11 +208,15 @@ def test_atomic_failure_cannot_advance_pointer(tmp_path, monkeypatch):
     run(p, reg, root)
     before = (root / "latest.json").read_bytes()
     original = shadow.publish_generation
+
     def fail(root, *a, **kw):
-        if root.name == "runs": raise GateError("SYNTHETIC_ATOMIC_FAILURE")
+        if root.name == "runs":
+            raise GateError("SYNTHETIC_ATOMIC_FAILURE")
         return original(root, *a, **kw)
+
     monkeypatch.setattr(shadow, "publish_generation", fail)
-    with pytest.raises(GateError, match="ATOMIC_FAILURE"): run(advance(p), reg, root)
+    with pytest.raises(GateError, match="ATOMIC_FAILURE"):
+        run(advance(p), reg, root)
     assert (root / "latest.json").read_bytes() == before
 
 
@@ -166,7 +225,8 @@ def test_lock_and_stale_session_fail_closed(tmp_path):
     root = tmp_path / "runtime"
     root.mkdir()
     (root / ".cycle.lock").write_bytes(b"SYNTHETIC_OTHER_RUN")
-    with pytest.raises(GateError, match="CONCURRENT"): run(p, reg, root)
+    with pytest.raises(GateError, match="CONCURRENT"):
+        run(p, reg, root)
     (root / ".cycle.lock").unlink()
     with pytest.raises(GateError, match="CURRENT_FINALIZED"):
         shadow.daily_cycle(p, reg, root, now=p.created_at + timedelta(days=1), code_commit="d" * 40)

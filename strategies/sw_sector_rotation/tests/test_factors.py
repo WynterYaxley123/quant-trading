@@ -24,8 +24,6 @@ from strategies.sw_sector_rotation.src.factors.sector_rotation import (
     compute_volatility_features,
     validate_market_frame,
 )
-from strategies.sw_sector_rotation.tests.conftest import make_market_frame
-
 
 # ---------------------------------------------------------------------------
 # 结构校验
@@ -66,9 +64,7 @@ def test_ma_deviation_formula(market_frame):
     for m in MA_WINDOWS:
         ma = market_frame["close"].rolling(m).mean()
         expected = (market_frame["close"] - ma) / ma
-        pd.testing.assert_series_equal(
-            out[f"d{m}"], expected, check_names=False, atol=1e-12
-        )
+        pd.testing.assert_series_equal(out[f"d{m}"], expected, check_names=False, atol=1e-12)
 
 
 def test_range_position_formula_and_bounds(market_frame):
@@ -78,9 +74,7 @@ def test_range_position_formula_and_bounds(market_frame):
         lo = market_frame["close"].rolling(m).min()
         hi = market_frame["close"].rolling(m).max()
         expected = ((market_frame["close"] - lo) / (hi - lo + 1e-10)).clip(0, 1)
-        pd.testing.assert_series_equal(
-            out[f"p{m}"], expected, check_names=False, atol=1e-12
-        )
+        pd.testing.assert_series_equal(out[f"p{m}"], expected, check_names=False, atol=1e-12)
         valid = out[f"p{m}"].dropna()
         assert valid.min() >= 0.0
         assert valid.max() <= 1.0
@@ -132,12 +126,8 @@ def test_align_scores_and_weights(market_frame):
 def test_volatility_formula(market_frame):
     out = compute_volatility_features(market_frame)
     r = market_frame["close"].pct_change()
-    pd.testing.assert_series_equal(
-        out["v5"], r.rolling(5).std(), check_names=False, atol=1e-12
-    )
-    pd.testing.assert_series_equal(
-        out["v20"], r.rolling(20).std(), check_names=False, atol=1e-12
-    )
+    pd.testing.assert_series_equal(out["v5"], r.rolling(5).std(), check_names=False, atol=1e-12)
+    pd.testing.assert_series_equal(out["v20"], r.rolling(20).std(), check_names=False, atol=1e-12)
     expected_vc = out["v5"] / (out["v20"] + 1e-10)
     pd.testing.assert_series_equal(out["vc"], expected_vc, check_names=False, atol=1e-12)
 
@@ -159,9 +149,7 @@ def test_reversal_is_negative_mean_return(market_frame):
     r = market_frame["close"].pct_change()
     for p in (5, 10):
         expected = -r.rolling(p).mean()
-        pd.testing.assert_series_equal(
-            out[f"rev{p}"], expected, check_names=False, atol=1e-12
-        )
+        pd.testing.assert_series_equal(out[f"rev{p}"], expected, check_names=False, atol=1e-12)
 
 
 def test_rsi_bounds(market_frame):
@@ -231,9 +219,5 @@ def test_factors_do_not_use_future_data(market_frame):
     """截断输入后，前段因子值必须一致（无未来信息）。"""
     cut = 250
     f_full = compute_all_price_features(market_frame, include_rsrs=False)
-    f_part = compute_all_price_features(
-        market_frame.iloc[:cut], include_rsrs=False
-    )
-    pd.testing.assert_frame_equal(
-        f_full.iloc[:cut], f_part, check_exact=False, atol=1e-12
-    )
+    f_part = compute_all_price_features(market_frame.iloc[:cut], include_rsrs=False)
+    pd.testing.assert_frame_equal(f_full.iloc[:cut], f_part, check_exact=False, atol=1e-12)
