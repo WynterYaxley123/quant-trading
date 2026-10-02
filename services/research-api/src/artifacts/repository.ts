@@ -142,8 +142,12 @@ export class ArtifactRepository {
   }
 
   async latest(): Promise<RunMetadata> {
-    const runs = await this.runs()
-    if (!runs.length) throw new ApiError('RUN_NOT_FOUND', 404, 'No admitted Development run found')
-    return runs[0]
+    const latest = await this.latestOrNull()
+    if (!latest) throw new ApiError('RUN_NOT_FOUND', 404, 'No admitted Development run found')
+    return latest
+  }
+
+  async latestOrNull(): Promise<RunMetadata | null> {
+    return (await this.runs())[0] ?? null
   }
 }

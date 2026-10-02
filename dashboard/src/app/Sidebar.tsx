@@ -23,8 +23,8 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex items-start gap-2 px-2">
         <Activity aria-hidden="true" className="mt-0.5 h-5 w-5 text-primary" />
         <div>
-          <p className="text-sm font-semibold leading-tight">申万研究仪表盘</p>
-          <p className="text-xs text-muted-foreground">行业指数研究</p>
+          <p className="text-sm font-semibold leading-tight">Quant Trading / ETF-Quant</p>
+          <p className="text-xs text-muted-foreground">Research · Shadow 只读观察</p>
         </div>
       </div>
 

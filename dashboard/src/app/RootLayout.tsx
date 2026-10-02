@@ -5,8 +5,9 @@ import { SidebarContent } from './Sidebar';
 import { MockDataBanner } from '@/components/research/MockDataBanner';
 import { ResearchStatusBanner } from '@/components/research/ResearchStatusBanner';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { DisconnectedState, ErrorState } from '@/components/ui/states';
+import { DisconnectedState, ErrorState, LoadingState, ResearchEmptyState } from '@/components/ui/states';
 import { EtfQuantProvider } from '@/etf-quant/Provider';
+import { ConsoleServiceStatus } from './ConsoleServiceStatus';
 
 const TITLES: Array<{ prefix: string; title: string }> = [
   { prefix: '/candidates', title: '候选方案对比' },
@@ -25,8 +26,9 @@ function titleForPath(pathname: string): string {
 
 function Shell() {
   const location = useLocation();
-  const { dataMode, loading, error, retry } = useAppData();
+  const { dataMode, loading, error, retry, artifactState, apiBaseUrl } = useAppData();
   const isEtf = location.pathname.startsWith('/etf-quant/');
+  const isResearch = location.pathname === '/' || TITLES.some(({ prefix }) => location.pathname === prefix);
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,15 +40,18 @@ function Shell() {
         <Header title={titleForPath(location.pathname)} />
 
         <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4 md:px-6 md:py-6">
+          <ConsoleServiceStatus />
           {!isEtf && dataMode === 'mock' ? <MockDataBanner /> : null}
           {!isEtf ? <ResearchStatusBanner /> : null}
 
-          {!isEtf && error && !loading ? (
+          {!isEtf && loading ? <LoadingState label="正在连接研究数据接口" /> : !isEtf && error ? (
             error.isDisconnected ? (
-              <DisconnectedState onRetry={retry} />
+              <DisconnectedState onRetry={retry} endpoint={apiBaseUrl} />
             ) : (
               <ErrorState error={error} onRetry={retry} />
             )
+          ) : isResearch && artifactState === 'NOT_CONFIGURED' ? (
+            <ResearchEmptyState onRetry={retry} />
           ) : (
             <Outlet />
           )}

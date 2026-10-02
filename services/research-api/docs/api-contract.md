@@ -1,5 +1,12 @@
 # Research Dashboard Data API v1 contract
 
+Normal console startup includes this service. Optional absent roots/collections
+return an empty catalog; capabilities/status explicitly identify NOT_CONFIGURED.
+This is an observation policy state, not fabricated Development metadata or
+performance. Existing corrupt/unauthorized artifacts retain their errors.
+Public listen addresses are rejected; the unified launcher pins local CORS origins.
+Unsupported/duplicate query parameters are rejected, including force/bypass flags.
+
 Version `1.0.0`; prefix `/api/v1`. Formal JSON/CSV research artifacts are the only data source. This service is an adapter, not a research, backtest, portfolio, execution or trading service. It does not import Python or run Hikyuu/RQAlpha. Its source files and project dependencies live only in `services/research-api/`.
 
 All successful responses use `{ "schemaVersion": "1.0.0", "data": ... }`. Errors use `{ "schemaVersion": "1.0.0", "error": { "code": "...", "message": "..." } }`. No request-time timestamp or random field is emitted. See the [OpenAPI contract](../openapi/research-dashboard-api-v1.openapi.yaml) for exact fields.

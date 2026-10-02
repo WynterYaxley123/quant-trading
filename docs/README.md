@@ -1,14 +1,22 @@
-# docs/ — 项目文档
+# Project documentation
 
-本目录存放项目文档。
+Current product entry points are the [project overview](../README.md) and
+[unified console guide](unified_console.md). Quantitative V1 contracts remain
+frozen; dated audit reports preserve the state they actually observed.
 
-## 现有文件
+| Area | Documentation |
+| --- | --- |
+| Console startup, health and ownership | [Unified console](unified_console.md) |
+| ETF V1 specifications and audit history | [ETF document index](etf_quant/README.md) |
+| ETF observer | [ETF API](../services/etf-quant-api/README.md) |
+| Development artifact firewall | [Research API](../services/research-api/README.md) |
+| Formal Shadow operation | [One-shot runner](../services/etf-quant-runner/README.md) |
+| User interface | [Dashboard](../dashboard/README.md) |
+| Frozen dependency history | [Dependency conflicts](dependency_conflicts.md) |
+| Third-party software and data rights | [Notices](../THIRD_PARTY_NOTICES.md) |
 
-| 文件 | 内容 |
-|------|------|
-| `dependency_conflicts.md` | Hikyuu / RQAlpha 依赖冲突记录与解决方式 |
-
-## 说明
-
-- 策略研究日志、因子说明等文档，待进入对应阶段后再添加
-- 当前处于 Environment Setup 阶段，文档只覆盖环境相关内容
+The original environment-foundation documents describe their historical setup
+scope. For current console topology, use loopback ports 3312 / 8787 / 5173 and
+the existing external runtime configuration. The deployed research-service host
+mappings remain 19200 → 9200 and 19201 → 9201; do not recreate host 9200/9201 from
+an old setup example. No console action changes this environment.

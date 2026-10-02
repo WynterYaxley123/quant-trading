@@ -1,4 +1,4 @@
-# 申万研究仪表盘（Shenwan Research Dashboard）
+# Quant Trading / ETF-Quant Dashboard
 
 ## ETF-Quant V1 current operations console
 
@@ -8,10 +8,14 @@ cutoff, dynamic next session, armed/start gate, Formal T0 epoch, T+1 state and
 provenance. Zero epochs is normal; Cash slots show CASH / FAIL-CLOSED.
 Superseded failures are HISTORICAL; new failures are not hidden.
 
-From the checkout run `./scripts/Start-EtfQuantConsole.ps1` in PowerShell and open
+From the checkout root run `& ./scripts/Start-EtfQuantConsole.ps1` in PowerShell and open
 http://127.0.0.1:5173/etf-quant/overview. Existing dependencies/lockfile are reused.
 No runner trigger, runtime edit or broker control exists. ETF routes do not open
-Research artifacts; Research pages retain their separate read-only contract.
+Research artifacts; only their artifact-free Research health request is enabled.
+The launcher now includes Research API 8787 as well as ETF API 3312 and Dashboard
+5173. All pages show service connectivity. Missing approved Research artifacts
+produce a connected empty state; network and integrity errors remain visible.
+See [unified console](../docs/unified_console.md).
 
 **Sector Index Research** — a read-only, modern React research dashboard for the Shenwan
 sector-index rotation research programme.
@@ -62,7 +66,7 @@ research files directly. See `docs/architecture.md` for the full design and
 
 ## Installation
 
-Node.js ≥ 22 and pnpm 11.25 are required (the dashboard is an independent Node project; it does not
+Node.js ≥ 24 and pnpm 11.25 are required for the unified console (the dashboard is an independent Node project; it does not
 touch the frozen quant Docker environment).
 
 ```bash
@@ -73,14 +77,14 @@ pnpm install --frozen-lockfile --ignore-scripts
 ## Development
 
 ```bash
-npm run dev          # Vite dev server on http://localhost:5173
+npm run dev          # Vite dev server on http://127.0.0.1:5173
 ```
 
 ## Build
 
 ```bash
 npm run build        # typecheck + production build into dist/
-npm run preview      # serve the production build
+npm run preview      # production build, loopback 127.0.0.1:5173; dev server must be stopped
 ```
 
 ## Test
@@ -99,6 +103,7 @@ Copy `.env.example` to `.env.local`:
 |----------|---------|---------|
 | `VITE_DATA_MODE` | `api` | `api` = real Research Data API; `mock` = synthetic fixtures (explicit opt-in) |
 | `VITE_RESEARCH_API_BASE_URL` | `http://127.0.0.1:8787/api/v1` | Base URL of the read-only Research Data API v1 |
+| `VITE_ETF_QUANT_API_BASE_URL` | `http://127.0.0.1:3312` | Independent read-only ETF observer |
 
 ### API mode (normal default)
 
@@ -109,7 +114,7 @@ dashboard **never silently falls back to mock data**.
 ### Mock mode (development only)
 
 `VITE_DATA_MODE=mock` serves small **synthetic** fixtures (invented numbers — not real
-research results). A global **模拟数据 / MOCK DATA** banner is shown on every page in this mode.
+research results). A **模拟数据 / MOCK DATA** banner is shown on Research pages in this mode.
 
 ## Research safety statement
 
@@ -127,8 +132,8 @@ research results). A global **模拟数据 / MOCK DATA** banner is shown on ever
 
 ## Independent ETF Quant V1
 
-Eight /etf-quant/ routes: overview, portfolio, rankings, factors, mappings,
-trades, benchmarks, health. Separate EtfQuantDataPort and schemas use
+Nine /etf-quant/ routes: overview, readiness, portfolio, rankings, factors,
+mappings, trades, benchmarks, health. Separate EtfQuantDataPort and schemas use
 /api/etf-quant/v1/ on loopback3312, never ResearchDataPort. Its capability is
 independent: Research disconnect does not block an ETF route. Optional local-only
 VITE_ETF_QUANT_API_BASE_URL defaults to http://127.0.0.1:3312 when empty.

@@ -1,5 +1,9 @@
 # 项目架构与角色定义
 
+> 2026-10-02 索引说明：以下为 2026-09-19 的基础环境架构记录。
+> 已完成的 Research / ETF Shadow 产品架构与运行边界以[项目首页](../README.md#architecture)、
+> [统一控制台](unified_console.md)和[ETF 文档](etf_quant/README.md)为准。
+
 > 本文件定义 quant-trading 项目的正式开发架构与各方职责边界。
 > 状态：**ENVIRONMENT + QUANT WORKFLOW FOUNDATION COMPLETE**
 > 最后更新：2026-09-19
