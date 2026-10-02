@@ -4,6 +4,10 @@
 point. The [synthetic demo](../../examples/minimal_demo/README.md) imports the
 existing pure model functions. No external data root is needed for either.
 
+The [hardening report](public-hardening-report.md) records verified checks,
+certificate exceptions and the remaining typing debt. Reproducible before/after
+measurements are in [the health inventory](health-inventory.json).
+
 ## Configuration boundaries
 
 | Setting | Use | Public flow |
