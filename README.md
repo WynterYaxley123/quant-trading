@@ -1,6 +1,6 @@
 # quant-trading
 
-`quant-trading` is a quantitative research/software project with one frozen product:
+`quant-trading` is a quantitative research/software project with a frozen baseline:
 **ETF-Quant V1**, a Chinese equity ETF research and forward Shadow workflow that
 ranks industries first, then maps them to executable ETFs. It turns dated factual inputs into industry rankings, evidence-backed ETF
 mappings and an observable simulated portfolio. The dashboard reads verified artifacts.
@@ -8,14 +8,17 @@ mappings and an observable simulated portfolio. The dashboard reads verified art
 Engineering preparation is complete. **The first formal Shadow epoch has not yet been
 created.** There are no Shadow performance results. Historical Shenwan/F1 research is
 the product's research lineage. The project is simulation/Shadow only, without brokers,
-real orders, leverage or shorting; sealed research phases remain inaccessible.
+real orders, leverage or shorting. V1 sealed research phases remain inaccessible.
 
-**ETF-Quant V2 Research** is an independent long-history statistical rebuild.
-Its strict-PIT admission is currently blocked by unproven historical membership
-availability and completeness in the unchanged CNEquity boundary. No V2 candidate
-has been selected, and neither V1 nor V2 Shadow has started. The [V2 protocol](docs/etf-quant-v2-protocol.md)
-and [factual research status](docs/etf-quant-v2-development.md) distinguish observed
-data coverage from admissible research history.
+**ETF-Quant V2** reconstructs 2018–2026 factual history with explicit membership
+evidence tiers. Actual Development experiments and one reserved Validation have
+completed. Validation failed; one authorized Development revision selected Ridge
+α=30, a 12-month window and 10/40/120-session predictions. This revision is
+**Validation-informed and has not been independently validated**. Its independent
+Shadow implementation is prepared but has not started. Final OOS remains sealed.
+The [V2 protocol](docs/etf-quant-v2-protocol.md) and
+[measured research status](docs/etf-quant-v2-development.md) explain the evidence
+limits and results. No profitability claim is made.
 
 ## Strategy at a glance
 
@@ -26,7 +29,7 @@ industry-exposure proxies require complete official weights, at least 40% target
 PIT availability and liquidity. An unexecutable slot retains its original weight as cash.
 Finalized T-close signals can only receive future T+1 simulated execution.
 
-The factor sets and model specification are frozen; Ridge coefficients are refit
+V1's factor sets and model specification are frozen; Ridge coefficients are refit
 from eligible mature observations at each signal date. The original Top5 industry
 ranking is mapped to executable ETFs, preserving unexecutable slots as cash. This order is
 implemented in the [runtime](strategies/etf_quant/runtime/shadow.py) and covered by
@@ -75,9 +78,10 @@ observations. Their distinct trust boundaries are explained in [architecture](do
 
 | Path | Purpose |
 | --- | --- |
-| strategies/etf_quant/ | Current product contracts and runtime |
+| strategies/etf_quant/ | Frozen V1 contracts and runtime |
+| strategies/etf_quant_v2/ | Independent V2 candidate, gated forward preparation and paper accounting |
 | strategies/sw_sector_rotation/, research/ | Earlier research lineage |
-| research/etf_quant_v2/ | Independent V2 admission, protocol and synthetic-tested research primitives |
+| research/etf_quant_v2/ | Evidence-tier reconstruction, actual diagnostics and bounded experiments |
 | src/ | Data/provider and notification infrastructure |
 | services/ | External source transport, runner and two read-only APIs |
 | dashboard/ | Shared observation UI |

@@ -33,3 +33,9 @@ Hikyuu/KData backtesting remains a maintainer research capability. Engineering
 checks use synthetic inputs and do not invoke market-data backtests or the formal
 one-shot runner. Frozen-image acceptance only reads permitted evidence with network
 disabled and mounts read-only.
+
+The separately authorized V2 rebuild ran actual Development experiments and a single
+Validation in the independent developer container. These private-data operations are
+not portable tests or CI. V2's forward preparation, mature labels, sealed-region
+exclusion, costs, cash, rebalance and T+1 gates are verified with synthetic inputs.
+Its read-only API verifies the published aggregate/candidate/source hash chain.

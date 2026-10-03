@@ -1,0 +1,83 @@
+{
+  "broker_enabled": false,
+  "candidate_sha256": "bd0e83629c2c0b9eb8ecd89fa11f19f8051dd53287c28db3244d7377a4d6680f",
+  "data_sha256": "83e322e391e2e4126e0854cbe0baa4475b353292d9cc318f39ba8e59f82aa2c8",
+  "evidence_mode": "HIGH_CONFIDENCE",
+  "final_oos_end": "2026-04-02",
+  "final_oos_opened": false,
+  "final_oos_start": "2025-12-30",
+  "frozen_at": "2026-10-03T19:26:08.364640+00:00",
+  "future_launch_requirement": "EXPLICIT_HUMAN_AUTHORIZATION_AND_SEPARATE_UNVALIDATED_RESEARCH_ACKNOWLEDGEMENT",
+  "mapping_policy": "FROZEN_V1_INDUSTRY_FIRST_VERIFIED_PROXY_CASH",
+  "missingness_policy": "NO_GAP_BRIDGING;COMPLETE_MATURE_CROSS_SECTIONS",
+  "model_family": "NUMPY_RIDGE",
+  "original_candidate_sha256": "6520245664417cd421f2252eb7865bd762e0e93eb8e2481c40c1f46794150562",
+  "product": "ETF_QUANT_V2",
+  "protocol_sha256": "e5fcafa6e8f639fa72eaada9e8dfe515f92b1eb41a0f1b515f3b270aeba0f6be",
+  "real_order_path": false,
+  "research_candidate_sha256": "ba56d776bb768b4d31db5400ecc5d915f676c096ae354588a6d6013afc970cca",
+  "research_source_files": {
+    "__init__.py": "6c2c2c746362ddb1ef56ac33040c6ec45cef4576f39c345ce9a8c1e39d2b003d",
+    "coverage.py": "a03a0182ca2ee16e06bc740ad5e260522b57e534950d4fb54236ddcd5614fa75",
+    "diagnostics.py": "894b781ac4b577421c9137d818e78229e1a77f1f50a3941fdc1f44d206e9fc8c",
+    "experiment.py": "00ce03ed7de5a8a40e60bc14cc9f24b67e040a6e5a32ee36ba8bac6c8907fd3a",
+    "focused.py": "7c9482bb9d742f9ff073470580ade61810d70b388933b3ca527a8b22c11aca95",
+    "membership.py": "29ff45f36ad5089430477e0824470e9dd761778bf02332fcbf8d09d99e920045",
+    "models.py": "be078edcd2efdb1093e3f1630d2db571e92fda54cdf0401a79f51a36de6ce1d0",
+    "panel.py": "b5a7b2d3f9b6900e2e208bfb92694737cfb65c47287d8f08db0971d7e4d95d39",
+    "protocol.py": "3adf72f90240509b1a5fd2e81629adc284c2805463e3af1a419f666a943bc466",
+    "recovery.py": "f262b74a462bbbae0cf5bfb97d7ddc3e417f4738ba32a12c3c0ef2f3049f3188",
+    "revision.py": "ba3ae3b37ebfeda96609ae8e0a4be691237c59465ffa85545b7b7badafe86767"
+  },
+  "research_status": "VALIDATION_INFORMED_NOT_INDEPENDENTLY_VALIDATED",
+  "shadow_ready": true,
+  "shadow_started": false,
+  "specification": {
+    "alpha": 30.0,
+    "factors": [
+      "d5",
+      "d10",
+      "d20",
+      "d60",
+      "d120",
+      "p5",
+      "p10",
+      "p20",
+      "p60",
+      "p120",
+      "align",
+      "v5",
+      "v20",
+      "vc",
+      "rev5",
+      "rev10",
+      "dd20",
+      "dd60",
+      "rsi"
+    ],
+    "family": "S2A",
+    "fusion": [
+      0.25,
+      0.5,
+      0.25
+    ],
+    "h10_factors": [
+      "d10",
+      "p5",
+      "align",
+      "vc",
+      "dd20"
+    ],
+    "horizons": [
+      10,
+      40,
+      120
+    ],
+    "identifier": "S2A-RAW-m12-a30",
+    "scaling": "RAW",
+    "training_months": 12
+  },
+  "validation_accepted": false,
+  "validation_open_count": 1,
+  "validation_summary_sha256": "e19da2a9bea4acb50c47ac432d66d220fe4bf7d3137d0e47919c3929f099e7ee"
+}

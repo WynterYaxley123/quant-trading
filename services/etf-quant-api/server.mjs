@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { aggregateCurrent, projectCurrent } from './current.mjs';
 import { allowedOrigins } from './origins.mjs';
+import { observeV2 } from './v2.mjs';
 
 export const strategy = JSON.parse(await readFile(new URL('./strategy.json', import.meta.url), 'utf8'));
 export const PREFIX = '/api/etf-quant/v1/';
@@ -297,7 +298,12 @@ export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.n
     if (!['GET','HEAD','OPTIONS'].includes(req.method)) {res.setHeader('Allow','GET, HEAD, OPTIONS');return respond(405,null,'READ_ONLY_API');}
     const url=req.url ?? '';
     if (url.includes('%') || url.includes('\\') || url.includes('..') || url.includes('//') || url.includes('?')
-      || !url.startsWith(PREFIX)) return respond(400,null,'INVALID_RESOURCE');
+      || !(url.startsWith(PREFIX) || url==='/api/etf-quant/v2/research')) return respond(400,null,'INVALID_RESOURCE');
+    if(url==='/api/etf-quant/v2/research') {
+      if(req.method==='OPTIONS') {res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return respond(204);}
+      try {const data=await observeV2(repoRoot);return respond(200,data,null,{runId:null,manifestSha256:data.candidate_sha256,etfQuant:true,version:2});}
+      catch {return respond(503,null,'V2_RESEARCH_INTEGRITY_BLOCKER');}
+    }
     const resource=url.slice(PREFIX.length);
     if (!Object.hasOwn(ENDPOINTS,resource)) return respond(404,null,'RESOURCE_NOT_FOUND');
     if (req.method==='OPTIONS') {res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return respond(204);}
