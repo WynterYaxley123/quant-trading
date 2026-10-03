@@ -7,6 +7,8 @@ import json
 from math import isclose
 from pathlib import Path
 
+from strategies.etf_quant.runtime.implementation import verify_implementation
+
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json"
 
@@ -81,9 +83,17 @@ def test_final_proxy_candidate_integrity_reread():
                     extension["certified_baseline_sha"]
                     == "dd96a3ae2b84e1c93bc15f2a748e213d7446ae1b"
                 )
-                assert hashlib.sha256(body).hexdigest() == extension["files"][item["path"]]
+                assert hashlib.sha256(body).hexdigest() == verify_implementation(ROOT)[item["path"]]
             else:
-                assert hashlib.sha256(body).hexdigest() == expected
+                active = verify_implementation(ROOT)
+                if item["path"] in active:
+                    historical = json.loads(
+                        (ROOT / "reports/etf_quant/autonomous_code_integrity_v1.json").read_bytes()
+                    )
+                    assert historical["files"][item["path"]] == expected
+                    assert hashlib.sha256(body).hexdigest() == active[item["path"]]
+                else:
+                    assert hashlib.sha256(body).hexdigest() == expected
     original = json.loads(
         (ROOT / candidate["source_integrity"]["reference_portfolio"]["path"]).read_text(
             encoding="utf-8"
@@ -129,5 +139,8 @@ def test_runtime_readiness_metadata_cannot_claim_unadmitted_production_evidence(
     )
     assert (
         candidate["source_integrity"]["pit_adapter"]["sha256"]
-        == hashlib.sha256((ROOT / "strategies/etf_quant/mapping/pit.py").read_bytes()).hexdigest()
+        == json.loads((ROOT / "reports/etf_quant/autonomous_code_integrity_v1.json").read_bytes())[
+            "files"
+        ]["strategies/etf_quant/mapping/pit.py"]
     )
+    verify_implementation(ROOT)

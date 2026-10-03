@@ -97,7 +97,8 @@ def export_lake(config, load, *, observed_at=None):
         raise GateError("EXPLICIT_ETF_SCOPE_BLOCKER")
     lake = external_root(Path(config["paths"]["lake_root"]))
     before = lake_fingerprint(lake)
-    queries, tables = {}, {}
+    queries: dict[str, dict[str, object]] = {}
+    tables = {}
     adjustment_rejected_rows = 0
     # Membership must be complete, not narrowed to stocks with available prices.
     query = {"start": start.isoformat(), "end": cutoff.isoformat(), "data_root": lake}
@@ -203,7 +204,8 @@ def export_lake(config, load, *, observed_at=None):
 
 def exception_chain(error, limit=6):
     """Class+message per link, so a transport fault is never reduced to a bare class name."""
-    chain, current = [], error
+    chain: list[dict[str, object]] = []
+    current = error
     while current is not None and len(chain) < limit:
         chain.append(
             {

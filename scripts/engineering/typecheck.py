@@ -24,6 +24,14 @@ STRICT_PATHS = (
     "src/data/schema.py",
     "src/data/calendar.py",
     "src/notifications/",
+    "src/",
+    "strategies/etf_quant/",
+    "services/etf-quant-runner/",
+    "services/cnequity-sidecar/",
+    "scripts/data/admit_shenwan_etf_mapping.py",
+    "scripts/data/mapping_",
+    "scripts/etf_quant/build_production_pit_evidence.py",
+    "scripts/etf_quant/production_pit_",
 )
 
 
@@ -62,13 +70,15 @@ def main() -> int:
         for key in strict:
             print(key)
         return 1
-    if args.write_baseline:
+    baseline = Counter(json.loads(BASELINE.read_text(encoding="utf-8")))
+    added, removed = current - baseline, baseline - current
+    if args.write_baseline and not added:
         BASELINE.parent.mkdir(parents=True, exist_ok=True)
         BASELINE.write_text(
             json.dumps(dict(sorted(current.items())), indent=2) + "\n", encoding="utf-8"
         )
-    baseline = Counter(json.loads(BASELINE.read_text(encoding="utf-8")))
-    added, removed = current - baseline, baseline - current
+        baseline = current.copy()
+        removed = Counter()
     if added or removed:
         print(
             json.dumps(

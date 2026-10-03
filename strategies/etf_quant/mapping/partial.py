@@ -4,18 +4,20 @@ Evidence acquisition and historical availability are NOT inferred here. The
 caller must supply independently verified candidates and frozen Top5 scores.
 No strict registry or default five-member selector is changed.
 """
+
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
 import math
+from collections.abc import Mapping, Sequence
 
-from ..portfolio.policy import IndustryCandidate, POLICY_B40_WITH_CASH
+from ..portfolio.policy import POLICY_B40_WITH_CASH, IndustryCandidate
 
 
 def select_mappings_partial(
     ranked_signals: Sequence[tuple[str, float]],
     candidate_pools: Mapping[str, Sequence[IndustryCandidate]],
-    *, execution_policy: str,
+    *,
+    execution_policy: str,
 ) -> tuple[IndustryCandidate, ...]:
     """Return five original signal slots, with unexecutable slots marked Cash.
 
@@ -31,21 +33,53 @@ def select_mappings_partial(
     chosen: list[IndustryCandidate] = []
     used: set[str] = set()
     for code, score in signals:
-        if not isinstance(code, str) or not code or not isinstance(score, (float, int)) or not math.isfinite(score):
+        if (
+            not isinstance(code, str)
+            or not code
+            or not isinstance(score, (float, int))
+            or not math.isfinite(score)
+        ):
             raise ValueError("INVALID_FROZEN_SIGNAL")
         pool = tuple(candidate_pools.get(code, ()))
-        if any(c.l2_code != code or c.final_score != score or c.mapping_type not in
-               ("STRICT_MAPPING", "PROXY_EXPOSURE") for c in pool):
+        if any(
+            c.l2_code != code
+            or c.final_score != score
+            or c.mapping_type not in ("STRICT_MAPPING", "PROXY_EXPOSURE")
+            for c in pool
+        ):
             raise ValueError("CANDIDATE_SIGNAL_IDENTITY_MISMATCH")
         strict = tuple(c for c in pool if c.mapping_type == "STRICT_MAPPING")
         eligible_pool = strict if strict else pool
         admitted = [c for c in eligible_pool if c.passes_b40 and c.etf_code not in used]
         if admitted:
-            winner = sorted(admitted, key=lambda c: (-c.target_l2_exposure,
-                -(c.dominance_margin or 0.0), -(c.mean_amount_cny or 0.0), c.etf_code))[0]
+            winner = sorted(
+                admitted,
+                key=lambda c: (
+                    -(c.target_l2_exposure or 0.0),
+                    -(c.dominance_margin or 0.0),
+                    -(c.mean_amount_cny or 0.0),
+                    c.etf_code,
+                ),
+            )[0]
             chosen.append(winner)
+            assert winner.etf_code is not None  # passes_b40 proves instrument identity.
             used.add(winner.etf_code)
         else:
-            chosen.append(IndustryCandidate(code, None, float(score), None, None,
-                "CASH_UNEXECUTABLE_SIGNAL", None, None, None, None, None, None, None))
+            chosen.append(
+                IndustryCandidate(
+                    code,
+                    None,
+                    float(score),
+                    None,
+                    None,
+                    "CASH_UNEXECUTABLE_SIGNAL",
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                )
+            )
     return tuple(chosen)

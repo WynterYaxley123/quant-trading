@@ -31,7 +31,9 @@ PRODUCTION_DATA_CONTRACTS_V1 = {
 
 #: The tradeability contract is evidence, not proof. Any consumer that reports it
 #: must carry this qualifier.
-TRADABILITY_EVIDENCE_QUALIFIER = "BAR_DERIVED_EX_POST_TRADABILITY_EVIDENCE_NOT_REALTIME_EXCHANGE_STATUS"
+TRADABILITY_EVIDENCE_QUALIFIER = (
+    "BAR_DERIVED_EX_POST_TRADABILITY_EVIDENCE_NOT_REALTIME_EXCHANGE_STATUS"
+)
 
 #: Source-C series identity. Never to be presented as an official Shenwan index.
 SOURCE_C_IDENTITY = "INTERNAL_EQUAL_WEIGHT_SHENWAN_SERIES_V1"

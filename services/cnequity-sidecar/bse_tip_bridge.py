@@ -58,7 +58,9 @@ _REGISTRY_PATH: Path | None = None
 PATCHED = False
 
 
-def enable(*, registry_path: Path | None = None, board_session: dt.date | None = None) -> dict[str, Any]:
+def enable(
+    *, registry_path: Path | None = None, board_session: dt.date | None = None
+) -> dict[str, Any]:
     """Install the tip-board shim. Idempotent.
 
     Returns a summary describing what was installed, for the run journal.
@@ -90,7 +92,9 @@ def enable(*, registry_path: Path | None = None, board_session: dt.date | None =
                 logger.info(
                     "sidecar: BSE board is tip-only; served %s from the %s read "
                     "(%d identities). effective_from=UNKNOWN, not stamped.",
-                    trade_date, observed_at, board.height,
+                    trade_date,
+                    observed_at,
+                    board.height,
                 )
         if board.height:
             for symbol in board["symbol"].to_list():
@@ -110,8 +114,8 @@ def enable(*, registry_path: Path | None = None, board_session: dt.date | None =
                 }
         return board
 
-    fetch_bse_instruments_tip.__cnequity_sidecar_tip__ = True  # type: ignore[attr-defined]
-    fetch_bse_instruments_tip.__wrapped__ = original  # type: ignore[attr-defined]
+    setattr(fetch_bse_instruments_tip, "__cnequity_sidecar_tip__", True)
+    setattr(fetch_bse_instruments_tip, "__wrapped__", original)
     bse_instruments.fetch_bse_instruments = fetch_bse_instruments_tip
 
     # `steps.reference` imports the name at call time, but a module already
@@ -119,7 +123,7 @@ def enable(*, registry_path: Path | None = None, board_session: dt.date | None =
     try:
         from cnequity.steps import reference as _reference
 
-        _reference.fetch_bse_instruments = fetch_bse_instruments_tip  # type: ignore[attr-defined]
+        _reference.fetch_bse_instruments = fetch_bse_instruments_tip
     except Exception:  # noqa: BLE001 — reference imports lazily inside the function
         pass
 

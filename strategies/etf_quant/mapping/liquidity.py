@@ -20,10 +20,11 @@ The rule is deliberately narrow and has no configuration surface:
 The module only reads already-verified bars. It never fetches, never infers and
 never writes.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
+from dataclasses import dataclass
 
 import pandas as pd
 
@@ -69,7 +70,7 @@ def liquidity_window(provider, signal_day):
     if index < LIQUIDITY_SESSIONS - 1:
         return None, None
     execution_day = provider.sessions[index + 1] if index + 1 < len(provider.sessions) else None
-    return tuple(provider.sessions[index - (LIQUIDITY_SESSIONS - 1):index + 1]), execution_day
+    return tuple(provider.sessions[index - (LIQUIDITY_SESSIONS - 1) : index + 1]), execution_day
 
 
 def _instrument(provider, etf_code):
@@ -82,7 +83,9 @@ def _status_veto(provider, etf_code, day):
     status = provider.tables["trading_status"]
     rows = status.loc[(status.symbol == etf_code) & (status.trade_date == day)]
     for row in rows.to_dict("records"):
-        if row["source"] in VETO_SOURCES and (row["is_trading"] is not True or row["status"] != "normal"):
+        if row["source"] in VETO_SOURCES and (
+            row["is_trading"] is not True or row["status"] != "normal"
+        ):
             return "EXCHANGE_NONTRADABLE"
     return None
 
@@ -95,10 +98,14 @@ def _bar_failure(provider, etf_code, day):
         return "BAR_MISSING_OR_DUPLICATE"
     bar = rows.iloc[0].to_dict()
     prices = ("open", "high", "low", "close")
-    if any(not pd.notna(bar[k]) or not math.isfinite(float(bar[k])) or float(bar[k]) <= 0 for k in prices):
+    if any(
+        not pd.notna(bar[k]) or not math.isfinite(float(bar[k])) or float(bar[k]) <= 0
+        for k in prices
+    ):
         return "NON_POSITIVE_OR_UNKNOWN_PRICE"
-    if (float(bar["high"]) < max(float(bar["open"]), float(bar["close"]), float(bar["low"]))
-            or float(bar["low"]) > min(float(bar["open"]), float(bar["close"]), float(bar["high"]))):
+    if float(bar["high"]) < max(
+        float(bar["open"]), float(bar["close"]), float(bar["low"])
+    ) or float(bar["low"]) > min(float(bar["open"]), float(bar["close"]), float(bar["high"])):
         return "IMPOSSIBLE_OHLC"
     volume = bar["volume"]
     if not pd.notna(volume) or not math.isfinite(float(volume)) or float(volume) < 0:
@@ -115,24 +122,38 @@ def assess_liquidity(provider, etf_code, window) -> LiquidityAdmission:
     """Frozen 20-session admission for one ETF over one explicit window."""
     if len(window) != LIQUIDITY_SESSIONS:
         # A caller-supplied short window would be a silent methodology change.
-        raise ValueError("the frozen liquidity window is exactly twenty sessions; it is never shortened")
+        raise ValueError(
+            "the frozen liquidity window is exactly twenty sessions; it is never shortened"
+        )
     days = tuple(str(day) for day in window)
     instrument = _instrument(provider, etf_code)
     if instrument is None or instrument.asset_type != "etf":
-        return LiquidityAdmission(etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None,
-                                  "LISTED_ETF_IDENTITY_UNPROVEN", days, ())
+        return LiquidityAdmission(
+            etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None, "LISTED_ETF_IDENTITY_UNPROVEN", days, ()
+        )
     if instrument.prev_symbol is not None:
-        return LiquidityAdmission(etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None,
-                                  "SYMBOL_CONTINUITY_UNPROVEN", days, ())
+        return LiquidityAdmission(
+            etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None, "SYMBOL_CONTINUITY_UNPROVEN", days, ()
+        )
     list_date = instrument.list_date
     if list_date is None:
-        return LiquidityAdmission(etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None,
-                                  "LISTING_DATE_UNPROVEN", days, ())
+        return LiquidityAdmission(
+            etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None, "LISTING_DATE_UNPROVEN", days, ()
+        )
     if list_date > window[0]:
         # Not a data gap: the fund did not exist for the whole frozen window.
-        return LiquidityAdmission(etf_code, INSUFFICIENT, LIQUIDITY_SESSIONS, 0, None,
-                                  "ETF_LISTED_FEWER_THAN_20_SESSIONS_BEFORE_SIGNAL", days, ())
-    amounts, daily = [], []
+        return LiquidityAdmission(
+            etf_code,
+            INSUFFICIENT,
+            LIQUIDITY_SESSIONS,
+            0,
+            None,
+            "ETF_LISTED_FEWER_THAN_20_SESSIONS_BEFORE_SIGNAL",
+            days,
+            (),
+        )
+    amounts: list[float] = []
+    daily = []
     for day in window:
         failure = None
         if instrument.delist_date is not None and instrument.delist_date <= day:
@@ -142,20 +163,34 @@ def assess_liquidity(provider, etf_code, window) -> LiquidityAdmission:
         if failure is None:
             failure = _bar_failure(provider, etf_code, day)
         if failure is not None:
-            daily.append({"trade_date": str(day), "admitted": False, "reason": failure, "amount_cny": None})
-            return LiquidityAdmission(etf_code, FAIL, LIQUIDITY_SESSIONS, len(amounts), None,
-                                      failure, days, tuple(daily))
+            daily.append(
+                {"trade_date": str(day), "admitted": False, "reason": failure, "amount_cny": None}
+            )
+            return LiquidityAdmission(
+                etf_code, FAIL, LIQUIDITY_SESSIONS, len(amounts), None, failure, days, tuple(daily)
+            )
         frame = provider.tables["etf_bars"]
         row = frame.loc[(frame.symbol == etf_code) & (frame.trade_date == day)].iloc[0]
         amount = float(row["amount"])
         amounts.append(amount)
-        daily.append({"trade_date": str(day), "admitted": True, "reason": None, "amount_cny": amount})
+        daily.append(
+            {"trade_date": str(day), "admitted": True, "reason": None, "amount_cny": amount}
+        )
     mean = math.fsum(amounts) / LIQUIDITY_SESSIONS
     if not math.isfinite(mean) or mean <= 0:
-        return LiquidityAdmission(etf_code, FAIL, LIQUIDITY_SESSIONS, len(amounts), None,
-                                  "NON_POSITIVE_MEAN_AMOUNT", days, tuple(daily))
-    return LiquidityAdmission(etf_code, PASS, LIQUIDITY_SESSIONS, LIQUIDITY_SESSIONS, mean, None,
-                              days, tuple(daily))
+        return LiquidityAdmission(
+            etf_code,
+            FAIL,
+            LIQUIDITY_SESSIONS,
+            len(amounts),
+            None,
+            "NON_POSITIVE_MEAN_AMOUNT",
+            days,
+            tuple(daily),
+        )
+    return LiquidityAdmission(
+        etf_code, PASS, LIQUIDITY_SESSIONS, LIQUIDITY_SESSIONS, mean, None, days, tuple(daily)
+    )
 
 
 __all__ = [

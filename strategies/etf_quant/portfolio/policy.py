@@ -38,10 +38,12 @@ Design rules encoded here
 
 Pure functions over already-verified inputs: no network, no disk, no pandas.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import math
+from dataclasses import dataclass, field
+from typing import TypedDict
 
 from . import AllocationStatus, size_targets
 
@@ -117,6 +119,7 @@ class PolicyError(ValueError):
 # Inputs
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class IndustryCandidate:
     """The chosen execution instrument for one signalled industry."""
@@ -126,8 +129,8 @@ class IndustryCandidate:
     final_score: float
     etf_code: str | None
     benchmark_code: str | None
-    mapping_type: str                     # STRICT_MAPPING | PROXY_EXPOSURE
-    target_l2_exposure: float | None      # percent, None when no candidate exists
+    mapping_type: str  # STRICT_MAPPING | PROXY_EXPOSURE
+    target_l2_exposure: float | None  # percent, None when no candidate exists
     second_largest_l2_exposure: float | None
     dominance_margin: float | None
     target_is_largest_l2: bool | None
@@ -141,6 +144,37 @@ class IndustryCandidate:
     def executable(self) -> bool:
         return self.etf_code is not None and self.target_l2_exposure is not None
 
+    def a40_rejection_reason(self) -> str | None:
+        """A40 relaxes dominance, never completeness or liquidity admission.
+
+        This comparative policy keeps its historical sizing rule. Evidence must
+        still describe a real, liquid instrument before any capital is assigned.
+        """
+        if (
+            not self.executable
+            or self.benchmark_code is None
+            or self.mapping_type not in ("STRICT_MAPPING", "PROXY_EXPOSURE")
+        ):
+            return REASON_NO_CANDIDATE
+        if self.weight_quality != "COMPLETE_WEIGHT_SET":
+            return REASON_WEIGHT_SET_INCOMPLETE
+        if (
+            self.liquidity_status != "LIQUIDITY_ADMISSION_PASS"
+            or not isinstance(self.mean_amount_cny, (int, float))
+            or isinstance(self.mean_amount_cny, bool)
+            or not math.isfinite(self.mean_amount_cny)
+            or self.mean_amount_cny <= 0
+        ):
+            return REASON_NO_LIQUID_ETF
+        if (
+            not isinstance(self.target_l2_exposure, (int, float))
+            or isinstance(self.target_l2_exposure, bool)
+            or not math.isfinite(self.target_l2_exposure)
+            or not 0 <= self.target_l2_exposure <= 100
+        ):
+            return REASON_TARGET_EXPOSURE_BELOW_THRESHOLD
+        return None
+
     @property
     def passes_b40(self) -> bool:
         """The B-type admission test: >= 40%, the target is the dominant exposure, AND the evidence
@@ -151,39 +185,45 @@ class IndustryCandidate:
         a caller using the boolean -- as ``evaluate_policy`` does -- would admit a benchmark whose
         official weights are short. Fail-closed means the predicate itself refuses.
         """
-        return (self.executable
-                and self.mapping_type in ("STRICT_MAPPING", "PROXY_EXPOSURE")
-                and self.benchmark_code is not None
-                and self.weight_quality == "COMPLETE_WEIGHT_SET"
-                and self.liquidity_status == "LIQUIDITY_ADMISSION_PASS"
-                and self.mean_amount_cny is not None
-                and isinstance(self.mean_amount_cny, (int, float))
-                and not isinstance(self.mean_amount_cny, bool)
-                and math.isfinite(self.mean_amount_cny)
-                and self.mean_amount_cny > 0
-                and isinstance(self.target_l2_exposure, (int, float))
-                and not isinstance(self.target_l2_exposure, bool)
-                and math.isfinite(self.target_l2_exposure)
-                and self.target_l2_exposure <= 100
-                and self.target_l2_exposure >= MIN_TARGET_EXPOSURE_B40
-                and bool(self.target_is_largest_l2))
+        return (
+            self.executable
+            and self.mapping_type in ("STRICT_MAPPING", "PROXY_EXPOSURE")
+            and self.benchmark_code is not None
+            and self.weight_quality == "COMPLETE_WEIGHT_SET"
+            and self.liquidity_status == "LIQUIDITY_ADMISSION_PASS"
+            and self.mean_amount_cny is not None
+            and isinstance(self.mean_amount_cny, (int, float))
+            and not isinstance(self.mean_amount_cny, bool)
+            and math.isfinite(self.mean_amount_cny)
+            and self.mean_amount_cny > 0
+            and isinstance(self.target_l2_exposure, (int, float))
+            and not isinstance(self.target_l2_exposure, bool)
+            and math.isfinite(self.target_l2_exposure)
+            and self.target_l2_exposure <= 100
+            and self.target_l2_exposure >= MIN_TARGET_EXPOSURE_B40
+            and bool(self.target_is_largest_l2)
+        )
 
     def b40_rejection_reason(self) -> str | None:
         if not self.executable:
             return REASON_NO_CANDIDATE
         if self.weight_quality != "COMPLETE_WEIGHT_SET":
             return REASON_WEIGHT_SET_INCOMPLETE
-        if (self.liquidity_status != "LIQUIDITY_ADMISSION_PASS"
-                or not isinstance(self.mean_amount_cny, (int, float))
-                or isinstance(self.mean_amount_cny, bool)
-                or not math.isfinite(self.mean_amount_cny)
-                or self.mean_amount_cny <= 0):
+        if (
+            self.liquidity_status != "LIQUIDITY_ADMISSION_PASS"
+            or not isinstance(self.mean_amount_cny, (int, float))
+            or isinstance(self.mean_amount_cny, bool)
+            or not math.isfinite(self.mean_amount_cny)
+            or self.mean_amount_cny <= 0
+        ):
             return REASON_NO_LIQUID_ETF
-        if (not isinstance(self.target_l2_exposure, (int, float))
-                or isinstance(self.target_l2_exposure, bool)
-                or not math.isfinite(self.target_l2_exposure)
-                or self.target_l2_exposure > 100
-                or self.target_l2_exposure < MIN_TARGET_EXPOSURE_B40):
+        if (
+            not isinstance(self.target_l2_exposure, (int, float))
+            or isinstance(self.target_l2_exposure, bool)
+            or not math.isfinite(self.target_l2_exposure)
+            or self.target_l2_exposure > 100
+            or self.target_l2_exposure < MIN_TARGET_EXPOSURE_B40
+        ):
             return REASON_TARGET_EXPOSURE_BELOW_THRESHOLD
         if not self.target_is_largest_l2:
             return REASON_TARGET_NOT_LARGEST_L2
@@ -205,12 +245,13 @@ class BenchmarkExposureVector:
 # Portfolio result
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class PolicyResult:
     policy: str
     candidates: tuple[IndustryCandidate, ...]
     executed: tuple[IndustryCandidate, ...]
-    skipped: tuple[tuple[IndustryCandidate, str], ...]     # (candidate, rejection reason)
+    skipped: tuple[tuple[IndustryCandidate, str], ...]  # (candidate, rejection reason)
 
     #: Weight the policy assigns to each executed industry, before any exposure leakage.
     nominal_weights: dict[str, float]
@@ -248,8 +289,11 @@ class PolicyResult:
             "rebalance_trigger": REBALANCE_TRIGGER,
             "executed": [
                 {
-                    "l2_code": c.l2_code, "l2_name": c.l2_name, "etf_code": c.etf_code,
-                    "benchmark_code": c.benchmark_code, "mapping_type": c.mapping_type,
+                    "l2_code": c.l2_code,
+                    "l2_name": c.l2_name,
+                    "etf_code": c.etf_code,
+                    "benchmark_code": c.benchmark_code,
+                    "mapping_type": c.mapping_type,
                     "weight": round(self.etf_weights.get(c.l2_code or "", 0.0), 12),
                     "nominal_weight": round(self.nominal_weights.get(c.l2_code, 0.0), 12),
                     "target_l2_exposure": c.target_l2_exposure,
@@ -263,15 +307,23 @@ class PolicyResult:
                 for c in self.executed
             ],
             "skipped": [
-                {"l2_code": c.l2_code, "l2_name": c.l2_name, "reason": reason,
-                 "weight_forfeited": round(self.forfeited_weights.get(c.l2_code, 0.0), 12),
-                 "target_l2_exposure": c.target_l2_exposure,
-                 "target_is_largest_l2": c.target_is_largest_l2}
+                {
+                    "l2_code": c.l2_code,
+                    "l2_name": c.l2_name,
+                    "reason": reason,
+                    "weight_forfeited": round(self.forfeited_weights.get(c.l2_code, 0.0), 12),
+                    "target_l2_exposure": c.target_l2_exposure,
+                    "target_is_largest_l2": c.target_is_largest_l2,
+                }
                 for c, reason in self.skipped
             ],
-            "actual_l2_exposure": {k: round(v, 8) for k, v in sorted(
-                self.actual_l2_exposure.items(), key=lambda kv: (-kv[1], kv[0]))},
-            "actual_target_exposure": {k: round(v, 8) for k, v in sorted(self.actual_target_exposure.items())},
+            "actual_l2_exposure": {
+                k: round(v, 8)
+                for k, v in sorted(self.actual_l2_exposure.items(), key=lambda kv: (-kv[1], kv[0]))
+            },
+            "actual_target_exposure": {
+                k: round(v, 8) for k, v in sorted(self.actual_target_exposure.items())
+            },
             "fidelity_gap": {k: round(v, 8) for k, v in sorted(self.fidelity_gap.items())},
             "metrics": self.metrics,
             "notes": list(self.notes),
@@ -281,6 +333,7 @@ class PolicyResult:
 # ---------------------------------------------------------------------------
 # Base target weights -- the frozen model's own sizing
 # ---------------------------------------------------------------------------
+
 
 def softmax(scores: list[float]) -> list[float]:
     """Numerically stable softmax, for reporting the *uncapped* reference only.
@@ -314,8 +367,9 @@ def frozen_size(scores: dict[str, float], *, cap: float, required_assets: int) -
     return {t.asset_id: t.target_weight for t in result.targets}
 
 
-def frozen_size_status(scores: dict[str, float], *, cap: float,
-                       required_assets: int) -> tuple[str, dict[str, float], float]:
+def frozen_size_status(
+    scores: dict[str, float], *, cap: float, required_assets: int
+) -> tuple[str, dict[str, float], float]:
     """Non-raising variant, so the contract's refusal behaviour can be *reported* rather than hidden.
 
     This is how the round documents that the frozen allocator, called the way the frozen runtime
@@ -323,9 +377,11 @@ def frozen_size_status(scores: dict[str, float], *, cap: float,
     for any four-asset policy.
     """
     result = size_targets(scores, max_weight=cap, required_assets=required_assets)
-    return (result.status.value,
-            {t.asset_id: t.target_weight for t in result.targets},
-            float(result.unallocated_weight))
+    return (
+        result.status.value,
+        {t.asset_id: t.target_weight for t in result.targets},
+        float(result.unallocated_weight),
+    )
 
 
 def raw_softmax_weights(candidates: list["IndustryCandidate"]) -> dict[str, float]:
@@ -336,8 +392,9 @@ def raw_softmax_weights(candidates: list["IndustryCandidate"]) -> dict[str, floa
     return {c.l2_code: w for c, w in zip(candidates, weights)}
 
 
-def base_target_weights(candidates: list["IndustryCandidate"],
-                        cap: float = SINGLE_ETF_CAP) -> dict[str, float]:
+def base_target_weights(
+    candidates: list["IndustryCandidate"], cap: float = SINGLE_ETF_CAP
+) -> dict[str, float]:
     """The frozen model's sizing of a signal set: softmax(final_score) then the frozen cap.
 
     ``required_assets`` is set to the size of the set being sized. That parameterisation is the
@@ -355,9 +412,12 @@ def base_target_weights(candidates: list["IndustryCandidate"],
 # Policy evaluation
 # ---------------------------------------------------------------------------
 
-def _actual_exposure(etf_weights: dict[str, float],
-                     candidate_by_l2: dict[str, IndustryCandidate],
-                     vectors: dict[str, BenchmarkExposureVector]) -> dict[str, float]:
+
+def _actual_exposure(
+    etf_weights: dict[str, float],
+    candidate_by_l2: dict[str, IndustryCandidate],
+    vectors: dict[str, BenchmarkExposureVector],
+) -> dict[str, float]:
     """Account-level Shenwan L2 exposure implied by what is actually held.
 
     ``etf_weight * benchmark_l2_weight / 100``, summed. This is where proxy leakage becomes visible:
@@ -376,20 +436,24 @@ def _actual_exposure(etf_weights: dict[str, float],
     return exposure
 
 
-def _fidelity_metrics(result_weights: dict[str, float],
-                      executed: tuple[IndustryCandidate, ...],
-                      cash_weight: float,
-                      actual: dict[str, float],
-                      target_l2s: set[str]) -> dict:
+def _fidelity_metrics(
+    result_weights: dict[str, float],
+    executed: tuple[IndustryCandidate, ...],
+    cash_weight: float,
+    actual: dict[str, float],
+    target_l2s: set[str],
+) -> dict:
     """Execution-quality metrics. These describe the instrument, never an expected return."""
     risk = math.fsum(result_weights.values())
     purities = [c.target_l2_exposure or 0.0 for c in executed]
     if risk > 0:
         weighted_purity = math.fsum(
-            (result_weights[c.l2_code] / risk) * (c.target_l2_exposure or 0.0) for c in executed)
+            (result_weights[c.l2_code] / risk) * (c.target_l2_exposure or 0.0) for c in executed
+        )
         weighted_leakage = math.fsum(
             (result_weights[c.l2_code] / risk) * (100.0 - (c.target_l2_exposure or 0.0))
-            for c in executed)
+            for c in executed
+        )
     else:
         weighted_purity = 0.0
         weighted_leakage = 0.0
@@ -401,11 +465,17 @@ def _fidelity_metrics(result_weights: dict[str, float],
     # incidental leakage from an instrument bought for something else. Only the first is intended,
     # and conflating them would let leakage masquerade as delivery of the signal.
     executed_l2s = {c.l2_code for c in executed}
-    incidental_targets = {k: round(v, 8) for k, v in actual.items()
-                          if k in target_l2s and k not in executed_l2s and v > 0}
+    incidental_targets = {
+        k: round(v, 8)
+        for k, v in actual.items()
+        if k in target_l2s and k not in executed_l2s and v > 0
+    }
 
-    amounts = [(result_weights.get(c.l2_code, 0.0), c.mean_amount_cny)
-               for c in executed if c.mean_amount_cny]
+    amounts = [
+        (result_weights.get(c.l2_code, 0.0), c.mean_amount_cny)
+        for c in executed
+        if c.mean_amount_cny
+    ]
     if amounts and risk > 0:
         weighted_amount = math.fsum((w / risk) * a for w, a in amounts)
         min_amount = min(a for _, a in amounts)
@@ -415,7 +485,9 @@ def _fidelity_metrics(result_weights: dict[str, float],
         weighted_amount, min_amount, thinnest_code = None, None, None
 
     actual_risk = math.fsum(actual.values())
-    hhi_actual = math.fsum((v / actual_risk) ** 2 for v in actual.values()) if actual_risk > 0 else 0.0
+    hhi_actual = (
+        math.fsum((v / actual_risk) ** 2 for v in actual.values()) if actual_risk > 0 else 0.0
+    )
     hhi_etf = math.fsum((v / risk) ** 2 for v in result_weights.values()) if risk > 0 else 0.0
     return {
         "weighted_target_l2_purity": round(weighted_purity, 6),
@@ -423,8 +495,12 @@ def _fidelity_metrics(result_weights: dict[str, float],
         "maximum_individual_purity": round(max(purities), 6) if purities else 0.0,
         "weighted_leakage": round(weighted_leakage, 6),
         "largest_unintended_l2_code": unintended_ranked[0][0] if unintended_ranked else None,
-        "largest_unintended_l2_weight": round(unintended_ranked[0][1], 8) if unintended_ranked else 0.0,
-        "top5_unintended_l2s": [{"l2_code": k, "weight": round(v, 8)} for k, v in unintended_ranked[:5]],
+        "largest_unintended_l2_weight": round(unintended_ranked[0][1], 8)
+        if unintended_ranked
+        else 0.0,
+        "top5_unintended_l2s": [
+            {"l2_code": k, "weight": round(v, 8)} for k, v in unintended_ranked[:5]
+        ],
         "actual_l2_hhi": round(hhi_actual, 8),
         "etf_weight_hhi": round(hhi_etf, 8),
         "incidental_target_exposure": incidental_targets,
@@ -439,11 +515,13 @@ def _fidelity_metrics(result_weights: dict[str, float],
     }
 
 
-def evaluate_policy(policy: str,
-                    candidates: list[IndustryCandidate],
-                    vectors: dict[str, BenchmarkExposureVector],
-                    *,
-                    cap: float = SINGLE_ETF_CAP) -> PolicyResult:
+def evaluate_policy(
+    policy: str,
+    candidates: list[IndustryCandidate],
+    vectors: dict[str, BenchmarkExposureVector],
+    *,
+    cap: float = SINGLE_ETF_CAP,
+) -> PolicyResult:
     """Evaluate one execution policy over one signal set.
 
     ``candidates`` must be ordered by descending model rank; the softmax is taken over exactly the
@@ -458,31 +536,45 @@ def evaluate_policy(policy: str,
     notes: list[str] = []
 
     if policy == POLICY_A40_FULLY_INVESTED:
-        # Execute everything that has any instrument at all; the A shape imposes no dominance test.
-        executed = tuple(c for c in candidates if c.executable)
-        skipped = tuple((c, REASON_NO_CANDIDATE) for c in candidates if not c.executable)
-        weights = base_target_weights(list(executed), cap) if executed else {}
+        # A40 relaxes dominance only. Quality and liquidity remain prerequisites.
+        executed = tuple(c for c in candidates if c.a40_rejection_reason() is None)
+        skipped = tuple(
+            (c, reason) for c in candidates if (reason := c.a40_rejection_reason()) is not None
+        )
+        if not executed:
+            raise PolicyError("A40_FULLY_INVESTED_NO_SURVIVOR")
+        weights = base_target_weights(list(executed), cap)
         cash = 0.0
         reference = base_target_weights(candidates, cap)
         if skipped:
-            notes.append("A40: industries without any candidate were dropped; A40 makes no promise "
-                         "about how many survive, only that it never applies a dominance test.")
+            notes.append(
+                "A40: industries without an admissible candidate were dropped; A40 makes no promise "
+                "about how many survive, only that it never applies a dominance test."
+            )
     elif policy == POLICY_B40_RENORMALIZED:
         survivors = [c for c in candidates if c.passes_b40]
-        skipped = tuple((c, c.b40_rejection_reason() or REASON_NO_CANDIDATE)
-                        for c in candidates if not c.passes_b40)
+        skipped = tuple(
+            (c, c.b40_rejection_reason() or REASON_NO_CANDIDATE)
+            for c in candidates
+            if not c.passes_b40
+        )
         if not survivors:
             raise PolicyError("B40_RENORMALIZED_NO_SURVIVOR")
         weights = base_target_weights(survivors, cap)
         executed = tuple(survivors)
         cash = 0.0
         reference = base_target_weights(candidates, cap)
-        notes.append("B40_RENORMALIZED: survivors re-softmaxed over the survivor set, so each survivor "
-                     "is sized larger than the model asked for. The deleted signal is gone entirely.")
+        notes.append(
+            "B40_RENORMALIZED: survivors re-softmaxed over the survivor set, so each survivor "
+            "is sized larger than the model asked for. The deleted signal is gone entirely."
+        )
     else:  # POLICY_B40_WITH_CASH
         survivors = [c for c in candidates if c.passes_b40]
-        skipped = tuple((c, c.b40_rejection_reason() or REASON_NO_CANDIDATE)
-                        for c in candidates if not c.passes_b40)
+        skipped = tuple(
+            (c, c.b40_rejection_reason() or REASON_NO_CANDIDATE)
+            for c in candidates
+            if not c.passes_b40
+        )
         # The reference sizing is the FULL signal set. Survivors keep exactly their reference weight;
         # the forfeited weight becomes cash and is never handed to anyone else.
         reference = base_target_weights(candidates, cap)
@@ -491,17 +583,23 @@ def evaluate_policy(policy: str,
         cash = math.fsum(reference[c.l2_code] for c, _ in skipped)
         if abs(math.fsum(weights.values()) + cash - 1.0) > 1e-9:
             raise PolicyError("CASH_BROKE_SUM_TO_ONE")
-        notes.append("B40_WITH_CASH: survivor weights are the original target weights, unchanged. "
-                     "Cash equals the forfeited target weights exactly; redistribution is zero.")
+        notes.append(
+            "B40_WITH_CASH: survivor weights are the original target weights, unchanged. "
+            "Cash equals the forfeited target weights exactly; redistribution is zero."
+        )
         for c, _ in skipped:
             if reference.get(c.l2_code, 0.0) > 0:
-                notes.append(f"UNEXECUTED_SIGNAL_WEIGHT {c.l2_code}={reference[c.l2_code]:.6f} "
-                             f"retained as cash, not redistributed.")
+                notes.append(
+                    f"UNEXECUTED_SIGNAL_WEIGHT {c.l2_code}={reference[c.l2_code]:.6f} "
+                    f"retained as cash, not redistributed."
+                )
 
     nominal = {c.l2_code: weights.get(c.l2_code, 0.0) for c in candidates}
     # A skipped industry forfeits the weight it would have carried under the full-signal reference.
-    forfeited = {c.l2_code: (reference.get(c.l2_code, 0.0) if not weights.get(c.l2_code) else 0.0)
-                 for c, _ in skipped}
+    forfeited = {
+        c.l2_code: (reference.get(c.l2_code, 0.0) if not weights.get(c.l2_code) else 0.0)
+        for c, _ in skipped
+    }
     actual = _actual_exposure(weights, candidate_by_l2, vectors)
     actual_target = {l2: actual.get(l2, 0.0) for l2 in sorted(target_l2s)}
     gap = {l2: actual_target[l2] - nominal.get(l2, 0.0) for l2 in sorted(target_l2s)}
@@ -511,23 +609,36 @@ def evaluate_policy(policy: str,
     metrics["sum_risk_plus_cash"] = round(math.fsum(weights.values()) + cash, 12)
 
     return PolicyResult(
-        policy=policy, candidates=tuple(candidates), executed=executed, skipped=skipped,
+        policy=policy,
+        candidates=tuple(candidates),
+        executed=executed,
+        skipped=skipped,
         nominal_weights={k: round(v, 12) for k, v in nominal.items()},
         forfeited_weights={k: round(v, 12) for k, v in forfeited.items()},
         cash_weight=round(cash, 12),
         etf_weights={k: round(v, 12) for k, v in weights.items()},
-        actual_l2_exposure=actual, actual_target_exposure=actual_target, fidelity_gap=gap,
-        metrics=metrics, notes=tuple(notes))
+        actual_l2_exposure=actual,
+        actual_target_exposure=actual_target,
+        fidelity_gap=gap,
+        metrics=metrics,
+        notes=tuple(notes),
+    )
 
 
-def renormalization_distortion(reference: dict[str, float],
-                               renormalized: dict[str, float]) -> dict:
+class DistortionRow(TypedDict):
+    weight_reference: float
+    weight_renormalized: float
+    absolute_uplift: float
+    relative_uplift: float | None
+
+
+def renormalization_distortion(reference: dict[str, float], renormalized: dict[str, float]) -> dict:
     """How much each surviving industry is inflated by dropping a signal and re-scaling.
 
     Reported as an absolute weight change and a relative uplift, because "3703 went from 24.5% to 32%"
     and "3703 grew by 31%" are both true and describe different risks.
     """
-    rows = {}
+    rows: dict[str, DistortionRow] = {}
     for l2, new in sorted(renormalized.items()):
         old = reference.get(l2, 0.0)
         rows[l2] = {
@@ -538,8 +649,12 @@ def renormalization_distortion(reference: dict[str, float],
         }
     return {
         "rows": rows,
-        "max_absolute_uplift": round(max((r["absolute_uplift"] for r in rows.values()), default=0.0), 12),
-        "max_relative_uplift": round(max((r["relative_uplift"] or 0.0 for r in rows.values()), default=0.0), 8),
+        "max_absolute_uplift": round(
+            max((r["absolute_uplift"] for r in rows.values()), default=0.0), 12
+        ),
+        "max_relative_uplift": round(
+            max((r["relative_uplift"] or 0.0 for r in rows.values()), default=0.0), 8
+        ),
         "total_uplift": round(math.fsum(r["absolute_uplift"] for r in rows.values()), 12),
     }
 

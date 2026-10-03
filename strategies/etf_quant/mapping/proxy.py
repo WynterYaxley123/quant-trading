@@ -25,11 +25,11 @@ Non-negotiables encoded here
 
 Pure functions over already-verified inputs: no network, no disk, no pandas.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from itertools import product
 import math
+from dataclasses import dataclass
 
 # ---------------------------------------------------------------------------
 # Mapping identity
@@ -42,8 +42,8 @@ MAPPING_TYPE_PROXY = "PROXY_EXPOSURE"
 # Evidence levels. Only the first two may ever admit an instrument.
 # ---------------------------------------------------------------------------
 
-OFFICIAL_WEIGHT = "OFFICIAL_WEIGHT"              # LEVEL 1: index provider's own weights
-PCF_DERIVED_WEIGHT = "PCF_DERIVED_WEIGHT"        # LEVEL 2: official PCF basket x legit prices
+OFFICIAL_WEIGHT = "OFFICIAL_WEIGHT"  # LEVEL 1: index provider's own weights
+PCF_DERIVED_WEIGHT = "PCF_DERIVED_WEIGHT"  # LEVEL 2: official PCF basket x legit prices
 UNWEIGHTED_DIAGNOSTIC = "UNWEIGHTED_DIAGNOSTIC"  # LEVEL 3: constituents only, discovery only
 
 ADMISSIBLE_WEIGHT_SOURCES = (OFFICIAL_WEIGHT, PCF_DERIVED_WEIGHT)
@@ -82,6 +82,7 @@ class ProxyError(ValueError):
 # Weight parsing
 # ---------------------------------------------------------------------------
 
+
 def parse_weight_pct(value) -> float | None:
     """Parse an official weight into a percentage number, or ``None`` if unusable.
 
@@ -114,6 +115,7 @@ def parse_weight_pct(value) -> float | None:
 # Benchmark -> L2 exposure
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class BenchmarkExposure:
     """One benchmark's official weight attributed to Shenwan L2 industries."""
@@ -126,12 +128,12 @@ class BenchmarkExposure:
     weight_source_url: str | None
     evidence_observed_at: str | None
 
-    constituent_count: int                 # constituents carrying a usable weight
+    constituent_count: int  # constituents carrying a usable weight
     constituent_count_declared: int | None  # the provider's own declared count, if published
     weight_sum: float
     weights_by_l2: dict[str, float]
-    unmapped_weight: float                 # constituent weight with no Shenwan L2 attribution
-    unparsed_weight_count: int             # constituents whose weight could not be parsed
+    unmapped_weight: float  # constituent weight with no Shenwan L2 attribution
+    unparsed_weight_count: int  # constituents whose weight could not be parsed
     weight_quality: str
     notes: tuple[str, ...] = ()
 
@@ -192,6 +194,10 @@ def build_benchmark_exposure(
     mapping is accumulated into ``unmapped_weight`` and reported, never redistributed across
     the mapped names -- redistributing it would inflate every industry's apparent exposure.
     """
+    if constituent_count_declared is not None and (
+        type(constituent_count_declared) is not int or constituent_count_declared <= 0
+    ):
+        raise ProxyError("INVALID_FIELD:constituent_count_declared:positive_integer_required")
     weights: dict[str, float] = {}
     weight_sum = 0.0
     unmapped = 0.0
@@ -222,9 +228,9 @@ def build_benchmark_exposure(
     if not (low <= weight_sum <= high):
         quality = INCOMPLETE_WEIGHT_SET
         notes.append(f"WEIGHT_SUM_OUT_OF_BAND={weight_sum:.4f}")
-    if constituent_count_declared is not None and counted < int(constituent_count_declared):
+    if constituent_count_declared is not None and counted < constituent_count_declared:
         quality = INCOMPLETE_WEIGHT_SET
-        notes.append(f"CONSTITUENTS_MISSING={int(constituent_count_declared) - counted}")
+        notes.append(f"CONSTITUENTS_MISSING={constituent_count_declared - counted}")
     if weight_source_type not in ADMISSIBLE_WEIGHT_SOURCES:
         quality = INCOMPLETE_WEIGHT_SET
         notes.append(f"NON_ADMISSIBLE_WEIGHT_SOURCE={weight_source_type}")
@@ -253,6 +259,7 @@ def build_benchmark_exposure(
 # ---------------------------------------------------------------------------
 # Purity metrics
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class ProxyPurity:
@@ -344,6 +351,7 @@ def research_grade(purity: ProxyPurity) -> str:
 # Admission rules (threshold sensitivity)
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class ProxyRule:
     """One point in the threshold-sensitivity grid.
@@ -368,12 +376,16 @@ class ProxyRule:
         if self.threshold < RESEARCH_MIN_THRESHOLD:
             raise ProxyError(
                 f"threshold {self.threshold} is below the research floor {RESEARCH_MIN_THRESHOLD}; "
-                "this round does not widen the search further")
+                "this round does not widen the search further"
+            )
 
     def as_dict(self) -> dict:
-        return {"name": self.name, "threshold": self.threshold,
-                "require_largest": self.require_largest,
-                "min_dominance_margin": self.min_dominance_margin}
+        return {
+            "name": self.name,
+            "threshold": self.threshold,
+            "require_largest": self.require_largest,
+            "min_dominance_margin": self.min_dominance_margin,
+        }
 
 
 #: The four decision shapes the round compares, per the research design.
@@ -402,7 +414,10 @@ def admit_proxy(purity: ProxyPurity, rule: ProxyRule) -> tuple[bool, str | None]
         return False, "TARGET_EXPOSURE_BELOW_THRESHOLD"
     if rule.require_largest and not purity.target_is_largest_l2:
         return False, "TARGET_NOT_LARGEST_L2"
-    if rule.min_dominance_margin is not None and purity.dominance_margin < rule.min_dominance_margin:
+    if (
+        rule.min_dominance_margin is not None
+        and purity.dominance_margin < rule.min_dominance_margin
+    ):
         return False, "DOMINANCE_MARGIN_BELOW_MINIMUM"
     return True, None
 
@@ -411,6 +426,7 @@ def admit_proxy(purity: ProxyPurity, rule: ProxyRule) -> tuple[bool, str | None]
 # STRICT precedence
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class ExecutionCandidate:
     """One way to execute one target industry."""
@@ -418,7 +434,7 @@ class ExecutionCandidate:
     target_l2_code: str
     etf_code: str
     benchmark_code: str
-    mapping_type: str            # MAPPING_TYPE_STRICT | MAPPING_TYPE_PROXY
+    mapping_type: str  # MAPPING_TYPE_STRICT | MAPPING_TYPE_PROXY
     target_l2_exposure: float
     second_largest_l2_exposure: float
     dominance_margin: float
@@ -473,18 +489,21 @@ def select_execution_candidate(candidates: list[ExecutionCandidate]) -> Executio
     liquid = [c for c in pool if c.liquidity_ok]
     if liquid:
         pool = liquid
-    return sorted(pool, key=lambda c: (-c.target_l2_exposure, -(c.mean_amount_cny or 0.0), c.etf_code))[0]
+    return sorted(
+        pool, key=lambda c: (-c.target_l2_exposure, -(c.mean_amount_cny or 0.0), c.etf_code)
+    )[0]
 
 
 # ---------------------------------------------------------------------------
 # Distinct-ETF assignment
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class Assignment:
     """One resolution of "which ETF executes which industry"."""
 
-    pairs: tuple[tuple[str, str], ...]      # (target_l2_code, etf_code)
+    pairs: tuple[tuple[str, str], ...]  # (target_l2_code, etf_code)
     total_target_exposure: float
     minimum_target_exposure: float
     mean_target_exposure: float
@@ -528,7 +547,9 @@ def _summarise(pairs, candidates_by_target, solver, unmapped, collisions=0) -> A
     )
 
 
-def solve_distinct_assignment(targets, candidates_by_target, *, require_all_targets=True) -> Assignment:
+def solve_distinct_assignment(
+    targets, candidates_by_target, *, require_all_targets=True
+) -> Assignment:
     """Exact maximum-quality assignment of distinct ETFs to target industries.
 
     Optimality, not greed. One ETF can be the best proxy for several industries at once, and a
@@ -553,9 +574,8 @@ def solve_distinct_assignment(targets, candidates_by_target, *, require_all_targ
     if not targets:
         raise ProxyError("ASSIGNMENT_NEEDS_AT_LEAST_ONE_TARGET")
     for target in targets:
-        if not candidates_by_target.get(target):
-            if require_all_targets:
-                raise ProxyError(f"NO_CANDIDATE_FOR_TARGET:{target}")
+        if not candidates_by_target.get(target) and require_all_targets:
+            raise ProxyError(f"NO_CANDIDATE_FOR_TARGET:{target}")
 
     eligible = {t: sorted({e for e in candidates_by_target.get(t, {})}) for t in targets}
 
@@ -575,7 +595,9 @@ def solve_distinct_assignment(targets, candidates_by_target, *, require_all_targ
                     continue
                 cand = candidates_by_target[target][etf]
                 new_pairs = pairs + ((target, etf),)
-                new_min = min(min_exp, cand.target_l2_exposure) if pairs else cand.target_l2_exposure
+                new_min = (
+                    min(min_exp, cand.target_l2_exposure) if pairs else cand.target_l2_exposure
+                )
                 objective = (
                     covered + 1,
                     round(new_min, 9),
@@ -610,18 +632,31 @@ def greedy_assignment(targets, candidates_by_target, *, require_all_targets=Fals
     edges = []
     for target in targets:
         for etf, cand in candidates_by_target.get(target, {}).items():
-            edges.append((cand.target_l2_exposure, cand.dominance_margin,
-                          cand.mean_amount_cny or 0.0, target, etf))
+            edges.append(
+                (
+                    cand.target_l2_exposure,
+                    cand.dominance_margin,
+                    cand.mean_amount_cny or 0.0,
+                    target,
+                    etf,
+                )
+            )
     edges.sort(key=lambda e: (-e[0], -e[1], -e[2], e[3], e[4]))
-    used_etfs, chosen = set(), []
+    used_etfs = set()
+    chosen: list[tuple[str, str]] = []
     for _, _, _, target, etf in edges:
         if etf in used_etfs or any(t == target for t, _ in chosen):
             continue
         used_etfs.add(etf)
         chosen.append((target, etf))
     unmapped = [t for t in targets if t not in {t for t, _ in chosen}]
-    return _summarise(chosen, candidates_by_target, "greedy", unmapped,
-                      collisions=sum(1 for t in targets if len(candidates_by_target.get(t, {})) > 1))
+    return _summarise(
+        chosen,
+        candidates_by_target,
+        "greedy",
+        unmapped,
+        collisions=sum(1 for t in targets if len(candidates_by_target.get(t, {})) > 1),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -647,7 +682,9 @@ def softmax_weights(scores: list[float]) -> list[float]:
     return [e / total for e in exps]
 
 
-def apply_cap(weights: list[float], cap: float = SINGLE_ETF_CAP, *, max_rounds: int = 100) -> list[float]:
+def apply_cap(
+    weights: list[float], cap: float = SINGLE_ETF_CAP, *, max_rounds: int = 100
+) -> list[float]:
     """Enforce a single-name cap by redistributing excess to the uncapped names.
 
     Redistribution is proportional to the *remaining* uncapped weights. If every name is

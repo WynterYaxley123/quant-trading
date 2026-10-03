@@ -180,7 +180,7 @@ def audit(lake: Path, output: Path) -> dict:
     membership = membership.filter(
         (pl.col("source") == "sw") & (pl.col("classification_system") == "sw")
     )
-    snapshots = defaultdict(dict)
+    snapshots: dict[date, dict[str, str]] = defaultdict(dict)
     for symbol, code, snap in membership.select(
         "symbol", "industry_code", "as_of_date"
     ).iter_rows():
@@ -222,16 +222,18 @@ def audit(lake: Path, output: Path) -> dict:
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid.uuid4().hex[:8]
     matrix = output / f"production_constituent_coverage_matrix_v3_{run_id}.csv"
     temp = output / f".{matrix.name}.{uuid.uuid4().hex}.partial"
-    reason_member = Counter()
-    reason_industry_primary = Counter()
-    by_exchange = Counter()
-    by_industry = Counter()
-    by_symbol = Counter()
-    by_date = Counter()
-    marginal_symbols = Counter()
-    marginal_not_stored_post_delist = Counter()
-    missing_not_stored_post_delist = Counter()
-    per_industry = defaultdict(lambda: {"sessions": 0, "valid": 0, "coverage_sum": 0.0})
+    reason_member: Counter[str] = Counter()
+    reason_industry_primary: Counter[str] = Counter()
+    by_exchange: Counter[str] = Counter()
+    by_industry: Counter[str] = Counter()
+    by_symbol: Counter[str] = Counter()
+    by_date: Counter[str] = Counter()
+    marginal_symbols: Counter[str] = Counter()
+    marginal_not_stored_post_delist: Counter[str] = Counter()
+    missing_not_stored_post_delist: Counter[str] = Counter()
+    per_industry: dict[str, dict[str, float]] = defaultdict(
+        lambda: {"sessions": 0, "valid": 0, "coverage_sum": 0.0}
+    )
     valid_dates, legacy_valid_dates, total_dates = 0, 0, 0
     member_rows = 0
     sparse_prev_accepted = 0
@@ -262,7 +264,7 @@ def audit(lake: Path, output: Path) -> dict:
 
             for code, symbols in sorted(groups.items()):
                 total_dates += 1
-                reasons = Counter()
+                reasons: Counter[str] = Counter()
                 invalid_symbols = []
                 stored_post_delist_gap = False
                 valid = legacy_valid = 0
@@ -342,7 +344,9 @@ def audit(lake: Path, output: Path) -> dict:
                             else "UNKNOWN",
                             "adj_close": cur[0] if cur else None,
                             "prev_adj_close": prev[0] if prev else None,
-                            "return_value": cur[0] / prev[0] - 1.0 if is_valid else None,
+                            "return_value": cur[0] / prev[0] - 1.0
+                            if is_valid and cur is not None and prev is not None
+                            else None,
                         }
                     )
                     member_rows += 1

@@ -10,17 +10,23 @@ Nothing here is committed to Git. The repository receives only schemas, builders
 tests and small metadata manifests; the raw official artifacts stay under
 ``D:\\QuantForge\\runtime\\...`` and are referenced by hash.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import shutil
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
 
-from .schema import (EvidenceError, PinnedSource, require_official_url, require_safe_name,
-                     sha256_bytes)
+from .schema import (
+    EvidenceError,
+    PinnedSource,
+    require_official_url,
+    require_safe_name,
+    sha256_bytes,
+)
 
 #: Default runtime root for this task. Never inside a Git work tree.
 DEFAULT_RUNTIME_ROOT = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
@@ -66,18 +72,24 @@ class RawSourceRecord:
 
     def __post_init__(self) -> None:
         if self.kind not in SOURCE_KINDS:
-            raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
-                                {"reason": "UNKNOWN_SOURCE_KIND", "kind": self.kind})
+            raise EvidenceError(
+                "EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
+                {"reason": "UNKNOWN_SOURCE_KIND", "kind": self.kind},
+            )
         if self.kind == KIND_DOCUMENTED_EXTRACTION and not self.derived_from:
-            raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
-                                {"reason": "EXTRACTION_WITHOUT_UPSTREAM",
-                                 "relative_path": self.relative_path})
+            raise EvidenceError(
+                "EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
+                {"reason": "EXTRACTION_WITHOUT_UPSTREAM", "relative_path": self.relative_path},
+            )
 
     def as_dict(self) -> dict:
         return {
-            "relative_path": self.relative_path, "stored_name": self.stored_name,
-            "source_url": self.source_url, "kind": self.kind,
-            "source_sha256": self.source_sha256, "byte_length": self.byte_length,
+            "relative_path": self.relative_path,
+            "stored_name": self.stored_name,
+            "source_url": self.source_url,
+            "kind": self.kind,
+            "source_sha256": self.source_sha256,
+            "byte_length": self.byte_length,
             "content_type": self.content_type,
             "source_retrieved_at": self.source_retrieved_at,
             "evidence_observed_at": self.evidence_observed_at,
@@ -106,25 +118,36 @@ class SourcePin:
 
     # -- population ---------------------------------------------------------
 
-    def pin_bytes(self, *, relative_path: str, body: bytes, source_url: str,
-                  content_type: str | None = None,
-                  source_publication_at: str | None = None,
-                  evidence_observed_at: str | None = None,
-                  source_retrieved_at: str | None = None,
-                  note: str = "", stored_name: str | None = None,
-                  kind: str = KIND_VERBATIM_PROVIDER_BYTES,
-                  derived_from: tuple[dict, ...] = ()) -> PinnedSource:
+    def pin_bytes(
+        self,
+        *,
+        relative_path: str,
+        body: bytes,
+        source_url: str,
+        content_type: str | None = None,
+        source_publication_at: str | None = None,
+        evidence_observed_at: str | None = None,
+        source_retrieved_at: str | None = None,
+        note: str = "",
+        stored_name: str | None = None,
+        kind: str = KIND_VERBATIM_PROVIDER_BYTES,
+        derived_from: tuple[dict, ...] = (),
+    ) -> PinnedSource:
         require_safe_name(relative_path, "relative_path")
         require_official_url(source_url, "source_url")
         if not isinstance(body, bytes) or not body:
-            raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
-                                {"reason": "EMPTY_SOURCE_BODY", "relative_path": relative_path})
+            raise EvidenceError(
+                "EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
+                {"reason": "EMPTY_SOURCE_BODY", "relative_path": relative_path},
+            )
         if stored_name is None:
             stored_name = relative_path.replace("/", "__")
         # The adapter's filename rule, applied at build time rather than at trade time.
         if "/" in stored_name or "\\" in stored_name:
-            raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
-                                {"reason": "STORED_NAME_MUST_BE_FLAT", "stored_name": stored_name})
+            raise EvidenceError(
+                "EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
+                {"reason": "STORED_NAME_MUST_BE_FLAT", "stored_name": stored_name},
+            )
         observed = evidence_observed_at or _now()
         retrieved = source_retrieved_at or observed
         digest = sha256_bytes(body)
@@ -132,19 +155,24 @@ class SourcePin:
         if existing is not None:
             if existing.source_sha256 != digest or existing.source_url != source_url:
                 # Immutability: a path is bound to one URL and one byte stream.
-                raise EvidenceError("EVIDENCE_SOURCE_IMMUTABILITY_BLOCKER",
-                                    {"relative_path": relative_path,
-                                     "existing_sha256": existing.source_sha256,
-                                     "incoming_sha256": digest})
+                raise EvidenceError(
+                    "EVIDENCE_SOURCE_IMMUTABILITY_BLOCKER",
+                    {
+                        "relative_path": relative_path,
+                        "existing_sha256": existing.source_sha256,
+                        "incoming_sha256": digest,
+                    },
+                )
             return self._as_pinned(existing)
         target = self.root / stored_name
         target.parent.mkdir(parents=True, exist_ok=True)
         if target.exists():
             on_disk = target.read_bytes()
             if sha256_bytes(on_disk) != digest:
-                raise EvidenceError("EVIDENCE_SOURCE_IMMUTABILITY_BLOCKER",
-                                    {"relative_path": relative_path,
-                                     "reason": "ON_DISK_BYTES_DIFFER"})
+                raise EvidenceError(
+                    "EVIDENCE_SOURCE_IMMUTABILITY_BLOCKER",
+                    {"relative_path": relative_path, "reason": "ON_DISK_BYTES_DIFFER"},
+                )
         else:
             temp = target.with_name("." + target.name + ".tmp")
             with temp.open("wb") as handle:
@@ -153,43 +181,59 @@ class SourcePin:
                 os.fsync(handle.fileno())
             os.replace(temp, target)
         record = RawSourceRecord(
-            relative_path=relative_path, stored_name=stored_name, source_url=source_url,
-            source_sha256=digest, byte_length=len(body), content_type=content_type,
-            source_retrieved_at=retrieved, evidence_observed_at=observed,
-            source_publication_at=source_publication_at, note=note, kind=kind,
-            derived_from=tuple(derived_from))
+            relative_path=relative_path,
+            stored_name=stored_name,
+            source_url=source_url,
+            source_sha256=digest,
+            byte_length=len(body),
+            content_type=content_type,
+            source_retrieved_at=retrieved,
+            evidence_observed_at=observed,
+            source_publication_at=source_publication_at,
+            note=note,
+            kind=kind,
+            derived_from=tuple(derived_from),
+        )
         self._records[relative_path] = record
         return self._as_pinned(record)
 
-    def pin_file(self, source: Path, *, relative_path: str, source_url: str, **kwargs
-                 ) -> PinnedSource:
+    def pin_file(
+        self, source: Path, *, relative_path: str, source_url: str, **kwargs
+    ) -> PinnedSource:
         """Pin an already-downloaded official file byte-for-byte."""
         source = Path(source)
         if not source.is_file():
-            raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
-                                {"reason": "SOURCE_FILE_MISSING", "path": str(source)})
-        return self.pin_bytes(relative_path=relative_path, body=source.read_bytes(),
-                              source_url=source_url, **kwargs)
+            raise EvidenceError(
+                "EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
+                {"reason": "SOURCE_FILE_MISSING", "path": str(source)},
+            )
+        return self.pin_bytes(
+            relative_path=relative_path, body=source.read_bytes(), source_url=source_url, **kwargs
+        )
 
     def require_pinned(self, relative_path: str) -> PinnedSource:
         try:
             return self._as_pinned(self._records[relative_path])
         except KeyError as error:
-            raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
-                                {"reason": "SOURCE_NOT_PINNED",
-                                 "relative_path": relative_path}) from error
+            raise EvidenceError(
+                "EVIDENCE_OFFICIAL_SOURCE_BLOCKER",
+                {"reason": "SOURCE_NOT_PINNED", "relative_path": relative_path},
+            ) from error
 
     # -- views --------------------------------------------------------------
 
     def _as_pinned(self, record: RawSourceRecord) -> PinnedSource:
         return PinnedSource(
-            relative_path=record.stored_name, source_url=record.source_url,
+            relative_path=record.stored_name,
+            source_url=record.source_url,
             source_publication_at=record.source_publication_at,
             evidence_observed_at=record.evidence_observed_at,
             source_retrieved_at=record.source_retrieved_at,
             source_sha256=record.source_sha256,
             evidence_available_at=record.evidence_observed_at,
-            content_type=record.content_type, byte_length=record.byte_length)
+            content_type=record.content_type,
+            byte_length=record.byte_length,
+        )
 
     @property
     def records(self) -> tuple[RawSourceRecord, ...]:
@@ -203,16 +247,20 @@ class SourcePin:
             try:
                 body = target.read_bytes()
             except OSError as error:
-                failures.append({"relative_path": record.relative_path,
-                                 "reason": f"UNREADABLE:{type(error).__name__}"})
+                failures.append(
+                    {
+                        "relative_path": record.relative_path,
+                        "reason": f"UNREADABLE:{type(error).__name__}",
+                    }
+                )
                 continue
             if sha256_bytes(body) != record.source_sha256:
-                failures.append({"relative_path": record.relative_path,
-                                 "reason": "HASH_MISMATCH"})
+                failures.append({"relative_path": record.relative_path, "reason": "HASH_MISMATCH"})
                 continue
             if len(body) != record.byte_length:
-                failures.append({"relative_path": record.relative_path,
-                                 "reason": "LENGTH_MISMATCH"})
+                failures.append(
+                    {"relative_path": record.relative_path, "reason": "LENGTH_MISMATCH"}
+                )
                 continue
             checked += 1
         return {"checked": checked, "failures": failures, "ok": not failures}
@@ -227,20 +275,24 @@ class SourcePin:
             "source_count": len(records),
             "total_bytes": sum(r.byte_length for r in records),
             "verbatim_provider_bytes": sum(
-                1 for r in records if r.kind == KIND_VERBATIM_PROVIDER_BYTES),
+                1 for r in records if r.kind == KIND_VERBATIM_PROVIDER_BYTES
+            ),
             "documented_extractions": sum(
-                1 for r in records if r.kind == KIND_DOCUMENTED_EXTRACTION),
+                1 for r in records if r.kind == KIND_DOCUMENTED_EXTRACTION
+            ),
             "reproducibility_note": (
                 "A source whose kind is VERBATIM_PROVIDER_BYTES can be re-fetched from "
                 "its source_url and will hash to source_sha256. A source whose kind is "
                 "DOCUMENTED_EXTRACTION is a document this system assembled from the "
                 "captures named in derived_from; its own bytes are not served by any "
-                "provider and the URL records where its inputs came from."),
+                "provider and the URL records where its inputs came from."
+            ),
             "sources": [record.as_dict() for record in records],
         }
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(json.dumps(payload, ensure_ascii=False, indent=1, sort_keys=False)
-                           .encode("utf-8"))
+        target.write_bytes(
+            json.dumps(payload, ensure_ascii=False, indent=1, sort_keys=False).encode("utf-8")
+        )
         return target
 
 
@@ -256,8 +308,7 @@ def copy_tree(source_dir: Path, destination: Path, *, only_suffixes=(".json",)) 
         body = item.read_bytes()
         if target.exists():
             if target.read_bytes() != body:
-                raise EvidenceError("EVIDENCE_SOURCE_IMMUTABILITY_BLOCKER",
-                                    {"path": str(target)})
+                raise EvidenceError("EVIDENCE_SOURCE_IMMUTABILITY_BLOCKER", {"path": str(target)})
             continue
         shutil.copyfile(item, target)
         copied += 1

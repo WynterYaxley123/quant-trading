@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { aggregateCurrent, projectCurrent } from './current.mjs';
+import { allowedOrigins } from './origins.mjs';
 
 export const strategy = JSON.parse(await readFile(new URL('./strategy.json', import.meta.url), 'utf8'));
 export const PREFIX = '/api/etf-quant/v1/';
@@ -24,7 +25,6 @@ export const READINESS_DEFAULT = Object.freeze({contract:'SHADOW_START_READINESS
 const GATE_STATUSES = new Set(['PASS','BLOCKED','NOT_REACHED','DEFERRED','UNKNOWN']);
 const HASH = /^[a-f0-9]{64}$/;
 const ID = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$/;
-const ORIGINS = new Set(['http://127.0.0.1:5173', 'http://localhost:5173', 'http://127.0.0.1:4173', 'http://localhost:4173']);
 const sha = b => createHash('sha256').update(b).digest('hex');
 class IntegrityError extends Error { constructor() { super('RUNTIME_INTEGRITY_BLOCKER'); } }
 const invariant = condition => { if (!condition) throw new IntegrityError(); };
@@ -280,7 +280,7 @@ export async function observeReadiness(root, now = Date.now()) {
   return doc;
 }
 
-export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.now()}={}) {
+export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.now(),origins=allowedOrigins()}={}) {
   return http.createServer(async (req,res)=>{
     res.setHeader('Content-Type','application/json; charset=utf-8');
     res.setHeader('Cache-Control','no-store');
@@ -292,7 +292,7 @@ export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.n
     };
     if (!/^(127\.0\.0\.1|localhost)(:[0-9]+)?$/.test(req.headers.host ?? '')) return respond(403,null,'LOCAL_HOST_REQUIRED');
     const origin=req.headers.origin;
-    if (origin && !ORIGINS.has(origin)) return respond(403,null,'ORIGIN_NOT_ALLOWED');
+    if (origin && !origins.has(origin)) return respond(403,null,'ORIGIN_NOT_ALLOWED');
     if (origin) {res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin');}
     if (!['GET','HEAD','OPTIONS'].includes(req.method)) {res.setHeader('Allow','GET, HEAD, OPTIONS');return respond(405,null,'READ_ONLY_API');}
     const url=req.url ?? '';

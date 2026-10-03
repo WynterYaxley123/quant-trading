@@ -241,34 +241,46 @@ def _load_build_module():
     return module
 
 
-def test_observation_may_not_precede_the_last_real_retrieval():
+def test_observation_may_not_precede_the_last_real_retrieval(monkeypatch):
     build = _load_build_module()
     now = datetime.now(timezone.utc).astimezone()
     retrieved = (now - timedelta(hours=1)).isoformat(timespec="seconds")
-    build.latest_real_retrieval = lambda: (retrieved, "unit-test-ledger")
+    from scripts.etf_quant import production_pit_lineage
+
+    monkeypatch.setattr(
+        production_pit_lineage, "latest_real_retrieval", lambda: (retrieved, "unit-test-ledger")
+    )
     with pytest.raises(SystemExit, match="REFUSING TO BACKDATE"):
         build.assert_observed_after_every_retrieval(
             (now - timedelta(hours=2)).isoformat(timespec="seconds")
         )
 
 
-def test_observation_may_not_sit_in_the_future():
+def test_observation_may_not_sit_in_the_future(monkeypatch):
     build = _load_build_module()
     now = datetime.now(timezone.utc).astimezone()
     retrieved = (now - timedelta(hours=1)).isoformat(timespec="seconds")
-    build.latest_real_retrieval = lambda: (retrieved, "unit-test-ledger")
+    from scripts.etf_quant import production_pit_lineage
+
+    monkeypatch.setattr(
+        production_pit_lineage, "latest_real_retrieval", lambda: (retrieved, "unit-test-ledger")
+    )
     with pytest.raises(SystemExit, match="REFUSING A FUTURE OBSERVATION"):
         build.assert_observed_after_every_retrieval(
             (now + timedelta(hours=3)).isoformat(timespec="seconds")
         )
 
 
-def test_observation_between_retrieval_and_wall_clock_is_accepted():
+def test_observation_between_retrieval_and_wall_clock_is_accepted(monkeypatch):
     build = _load_build_module()
     now = datetime.now(timezone.utc).astimezone()
     retrieved = (now - timedelta(hours=1)).isoformat(timespec="seconds")
     claimed = (now - timedelta(minutes=30)).isoformat(timespec="seconds")
-    build.latest_real_retrieval = lambda: (retrieved, "unit-test-ledger")
+    from scripts.etf_quant import production_pit_lineage
+
+    monkeypatch.setattr(
+        production_pit_lineage, "latest_real_retrieval", lambda: (retrieved, "unit-test-ledger")
+    )
     moment, origin = build.assert_observed_after_every_retrieval(claimed)
     assert moment == retrieved
     assert origin == "unit-test-ledger"

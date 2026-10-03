@@ -57,21 +57,23 @@ def read_local_etf_snapshot(data_dir: Path | str) -> tuple[pd.DataFrame, pd.Data
             continue
         symbol = f"{market}{code}"
         path = root / f"{market}_day.h5"
+        own_dates: list[str] = []
         with tables.open_file(path, mode="r") as h5:
             table = h5.get_node(f"/data/{market.upper()}{code}")
             for raw in table.iterrows():
                 stamp = str(int(raw["datetime"]) // 10000)
+                day = f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}"
+                own_dates.append(day)
                 bars.append(
                     {
                         "etf_code": symbol,
-                        "date": f"{stamp[:4]}-{stamp[4:6]}-{stamp[6:8]}",
+                        "date": day,
                         "open": int(raw["openPrice"]) / 1000,
                         "high": int(raw["highPrice"]) / 1000,
                         "low": int(raw["lowPrice"]) / 1000,
                         "close": int(raw["closePrice"]) / 1000,
                     }
                 )
-        own_dates = [row["date"] for row in bars if row["etf_code"] == symbol]
         metadata.append(
             {
                 "etf_code": symbol,

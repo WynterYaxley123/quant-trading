@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { readFile, readdir, realpath } from 'node:fs/promises'
+import { open, readdir, realpath } from 'node:fs/promises'
 import { isAbsolute, relative, resolve, sep } from 'node:path'
 import { ApiError } from '../errors.js'
 
@@ -17,8 +17,14 @@ function contained(root: string, target: string): boolean {
   return rel === '' || (rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel))
 }
 
+export const MAX_ARTIFACT_BYTES = 32 * 1024 * 1024
+
 export class ArtifactStorage {
-  constructor(private readonly configuredRoot: string) {}
+  constructor(private readonly configuredRoot: string, private readonly maxArtifactBytes = MAX_ARTIFACT_BYTES) {
+    if (!Number.isSafeInteger(maxArtifactBytes) || maxArtifactBytes <= 0) {
+      throw new Error('Artifact size limit must be a positive integer')
+    }
+  }
 
   async root(): Promise<string> {
     try {
@@ -59,8 +65,29 @@ export class ArtifactStorage {
     const path = await this.inside(segments, missingCode)
     let bytes: Buffer
     try {
-      bytes = await readFile(path)
+      const handle = await open(path, 'r')
+      try {
+        const info = await handle.stat()
+        if (!info.isFile()) throw new ApiError('ARTIFACT_IO_ERROR', 500, 'Artifact must be a regular file')
+        const tooLarge = () => new ApiError('ARTIFACT_TOO_LARGE', 500, 'Artifact exceeds the public API size limit', segments.join('/'))
+        if (info.size > this.maxArtifactBytes) throw tooLarge()
+        // Bound reads as well as stat: a concurrently growing file cannot bypass the limit.
+        const chunks: Buffer[] = []
+        let total = 0
+        while (true) {
+          const chunk = Buffer.alloc(Math.min(64 * 1024, this.maxArtifactBytes - total + 1))
+          const { bytesRead } = await handle.read(chunk, 0, chunk.length, null)
+          if (bytesRead === 0) break
+          total += bytesRead
+          if (total > this.maxArtifactBytes) throw tooLarge()
+          chunks.push(chunk.subarray(0, bytesRead))
+        }
+        bytes = Buffer.concat(chunks, total)
+      } finally {
+        await handle.close()
+      }
     } catch (error) {
+      if (error instanceof ApiError) throw error
       throw new ApiError('ARTIFACT_IO_ERROR', 500, 'Research artifact unavailable',
         `${segments.join('/')}: ${String(error)}`)
     }

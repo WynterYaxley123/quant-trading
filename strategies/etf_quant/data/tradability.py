@@ -45,6 +45,7 @@ suspended ETF would present as tradable.
 
 Pure functions, no I/O.
 """
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -118,14 +119,21 @@ def is_finalized(bar: Mapping, *, fetched_at) -> bool:
     return True
 
 
-def evaluate(*, etf_code: str, admitted: bool, signal_date: date,
-             execution_date: date | None, bar: Mapping | None) -> TradabilityVerdict:
+def evaluate(
+    *,
+    etf_code: str,
+    admitted: bool,
+    signal_date: date,
+    execution_date: date | None,
+    bar: Mapping | None,
+) -> TradabilityVerdict:
     """Decide tradability for the T+1 session of a T-close signal.
 
     ``bar`` must be the T+1 bar itself. A bar for any other date is refused rather
     than reinterpreted -- that refusal is what makes the forbidden substitutions
     structurally impossible instead of merely discouraged.
     """
+
     def blocked(reason, when=None):
         return TradabilityVerdict(BLOCKED, reason, when, etf_code)
 
@@ -168,14 +176,20 @@ def next_session(sessions, signal_date: date) -> date | None:
     return later[0] if later else None
 
 
-def evaluate_for_sessions(*, etf_code: str, admitted: bool, signal_date: date,
-                          sessions, bars_by_date: Mapping) -> TradabilityVerdict:
+def evaluate_for_sessions(
+    *, etf_code: str, admitted: bool, signal_date: date, sessions, bars_by_date: Mapping
+) -> TradabilityVerdict:
     """Convenience wrapper: resolve T+1 from a real session list, then evaluate."""
     execution = next_session(sessions, signal_date)
     if execution is None:
         return TradabilityVerdict(BLOCKED, "NO_NEXT_SESSION_IN_CALENDAR", None, etf_code)
-    return evaluate(etf_code=etf_code, admitted=admitted, signal_date=signal_date,
-                    execution_date=execution, bar=bars_by_date.get(execution))
+    return evaluate(
+        etf_code=etf_code,
+        admitted=admitted,
+        signal_date=signal_date,
+        execution_date=execution,
+        bar=bars_by_date.get(execution),
+    )
 
 
 __all__ = [

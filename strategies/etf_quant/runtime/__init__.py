@@ -1,10 +1,19 @@
 """Foundation state/ports only. Deliberately no orchestrator, scheduler or loop."""
+
 from dataclasses import dataclass
 from datetime import date
 from typing import Protocol
 
-from ..config import PENDING_DEEPSEEK_CONTRACT, PENDING_MIMO_AUDIT, INTEGRATION_DEPENDENCY_DEFERRED
-from ..domain import BenchmarkId, IndustryRanking, MappingResult, Product, RunMode, TradingCalendar, simulation_only
+from ..config import INTEGRATION_DEPENDENCY_DEFERRED, PENDING_DEEPSEEK_CONTRACT, PENDING_MIMO_AUDIT
+from ..domain import (
+    BenchmarkId,
+    IndustryRanking,
+    MappingResult,
+    Product,
+    RunMode,
+    TradingCalendar,
+    simulation_only,
+)
 
 
 @dataclass(frozen=True)
@@ -36,7 +45,9 @@ class BenchmarkPoint:
 
 
 class IndustryDataProvider(Protocol):
-    def history(self, industries: tuple[str, ...], start: date, end: date) -> tuple[IndustryBar, ...]: ...
+    def history(
+        self, industries: tuple[str, ...], start: date, end: date
+    ) -> tuple[IndustryBar, ...]: ...
 
 
 class ETFUniverseProvider(Protocol):
@@ -48,11 +59,15 @@ class TradingCalendarProvider(Protocol):
 
 
 class BenchmarkDataProvider(Protocol):
-    def history(self, benchmark: BenchmarkId, start: date, end: date) -> tuple[BenchmarkPoint, ...]: ...
+    def history(
+        self, benchmark: BenchmarkId, start: date, end: date
+    ) -> tuple[BenchmarkPoint, ...]: ...
 
 
 class IndustryETFMapper(Protocol):
-    def map_industries(self, rankings: tuple[IndustryRanking, ...], as_of: date) -> tuple[MappingResult, ...]: ...
+    def map_industries(
+        self, rankings: tuple[IndustryRanking, ...], as_of: date
+    ) -> tuple[MappingResult, ...]: ...
 
 
 @dataclass(frozen=True)
@@ -68,8 +83,12 @@ class RuntimeState:
 
     def __post_init__(self):
         simulation_only(self.product, self.mode)
-        if (self.phase != "FOUNDATION_ONLY" or self.data_contract != PENDING_DEEPSEEK_CONTRACT
-                or self.public_integration != PENDING_MIMO_AUDIT
-                or self.integration_state != INTEGRATION_DEPENDENCY_DEFERRED
-                or self.broker_enabled is not False or self.real_order_path is not False):
+        if (
+            self.phase != "FOUNDATION_ONLY"
+            or self.data_contract != PENDING_DEEPSEEK_CONTRACT
+            or self.public_integration != PENDING_MIMO_AUDIT
+            or self.integration_state != INTEGRATION_DEPENDENCY_DEFERRED
+            or self.broker_enabled is not False
+            or self.real_order_path is not False
+        ):
             raise ValueError("foundation cannot enable an integration/runtime/broker path")

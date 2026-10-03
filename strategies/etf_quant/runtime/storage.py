@@ -1,12 +1,13 @@
 """Small immutable-publication primitives shared by export and Shadow storage."""
+
 from __future__ import annotations
 
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
 import time
+from pathlib import Path
 from uuid import uuid4
 
 
@@ -25,7 +26,7 @@ def json_bytes(value) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
-def closed_id(value: str) -> str:
+def closed_id(value: object) -> str:
     if not isinstance(value, str) or not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}", value):
         raise GateError("RUNTIME_INTEGRITY_BLOCKER")
     return value
@@ -66,9 +67,15 @@ def atomic_bytes(path: Path, payload: bytes, *, replace=os.replace, sleep=time.s
                 if error.errno not in (1, 13, None) or attempt == 4:
                     raise GateError("RUNTIME_PUBLICATION_BLOCKER", {"attempts": attempt}) from error
                 if audit is not None:
-                    audit({"event": "ATOMIC_REPLACE_RETRY", "attempt": attempt,
-                           "exception": type(error).__name__, "errno": error.errno})
-                sleep(.05 * 2 ** (attempt - 1))
+                    audit(
+                        {
+                            "event": "ATOMIC_REPLACE_RETRY",
+                            "attempt": attempt,
+                            "exception": type(error).__name__,
+                            "errno": error.errno,
+                        }
+                    )
+                sleep(0.05 * 2 ** (attempt - 1))
     finally:
         if temp.exists():
             temp.unlink()

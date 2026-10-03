@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
+from datetime import date, datetime
 from pathlib import Path
 
 import numpy as np
@@ -89,8 +90,8 @@ def _market(root: Path) -> pd.DataFrame:
 
 def load_sector_ohlcva(
     sector_code: str,
-    start: object | None = None,
-    end: object | None = None,
+    start: str | date | datetime | int | float | None = None,
+    end: str | date | datetime | int | float | None = None,
     *,
     processed_dir: Path | str = DEFAULT_PROCESSED_DIR,
     allow_invalid_for_audit: bool = False,
@@ -117,8 +118,8 @@ def load_sector_ohlcva(
 
 def load_sector_panel(
     sector_codes: Sequence[str],
-    start: object,
-    end: object,
+    start: str | date | datetime | int | float,
+    end: str | date | datetime | int | float,
     *,
     processed_dir: Path | str = DEFAULT_PROCESSED_DIR,
     allow_invalid_for_audit: bool = False,

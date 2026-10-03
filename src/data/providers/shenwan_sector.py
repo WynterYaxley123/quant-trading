@@ -337,7 +337,7 @@ def parse_classification_with_intervals(raw_dir: Path | str) -> pd.DataFrame:
         for symbol, when in zip(frame["symbol"], frame["effective_from"])
     ]
     return (
-        frame.loc[:, CLASSIFICATION_COLUMNS]
+        frame.loc[:, list(CLASSIFICATION_COLUMNS)]
         .sort_values(["symbol", "effective_from", "sector_code"], kind="stable")
         .reset_index(drop=True)
     )
@@ -366,7 +366,7 @@ def audit_coverage(frame: pd.DataFrame, catalog: pd.DataFrame) -> tuple[dict, pd
     """以全部行业观测日期的并集作为统一 session 日历，不填补数据。"""
 
     calendar = TradingCalendar.from_dates(frame["date"].tolist())
-    groups = {code: part for code, part in frame.groupby("sector_code", sort=True)}
+    groups = {str(code): part for code, part in frame.groupby("sector_code", sort=True)}
     starts = {code: part["date"].min().date() for code, part in groups.items()}
     ends = {code: part["date"].max().date() for code, part in groups.items()}
     common_start = max(starts.values())

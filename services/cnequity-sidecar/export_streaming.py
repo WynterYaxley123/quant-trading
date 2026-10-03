@@ -76,6 +76,7 @@ class _StreamTable:
         if not rows:
             return
         self.prepare(columns)
+        assert self.columns is not None  # prepare establishes the header.
         stream = io.StringIO(newline="")
         writer = csv.DictWriter(
             stream, fieldnames=self.columns, extrasaction="raise", lineterminator="\n"
@@ -259,7 +260,7 @@ def export_lake_streaming(config, load, *, observed_at=None):
     tables = {}
     try:
         tables = {name: _StreamTable(stage, name) for name in SCHEMAS}
-        queries = {}
+        queries: dict[str, dict[str, object]] = {}
         # Membership must be complete, not narrowed to stocks with available prices.
         symbols_seen = set()
         _stream_dataset(

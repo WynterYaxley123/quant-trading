@@ -29,27 +29,24 @@ services:
     volumes:
       - ./:/workspace
       - ./data:/workspace/data
-    # env_file 不做 $ 插值，密码哈希原样注入容器（关键：不能用 environment 写 ${...}）
-    env_file:
-      - .env
     environment:
       - TZ=Asia/Shanghai
       - PYTHONUNBUFFERED=1
       - JUPYTER_PORT=${JUPYTER_PORT:-8888}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:?Set a nonempty JUPYTER_TOKEN outside Git}
     ports:
       # 仅绑定 Windows localhost，不对局域网暴露
       - "127.0.0.1:8888:8888"
     # 直接在命令行指定参数：--ip=0.0.0.0 必需（否则容器只绑 loopback，宿主机端口映射进不来）
-    # $$ 是 compose 转义，输出为 $，由 shell 展开容器内的 JUPYTER_PASSWORD 环境变量
+    # Authentication is mandatory; Compose and the child shell both reject an empty token.
     command: >
       bash -c "
+      : \"$${JUPYTER_TOKEN:?A nonempty external token is required}\";
       jupyter lab
       --ip=0.0.0.0
       --port=8888
       --no-browser
-      --ServerApp.token=''
-      --ServerApp.password=\"$${JUPYTER_PASSWORD}\"
-      --ServerApp.password_required=True
+      --IdentityProvider.token=\"$${JUPYTER_TOKEN}\"
       --ServerApp.allow_root=True
       --notebook-dir=/workspace
       "
