@@ -15,7 +15,7 @@ Use an existing Node.js 24+ and pnpm installation; do not install a global packa
 
 ```powershell
 pnpm install --frozen-lockfile
-$env:RESEARCH_REPORT_ROOT = 'D:\quant-trading\reports\research'
+$env:RESEARCH_REPORT_ROOT = '<runtime-root>
 pnpm dev
 ```
 

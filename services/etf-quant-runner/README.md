@@ -13,7 +13,7 @@ The current formal branch is `integration/etf-quant-v1-shadow-autonomous-final`.
 Use `one_shot.py --config <external-one-shot-config.json>` with the **existing
 isolated CNEquity interpreter**, not Windows global Python. The separate
 `one_shot.config.example.json` enumerates required paths; the deployment config
-is outside Git at `D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json`.
+is outside Git at `<runtime-root>`.
 Only file transport / calendar metadata execute on the host. Model, allocation,
 PIT admission and accounting run inside the existing frozen Docker image.
 
@@ -32,8 +32,8 @@ a human/audit-visible short physical path to the **same** existing lake. The
 runner proves `samefile` against the pinned source and export roots, and verifies
 both lexical and resolved Windows raw-archive paths fit the pinned writer.
 The physical directory was recoverably renamed on the same volume to
-`D:/QuantForge/etf-lake`; the prior access path
-`D:/QuantForge/external/cnequity-etf-quant-v1/lake-minimal` remains a junction to it.
+`<runtime-root>`; the prior access path
+`<runtime-root>` remains a junction to it.
 The former short-to-long junction is retained as `etf-lake-link-before-relocation`.
 File identities and published Parquet byte fingerprints are verified before/after;
 no file is deleted, copied or rewritten by this relocation, and no SDK/global

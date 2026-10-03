@@ -1,0 +1,860 @@
+{
+  "schema_version": 1,
+  "semantics": "ARCHIVED_BYTES_PRESERVED_OLD_PATHS_RESOLVE_WITHOUT_REWRITING_HISTORICAL_METADATA",
+  "documents": [
+    {
+      "path": "AGENTS.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "SECURITY.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "dashboard/README.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "dashboard/THIRD_PARTY_NOTICES.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "dashboard/docs/api-integration.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "dashboard/docs/architecture.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "dashboard/docs/reference-review.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/architecture.md",
+      "class": "ACTIVE_ARCHITECTURE_DOC"
+    },
+    {
+      "path": "docs/archive/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "original_path": "docs/codex_usage.md",
+      "path": "docs/archive/agent-runs/codex_usage.md",
+      "sha256": "e07b60d3c0a435fbe289e42143aed8b69a9557ad32a799a03c83a6f0d35ebc6f",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_autonomous_shadow_continuation_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_autonomous_shadow_continuation_v1.md",
+      "sha256": "b2224795f3971f9299c252ad37f0c11165e066197213d8cadd4f473d000dd8d3",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_b40_cash_runtime_integration_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_b40_cash_runtime_integration_v1.md",
+      "sha256": "5cc5fc0170a41b38fdd4590934389f16d1a5965b3b598c5ca6c3465f81868af5",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_final_data_pipeline_closure_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_final_data_pipeline_closure_v1.md",
+      "sha256": "1ddad93d4e9f7c562a8b17cffa13f3f08350f021ffd58be076b714738f2175fc",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_final_project_closure_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_final_project_closure_v1.md",
+      "sha256": "98f87474820692ad44621ac850d1445a65ec801f9ca082c90753c6d497e607d2",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_first_shadow_start_gate_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_first_shadow_start_gate_v1.md",
+      "sha256": "e5092d7ca9b9d40ee8d4d832593cfa71d173e4e7c70136901afd94ab5e9500c2",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_post_kimi_final_integration_report_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_post_kimi_final_integration_report_v1.md",
+      "sha256": "435eef85ceeae5ef59a7f37a155e8694c84b2fcf606c8b562e0588ec5b644a18",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_proxy_final_integration_report_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--codex_proxy_final_integration_report_v1.md",
+      "sha256": "1b23a5ecdaef9f0170de2d45e91b09716023bb19d3f8c1cc2b7447beeee51413",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/deepseek_final_closure_v2_report.md",
+      "path": "docs/archive/agent-runs/etf_quant--deepseek_final_closure_v2_report.md",
+      "sha256": "165ed7bc8e2d2290c8f52c9ef377072bdcbcf0d8205e55cde8cca184677e1193",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "docs/etf_quant/kimi_codex_takeover_report_v1.md",
+      "path": "docs/archive/agent-runs/etf_quant--kimi_codex_takeover_report_v1.md",
+      "sha256": "c03d0843cdd89e6ac31b257f3c58f4195033028994c1e9cd9c20207e1895a0bf",
+      "class": "HISTORICAL_AGENT_RUN"
+    },
+    {
+      "original_path": "dashboard/docs/integration-audit.md",
+      "path": "docs/archive/audits/dashboard-integration-audit.md",
+      "sha256": "ffba3891abdd10cc5923214be368e3a86bc68568aae088f2f8ae315e8cce56af",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/active_industry_universe_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--active_industry_universe_audit_v1.md",
+      "sha256": "0a697ba331c069a4862aca814d4dc55ce64b33e07b0f2cde953f867bacf7f076",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/benchmark_source_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--benchmark_source_audit_v1.md",
+      "sha256": "812f475875e67477df6542c481c145ed8011f1be7ad76a40c053770036a67a60",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_pinned_contract_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--cnequity_pinned_contract_audit_v1.md",
+      "sha256": "27ffba269b47f577461eba205f23759e9b3381c3ed0c86c55fd0b0ca4038a1bd",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_runtime_transport_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--cnequity_runtime_transport_audit_v1.md",
+      "sha256": "6294df0844c749878c2a3b8e5f7f5d3ea64d6a823ac9d529e7647bd96b3ca360",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_frozen_model_contract_reconciliation_v1.md",
+      "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+      "sha256": "655aa97e1ea0fd848fd7d5abe1a43f13dec5fabf1b0b3edd7da0f5ac634a897e",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_interrupted_state_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--codex_interrupted_state_audit_v1.md",
+      "sha256": "5c9c20dbbdfc37ecc496bb4a70ae9b521f6e3cdd2edf6ed8a554bf19be1c2bd9",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_kimi_takeover_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--codex_kimi_takeover_audit_v1.md",
+      "sha256": "3d074fbdd7e7eadbfaa10cc17589304be4be04abd23113166f4d857bbde90f3b",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_proxy_policy_final_review_v1.md",
+      "path": "docs/archive/audits/etf_quant--codex_proxy_policy_final_review_v1.md",
+      "sha256": "b378ae8f3b343f91930fceb989442281f0b98148052d560b1e486f06f454537c",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_shadow_readiness_certification_v1.md",
+      "path": "docs/archive/audits/etf_quant--codex_shadow_readiness_certification_v1.md",
+      "sha256": "b09352932162e1f703ac0a596cff01ac19bf35c1bc6ed09a3ae71454d818a65f",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/mimo_final_pit_readiness_review_v1.md",
+      "path": "docs/archive/audits/etf_quant--mimo_final_pit_readiness_review_v1.md",
+      "sha256": "9954fa9d7d864a90116b49574f6b2bf1c3e4222df02ceb4e7dc6bd1d4b37080f",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/mimo_shadow_readiness_certification_v1.md",
+      "path": "docs/archive/audits/etf_quant--mimo_shadow_readiness_certification_v1.md",
+      "sha256": "c5de2fb6de7df79dcff9eff15fa39bcd3c4a0385c9e2aa12f8ae1f24b52b121c",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/production_candidate_snapshot_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--production_candidate_snapshot_audit_v1.md",
+      "sha256": "c923f5f849177deba5d60061f9c3632c974766808ee48536a87855395f831cba",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/production_data_coverage_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--production_data_coverage_audit_v1.md",
+      "sha256": "32d8af8cc6697b198ef5b40e79ba844fb7ac877384ffcc7e0ae21ceb9aabf0c9",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/sse_l2_etf_exhaustive_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--sse_l2_etf_exhaustive_audit_v1.md",
+      "sha256": "98999186f6788fadb5b9ef75b5ee360bd4bc35048053c860bbf5177168ff9234",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/strict_l2_etf_coverage_and_executable_scan_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--strict_l2_etf_coverage_and_executable_scan_audit_v1.md",
+      "sha256": "01d6dd0d35e94161216a65b22bbf710f9021e5c01b1c018ea2d30764f0a8246c",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "docs/etf_quant/trading_status_root_cause_audit_v1.md",
+      "path": "docs/archive/audits/etf_quant--trading_status_root_cause_audit_v1.md",
+      "sha256": "1d7c485a40aa54a4ef97b6027f7c03fbd22836524343ce8d48f748b4aa326965",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "original_path": "AGENTS.md",
+      "path": "docs/archive/delivery-records/AGENTS-foundation-before-v2.md",
+      "sha256": "b91f274a6528fe85b0aa2c612e5b0c401ffb0a8fbee6cf439e8c8e6902adf29f",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/README.md",
+      "path": "docs/archive/delivery-records/README.md",
+      "sha256": "70b1badfe5707af82626cd27ab3d3b801693b265161db3c3ddc9d355c09153af",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/architecture.md",
+      "path": "docs/archive/delivery-records/architecture.md",
+      "sha256": "28afe99d53b338017337df5b6846454a056ed0afd25389ace5cd8a3fc47cda57",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/chatgpt_workflow.md",
+      "path": "docs/archive/delivery-records/chatgpt_workflow.md",
+      "sha256": "9018a00c0eece63813757930a705f13390311efedcd86337a5a2a46cf35ba54d",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/dependency_conflicts.md",
+      "path": "docs/archive/delivery-records/dependency_conflicts.md",
+      "sha256": "31ad42608f47ef4c7aa303f2b2145c4128d0d23fa4c5b79f210fc97aa34271f9",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/engineering/public-hardening-report.md",
+      "path": "docs/archive/delivery-records/engineering--public-hardening-report.md",
+      "sha256": "a41cb256c796056c5a24f9f9f660a33a9cb792e7bb877f0c9812caada82d23ce",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/environment/framework_smoke_test_report.md",
+      "path": "docs/archive/delivery-records/environment--framework_smoke_test_report.md",
+      "sha256": "a036773f636a26f5cb4f589f3e09636d749a79cd5ff2aaa955c56239a531d34c",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/environment_setup_report.md",
+      "path": "docs/archive/delivery-records/environment_setup_report.md",
+      "sha256": "299150cb163a28bb4d3556c1c477c4afeaa219a6ffa2888e50332e2425a31d9c",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/README.md",
+      "path": "docs/archive/delivery-records/etf_quant--README.md",
+      "sha256": "9e02a18d292e2120a865c91c10774ca03100668de77f6400b803ecf41d0bdbc9",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_historical_bar_routing_fix_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_historical_bar_routing_fix_v1.md",
+      "sha256": "06c463e852023770351e51a9875b7a859563ed383f504ad79f00da2981b08f60",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_historical_routing_full_backfill_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_historical_routing_full_backfill_v1.md",
+      "sha256": "a341bb065209fafd41d0260df4da0f9466bf8ebf9c33cd14570cb786b11cff43",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_historical_routing_single_symbol_proof_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_historical_routing_single_symbol_proof_v1.md",
+      "sha256": "da99173fd02b297e1f0b5167c7f9a19098a9b3b717c47909006898570d165f25",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_identity_routing_admission_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_identity_routing_admission_v1.md",
+      "sha256": "45773b6fcc40898eb4f83588e9ab090bdbda4959a9cd5b8149915a8b71ed581f",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_production_completion_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_production_completion_v1.md",
+      "sha256": "82693faef89c8472f1fbda569209f248bc3bd2d9a620928caeb04e2fe0365b45",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_production_coverage_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_production_coverage_final_v1.md",
+      "sha256": "1950553fe0d3a1f2f58a7332b2c65622a4e752861211800540aaab974c829955",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_production_ingestion_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_production_ingestion_final_v1.md",
+      "sha256": "63963ef053d4ed68bd598bb0885c38af8393cb4a7ca6783a5d3940d668e9a594",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/bj_tip_snapshot_pit_semantics_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--bj_tip_snapshot_pit_semantics_v1.md",
+      "sha256": "baa8ed867ec85a31c64a596f5c54c10410074b0e0da2640ce37a890b4a9fac72",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/cdr_689009_coverage_impact_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--cdr_689009_coverage_impact_v1.md",
+      "sha256": "b49cd4f6199a3d5a80f621b8924aa9911e6632d76d8d09e874b39d39b8179a0b",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_adjustment_factor_root_cause_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--cnequity_adjustment_factor_root_cause_v1.md",
+      "sha256": "4f180dfcd1e1eb9b2dac9d3a2dc304e0411fc213b735a54d1d5067f634106dc9",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_api_inventory_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--cnequity_api_inventory_v1.md",
+      "sha256": "2c9814235ecd3a1c64ae1d2bbf43a50aeec0ff9b29e52764a699986494942d8f",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_bj_constituent_capability_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--cnequity_bj_constituent_capability_v1.md",
+      "sha256": "3020c298a40d36ae232a59bd4a8df1207a5f6ae97b1508031f494e8f7d988668",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_minimal_real_admission_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--cnequity_minimal_real_admission_v1.md",
+      "sha256": "cf5123a41290370fc041a98e381d4a4baa3dc273417f4aa8b32c61692b8dcef4",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/cnequity_publish_gate_recovery_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--cnequity_publish_gate_recovery_v1.md",
+      "sha256": "c9ce3d8ca745e1071d921c9ce1c99a9d8f2f81f091b5d0f25aa380e323edb252",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/common_model_universe_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--common_model_universe_v1.md",
+      "sha256": "c65cff2a8d1a695cebfb348b088b2c734294c1e8ea47ad666137f3c22e47a5af",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/csi300_production_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--csi300_production_final_v1.md",
+      "sha256": "c976c56088e9fe569794a561adbeb4d18498079be5e69b4b66036cf74338e660",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/etf_liquidity_admission_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--etf_liquidity_admission_final_v1.md",
+      "sha256": "03d153e2ce657144423697c2050536aff15cd04ce1b20409d9cad214e6392a3b",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/etf_quant_cnequity_data_contract_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--etf_quant_cnequity_data_contract_v1.md",
+      "sha256": "de18c55fd372e8cb3ee7824180f07c6827f03fddeeabc39f2d25c3f86f50e903",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/etf_quant_foundation_architecture_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--etf_quant_foundation_architecture_v1.md",
+      "sha256": "1e1441b4585bd73f87f9d074271ba25db6982a5b01b4d6404907f3c94e7d69c3",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/etf_quant_public_github_security_baseline_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--etf_quant_public_github_security_baseline_v1.md",
+      "sha256": "31ed8c2b1d817ed07c064ab0a416420e33e555286ebc4af9aac8008c5aebb953",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/etf_quant_repo_dashboard_inventory_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--etf_quant_repo_dashboard_inventory_v1.md",
+      "sha256": "49aed2e67ea6a62660692192dc8547f5b37a927b576c937f0b0e5bfe46c064bd",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/exact_adjusted_history_recovery_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--exact_adjusted_history_recovery_v1.md",
+      "sha256": "2eff25cab8344bcf2869d6ac518b47ad4794c07c3ce922c7c9686a7b4ebe7125",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/factor_readiness_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--factor_readiness_final_v1.md",
+      "sha256": "a72ff5cd9ab19f729ec95f0c07a27b18b31565b46d739c62255ba61867231557",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/factor_readiness_final_v2.md",
+      "path": "docs/archive/delivery-records/etf_quant--factor_readiness_final_v2.md",
+      "sha256": "8699072fb4c815d3de09a9604f504dc1b86c4a2377bd90186148939bf1a45ff8",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/industry_etf_mapping_contract_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--industry_etf_mapping_contract_v1.md",
+      "sha256": "7f8a8c1c26d2817c2855b217712e01f78ee9b2f0e4f01ad400501bbad96c7fac",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/instrument_date_provenance_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--instrument_date_provenance_final_v1.md",
+      "sha256": "b42e79f6acc5bcaa422152690cb7adc4f702f086d23876446cbea4e42985101a",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/model_readiness_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--model_readiness_final_v1.md",
+      "sha256": "72815fabbf85147affae58395fbd3fc08f5f4af5a00239fc1abbb05f109ba1ca",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/model_readiness_final_v2.md",
+      "path": "docs/archive/delivery-records/etf_quant--model_readiness_final_v2.md",
+      "sha256": "9aecb9f6a0cfa34526565d5ca4d5a37d7316c204cb4bd5249e2474838f6e7e3f",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_backfill_execution_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_backfill_execution_v1.md",
+      "sha256": "d6d496d140ebcdfe29245ee3cd33a7218db7c28c66c75fb64d9f21024fa667a6",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_candidate_snapshot_blocker_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_candidate_snapshot_blocker_v1.md",
+      "sha256": "d36fe7b4295163664c749b6a805e9f5036dcf3600b4d1a70e6c6c4c35e0c4577",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_candidate_snapshot_final_v2.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_candidate_snapshot_final_v2.md",
+      "sha256": "a8dc56103efb8e7a3aadb068e8a840b95d43b9aa02f7fdc8285b53f2a7f6eec2",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_constituent_coverage_matrix_v3.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_constituent_coverage_matrix_v3.md",
+      "sha256": "b394b33a84d71f4b90d9e63323d1be20fa2fb8a969d09f62533ad53a5ed2a028",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_data_gap_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_data_gap_final_v1.md",
+      "sha256": "ec53e468b720d5d4d82d47550e238580a40731c227775bd1256cd266ea7e1f57",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_data_gap_final_v2.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_data_gap_final_v2.md",
+      "sha256": "5b748d17fe7a7b7ff563e7cf50397c4577f624d4b9699fce634082abfe20220a",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_data_gap_final_v3.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_data_gap_final_v3.md",
+      "sha256": "a915633e6e636b154e5b4eff07e306995f38b3977b61c404fa0b782280395bf4",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_full_curation_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_full_curation_v1.md",
+      "sha256": "20e78cf6570d9c05998e4b8e264797f4da39ce34845cb3cc7df83f28520d97f0",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_pit_evidence_registry_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_pit_evidence_registry_v1.md",
+      "sha256": "db7219e3fe65d76fe22ba098ab9b52c0dd57e10d63cabf21975f27bb6c4ba863",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_source_c_admission_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_source_c_admission_v1.md",
+      "sha256": "7d77b34ef1a8c7ca5bcadad38a364898079d78033ec1120c0e774ccf2531a802",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_source_c_final_admission_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_source_c_final_admission_v1.md",
+      "sha256": "97f5a47ac5a562fb272e99bb7453d532d3021d1fbe68412c4492bc95d756b4f4",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_source_c_final_v2.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_source_c_final_v2.md",
+      "sha256": "7913b9d92fc73b34ac2b41c70c2798e13e897ebf7bb2c8a78fbe0411b642abdd",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_time_semantics_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_time_semantics_v1.md",
+      "sha256": "58a4aa6d74747e83cb5f80dfbd3bb7c21bc7c22ece0fd97c540febb8e29d9fcf",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/production_warmup_window_contract_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--production_warmup_window_contract_v1.md",
+      "sha256": "0219db0b0b595d3d05e08d507436084f7451e6c9b67d05cc4b770325767bc3b5",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/proxy_execution_candidate_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--proxy_execution_candidate_v1.md",
+      "sha256": "a87500bc16f45ab4a0a12fd72776ae3e8c77ae7c7e10548a0c2690468514739b",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/proxy_execution_policy_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--proxy_execution_policy_v1.md",
+      "sha256": "a1b9778f5c1a3e989adc70d05cf6c4f6db104c5bee5a8b8e6461157465bdfd1b",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/proxy_exposure_feasibility_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--proxy_exposure_feasibility_v1.md",
+      "sha256": "efd5b5e28423fafb5083504f383b29bfb7f577850c40bab3a624cadfcd9d564e",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/shadow_start_readiness_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--shadow_start_readiness_final_v1.md",
+      "sha256": "82caa6934514da2a94c5765a0734bfbaeb7e4a46c6bb235532b42c38e1e92f13",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/t1_execution_contract_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--t1_execution_contract_final_v1.md",
+      "sha256": "ba7794d27939e94f707d1af48cbcbf5ec3c6fd63bb0f9f6fc483742a6ca72e7a",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/verified_industry_etf_mapping_final_v1.md",
+      "path": "docs/archive/delivery-records/etf_quant--verified_industry_etf_mapping_final_v1.md",
+      "sha256": "fc88fa93d5fa689914e099614a484421f143c75e4a44529b28fd9b705f321e68",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/feishu_integration.md",
+      "path": "docs/archive/delivery-records/feishu_integration.md",
+      "sha256": "e992a3c5f048257c8bd82961922abd911599d284cb8241edef08cb5ad42f2a00",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/future_quant_api.md",
+      "path": "docs/archive/delivery-records/future_quant_api.md",
+      "sha256": "f417eacc15f5cbfd148cc6e675034a738dc75531fff2d6940b9a3b5f46bb992c",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/github_workflow.md",
+      "path": "docs/archive/delivery-records/github_workflow.md",
+      "sha256": "765ffb876a4bd84633cffcfdf054cd3bd16c237fca9479074443d54395e35027",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/data/hikyuu_data_capabilities.md",
+      "path": "docs/archive/delivery-records/hikyuu-data-capabilities.md",
+      "sha256": "1610b36d99b8f449227669b1c1bab00308bd59a09ffb730971603ed4adfa333b",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/joinquant_import.md",
+      "path": "docs/archive/delivery-records/joinquant_import.md",
+      "sha256": "20a3c5c7295fa59bdc3d3495a2a7e5bacfc6a48c6a445c291c093700368fa411",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research/shenwan_development_iteration1_protocol.md",
+      "path": "docs/archive/delivery-records/research--shenwan_development_iteration1_protocol.md",
+      "sha256": "6fcf00ab4095b9b3ba5f3b7d72be2d81fccfb1b874f9e44fe3a49e0b5f592e58",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research/shenwan_development_prediction_protocol.md",
+      "path": "docs/archive/delivery-records/research--shenwan_development_prediction_protocol.md",
+      "sha256": "35b2da9bb62721796df534e2e62cb8d76ddb58590c301a2b3c2dd6011b6b3d58",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research/shenwan_research_split_design.md",
+      "path": "docs/archive/delivery-records/research--shenwan_research_split_design.md",
+      "sha256": "0fc910813a0878f67acd4541b3be0a081bf58544bf0046824f0d6243962aa3e0",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research/shenwan_sample_budget_and_universe_feasibility.md",
+      "path": "docs/archive/delivery-records/research--shenwan_sample_budget_and_universe_feasibility.md",
+      "sha256": "7ef77f497a1d88d3b3dca4e9397e1790231f98994794b12de859530b70d29b9a",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research/shenwan_sector_index_research_baseline.md",
+      "path": "docs/archive/delivery-records/research--shenwan_sector_index_research_baseline.md",
+      "sha256": "fb597f610905dafefcde3e94693a94028a849bac7ef51a031fc06263ec950e15",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research_workspace.md",
+      "path": "docs/archive/delivery-records/research_workspace.md",
+      "sha256": "de0a43a157b3b3c0468b047ba6c3531ed6b36d40f40fd557483bc6e240f69583",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/research_workspace_acceptance_20261002.md",
+      "path": "docs/archive/delivery-records/research_workspace_acceptance_20261002.md",
+      "sha256": "f1015eee0666a1376a65c88b92e637bcbecf12e1b8ca207b4b89fc0601ed2351",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "strategies/sw_sector_rotation/docs/migration_report.md",
+      "path": "docs/archive/delivery-records/sw-sector-rotation-migration-report.md",
+      "sha256": "5eae7caa2c8ff133bfdd0c44a572c485d386346aa7593cf2c1a3ca66da78d7e6",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/unified_console.md",
+      "path": "docs/archive/delivery-records/unified_console.md",
+      "sha256": "72eb75eef2ef46b4f5e4987543e1d46b8915c4bbf51fbbb37abc64d8b7e10cc9",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/unified_console_acceptance_20261002.md",
+      "path": "docs/archive/delivery-records/unified_console_acceptance_20261002.md",
+      "sha256": "26ace55a7ce2703164bddb25cf5d2d87ea7a72c94f49ed454dc0671b1a13b414",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/windows_chatgpt_environment.md",
+      "path": "docs/archive/delivery-records/windows_chatgpt_environment.md",
+      "sha256": "ac395b04248c364e9fa2366cb63eec139a23c3257e9e6de38cef4c27db2307d1",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/workflow_foundation_report.md",
+      "path": "docs/archive/delivery-records/workflow_foundation_report.md",
+      "sha256": "f38bfe6816b3675d78959bf312694e316dfc2a7e0a1e703a672b3e95cf78cce1",
+      "class": "HISTORICAL_DELIVERY_RECORD"
+    },
+    {
+      "original_path": "docs/etf_quant/codex_integration_handoff_v1.md",
+      "path": "docs/archive/handoffs/etf_quant--codex_integration_handoff_v1.md",
+      "sha256": "4b5b70d5dcd97ed280976fdac228cffe5201cd2dce89fc826086be1ead5e6074",
+      "class": "HISTORICAL_HANDOFF"
+    },
+    {
+      "original_path": "docs/etf_quant/deepseek_production_pit_evidence_handoff_v1.md",
+      "path": "docs/archive/handoffs/etf_quant--deepseek_production_pit_evidence_handoff_v1.md",
+      "sha256": "39e6e91ee632d5ed549f7784c51c7bc61c1d62e3d3a9d3d717c1b71b6ec60f3b",
+      "class": "HISTORICAL_HANDOFF"
+    },
+    {
+      "original_path": "docs/etf_quant/deepseek_proxy_exposure_handoff_v1.md",
+      "path": "docs/archive/handoffs/etf_quant--deepseek_proxy_exposure_handoff_v1.md",
+      "sha256": "c64f8e8672991028cb617909d3fb03a53ab40a1f1b228f8e3b2d87621ac34563",
+      "class": "HISTORICAL_HANDOFF"
+    },
+    {
+      "original_path": "docs/etf_quant/deepseek_proxy_policy_finalization_handoff_v1.md",
+      "path": "docs/archive/handoffs/etf_quant--deepseek_proxy_policy_finalization_handoff_v1.md",
+      "sha256": "976bf1e47e6fafa8336ac3317aa90e384425faa62272bf4871c5c1514bc52c66",
+      "class": "HISTORICAL_HANDOFF"
+    },
+    {
+      "original_path": "docs/etf_quant/integration_v1_handoff.md",
+      "path": "docs/archive/handoffs/etf_quant--integration_v1_handoff.md",
+      "sha256": "9bd1d4c4c7fa713aef44d8e1550bbf49a1b94d470967f73f7a4e49106dd238dd",
+      "class": "HISTORICAL_HANDOFF"
+    },
+    {
+      "path": "docs/archive/inventory.md",
+      "original_path": "docs/archive/inventory.md",
+      "sha256": "f864dc56c808d0d7447c2810888b60a9deeee12330148a631b64535ff8a973ed",
+      "class": "HISTORICAL_AUDIT"
+    },
+    {
+      "path": "docs/data-and-pit.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/data/hikyuu_backtest_pipeline.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/data/market_data_policy.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/data/shenwan_data_access.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/data/shenwan_etf_mapping_admission.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/data/shenwan_etf_proxy_mapping_policy.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/data/shenwan_historical_proxy_readmission.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/data/shenwan_sector_data_admission.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/development.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/README.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/public_repo_adversarial_remediation_v2.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/etf_quant/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/index.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/operations.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "docs/report_schema.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/reproducibility.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/research-status.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/strategy.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/strategy_specification.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/testing.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "examples/minimal_demo/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "notebooks/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "scripts/automation/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "services/cnequity-sidecar/README.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "services/etf-quant-api/README.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "services/etf-quant-runner/README.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "services/research-api/README.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "services/research-api/docs/api-contract.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "services/research-api/docs/artifact-audit.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "services/research-api/docs/reference-review.md",
+      "class": "ACTIVE_OPERATIONS_DOC"
+    },
+    {
+      "path": "src/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "src/strategies/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "src/strategies/myquant/README.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "strategies/README.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "strategies/sw_sector_rotation/README.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "strategies/sw_sector_rotation/docs/baseline_v1_research_report.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "strategies/sw_sector_rotation/docs/core_hardening_report.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "strategies/sw_sector_rotation/docs/legacy/sector_etf_mapping_reference.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "strategies/sw_sector_rotation/docs/spec.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "strategies/sw_sector_rotation/docs/strategy_spec_v1.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    }
+  ]
+}
