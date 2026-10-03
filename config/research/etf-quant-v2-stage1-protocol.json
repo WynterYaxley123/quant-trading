@@ -1,0 +1,2047 @@
+{
+  "comparison_policy": "COMMON_6M_12M_ALL_HORIZON_EVALUATION_DATES_WITHIN_EACH_MODE;24M_SUBJECT_TO_160_SIGNALS",
+  "contract": "ETF_QUANT_V2_EVIDENCE_TIERED_EXPERIMENT",
+  "data_sha256": "83e322e391e2e4126e0854cbe0baa4475b353292d9cc318f39ba8e59f82aa2c8",
+  "evidence_modes": [
+    "HIGH_CONFIDENCE",
+    "EXTENDED_HISTORY"
+  ],
+  "execution": {
+    "historical_missing_mapping": "CASH;NO_CURRENT_EVIDENCE_BACKSTAMP",
+    "policy": "V1_VERIFIED_MAPPING_PROXY_CASH_SIZING_T_PLUS_1_UNCHANGED"
+  },
+  "final_oos_access": "DENIED",
+  "mode_development_start": {
+    "EXTENDED_HISTORY": 990,
+    "HIGH_CONFIDENCE": 1349
+  },
+  "one_focused_stage2": true,
+  "one_validation_informed_development_revision": true,
+  "phase_dates": {
+    "development_end": "2024-09-02",
+    "development_start": "2022-01-27",
+    "final_oos_end": "2026-04-02",
+    "final_oos_start": "2025-12-30",
+    "maturity_tail_start": "2026-04-03",
+    "validation_end": "2025-07-04",
+    "validation_start": "2025-03-10"
+  },
+  "protocol_sha256": "fb2721f41e0d6e0ce4f05270e9535af160be482bc0edce75fff5da3d3a96f5db",
+  "selection": {
+    "bootstrap_block": 120,
+    "folds": 4,
+    "long_incremental_rank_ic": 0.005,
+    "maximum_coefficient_norm_cv": 1.0,
+    "maximum_positive_fold_concentration": 0.6,
+    "minimum_cross_section": 12,
+    "minimum_signals": 160,
+    "minimum_worst_rank_ic": -0.05,
+    "positive_fold_majority": 3,
+    "positive_mean_rank_ic_and_spread": true,
+    "prefer": "HIGH_CONFIDENCE_PASS;MEDIAN_FOLD_IC;MEDIAN_FOLD_SPREAD;WORST_FOLD;STABILITY;SIMPLICITY",
+    "replications": 1000,
+    "seed": 20261004,
+    "ties": {
+      "rank_ic": 0.005,
+      "spread": 0.001
+    }
+  },
+  "split": {
+    "development_end": 1619,
+    "development_start": 990,
+    "final_oos_end": 1999,
+    "final_oos_start": 1940,
+    "maturity_tail_start": 2000,
+    "validation_end": 1819,
+    "validation_start": 1740
+  },
+  "stage1": [
+    {
+      "alpha": 0.001,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m6-a0.001",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m6-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m12-a0.001",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m12-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m24-a0.001",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m24-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m6-a0.01",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m6-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m12-a0.01",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m12-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m24-a0.01",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m24-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m6-a0.1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m6-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m12-a0.1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m12-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m24-a0.1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m24-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m6-a1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m6-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m12-a1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m12-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m24-a1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m24-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m6-a10",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m6-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m12-a10",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m12-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-RAW-m24-a10",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "A-TRAIN_ONLY_STANDARDIZED-m24-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m6-a0.001",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m6-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m12-a0.001",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m12-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m24-a0.001",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m24-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m6-a0.01",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m6-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m12-a0.01",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m12-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m24-a0.01",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m24-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m6-a0.1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m6-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m12-a0.1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m12-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m24-a0.1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m24-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m6-a1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m6-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m12-a1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m12-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m24-a1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m24-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m6-a10",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m6-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m12-a10",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m12-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-RAW-m24-a10",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "B",
+      "fusion": [
+        0.3,
+        0.6,
+        0.1
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "B-TRAIN_ONLY_STANDARDIZED-m24-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m6-a0.001",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m6-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m12-a0.001",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m12-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m24-a0.001",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m24-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m6-a0.01",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m6-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m12-a0.01",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m12-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m24-a0.01",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m24-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m6-a0.1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m6-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m12-a0.1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m12-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m24-a0.1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m24-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m6-a1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m6-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m12-a1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m12-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m24-a1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m24-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m6-a10",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m6-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m12-a10",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m12-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-RAW-m24-a10",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "C-TRAIN_ONLY_STANDARDIZED-m24-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m6-a0.001",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m6-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.001,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m12-a0.001",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m12-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.001,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m24-a0.001",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.001,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m24-a0.001",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m6-a0.01",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m6-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.01,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m12-a0.01",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m12-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.01,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m24-a0.01",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.01,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m24-a0.01",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m6-a0.1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m6-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 0.1,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m12-a0.1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m12-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 0.1,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m24-a0.1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 0.1,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m24-a0.1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m6-a1",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m6-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 1.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m12-a1",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m12-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 1.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m24-a1",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 1.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m24-a1",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m6-a10",
+      "scaling": "RAW",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m6-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 6
+    },
+    {
+      "alpha": 10.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m12-a10",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m12-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-RAW-m24-a10",
+      "scaling": "RAW",
+      "training_months": 24
+    },
+    {
+      "alpha": 10.0,
+      "family": "D",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        80
+      ],
+      "identifier": "D-TRAIN_ONLY_STANDARDIZED-m24-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 24
+    }
+  ],
+  "training": {
+    "calendar_window_before_mature_horizon_cutoff": true,
+    "cross_section": "SIGNAL_FEATURE_ELIGIBLE_UNIVERSE;COMPLETE_MATURED_TARGETS;NO_FUTURE_ASSET_SELECTION",
+    "minimum_dates": 30,
+    "training_only_population_standardization": true
+  },
+  "validation_open_count_maximum": 1
+}
