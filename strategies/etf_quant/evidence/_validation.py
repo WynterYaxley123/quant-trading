@@ -155,7 +155,7 @@ def require_sha256(value, field_name: str) -> str:
 
 def require_official_url(value, field_name: str) -> str:
     """Only an official HTTPS URL with a real path may be pinned."""
-    if not isinstance(value, str) or not isinstance(value, str):
+    if not isinstance(value, str):
         raise EvidenceError("EVIDENCE_OFFICIAL_SOURCE_BLOCKER", {"field": field_name})
     match = _HTTPS.fullmatch(value)
     if match is None:
@@ -231,8 +231,9 @@ def optional_day(value, field_name: str) -> date | None:
 def parse_weight_pct(value):
     """Parse an official weight, or ``None`` when the provider published none.
 
-    Deliberately identical in behaviour to ``mapping/proxy.py:parse_weight_pct``:
-    a missing weight is missing evidence, never a zero.
+    This evidence boundary accepts JSON numbers and strings only. The research
+    proxy parser also accepts objects with numeric text representations; keep
+    these distinct contracts. A missing weight is missing evidence, never zero.
     """
     if value is None or isinstance(value, bool):
         return None

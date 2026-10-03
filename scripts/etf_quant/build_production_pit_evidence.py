@@ -279,7 +279,6 @@ def main() -> int:
     # second, differently-dated write, which is precisely how a silent divergence
     # between the two documents was prevented from shipping.
     exposures, mappings, failures = {}, [], []
-    weight_packages: list[dict] = []  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
     effective = dict(sws_effective)
     floor_day = min(min(effective.values()), valid_from) if effective else valid_from
     for benchmark_code, vector in sorted(vectors.items()):

@@ -18,7 +18,7 @@ from ..domain.industry_level import ETF_QUANT_INDUSTRY_LEVEL_V1, default_taxonom
 from ..portfolio.policy import POLICY_B40_WITH_CASH, IndustryCandidate
 from ..runtime.exports import observed_time
 from ..runtime.storage import GateError, contained, digest, json_bytes
-from .liquidity import LIQUIDITY_SESSIONS, assess_liquidity, liquidity_window
+from .liquidity import LIQUIDITY_SESSIONS, LiquidityLookup, assess_liquidity, liquidity_window
 from .partial import select_mappings_partial
 from .proxy import OFFICIAL_WEIGHT, BenchmarkExposure, build_benchmark_exposure, parse_weight_pct
 from .registry import active
@@ -242,6 +242,7 @@ def select_pit_mappings(
     if window is None or execution_day is None:
         raise GateError("PIT_MAPPING_CALENDAR_BLOCKER")
     pools = {}
+    lookup = LiquidityLookup.build(provider.tables)
     provenance = {}
     diagnostics: list[dict[str, object]] = []
     for rank in rankings[:5]:
@@ -255,7 +256,7 @@ def select_pit_mappings(
             and active(row, execution_day, signal_at)
         ]
         for row in strict_rows:
-            liq = assess_liquidity(provider, row["etf_code"], window)
+            liq = assess_liquidity(provider, row["etf_code"], window, lookup=lookup)
             candidate = IndustryCandidate(
                 code,
                 row["industry_name"],
@@ -272,7 +273,9 @@ def select_pit_mappings(
                 liq.mean_amount_cny,
             )
             candidates.append(candidate)
-            provenance[(code, row["etf_code"])] = {
+            # The selector returns the same candidate object. Bind provenance
+            # to that exact evidence instance, not an ETF that may track another benchmark.
+            provenance[id(candidate)] = {
                 "evidence_id": row["source_sha256"],
                 "evidence_hash": row["source_sha256"],
                 "evidence_available_at": row["available_at"].isoformat(),
@@ -300,7 +303,7 @@ def select_pit_mappings(
                     current_records[key] = record
             for record in current_records.values():
                 purity = record.exposure.purity(code)
-                liq = assess_liquidity(provider, record.etf_code, window)
+                liq = assess_liquidity(provider, record.etf_code, window, lookup=lookup)
                 quality = (
                     record.exposure.weight_quality
                     if record.exposure.unmapped_weight == 0
@@ -322,7 +325,7 @@ def select_pit_mappings(
                     liq.mean_amount_cny,
                 )
                 candidates.append(candidate)
-                provenance[(code, record.etf_code)] = {
+                provenance[id(candidate)] = {
                     "evidence_id": record.evidence_id,
                     "evidence_hash": record.evidence_hash,
                     "evidence_available_at": record.available_at.isoformat(),
@@ -351,7 +354,7 @@ def select_pit_mappings(
     )
     entries = []
     for rank, candidate in zip(rankings[:5], selected):
-        evidence = provenance.get((candidate.l2_code, candidate.etf_code), {})
+        evidence = provenance.get(id(candidate), {})
         entries.append(
             {
                 "industry_code": candidate.l2_code,

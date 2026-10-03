@@ -173,7 +173,7 @@ def evaluate(
 def next_session(sessions, signal_date: date) -> date | None:
     """The first session strictly after *signal_date*, or None if unknown."""
     later = [s for s in sessions if s > signal_date]
-    return later[0] if later else None
+    return min(later) if later else None
 
 
 def evaluate_for_sessions(

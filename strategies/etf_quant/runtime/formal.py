@@ -16,6 +16,8 @@ CANDIDATE_HASH = "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb
 PIT_REGISTRY_HASH = "81cf6d44831736c81966d3f5275bb0fd0c7d56c4652320821e4fc34143f172dc"
 STRICT_REGISTRY_HASH = "37a9b81cbc07c3255d18b514eef733d4497f98cca19ba855f8626031a66afb37"
 BOOK_HASH = "ac730d6475528d494515eec841b7c49f8be55d667449fc8208f534058a907b79"
+# Historical readiness observation, never eligible for a retroactive formal signal.
+HISTORICAL_READINESS_DATE = date(2026, 9, 24)
 
 
 @dataclass(frozen=True)
@@ -85,7 +87,7 @@ def start_gate(provider, contract, now):
         return "WAITING_FOR_PIT_EVIDENCE"
     # A first forward signal may not replay the observation day's past close.
     earliest = available.astimezone(SHANGHAI).date() + timedelta(days=1)
-    if provider.cutoff < earliest or provider.cutoff == date(2026, 9, 24):
+    if provider.cutoff < earliest or provider.cutoff == HISTORICAL_READINESS_DATE:
         raise GateError("FORMAL_HISTORICAL_BACKFILL_PROHIBITED")
     return "ELIGIBLE"
 

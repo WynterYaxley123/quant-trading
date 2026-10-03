@@ -276,6 +276,15 @@ class ProxyPurity:
     weight_source_type: str
 
     @property
+    def largest_non_target_l2_code(self) -> str | None:
+        """Canonical internal name; serialized second_largest_l2_code stays compatible."""
+        return self.second_largest_l2_code
+
+    @property
+    def largest_non_target_l2_exposure(self) -> float:
+        return self.second_largest_l2_exposure
+
+    @property
     def dominance_margin(self) -> float:
         """Target exposure minus the next-largest industry's exposure.
 
@@ -307,7 +316,7 @@ class ProxyPurity:
 def assess_proxy_purity(exposure: BenchmarkExposure, target_l2_code: str) -> ProxyPurity:
     """Measure one (benchmark, target industry) pair.
 
-    Note that the second-largest industry *excluding the target* is the comparison that
+    The largest industry excluding the target is the comparison that
     matters for dominance: if the target is not the largest, the largest industry is the one
     the instrument actually tracks, and that is what the margin must be measured against.
     """
@@ -452,7 +461,21 @@ class ExecutionCandidate:
 
     @property
     def liquidity_ok(self) -> bool:
-        return self.liquidity_status == "LIQUIDITY_ADMISSION_PASS"
+        return self.liquidity_rejection_reason is None
+
+    @property
+    def liquidity_rejection_reason(self) -> str | None:
+        """No admission without both a passing verdict and finite positive amount."""
+        amount = self.mean_amount_cny
+        if (
+            self.liquidity_status != "LIQUIDITY_ADMISSION_PASS"
+            or isinstance(amount, bool)
+            or not isinstance(amount, (int, float))
+            or not math.isfinite(amount)
+            or amount <= 0
+        ):
+            return "LIQUIDITY_ADMISSION_BLOCKED"
+        return None
 
     def as_dict(self) -> dict:
         return {
@@ -487,8 +510,9 @@ def select_execution_candidate(candidates: list[ExecutionCandidate]) -> Executio
     if not pool:
         return None
     liquid = [c for c in pool if c.liquidity_ok]
-    if liquid:
-        pool = liquid
+    if not liquid:
+        return None
+    pool = liquid
     return sorted(
         pool, key=lambda c: (-c.target_l2_exposure, -(c.mean_amount_cny or 0.0), c.etf_code)
     )[0]
@@ -561,7 +585,7 @@ def solve_distinct_assignment(
       1. cover as many targets as possible;
       2. then maximise the *minimum* target exposure (nobody is carried by the average);
       3. then maximise the total target exposure;
-      4. then maximise the mean dominance margin;
+      4. then maximise the total dominance margin (equivalent to mean at equal coverage);
       5. then maximise traded amount.
 
     Step 5 is not decoration. Several ETFs track the same benchmark and therefore carry *identical*
@@ -614,7 +638,7 @@ def solve_distinct_assignment(
         chosen = best[full][5]
         return _summarise(list(chosen), candidates_by_target, "exact_subset_dp", [])
 
-    reachable = max(best, key=lambda m: (best[m][0], best[m][1], best[m][4]))
+    reachable = max(best, key=lambda m: best[m][:5])
     chosen = best[reachable][5]
     covered_targets = {t for t, _ in chosen}
     unmapped = [t for t in targets if t not in covered_targets]
@@ -687,7 +711,7 @@ def apply_cap(
 ) -> list[float]:
     """Enforce a single-name cap by redistributing excess to the uncapped names.
 
-    Redistribution is proportional to the *remaining* uncapped weights. If every name is
+    Redistribution is proportional to remaining capacity (cap minus weight). If every name is
     capped the excess cannot be placed and the function refuses rather than returning a
     portfolio that quietly violates either the cap or the sum-to-one contract.
     """
