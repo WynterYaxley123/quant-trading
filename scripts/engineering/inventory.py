@@ -86,8 +86,39 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
         if b"\r\n" in raw:
             crlf.append(name)
         content = raw.decode("utf-8-sig")
+        pattern_spans: dict[int, tuple[int, int]] = {}
+        if name == "scripts/engineering/inventory.py":
+            for definition in ast.walk(ast.parse(content)):
+                if (
+                    isinstance(definition, ast.Assign)
+                    and any(
+                        isinstance(target, ast.Name) and target.id == "MACHINE_PATH"
+                        for target in definition.targets
+                    )
+                    and isinstance(definition.value, ast.Call)
+                    and isinstance(definition.value.func, ast.Attribute)
+                    and isinstance(definition.value.func.value, ast.Name)
+                    and definition.value.func.value.id == "re"
+                    and definition.value.func.attr == "compile"
+                    and definition.value.args
+                    and isinstance(definition.value.args[0], ast.Constant)
+                    and isinstance(definition.value.args[0].value, str)
+                ):
+                    literal = definition.value.args[0]
+                    for row in range(literal.lineno, (literal.end_lineno or literal.lineno) + 1):
+                        pattern_spans[row] = (
+                            literal.col_offset if row == literal.lineno else 0,
+                            (literal.end_col_offset or 0)
+                            if row == literal.end_lineno
+                            else len(content.splitlines()[row - 1]),
+                        )
         for line, value in enumerate(content.splitlines(), 1):
-            if MACHINE_PATH.search(value):
+            matches = list(MACHINE_PATH.finditer(value))
+            if matches:
+                span = pattern_spans.get(line)
+                only_pattern = span is not None and all(
+                    span[0] <= match.start() and match.end() <= span[1] for match in matches
+                )
                 historical = document_classes.get(name, "").startswith(
                     "HISTORICAL_"
                 ) or name.startswith("docs/archive/")
@@ -99,7 +130,7 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
                     else "ACTIVE_DOC"
                     if path.suffix == ".md"
                     else "PATTERN_DEFINITION"
-                    if name == "scripts/engineering/inventory.py"
+                    if only_pattern
                     else "ACTIVE_SOURCE"
                     if path.suffix in {".py", ".ts", ".tsx", ".js", ".mjs", ".ps1", ".sh"}
                     else "ACTIVE_CONFIG"

@@ -1,12 +1,12 @@
 # Repository engineering health
 
-V3 addresses the reproduced engineering findings against base `1e2ffbd4f75120df2511472662dcf7dcd308b0d6`. Detailed finding classifications, measurement locations, synthetic scales and source hashes are in the [health manifest](../../reports/engineering/repository-health.json). Status: LOCAL_ACCEPTANCE_PASS_HOSTED_CI_PENDING.
+V3 addresses the reproduced engineering findings against base `1e2ffbd4f75120df2511472662dcf7dcd308b0d6`. Detailed finding classifications, measurement locations, synthetic scales and source hashes are in the [health manifest](../../reports/engineering/repository-health.json). Status: IMPLEMENTATION_ACCEPTED_DELIVERY_VIA_PR_METADATA.
 
 ## Baseline and measured state
 
 | Measure | Baseline | Current |
 |---|---:|---:|
-| Python files / LOC (comments and blanks included) | 222 / 49138 | 239 / 50950 |
+| Python files / LOC (comments and blanks included) | 222 / 49138 | 239 / 50999 |
 | Functions / complete annotated signatures | 1963 / 572 (29.14%) | 2032 / 595 (29.28%) |
 | Function docstrings | 550 (28.02%) | 561 (27.61%) |
 | Raw Mypy diagnostics / affected files | 411 / 29 | 168 / 22 |
@@ -77,8 +77,8 @@ Qualified AST comparisons cover relocated methods and duplicate function names; 
 | ETF API/security / Windows launcher | 117 / 2 passed |
 | Synthetic demo / existing scale benchmark | pass |
 | Ruff / staged Mypy / pre-commit / literal links | pass |
-| Frozen image ETF acceptance | Final run in progress; historical/source certificates reread only |
-| GitHub Actions | Pending PR verification |
+| Frozen image ETF acceptance | 659 passed, 1 skipped |
+| GitHub Actions | Six checks passed for the validated implementation; final PR/main state is verified through GitHub metadata |
 
 External Shadow comparison inspects filenames, sizes and SHA256 only: 6 files unchanged; epoch/signal/intent/fill deltas are all 0. The frozen image content ID is unchanged. Start-time samples refer to different container identities and cannot establish lifecycle stability; this task issued no lifecycle commands to deployed services. Frozen factors, model/Ridge specification, ranking, H10/H40/H120 fusion, sizing, B40 cash, PIT and T/T+1 contracts remain unchanged. CNEquity stays pinned; no upstream edits, formal one-shot, market-data backtest, broker, real order, leverage, short or sealed performance read occurred. Absent quantitative metrics remain null.
 
@@ -87,3 +87,7 @@ External Shadow comparison inspects filenames, sizes and SHA256 only: 6 files un
 No known correctness/security blocker remains after local checks. Residual debt is the 168 reviewed legacy Mypy diagnostics across 22 files, partial signature/docstring coverage, larger cohesive legacy modules, warm-only process-local prefix reuse with cold overhead, mandatory full lake byte hashing and one labelled Windows path compatibility default. These are reported without claiming repository-wide strict typing or formal runtime speedups.
 
 GitHub PR metadata is delivery authority. The tracked report records base and the explicitly validated implementation commit, plus PR number/URL when created. A metadata-only report commit can follow without changing validated source. The actual final main SHA is emitted after normal merge only in the console/untracked delivery state; this file cannot name its own containing merge commit.
+
+Validated implementation: `88bb36f2867838e0e60a5c34a0d7f1be1de3231f`.
+
+PR: [8](https://github.com/WynterYaxley123/quant-trading/pull/8).

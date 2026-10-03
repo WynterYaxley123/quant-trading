@@ -33,7 +33,9 @@ def test_stdout_review_follows_semantics_and_fails_after_directory_move_or_dupli
 def test_archival_alias_never_hides_active_literal_404(tmp_path):
     (tmp_path / "config/engineering").mkdir(parents=True)
     (tmp_path / "docs").mkdir()
-    (tmp_path / "docs/current.md").write_text("[old](old.md) [root](/README.md)")
+    (tmp_path / "docs/current.md").write_text(
+        "[old](old.md) [root](/README.md) [reference][missing]\n[missing]: missing.md\n"
+    )
     (tmp_path / "docs/archive.md").write_text("archive")
     (tmp_path / "README.md").write_text("readme")
     mapping = {
@@ -49,7 +51,8 @@ def test_archival_alias_never_hides_active_literal_404(tmp_path):
     (tmp_path / "config/engineering/documentation-map.json").write_text(json.dumps(mapping))
     result = audit(tmp_path)
     assert result["broken_active_links"] == [
-        {"document": "docs/current.md", "target": "docs/old.md"}
+        {"document": "docs/current.md", "target": "docs/old.md"},
+        {"document": "docs/current.md", "target": "docs/missing.md"},
     ]
     assert result["historical_alias_references"] == 1
 
@@ -110,6 +113,7 @@ def test_inventory_definitions_count_complete_signatures_and_all_path_scopes(tmp
         "README.md": "Z:/docs\n",
         "Dockerfile": "# Z:/config\n",
         "tests/fixture.py": "# Z:/fixture\n",
+        "scripts/engineering/inventory.py": 'import re\nMACHINE_PATH = re.compile("QuantForge")\nROOT = "Z:/hidden"\nMACHINE_PATH = re.compile("QuantForge"); OTHER = "Z:/same-line"\n',
         "pyproject.toml": "[tool.ruff]\n",
         "config/engineering/mypy-baseline.json": "{}",
         "reports/etf_quant/autonomous_code_integrity_v1.json": '{"files":{}}',
@@ -117,15 +121,25 @@ def test_inventory_definitions_count_complete_signatures_and_all_path_scopes(tmp
         p = tmp_path / name
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(text)
-    result = measure(tmp_path, ["library.py", "README.md", "Dockerfile", "tests/fixture.py"])
+    result = measure(
+        tmp_path,
+        [
+            "library.py",
+            "README.md",
+            "Dockerfile",
+            "tests/fixture.py",
+            "scripts/engineering/inventory.py",
+        ],
+    )
     assert result["functions"] == 2
     assert result["fully_annotated_functions"] == 1
     assert result["function_docstrings"] == 1
     assert result["machine_path_counts"] == {
-        "ACTIVE_SOURCE": 1,
+        "ACTIVE_SOURCE": 3,
         "ACTIVE_DOC": 1,
         "ACTIVE_CONFIG": 1,
         "TEST_FIXTURE": 1,
+        "PATTERN_DEFINITION": 1,
     }
 
 

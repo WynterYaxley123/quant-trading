@@ -1,11 +1,11 @@
 {
   "contract": "PUBLIC_REPOSITORY_HEALTH_V3",
-  "status": "LOCAL_ACCEPTANCE_PASS_HOSTED_CI_PENDING",
+  "status": "IMPLEMENTATION_ACCEPTED_DELIVERY_VIA_PR_METADATA",
   "delivery": {
     "BASE_SHA": "1e2ffbd4f75120df2511472662dcf7dcd308b0d6",
-    "VALIDATED_IMPLEMENTATION_SHA": null,
-    "PR_NUMBER": null,
-    "PR_URL": null,
+    "VALIDATED_IMPLEMENTATION_SHA": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f",
+    "PR_NUMBER": 8,
+    "PR_URL": "https://github.com/WynterYaxley123/quant-trading/pull/8",
     "DELIVERY_IDENTITY_SOURCE": "GITHUB_PR_METADATA"
   },
   "baseline": {
@@ -71,7 +71,7 @@
   },
   "after": {
     "python_files": 239,
-    "python_lines": 50950,
+    "python_lines": 50999,
     "functions": 2032,
     "fully_annotated_functions": 595,
     "annotation_percent": 29.28,
@@ -175,7 +175,7 @@
       "ACTIVE_CONFIG": 1,
       "HISTORICAL": 45,
       "PATTERN_DEFINITION": 1,
-      "TEST_FIXTURE": 21
+      "TEST_FIXTURE": 22
     },
     "machine_path_locations": [
       {
@@ -490,32 +490,37 @@
       },
       {
         "path": "tests/test_measurement_contracts.py",
-        "line": 103,
+        "line": 106,
         "category": "TEST_FIXTURE"
       },
       {
         "path": "tests/test_measurement_contracts.py",
-        "line": 104,
-        "category": "TEST_FIXTURE"
-      },
-      {
-        "path": "tests/test_measurement_contracts.py",
-        "line": 109,
-        "category": "TEST_FIXTURE"
-      },
-      {
-        "path": "tests/test_measurement_contracts.py",
-        "line": 110,
-        "category": "TEST_FIXTURE"
-      },
-      {
-        "path": "tests/test_measurement_contracts.py",
-        "line": 111,
+        "line": 107,
         "category": "TEST_FIXTURE"
       },
       {
         "path": "tests/test_measurement_contracts.py",
         "line": 112,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 113,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 114,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 115,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 116,
         "category": "TEST_FIXTURE"
       }
     ],
@@ -886,7 +891,7 @@
         "context": "main",
         "ast_sha256": "6bcc6df0ff3a504503559ae7a43beb82f66a3d4b1e1b28b9691164ce75905eec",
         "occurrence": 0,
-        "line": 63,
+        "line": 67,
         "category": "REPORT_OUTPUT",
         "reason": "Literal-link and archived-byte audit JSON"
       },
@@ -2261,9 +2266,9 @@
       "research/sector_development_baseline.py": "06c9011f6eb3a526fd56863155b7334504724f0126fdbfb943070cdf13d76b22",
       "scripts/Start-EtfQuantConsole.ps1": "94fd661dbb0bc83546598441600f47362d1ebb87ca1ed7816aadd4cac83b11fb",
       "scripts/data/init_hikyuu_data.py": "87568b15f38812546a73f55fe41193ff4ab43c0c6614738adca660bb92d003d0",
-      "scripts/engineering/inventory.py": "6c19bd19116650bf89c02ef023d27d1c07d4b7b3915963260e7c8cb87b7432f8",
+      "scripts/engineering/inventory.py": "b92c512ff2067866b6b2525dd40a73662e3cdf49aff5436d14fd6a5c3b6f45ec",
       "scripts/engineering/prints.py": "fc54985abe3ec0a19e7c7298c12d72c9748ed5899f73efc3788d324675bc4dcc",
-      "scripts/engineering/references.py": "31d458b32965ed414df74976553b3d7c07674bc740528b1e3132406a5dbb14f9",
+      "scripts/engineering/references.py": "142888ba1fb51e48d3d8586184942da4f7ae634316bf29e88c290f6e019be8f7",
       "scripts/etf_quant/build_production_pit_evidence.py": "1865633ffe91c3726574aa8fba685e105c7dafcac0cbcf95d8bc90c7b3389345",
       "scripts/etf_quant/build_production_pit_manifest.py": "dfcbf36099078de6477f67454659a92ca8eb49ddba1cd31a2ca9e4801b3583cf",
       "scripts/etf_quant/build_production_pit_top5_status.py": "7e89d3bef89dcdb26586b9b1b88050145a3f28feb4cc1778ce56e4825a67ba7b",
@@ -2358,10 +2363,10 @@
       "tests/etf_quant/test_v3_contracts.py": "2522a511802d040089a07d81105754ac6a369f914daf922067e3337e6462394f",
       "tests/performance/test_core.py": "02b09c1ea3f5eabe514cb699338e1a593d985b28d8dd4d1843bdc6124c09e85f",
       "tests/performance/test_lake.py": "bff95cdc63edd84496d733b12b53c8bee30667cb7e2a50cd98b03cf7eee97bcc",
-      "tests/test_measurement_contracts.py": "a0de22dcd71c63ff5ea629c39de67c485d280911daf265d7580093d08f4207b7",
+      "tests/test_measurement_contracts.py": "7145d74cdd80c4d2c9e82910b19e2e1a6152722704977a4ad7d7fc6a1bc562e8",
       "tests/test_repository_contracts.py": "d8c1c62f5410e9605b39069700c1f8f52d40ffea28d3d00d1fe0ec34ae7b35ac"
     },
-    "certificate_sha256": "5678059ec896b5b5f742b3d7d55b997d59ef51c06c7bdd66a69fdfd055e16152",
+    "certificate_sha256": "f00b91c1cdb424fca1a34354cbe80b187aec804b43ed60048c4782a29603bbdd",
     "transition_reason": "Confirmed admission/provenance/calendar bugs; causal synthetic-equivalent indexes; strict Origin/TLS/configuration; neutral application/data boundaries; measurement and typing repairs.",
     "regression_evidence": [
       "tests/etf_quant/test_v3_contracts.py",
@@ -3363,7 +3368,14 @@
       "warnings": 4,
       "seconds": 86.11
     },
-    "frozen_acceptance": null,
+    "frozen_acceptance": {
+      "status": "PASS",
+      "passed": 659,
+      "skipped": 1,
+      "deselected": 0,
+      "warnings": 0,
+      "seconds": 732.19
+    },
     "frontend": {
       "passed": 127,
       "skipped": 3,
@@ -3394,7 +3406,23 @@
     "ruff_lint": "PASS",
     "ruff_format": "PASS",
     "production_format_exclusions": 0,
-    "staged_mypy": "PASS"
+    "staged_mypy": "PASS",
+    "github_actions": {
+      "status": "PASS",
+      "validated_implementation_sha": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f",
+      "run_id": 37109651004,
+      "url": "https://github.com/WynterYaxley123/quant-trading/actions/runs/37109651004",
+      "jobs": [
+        "hygiene",
+        "python-portable",
+        "frontend",
+        "research-api",
+        "etf-api-security",
+        "windows-launcher"
+      ],
+      "all_six_jobs": "SUCCESS",
+      "final_pr_and_main_authority": "GITHUB_PR_METADATA"
+    }
   },
   "security": {
     "high_or_critical_confirmed_findings": 2,
@@ -3410,8 +3438,8 @@
       "reviewed_legacy_dummy_template_sha256": "2077e82fcc7bfbccf7eb0f671d597addc90ff9221fae04edef07a81d1178dd2a",
       "tracked_files": 545,
       "new_files": 0,
-      "history_commits": 231,
-      "history_blobs_scanned": 1387,
+      "history_commits": 236,
+      "history_blobs_scanned": 1464,
       "tracked_secret_candidates": 0,
       "new_secret_candidates": 0,
       "history_secret_candidates": 0,
@@ -3431,7 +3459,8 @@
       "credential_values_printed": false,
       "firewall_policy": "ACTIVE_V3_INTEGRITY_WITH_IMMUTABLE_V1_V2_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES",
       "public_licensing_review": "MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE"
-    }
+    },
+    "audited_commit": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f"
   },
   "shadow": {
     "comparison": "PASS_IDENTICAL_FILENAMES_SIZES_SHA256",
