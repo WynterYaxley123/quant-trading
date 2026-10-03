@@ -1,6 +1,6 @@
 # quant-trading
 
-`quant-trading` is a quantitative research system with one current product:
+`quant-trading` is a quantitative research/software project with one frozen product:
 **ETF-Quant V1**, a Chinese equity ETF research and forward Shadow workflow that
 ranks industries first, then maps them to executable ETFs. It turns dated factual inputs into industry rankings, evidence-backed ETF
 mappings and an observable simulated portfolio. The dashboard reads verified artifacts.
@@ -10,12 +10,19 @@ created.** There are no Shadow performance results. Historical Shenwan/F1 resear
 the product's research lineage. The project is simulation/Shadow only, without brokers,
 real orders, leverage or shorting; sealed research phases remain inaccessible.
 
+**ETF-Quant V2 Research** is an independent long-history statistical rebuild.
+Its strict-PIT admission is currently blocked by unproven historical membership
+availability and completeness in the unchanged CNEquity boundary. No V2 candidate
+has been selected, and neither V1 nor V2 Shadow has started. The [V2 protocol](docs/etf-quant-v2-protocol.md)
+and [factual research status](docs/etf-quant-v2-development.md) distinguish observed
+data coverage from admissible research history.
+
 ## Strategy at a glance
 
 Three independent Ridge models rank Shenwan Level-2 industries at 10, 40 and 120
 session horizons. Population z-scores combine them at 0.25 / 0.50 / 0.25. The original
-Top5 receives capped softmax target weights. Strict ETF mappings take precedence;
-B40 proxies require complete official weights, at least 40% target exposure, dominance,
+five highest-ranked industries receive capped softmax target weights. Direct tracking ETF mappings take precedence;
+industry-exposure proxies require complete official weights, at least 40% target exposure, dominance,
 PIT availability and liquidity. An unexecutable slot retains its original weight as cash.
 Finalized T-close signals can only receive future T+1 simulated execution.
 
@@ -25,6 +32,8 @@ ranking is mapped to executable ETFs, preserving unexecutable slots as cash. Thi
 implemented in the [runtime](strategies/etf_quant/runtime/shadow.py) and covered by
 [mapping regressions](tests/etf_quant/test_proxy_partial_contract.py).
 See the [frozen strategy contract](docs/strategy.md). No profitability claim is made.
+The historical policy identifier `B40_WITH_CASH` remains compatible; see the
+[canonical glossary](docs/glossary.md).
 
 ## Data-free quick start
 
@@ -68,6 +77,7 @@ observations. Their distinct trust boundaries are explained in [architecture](do
 | --- | --- |
 | strategies/etf_quant/ | Current product contracts and runtime |
 | strategies/sw_sector_rotation/, research/ | Earlier research lineage |
+| research/etf_quant_v2/ | Independent V2 admission, protocol and synthetic-tested research primitives |
 | src/ | Data/provider and notification infrastructure |
 | services/ | External source transport, runner and two read-only APIs |
 | dashboard/ | Shared observation UI |
@@ -95,4 +105,5 @@ the [historical archive](docs/archive/README.md).
 
 Source code uses [MIT](LICENSE); [third-party notices](THIRD_PARTY_NOTICES.md) apply.
 Market-data redistribution rights remain separate and unverified. The repository
-does not distribute market datasets.
+does not distribute market datasets. The [data-rights matrix](docs/data/market_data_policy.md)
+records provider-specific evidence and required action.

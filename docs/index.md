@@ -14,5 +14,9 @@ Start with the [README](../README.md), then choose the guide for your task.
 | [Research status](research-status.md) | Current status and result limitations |
 
 [Contributing](../CONTRIBUTING.md), [security reporting](../SECURITY.md),
-[agent rules](../AGENTS.md), [remediation report](engineering/repository-health.md)
+[repository rules](../AGENTS.md), [remediation report](engineering/repository-health.md)
 and [historical archive](archive/README.md).
+
+[Canonical glossary](glossary.md), [V2 protocol](etf-quant-v2-protocol.md),
+[V2 research status](etf-quant-v2-development.md) and
+[data-rights matrix](data/market_data_policy.md).

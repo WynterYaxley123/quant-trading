@@ -1,18 +1,19 @@
 # ETF-Quant V1 contract
 
-The frozen candidate selects `B40_WITH_CASH`. Configuration and regression tests are
+The frozen candidate uses a 40% industry-exposure proxy policy with cash fallback
+(historical identifier `B40_WITH_CASH`). Configuration and regression tests are
 the executable authority; this guide summarizes them without proposing new rules.
 
 | Concern | Frozen rule |
 | --- | --- |
 | Universe | Admitted Shenwan 2021 Level-2 industries; explicit taxonomy |
-| Input | Internal equal-weight Source-C constituent returns |
+| Input | Internal equal-weight constituent returns (historical Source-C identity) |
 | Factors | H10: d10/p5/align/vc/dd20; H40/H120: frozen 19-factor registry |
 | Model | Independent Ridge, alpha 0.01, raw X |
 | Training | Six months before each mature label cutoff; at least 30 valid dates |
 | Horizons/fusion | 10/40/120 sessions; population z-score; 0.25/0.50/0.25 |
 | Selection | Original Top5; deterministic ties; no lower-ranked replacement |
-| Mapping | Strict > Proxy > Cash; complete evidence and liquidity |
+| Mapping | Direct tracking > industry proxy > cash; complete evidence and liquidity |
 | B40 proxy | At least 40% target exposure; target largest; available by decision |
 | Sizing | Frozen capped softmax; 35% single-ETF target cap |
 | Cash | Unallocated execution capacity; original skipped weight retained |
@@ -33,3 +34,7 @@ strict precedence, collisions and deterministic fallback; the evaluator takes se
 
 Historical Source-C membership is not silently upgraded to strict historical PIT.
 Later mapping evidence cannot be backdated; missed T+1 is blocked. See [data and PIT](data-and-pit.md).
+
+V2 research does not change these rules. Its independent specification and current
+admission blocker are in the [V2 protocol](etf-quant-v2-protocol.md). The
+[glossary](glossary.md) defines public terms and historical compatibility identifiers.

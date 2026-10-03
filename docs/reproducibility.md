@@ -17,6 +17,11 @@ its hash/source hashes, transition reason, changed files, candidate pin, base co
 regression evidence and current source hashes. It is the current source authority.
 Never overwrite an old certificate to make current code appear historically certified.
 
+The V2 prerequisite transition is `reports/engineering/etf-quant-v2-integrity.json`.
+It appends the byte-pinned release-hotfix manifest, preserves the V1 candidate hash
+and records synthetic/maintainer regression evidence. Its research status explicitly
+records the strict-PIT blocker; source integrity does not certify historical data.
+
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata
 through it without altering immutable artifacts. Archived instructions are historical.

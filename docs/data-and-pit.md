@@ -2,7 +2,8 @@
 
 CNEquity is external and pinned. Raw/curated/runtime market data does not belong in Git.
 Factual exports carry hashes, schemas, cutoff, retrieval instants, adjustments and
-source identity. Source-C is an internal equal-weight series, not an official index.
+source identity. The internal equal-weight constituent series (historical Source-C
+identity) is not an official index.
 
 Effective date, issuer publication, system observation and system availability are
 different facts. Later observation never proves earlier availability. Official tracking,
@@ -21,3 +22,10 @@ for invalid instants; compatibility requires preserving it.
 Research API reads at most 32 MiB per artifact, with descriptor stat and bounded reads.
 Approved artifact hash keys are strict. MIT source licensing grants no market-data rights;
 redistribution clearance remains unverified. See [market-data policy](data/market_data_policy.md).
+
+V2 additionally requires complete historical membership and dated publication/
+availability evidence before any market-data model comparison. A current interval
+workbook or reconstructed monthly snapshot is insufficient. Unknown historical
+denominators keep coverage ratios null; absent bars/amounts stay missing. V2 roots
+must remain separate from V1 and outside Git. See the [V2 protocol](etf-quant-v2-protocol.md)
+and [glossary](glossary.md).

@@ -10,3 +10,9 @@ original scope/budget/limits under the archive. Validation and Final OOS remain 
 Forward-only PIT availability and genuine future finalized T/T+1 processing govern
 later cycles. Synthetic fixtures and engineering portfolios are not formal history.
 Absent result metrics remain null, without substituted zeros or estimates.
+
+ETF-Quant V2 Research remains blocked on strict historical membership admission.
+Observed history reaches back multiple years, but availability/completeness evidence
+does not support formal candidate selection. No V2 market-data experiments or
+Development-selected candidate exist; both holdouts remain unopened and V2 Shadow
+is not ready or started. See the [V2 status](etf-quant-v2-development.md).

@@ -28,6 +28,7 @@ jobs:
       - run: python -m pip install pre-commit==4.3.0
       - run: pre-commit run --all-files
       - run: node services/etf-quant-runner/security-audit.mjs
+      - run: python -m scripts.engineering.naming
 
   python-portable:
     runs-on: ubuntu-latest

@@ -4,7 +4,11 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Protocol
 
-from ..config import INTEGRATION_DEPENDENCY_DEFERRED, PENDING_DEEPSEEK_CONTRACT, PENDING_MIMO_AUDIT
+from ..config import (
+    INTEGRATION_DEPENDENCY_DEFERRED,
+    MAPPING_CONTRACT_PENDING,
+    PUBLIC_INTEGRATION_REVIEW_PENDING,
+)
 from ..domain import (
     BenchmarkId,
     IndustryRanking,
@@ -75,8 +79,8 @@ class RuntimeState:
     product: Product = Product.ETF_QUANT
     mode: RunMode = RunMode.SIMULATION_ONLY
     phase: str = "FOUNDATION_ONLY"
-    data_contract: str = PENDING_DEEPSEEK_CONTRACT
-    public_integration: str = PENDING_MIMO_AUDIT
+    data_contract: str = MAPPING_CONTRACT_PENDING
+    public_integration: str = PUBLIC_INTEGRATION_REVIEW_PENDING
     integration_state: str = INTEGRATION_DEPENDENCY_DEFERRED
     broker_enabled: bool = False
     real_order_path: bool = False
@@ -85,8 +89,8 @@ class RuntimeState:
         simulation_only(self.product, self.mode)
         if (
             self.phase != "FOUNDATION_ONLY"
-            or self.data_contract != PENDING_DEEPSEEK_CONTRACT
-            or self.public_integration != PENDING_MIMO_AUDIT
+            or self.data_contract != MAPPING_CONTRACT_PENDING
+            or self.public_integration != PUBLIC_INTEGRATION_REVIEW_PENDING
             or self.integration_state != INTEGRATION_DEPENDENCY_DEFERRED
             or self.broker_enabled is not False
             or self.real_order_path is not False

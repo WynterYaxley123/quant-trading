@@ -115,8 +115,8 @@ describe('ETF Quant independent product',()=>{
     const readiness=notReachedReadiness();
     setEtfQuantPortForTesting({async getStatus(){return data.status;},async getSnapshot(){return data;},async getReadiness(){return readiness;}});
     await renderApp('/etf-quant/mappings');
-    expect(await screen.findByRole('heading',{name:/B40_WITH_CASH/})).toBeInTheDocument();
-    expect(screen.getByText(/Cash 不是 ETF/)).toBeInTheDocument();
+    expect(await screen.findByRole('heading',{name:/40% 行业敞口代理与现金回退/})).toBeInTheDocument();
+    expect(screen.getByText(/现金不是 ETF/)).toBeInTheDocument();
     expect(screen.getByRole('table',{name:'PIT 执行槽（含 Cash）'})).toBeInTheDocument();
     expect(screen.queryByText('Shadow 已启动')).not.toBeInTheDocument();
   });

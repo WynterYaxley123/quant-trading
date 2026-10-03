@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BASELINE = ROOT / "config/engineering/mypy-baseline.json"
 ERROR = re.compile(r"^(.+?):\d+(?::\d+)?: error: (.+)  \[([^]]+)\]$")
 STRICT_PATHS = (
+    "research/etf_quant_v2/",
     "scripts/engineering/",
     "examples/",
     "src/data/schema.py",

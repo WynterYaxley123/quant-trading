@@ -1,227 +1,38 @@
-# 行情数据政策（Market Data Policy）
-
-- 生效日期：2026-09-19
-- 适用范围：`src/data/` 公共数据层及其全部下游（策略、回测）
-- 状态：**已生效，强制**。任何违反本政策的代码不应合入。
-
-本文件回答任务书第九节的全部问题：复权口径、停牌处理、涨跌停处理、
-交易日历统一、缺失数据处理。所有规则都遵循同一条底线：
-
-> **宁可报错，不可静默伪造。**
-
----
-
-## 1. 复权口径
-
-### 1.1 当前状态：**未复权（不复权 / 原始成交价）**
-
-本轮通过 pytdx 导入的日线是**未经复权调整的原始价格**。
-`hikyuu.data.pytdx_to_h5.import_data` 不写权息数据，
-`stkWeight` 表在当前数据集中为空。
-
-### 1.2 影响与限制
-
-- **除权除息日会出现价格跳空**，不是真实盈亏。ETF 分红频率低，影响有限，
-  但**不能忽略**。
-- 因此：**本轮回测结果不得用于评估策略真实盈利能力**，
-  仅用于验证「数据 → 策略 → Hikyuu → 结果」链路是否打通。
-- 跨除权日的长周期收益计算（如 120 日 forward label）**存在偏差**。
-
-### 1.3 明确禁止
-
-- ❌ 禁止把未复权价格当作复权价格使用而不声明。
-- ❌ 禁止用「前复权」口径做回测中信号与成交价（前复权会随新的除权事件
-  改变历史价格，造成未来信息泄漏）。
-- ❌ 禁止在未引入权息数据前，声称回测结果达到生产可用标准。
-
-### 1.4 后续路径（本轮不实施）
-
-引入权息数据后，应采用**后复权**（后向复权）做回测：
-后复权价格不随新事件改动历史，是无泄漏回测的正确口径。
-导入路径为 `hikyuu.data.weight_to_sqlite`（本轮未验证）。
-
-### 1.5 ETF 与股票的差异
-
-| 资产 | 分红频率 | 未复权偏差 | 本轮处理 |
-|---|---|---|---|
-| ETF | 低（部分 ETF 年度分红） | 小但存在 | 使用未复权，**记录在 metadata** |
-| 股票 | 高（年度+中期） | 显著 | 本轮不使用股票作为交易标的 |
-
----
-
-## 2. 停牌处理
-
-### 2.1 原则：**停牌日不存在行情记录，不补不插**
-
-pytdx 返回的日线在停牌期间**没有 K线记录**。本数据层不做任何补齐：
-
-- ❌ 不 forward-fill 停牌日价格（会伪造成交、掩盖流动性风险）。
-- ❌ 不 backward-fill。
-- ❌ 不插入 volume=0 的假行（那会被误认为「有交易但无量」）。
-
-### 2.2 表现
-
-停牌期间该标的的 canonical frame **直接缺失这些日期**。
-横截面策略在 `align_columns()` 时自然对齐到交集日期。
-
-### 2.3 `suspended` 列
-
-canonical schema 预留了 `suspended` 列，但**当前 provider 不填充它**
-（pytdx 日线不含停牌标记）。若未来需要，必须从专门的停牌数据源导入，
-不得通过「价格未变动」等启发式推断停牌。
-
-### 2.4 回测层的责任
-
-Hikyuu 回测中若某标的在调仓日无行情，Hikyuu 自身会跳过该标的。
-**策略层不得在无行情时假设该标的有价格。**
-
----
-
-## 3. 涨跌停处理
-
-### 3.1 当前状态：**不建模**
-
-本轮 Hikyuu 回测**不模拟涨跌停限制**：即使某 ETF 当日涨停，
-回测仍可能假设可以买入。这会**高估**策略收益。
-
-### 3.2 记录要求
-
-回测 metadata 必须显式记录 `limit_up_down_modeled: false`。
-**不得**让它看起来像已建模。
-
-### 3.3 为什么 ETF 影响相对小
-
-宽基 ETF（如 510300）流动性极好，涨跌停极少发生；
-但行业 ETF（如 512660 军工、159745 建材）在极端行情下可能出现
-大幅波动。**本轮不做精细建模，但必须在报告中声明。**
-
-### 3.4 后续路径（本轮不实施）
-
-需要在 `System` 的买入/卖出条件中检查当日
-`close == 涨停价` 则拒绝成交。涨停价计算依赖前一交易日收盘价与
-交易所规则（主板 10%、创业板/科创板 20%）。本轮不实现。
-
----
-
-## 4. 交易日历统一
-
-### 4.1 唯一来源
-
-**项目内所有组件使用同一个交易日历**：由
-`src.data.calendar.TradingCalendar` 提供。
-
-### 4.2 日历的构造路径（实测）
-
-| 路径 | 实测结果 | 采用 |
-|---|---|---|
-| `StockManager.get_trading_calendar(q, 'SH')` | **返回空**（Market.lastDate 无法作为基准） | ❌ 不用 |
-| `StockManager.is_holiday(date)` | 正确（2024-01-01→True，01-02→False） | ✅ 辅助 |
-| `KData.get_datetime_list()` | 正确（自动跳过周末与休市） | ✅ **主路径** |
-
-`TradingCalendar` 默认从**覆盖最长的标的**的 K线日期序列构造，
-**不取多标的并集** —— 并集会把某标的的停牌日误当成全市场交易日。
-
-### 4.3 时点安全
-
-- `TradingCalendar.shift(d, n)` **越界抛 IndexError，不截断到边界**。
-  静默截断会把「数据不足」伪装成「数据充足」，
-  在计算 label 边界时造成严重错误。
-- `TradingCalendar.position(d)` **非交易日抛 KeyError，不猜测临近交易日**。
-
-### 4.4 与策略的关系
-
-`SWSectorRotationCore.boundaries()` 接收 calendar 参数。
-该 calendar **必须**来自本数据层，不得由策略自行下载或构造，
-以保证训练/预测边界的一致性。
-
----
-
-## 5. 缺失数据处理
-
-### 5.1 分层规则
-
-| 层级 | 规则 |
-|---|---|
-| **provider** | 无数据的标的不返回（不伪造空行） |
-| **loader** | 记录进 `LoadResult.missing`，不静默丢弃 |
-| **schema 校验** | 必需列缺失 → 抛 `DataIntegrityError` |
-| **策略** | 自行决定是否 ffill（**必须显式**并记录） |
-| **回测** | 无行情则不成交 |
-
-### 5.2 严禁的填充行为
-
-- ❌ 价格 forward fill（伪造成交，掩盖停牌）
-- ❌ 用未来价格 backward fill（时点泄漏）
-- ❌ 用当日全市场均值填补（凭空造数据）
-- ❌ 把 NaN 静默替换为 0（0 是有效价格，语义完全不同）
-
-### 5.3 允许的填充行为（需显式调用并记录）
-
-- ✅ **成交量/成交额**在使用前填 0（无成交即 0，语义正确）——
-  但必须在策略代码中显式写出，不得在数据层默认执行。
-- ✅ 因子计算窗口不足时返回 NaN，由 `dropna` 剔除（策略现有做法）。
-
-### 5.4 `validate_frame` 的默认严格度
-
-`validate_frame()` 默认**检查价格与成交量列无任何 NaN**，
-一旦发现即报错。这是刻意的：
-如果数据层静默容忍 NaN，问题会推迟到策略层以「信号异常」的形式暴露，
-难以定位。
-
-需要容忍 NaN 的场景（如因子窗口预热期）应使用
-`validate_frame(..., check_finite=False)` 并**在代码注释中说明原因**。
-
----
-
-## 6. 数据完整性约束（强制）
-
-任何进入策略的 frame 必须满足：
-
-1. 必需列齐全：`date, symbol, open, high, low, close, volume`
-2. `date` 升序、无重复
-3. `low <= min(open, close) <= max(open, close) <= high`
-4. 价格与成交量列无 NaN / inf
-
-违反任一项 → `DataIntegrityError`，**流程终止**。
-
----
-
-## 7. 时点（Point-in-Time）安全
-
-### 7.1 数据层保证
-
-- provider 只返回**已发生**的行情，不返回未来数据。
-- `load_panel(request)` 的 `end` 参数由调用方显式给出，
-  数据层不擅自扩展到最新日期。
-
-### 7.2 策略层责任（已有护栏）
-
-`strategies/sw_sector_rotation/src/common/temporal_integrity.py`
-提供 13 项时点护栏（`as_of`、`temporal_boundaries`、purge 逻辑）。
-本轮**未修改**该模块，也**不得**修改。
-
-### 7.3 已知风险点
-
-- **未复权价格**（第 1 节）在长周期 label 上可能引入偏差，
-  但不构成时点泄漏（不引入未来信息）。
-- **pytdx 数据是「最新」快照**：如果 pytdx 对历史数据做过修订，
-  同一日期在不同时间导入的结果可能不同。本轮通过
-  `data_version`（metadata 中记录导入时间戳）缓解，尚未实现内容哈希。
-
----
-
-## 8. 本轮明确不做的事（记录以备追溯）
-
-| 项 | 状态 |
-|---|---|
-| 复权因子导入 | ❌ 未做 |
-| 停牌标记导入 | ❌ 未做 |
-| 涨跌停建模 | ❌ 未做 |
-| 分钟线数据 | ❌ 未做（仅日线） |
-| 申万行业指数数据 | ❌ 未做（LEVEL B 依赖） |
-| 全市场股票数据 | ❌ 未做（仅 8 只 ETF） |
-| 财务数据 | ❌ 未做 |
-| 数据内容哈希 / 版本指纹 | ❌ 未做（仅记录导入时间戳） |
-
-以上每一项都必须在回测 `metadata.json` 中如实反映，
-不得让读者误以为已经具备。
+# Market data policy and data-rights matrix
+
+Reviewed 2026-10-04. Source-code licensing is separate from data ownership and
+redistribution. This is the project's canonical rights inventory; it records evidence
+and unresolved clearance rather than granting legal permission.
+
+Formal ETF/V2 market data uses only the existing external CNEquity pin. Record the
+actual internal provider route; do not call substitute market-data packages or move
+lake/export/curated data into Git. Private research storage and public redistribution
+are separate decisions. An unresolved redistribution licence does not require
+discarding private research observations.
+
+| Component | Source/provider | Code licence | Data ownership / clearance | Redistribution status | Evidence / confidence | Project action |
+| --- | --- | --- | --- | --- | --- | --- |
+| Project source | quant-trading | MIT | Code licence excludes upstream datasets | PERMITTED (code only) | [Project licence](../../LICENSE); high | Publish source and synthetic fixtures with notices |
+| Pinned CNEquity software | rootSunc/CNEquity | Apache-2.0 | No market-data grant established | PERMITTED (code only) | [Pinned licence](https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/LICENSE); local byte verification, high | Keep source external and pin unchanged; preserve notices |
+| Industry classification / constituents | CNEquity → SWS Research workbook | Adapter covered by Apache-2.0 | SWS Research claims website copyright; no dataset redistribution grant verified | REVIEW_REQUIRED | [Pinned adapter and URL](https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sw/industry_history.py), [official index site](https://www.swsresearch.com/institute_sw/allIndex/announcementIndex); medium | External private storage; historical availability/completeness remain separate admission blockers |
+| Stock/ETF/index bars | CNEquity → recorded `tdx_protocol`, `ths`, `sina`, `bse` routes | CNEquity adapter code: Apache-2.0 | Feed/venue/provider rights; no grant verified for the stored datasets | REVIEW_REQUIRED | [Pinned adapters](https://github.com/rootSunc/CNEquity/tree/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters), audit source fields; high for route labels, low for clearance | Do not redistribute raw or curated rows; do not equate an accessible endpoint with a licence |
+| Adjustments / corporate actions | CNEquity → `sina`, `eastmoney`, `tdx_protocol` | CNEquity adapter code: Apache-2.0 | Provider/issuer rights; no grant verified | REVIEW_REQUIRED | Pinned adapter tree and factual audit source labels; low for clearance | Keep external; exactness and historical publication require independent evidence |
+| Identities / listing boundaries / status | CNEquity → `baostock`, `bse`, `tdx_protocol`, exchange and derived status routes | CNEquity adapter code: Apache-2.0 | Mixed provider facts; derived gaps do not prove genuine historical status | REVIEW_REQUIRED | Pinned adapter tree and factual audit source labels; low for clearance | Keep private; do not infer listing/delisting or halts from missing bars |
+| Exchange website information | SSE and relevant exchange/issuer disclosures accessed through permitted adapters | Not a dataset software licence | SSE asserts rights, allows conditional noncommercial browsing/download and requires written permission for specified commercial use | REVIEW_REQUIRED | [SSE legal statement](https://www.sse.com.cn/home/legal/); high for statement, dataset-specific clearance unresolved | No public row-level redistribution; obtain dataset-specific permission before any distribution |
+| Trading calendar | CNEquity exchange-calendar route and seeds | CNEquity code: Apache-2.0 | Calendar facts and upstream publication rights not independently cleared | REVIEW_REQUIRED | [Pinned calendar adapter](https://github.com/rootSunc/CNEquity/tree/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/calendar); low for clearance | Store dated provenance externally; future announced sessions are not finalized prices |
+
+`UNKNOWN` never becomes `PERMITTED` by inference. `REVIEW_REQUIRED` means clearance
+is unresolved for redistribution; it is not a claim that all private research is prohibited.
+No legal authorization is requested or supplied by this engineering task.
+
+Public Git may contain code, schemas, synthetic fixtures, hashes, range/count metadata
+and approved non-reconstructive Development aggregates. It must not contain credentials,
+raw/curated market data, runtime databases, Shadow payloads, private source dumps or
+sealed performance. The security audit checks paths/content/history without printing
+secrets or reading sealed performance.
+
+Data admission rules are in [data and PIT](../data-and-pit.md): no fabricated missing
+prices/amounts, no guessed halts/listing boundaries, no retrospective membership,
+exact stock adjustment evidence and genuine future finalized T/T+1 execution.
+The earlier eight-ETF import-session policy remains recoverable from Git history;
+it does not describe the current CNEquity/V1/V2 data boundary.
