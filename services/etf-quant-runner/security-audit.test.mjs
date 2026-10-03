@@ -40,10 +40,10 @@ test('semantic key order accepts equivalent mappings, including nested and numer
     '{"10":"ten","2":"two","nested":{"":"bmp","😀":"astral"}}');
   assert.equal(certificateHash(current),certificateHash(JSON.parse(JSON.stringify(current))));
 });
-test('the appended hotfix transition requires the byte-bound previous current manifest path',()=>{
+for(const parentPath of ['reports/engineering/current-implementation-integrity.json','reports/engineering/release-hotfix-integrity.json'])test(`appended transition binds its historical parent ${parentPath}`,()=>{
   const {current}=transition();
   const bytes=Buffer.from(JSON.stringify(current));
-  const child=structuredClone(current),parentPath='reports/engineering/current-implementation-integrity.json';
+  const child=structuredClone(current);
   child.parent_manifest_path=parentPath;
   child.parent_manifest_sha256=createHash('sha256').update(bytes).digest('hex');
   child.certificate_sha256=certificateHash(child);

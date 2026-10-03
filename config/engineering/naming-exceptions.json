@@ -1,0 +1,18 @@
+{
+  "contract": "FUNCTIONAL_ACTIVE_NAMES_WITH_BYTE_PINNED_HISTORICAL_PROVENANCE",
+  "reason": "Existing certificate inputs and sole contract-reconciliation evidence; no new model-named files.",
+  "historical_files": {
+    "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md": "655aa97e1ea0fd848fd7d5abe1a43f13dec5fabf1b0b3edd7da0f5ac634a897e",
+    "reports/etf_quant/codex_autonomous_shadow_continuation_v1.json": "d1475727906a193eef5d4414e579837bb14786b57c900eb9d7777837a1c35783",
+    "reports/etf_quant/codex_b40_cash_runtime_readiness_v1.json": "54120f78292021a5f7eb771078f3104abf6dd5e95a48d4c9a4e816ca833605ab",
+    "reports/etf_quant/codex_final_data_pipeline_closure_v1.json": "5c18344d67eaa9613a354c2bf31d51d96968b31fd2393c4e44d62285f9125d83",
+    "reports/etf_quant/codex_first_shadow_start_gate_v1.json": "fde075afbdbf765e4d37ab36261c84cc937e6b32b7d7f920e483cfa9fc13cb83",
+    "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json": "e13ae8466e14a6b07b3d249a6df31367f24c16d1d5e58ee20900c19123d4e9b6",
+    "reports/etf_quant/codex_post_kimi_final_manifest_v1.json": "9846c02dc37cc89e46584400869fd28edd3186685f49f703bb76d87befe05e96",
+    "reports/etf_quant/deepseek_final_closure_v2_manifest.json": "cab206fd662b5932f2a38f7b4f0748e87aff7c785226ba26945476b393ace6fb",
+    "reports/etf_quant/deepseek_production_pit_evidence_manifest_v1.json": "a365ae286ad754ea19f4a2fc639dedcc005fc928886c6420bfce4548ad21a726",
+    "reports/etf_quant/deepseek_proxy_exposure_manifest_v1.json": "b9c59985c1b5f551ca056be21280e1b947dfdeb933a491e6c3764411d0bf63e9",
+    "reports/etf_quant/deepseek_proxy_policy_finalization_manifest_v1.json": "68beb70fe24c539f0cc91ab9bf40a88e5d196b9a80cc7c4107d9b58c4e240b41",
+    "reports/etf_quant/mimo_final_pit_readiness_v1.json": "2daf1d049d986ba3f4521ccec4c68d67e08b28c550cf563c76a5ad66abd96fe3"
+  }
+}

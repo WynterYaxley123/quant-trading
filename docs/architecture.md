@@ -1,5 +1,11 @@
 # Architecture
 
+The project contains historical Shenwan sector-rotation research, frozen ETF-Quant V1,
+independent ETF-Quant V2 Research, shared data/runner/API infrastructure and the observation
+dashboard. V2 primitives reuse the frozen numerical solver and factor vocabulary; V1
+does not import V2. V2 admission is blocked and no runtime/candidate migration exists.
+See the [V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary.md).
+
 External pinned CNEquity produces normalized immutable factual exports. This repository
 owns evidence admission, research/model logic, ETF-Quant policy/runtime, two read-only
 APIs and the dashboard. The README contains the compact data-flow diagram.

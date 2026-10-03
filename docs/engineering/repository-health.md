@@ -4,6 +4,10 @@ V3 addresses the reproduced engineering findings against base `1e2ffbd4f75120df2
 
 The [current integrity transition](../../reports/engineering/release-hotfix-integrity.json) preserves historical V1/V2/V3/V4 and the prior current manifest bytes. Its digest binds every field inside `implementation_integrity` except `certificate_sha256`: source hashes, change ledger, identifiers, canonicalization and transition/provenance metadata. Serialization recursively sorts object keys by Unicode code point, preserves array order, and uses compact UTF-8 JSON without ASCII escaping. The current payload contains no floating-point values. Top-level review/validation summaries are outside this digest. This is a repository-local consistency anchor with no external signer or transparency log.
 
+The V2 prerequisite transition preserves the release-hotfix bytes in
+`reports/engineering/etf-quant-v2-integrity.json`. Its research admission is blocked,
+independently of these engineering health results; see [V2 status](../etf-quant-v2-development.md).
+
 ## Baseline and measured state
 
 | Measure | V3 baseline | V3 acceptance |

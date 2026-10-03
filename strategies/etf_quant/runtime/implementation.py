@@ -10,7 +10,8 @@ from pathlib import Path
 V3_MANIFEST = "reports/engineering/repository-health.json"
 V4_MANIFEST = "reports/engineering/v4-integrity.json"
 PARENT_MANIFEST = "reports/engineering/current-implementation-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/release-hotfix-integrity.json"
+HOTFIX_MANIFEST = "reports/engineering/release-hotfix-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/etf-quant-v2-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
@@ -79,7 +80,7 @@ def verify_implementation(root: Path) -> dict[str, str]:
         ):
             raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
     parent, parent_bytes, parent_path = v4, v4_bytes, V4_MANIFEST
-    for manifest_path in (PARENT_MANIFEST, ACTIVE_MANIFEST):
+    for manifest_path in (PARENT_MANIFEST, HOTFIX_MANIFEST, ACTIVE_MANIFEST):
         current_bytes = (root / manifest_path).read_bytes()
         current = json.loads(current_bytes)["implementation_integrity"]
         if (

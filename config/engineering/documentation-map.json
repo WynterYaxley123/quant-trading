@@ -1333,6 +1333,18 @@
     {
       "path": "docs/engineering/repository-health.md",
       "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/glossary.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/etf-quant-v2-protocol.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "docs/etf-quant-v2-development.md",
+      "class": "ACTIVE_RESEARCH_PROTOCOL"
     }
   ]
 }

@@ -1,0 +1,480 @@
+{
+  "base_sha": "afe89d0747c6ecf3f56f99407f2aea280622497c",
+  "broker_enabled": false,
+  "candidate_frozen": false,
+  "contract": "ETF_QUANT_V2_RESEARCH_PREREQUISITES_AND_BLOCKER",
+  "data_capability": {
+    "components": {
+      "adjustments": {
+        "columns": [
+          "adjust_type",
+          "data_version",
+          "factor",
+          "fetched_at",
+          "source",
+          "symbol",
+          "trade_date"
+        ],
+        "distinct_dates": 2611,
+        "end": "2026-09-30",
+        "first_observed_at": "2026-09-27 14:31:37.500152+00:00",
+        "last_observed_at": "2026-09-30 14:03:21.349353+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 2373096,
+        "sources": [
+          "sina"
+        ],
+        "start": "2016-01-04",
+        "symbols": 5934
+      },
+      "amount": {
+        "missing_rows": 384901,
+        "rows": 2373465
+      },
+      "benchmark": {
+        "columns": [
+          "amount",
+          "close",
+          "data_version",
+          "fetched_at",
+          "frequency",
+          "high",
+          "low",
+          "open",
+          "source",
+          "symbol",
+          "trade_date",
+          "volume"
+        ],
+        "distinct_dates": 361,
+        "end": "2026-09-30",
+        "first_observed_at": "2026-09-28 08:24:51.323516+00:00",
+        "last_observed_at": "2026-09-30 13:51:06.427915+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 2888,
+        "sources": [
+          "tdx_protocol"
+        ],
+        "start": "2025-04-10",
+        "symbols": 8
+      },
+      "calendar": {
+        "columns": [
+          "data_version",
+          "fetched_at",
+          "is_trading",
+          "source",
+          "trade_date"
+        ],
+        "distinct_dates": 1882,
+        "end": "2027-09-30",
+        "first_observed_at": "2026-09-27 13:48:41.842199+00:00",
+        "last_observed_at": "2026-09-30 13:50:58.693701+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 1882,
+        "sources": [
+          "exchange_calendar"
+        ],
+        "start": "2020-01-02"
+      },
+      "combined_daily_bars": {
+        "columns": [
+          "amount",
+          "close",
+          "data_version",
+          "fetched_at",
+          "high",
+          "low",
+          "open",
+          "source",
+          "symbol",
+          "trade_date",
+          "volume"
+        ],
+        "distinct_dates": 2611,
+        "end": "2026-09-30",
+        "first_observed_at": "2026-09-27 13:48:47.797884+00:00",
+        "last_observed_at": "2026-09-30 14:00:13.573581+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 2373465,
+        "sources": [
+          "bse",
+          "sina",
+          "tdx_protocol",
+          "ths"
+        ],
+        "start": "2016-01-04",
+        "symbols": 5935
+      },
+      "corporate_actions": {
+        "columns": [
+          "action_type",
+          "allotment_price",
+          "allotment_ratio",
+          "bonus_ratio",
+          "cash_dividend",
+          "data_version",
+          "ex_date",
+          "fetched_at",
+          "source",
+          "split_factor",
+          "symbol",
+          "transfer_ratio"
+        ],
+        "distinct_dates": 22,
+        "end": "2026-09-30",
+        "first_observed_at": "2026-09-30 07:08:58.222666+00:00",
+        "last_observed_at": "2026-09-30 13:51:12.698194+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 484,
+        "sources": [
+          "eastmoney",
+          "tdx_protocol"
+        ],
+        "start": "2026-08-31",
+        "symbols": 479
+      },
+      "current_etf_window_calendar": {
+        "columns": [
+          "data_version",
+          "fetched_at",
+          "is_trading",
+          "source",
+          "trade_date"
+        ],
+        "distinct_dates": 358,
+        "end": "2026-09-24",
+        "first_observed_at": "2026-09-27 13:48:41.842199+00:00",
+        "last_observed_at": "2026-09-27 13:48:41.842199+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 358,
+        "sources": [
+          "exchange_calendar"
+        ],
+        "start": "2025-04-10"
+      },
+      "etf_bars": {
+        "columns": [
+          "amount",
+          "close",
+          "data_version",
+          "fetched_at",
+          "high",
+          "low",
+          "open",
+          "source",
+          "symbol",
+          "trade_date",
+          "volume"
+        ],
+        "distinct_dates": 358,
+        "end": "2026-09-24",
+        "first_observed_at": "2026-09-27 13:52:59.739628+00:00",
+        "last_observed_at": "2026-09-29 05:29:03.858603+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 33981,
+        "sources": [
+          "tdx_protocol"
+        ],
+        "start": "2025-04-10",
+        "symbols": 115
+      },
+      "historical_membership": {
+        "columns": [
+          "as_of_date",
+          "classification_system",
+          "data_version",
+          "fetched_at",
+          "industry_code",
+          "industry_name",
+          "source",
+          "symbol"
+        ],
+        "distinct_dates": 81,
+        "end": "2026-09-24",
+        "first_observed_at": "2026-09-27 13:49:28.733824+00:00",
+        "last_observed_at": "2026-09-27 13:49:28.733824+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 419972,
+        "sources": [
+          "sw"
+        ],
+        "start": "2020-01-23",
+        "symbols": 5930
+      },
+      "identities": {
+        "columns": [
+          "asset_type",
+          "data_version",
+          "delist_date",
+          "exchange",
+          "fetched_at",
+          "list_date",
+          "name",
+          "prev_symbol",
+          "source",
+          "symbol"
+        ],
+        "first_observed_at": "2026-09-27 14:46:53.117933+00:00",
+        "last_observed_at": "2026-09-30 12:29:42.562526+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 8062,
+        "sources": [
+          "baostock",
+          "bse",
+          "tdx_protocol"
+        ],
+        "symbols": 8062
+      },
+      "stock_bars": {
+        "columns": [
+          "amount",
+          "close",
+          "data_version",
+          "fetched_at",
+          "high",
+          "low",
+          "open",
+          "source",
+          "symbol",
+          "trade_date",
+          "volume"
+        ],
+        "distinct_dates": 2611,
+        "end": "2026-09-30",
+        "first_observed_at": "2026-09-27 13:48:47.797884+00:00",
+        "last_observed_at": "2026-09-30 14:00:13.573581+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 2339123,
+        "sources": [
+          "bse",
+          "sina",
+          "tdx_protocol",
+          "ths"
+        ],
+        "start": "2016-01-04",
+        "symbols": 5819
+      },
+      "trading_status": {
+        "columns": [
+          "data_version",
+          "fetched_at",
+          "is_trading",
+          "risk_warning",
+          "source",
+          "status",
+          "symbol",
+          "trade_date"
+        ],
+        "distinct_dates": 2611,
+        "end": "2026-09-30",
+        "first_observed_at": "2026-09-27 13:50:05.936137+00:00",
+        "last_observed_at": "2026-09-30 14:00:22.731415+00:00",
+        "range_semantics": "STORED_OBSERVATIONS_NOT_ADMITTED_RESEARCH_RANGE",
+        "rows": 235001,
+        "sources": [
+          "baostock",
+          "bse",
+          "derived_bar_gap",
+          "derived_delisted",
+          "eastmoney",
+          "eastmoney_cached",
+          "exchange"
+        ],
+        "start": "2016-01-04",
+        "symbols": 8062
+      }
+    },
+    "contract": "ETF_QUANT_V2_DATA_CAPABILITY_AUDIT",
+    "coverage_matrix_status": "BLOCKED_HISTORICAL_DENOMINATOR_UNPROVEN",
+    "development_experiments_run": false,
+    "final_oos_opened": false,
+    "lake_snapshot_sha256": "e714f59c55df7e3d1d716a76e27e18b38d41a036d68f64f7433ce0b7fc935c65",
+    "limiting_component": "HISTORICAL_MEMBERSHIP",
+    "membership_snapshot_identity": "53a3a314c8a114d2d1e89f897f58f98aab8721c8c57bea5ca8081e0ae7dce696",
+    "missing_membership_evidence": [
+      "available_at",
+      "history_complete",
+      "source_published_at",
+      "valid_from",
+      "valid_to"
+    ],
+    "reason_taxonomy": [
+      "INSTRUMENT_UNRESOLVED",
+      "MEMBERSHIP_UNSUPPORTED",
+      "PRE_LISTING_EXPECTED",
+      "POST_DELISTING_EXPECTED",
+      "BAR_MISSING",
+      "BAR_INVALID",
+      "ADJUSTMENT_MISSING",
+      "ADJUSTMENT_NON_EXACT",
+      "SOURCE_UNAVAILABLE",
+      "CODE_MAPPING_GAP",
+      "PUBLICATION_NOT_FINALIZED",
+      "UNSUPPORTED_ASSET_CLASS",
+      "UNKNOWN"
+    ],
+    "rejected_snapshot_inventory": {
+      "file": "53a3a314c8a114d2d1e89f897f58f98aab8721c8c57bea5ca8081e0ae7dce696-membership-rejections.parquet",
+      "invalid_reasons": {
+        "MEMBERSHIP_UNSUPPORTED": 419972
+      },
+      "rows": 419972,
+      "sha256": "0144ea55fa54f4409511270c1f0e94f5c4d40741d30ed8a7cbd8852f3700e552"
+    },
+    "sealed_performance_read": false,
+    "source_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "source_hashes": {
+      "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "src/cnequity/adapters/sw/industry_history.py": "e8ed4ea74690e0a2aeec9a3534c1629a49e2f6b4da8cbac2bbde6353a0ca0817",
+      "src/cnequity/domain/datasets.py": "15a26da997aab5892713e5e0136679622e422ddfbe85ed9b4b3ca1e87cfca808",
+      "src/cnequity/domain/schemas.py": "444495f9cbd777c2439d7050e64b1b84073e4d3cbe6ad4f75765ff878aea52b6",
+      "src/cnequity/steps/reference.py": "88e35cb9d817b29b79751836c3d11a544a669a8f5be70a038d735366e44d284e",
+      "src/cnequity/steps/structure.py": "59dbb1ad0f1cd03ef882c34a46ac7401a6e32c29d04e039c71f0492179360976"
+    },
+    "strict_pit": false,
+    "strict_pit_coverage_ratio": null,
+    "strict_pit_end": null,
+    "strict_pit_sessions": 0,
+    "strict_pit_start": null,
+    "validation_opened": false
+  },
+  "data_namespace": "ETF_QUANT_V2_RESEARCH_EXTERNAL",
+  "data_rights": {
+    "market_data_committed": false,
+    "matrix": "docs/data/market_data_policy.md",
+    "private_observations_retained": true,
+    "redistribution": "REVIEW_REQUIRED"
+  },
+  "date_protocol_frozen": false,
+  "development_complete": false,
+  "engineering_limitations": [
+    "No admitted market dataset; full experiment runner and candidate-dependent Shadow integration are deferred."
+  ],
+  "final_oos_opened": false,
+  "five_years_strict_pit_achieved": false,
+  "formal_provider": "CN_EQUITY_ONLY",
+  "hard_blockers": [
+    "Pinned CNEquity reconstructed membership lacks verifiable historical availability and completeness for any admissible additional history."
+  ],
+  "latest_finalized_admitted_date": null,
+  "market_data_feasible_candidates": 0,
+  "pinned_adapter_probe": {
+    "adapter": "cnequity.adapters.sw.industry_history.fetch_sw_industry_intervals",
+    "attempt": 1,
+    "earliest_effective_date": "1990-01-01",
+    "historical_membership_admitted": false,
+    "http_date_header": "Sat, 03 Oct 2026 17:26:46 GMT",
+    "last_modified_header": "Fri, 02 Oct 2026 07:55:31 GMT",
+    "latest_effective_date": "2026-09-24",
+    "observed_at": "2026-10-03T17:26:43.647181+00:00",
+    "parsed_columns": [
+      "symbol",
+      "start_date",
+      "industry_code"
+    ],
+    "provider": "CNEquity",
+    "raw_sha256": "98fe3b4ccccd1639ebee0adcadb338c30736710fab32533c86b69eec971e1283",
+    "rows": 12925,
+    "source_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "status": "FETCHED_NOT_PIT_ADMITTED",
+    "symbols": 5930,
+    "url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/StockClassifyUse_stock.xls"
+  },
+  "real_order_path": false,
+  "registered_candidates": 120,
+  "repository": {
+    "active_docs_after": 56,
+    "active_docs_before": 53,
+    "agent_named_active_files_after": 0,
+    "agent_named_active_files_before": 0,
+    "canonical_glossary": "PASS",
+    "canonical_python_aliases": [
+      "MAPPING_CONTRACT_PENDING",
+      "PUBLIC_INTEGRATION_REVIEW_PENDING"
+    ],
+    "legacy_python_imports_preserved": [
+      "PENDING_DEEPSEEK_CONTRACT",
+      "PENDING_MIMO_AUDIT"
+    ],
+    "public_terms_clarified": [
+      "Source-C",
+      "Top5/FrozenTop5",
+      "B40_WITH_CASH",
+      "Strict"
+    ],
+    "redundant_process_files_removed_this_task": 0,
+    "retained_historical_named_files": 12
+  },
+  "sealed_performance_read": false,
+  "search_specification_sha256": "73702ee0a7b9a5800fb2d38fb784956c5930b6b37c6a3d7aafd14903e87d800b",
+  "selected_specification": null,
+  "source_pin_changed": false,
+  "statistics": {
+    "empirical_ess": null,
+    "feature_scaling_conclusion": null,
+    "h120_conclusion": null,
+    "mechanical_adjacent_overlap": {
+      "H10": 0.9,
+      "H120": 0.9916666666666667,
+      "H40": 0.975
+    },
+    "ridge_vs_ols_shrinkage": null,
+    "training_window_conclusion": null
+  },
+  "status": "BLOCKED_STRICT_PIT_HISTORICAL_MEMBERSHIP",
+  "v1_candidate_changed": false,
+  "v1_sealed_from": "2026-03-03",
+  "v1_shadow_baseline": {
+    "source_pin": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "v1_formal_epochs": 0,
+    "v1_shadow_files": [
+      {
+        "bytes": 1,
+        "path": ".transport.guard",
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+      },
+      {
+        "bytes": 249,
+        "path": "failures/20260930T142529_4815377315d5/failure.json",
+        "sha256": "b2a628ae72ce69c651f58100c60df41583f0a57f4dc6442b54e4a7085a0be444"
+      },
+      {
+        "bytes": 224,
+        "path": "failures/20260930T142529_4815377315d5/manifest.json",
+        "sha256": "e82252152bcd79599575dfc7b317347bb24962b41dbdbdfdbfe0c4b22969112a"
+      },
+      {
+        "bytes": 249,
+        "path": "failures/20260930T144414_ac079a6fa33f/failure.json",
+        "sha256": "682320408f31337de1898ba812e3d8eed4f7562dc9edf5b33da11c908faadf5e"
+      },
+      {
+        "bytes": 224,
+        "path": "failures/20260930T144414_ac079a6fa33f/manifest.json",
+        "sha256": "68fd5f4bd183668ad3af2fd432e7210ca6d0dd81aaf51b1f587711a5fd1ac0ba"
+      },
+      {
+        "bytes": 126,
+        "path": "last_attempt.json",
+        "sha256": "c7fc09693310ca3c155cdf91f32469c7471eca18f14f85b42476aefd9485730e"
+      }
+    ]
+  },
+  "v1_shadow_deltas": {
+    "epoch": 0,
+    "fill": 0,
+    "intent": 0,
+    "signal": 0
+  },
+  "v1_strategy_changed": false,
+  "v2_shadow_counts": {
+    "epoch": 0,
+    "fill": 0,
+    "intent": 0,
+    "signal": 0
+  },
+  "v2_shadow_engineering_ready": false,
+  "v2_shadow_started": false,
+  "validation_opened": false
+}

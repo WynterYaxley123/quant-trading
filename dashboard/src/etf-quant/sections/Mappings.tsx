@@ -46,12 +46,12 @@ const B40_SLOT_COLUMNS = buildColumns([
 export function MappingsSection({ data }: { data: EtfQuantSnapshot }) {
   if (data.strategy.execution_policy === 'B40_WITH_CASH') return (
     <>
-      <SectionCard title="B40_WITH_CASH · 只读执行映射"
-        description="按原 Top5 排名逐槽显示 Strict / Proxy / Cash；证据不足或流动性不合格时保留原权重为 Cash。Cash 不是 ETF，也不会产生订单。">
+      <SectionCard title="40% 行业敞口代理与现金回退 · 只读执行映射"
+        description="按原前五行业排名逐槽显示直接跟踪 / 行业代理 / 现金；证据不足或流动性不合格时保留原权重为现金。兼容标识 B40_WITH_CASH。现金不是 ETF，也不会产生订单。">
         <p className="text-sm">信号目标风险资产：{data.mappings.risk_asset_weight ?? '—'} · 目标保留 Cash：{data.mappings.cash_weight ?? '—'} · 实际账户现金以持仓页为准；Shadow 状态以正式 readiness 记录为准。</p>
         <DataTable data={(data.mappings.slots ?? []).map(s=>({...s,etf_code:s.etf_code??'CASH / FAIL-CLOSED'})) as Row[]} columns={B40_SLOT_COLUMNS} caption="PIT 执行槽（含 Cash）" manualSorting />
       </SectionCard>
-      <SectionCard title="B40 准入诊断" description="只读显示证据与流动性判定；历史工程参考不等于当前可执行映射。">
+      <SectionCard title="行业代理准入诊断" description="只读显示证据与流动性判定；历史工程参考不等于当前可执行映射。">
         <DataTable data={data.mappings.diagnostics as Row[]} columns={DIAGNOSTIC_COLUMNS} caption="PIT 候选诊断" manualSorting />
       </SectionCard>
     </>
