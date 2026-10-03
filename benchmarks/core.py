@@ -178,7 +178,7 @@ def run():
             equivalent=exact,
             algorithms=("DataFrame row dictionaries + row hashes", "tuple iteration + row hashes"),
             note="Single-pass cold path authenticates each consumed row; no process-local cache.",
-            memory="One result per dataset O(N); no aggregate content buffer or retained cache.",
+            memory="Returned row-hash dictionaries O(N); temporary per-row JSON bytes; no process-retained prefix state.",
         )
     )
     label_panel = core.build_panel(frames, include_rsrs=False, calendar=cal.tolist())

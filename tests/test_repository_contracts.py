@@ -14,6 +14,7 @@ from strategies.etf_quant.runtime.implementation import (
     PREVIOUS_MANIFEST,
     PREVIOUS_TRANSITION,
     ImplementationIntegrityError,
+    certificate_hash,
     verify_implementation,
 )
 
@@ -55,3 +56,47 @@ def test_implementation_rejects_changed_source_and_forged_transition(tmp_path):
     manifest.write_text(json.dumps(content))
     with pytest.raises(ImplementationIntegrityError, match="TRANSITION_BLOCKER"):
         verify_implementation(tmp_path)
+
+
+@pytest.mark.parametrize("field", ["files", "changes", "parent_sha", "parent_manifest_path"])
+def test_current_certificate_binds_source_ledger_and_transition_metadata(tmp_path, field):
+    files = verify_implementation(ROOT)
+    for name in [*files, ACTIVE_MANIFEST, PREVIOUS_MANIFEST, PREVIOUS_TRANSITION]:
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / name, target)
+    manifest = tmp_path / ACTIVE_MANIFEST
+    content = json.loads(manifest.read_text())
+    integrity = content["implementation_integrity"]
+    if field == "files":
+        integrity[field][next(iter(files))] = "0" * 64
+    elif field == "changes":
+        integrity[field][0]["reason"] += " tampered"
+    else:
+        integrity[field] += "tampered"
+    manifest.write_text(json.dumps(content))
+    with pytest.raises(ImplementationIntegrityError, match="TRANSITION_BLOCKER"):
+        verify_implementation(tmp_path)
+
+
+def test_current_certificate_accepts_recursive_key_reordering_and_stable_payload(tmp_path):
+    files = verify_implementation(ROOT)
+    for name in [*files, ACTIVE_MANIFEST, PREVIOUS_MANIFEST, PREVIOUS_TRANSITION]:
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / name, target)
+    manifest = tmp_path / ACTIVE_MANIFEST
+    content = json.loads(manifest.read_text())
+
+    def reordered(value):
+        if isinstance(value, dict):
+            return {key: reordered(item) for key, item in reversed(list(value.items()))}
+        if isinstance(value, list):
+            return [reordered(item) for item in value]
+        return value
+
+    integrity = content["implementation_integrity"]
+    assert certificate_hash(integrity) == certificate_hash(reordered(integrity))
+    assert certificate_hash(integrity) == integrity["certificate_sha256"]
+    manifest.write_text(json.dumps(reordered(content), ensure_ascii=False))
+    assert verify_implementation(tmp_path) == files

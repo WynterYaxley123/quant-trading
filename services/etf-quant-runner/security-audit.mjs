@@ -1,11 +1,56 @@
 /** Read-only Git publication audit; outputs identifiers/counts, NEVER values. */
 import {spawnSync} from 'node:child_process';
-import {readFileSync,realpathSync,lstatSync} from 'node:fs';
+import {readFileSync,realpathSync,lstatSync,statSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 
 const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+// Recursive key order matches Python's Unicode code-point ordering. Arrays retain order.
+export function canonicalJSON(value) {
+  if(Array.isArray(value))return '['+value.map(canonicalJSON).join(',')+']';
+  if(value!==null && typeof value==='object') {
+    const compare=(a,b)=>{
+      const x=Array.from(a,c=>c.codePointAt(0)),y=Array.from(b,c=>c.codePointAt(0));
+      for(let i=0;i<Math.min(x.length,y.length);i++)if(x[i]!==y[i])return x[i]-y[i];
+      return x.length-y.length;
+    };
+    return '{'+Object.keys(value).sort(compare).map(key=>JSON.stringify(key)+':'+canonicalJSON(value[key])).join(',')+'}';
+  }
+  return JSON.stringify(value);
+}
+export function certificateHash(integrity) {
+  return createHash('sha256').update(canonicalJSON(Object.fromEntries(
+    Object.entries(integrity).filter(([key])=>key!=='certificate_sha256')
+  ))).digest('hex');
+}
+export function repositoryFile(root,name) {
+  const blocked=()=>{throw new Error('REPOSITORY_PATH_BLOCKER');};
+  if(typeof name!=='string' || !name || name.includes('\0') || name.includes('\\')
+    || path.isAbsolute(name) || path.win32.parse(name).root
+    || name.split('/').some(part=>!part || part==='.' || part==='..'))blocked();
+  const realRoot=realpathSync(root),candidate=path.resolve(realRoot,name);
+  const contained=target=>{
+    const relative=path.relative(realRoot,target);
+    return relative!=='' && relative!=='..' && !relative.startsWith('..'+path.sep) && !path.isAbsolute(relative);
+  };
+  if(!contained(candidate))blocked();
+  const resolved=realpathSync(candidate);
+  if(!contained(resolved) || !statSync(resolved).isFile())blocked();
+  return resolved;
+}
+export function verifyCurrentCertificate(current,parent,parentBytes) {
+  if(current.identifier!=='CURRENT_IMPLEMENTATION_INTEGRITY'
+    || current.canonicalization!=='JSON_SORTED_KEYS_COMPACT_UTF8_V1'
+    || current.parent_manifest_path!=='reports/engineering/v4-integrity.json'
+    || current.parent_manifest_sha256!==createHash('sha256').update(parentBytes).digest('hex')
+    || ['previous_certificate_sha256','previous_transition_sha256','previous_source_hashes','candidate_sha256']
+      .some(key=>canonicalJSON(current[key])!==canonicalJSON(parent[key]))
+    || Object.keys(parent.files).some(name=>!Object.hasOwn(current.files,name))
+    || Object.entries(parent.files).some(([name,before])=>before!==current.files[name] && !current.changes.some(change=>
+      change.path===name && change.before_sha256===before && change.after_sha256===current.files[name]))
+    || current.certificate_sha256!==certificateHash(current))throw new Error('CERTIFICATE_TRANSITION_BLOCKER');
+}
 function git(args,input,encoding='utf8') {
   const r=spawnSync('git',['--no-optional-locks',...args],{cwd:repo,input,encoding,maxBuffer:512*1024*1024});
   if(r.status!==0) throw new Error('READ_ONLY_AUDIT_COMMAND_BLOCKED');
@@ -77,21 +122,22 @@ export function audit() {
   try {const u=new URL(url);remote={name:'origin',scheme:u.protocol,host:u.hostname,path:u.pathname,embedded_credentials:!!(u.username||u.password)};}
   catch {remote={name:'origin',scheme:'OTHER',embedded_credentials:/:[^/@\s]+@/.test(url)};}
   // The historical firewall prohibited all infrastructure edits. Public engineering
-  // now permits source changes with a new certificate and immutable V1 provenance.
-  const previousBytes=readFileSync(path.join(repo,'reports/etf_quant/autonomous_code_integrity_v1.json'));
+  // now permits a current transition with immutable V1/V2/V3/V4 provenance.
+  const previousBytes=readFileSync(repositoryFile(repo,'reports/etf_quant/autonomous_code_integrity_v1.json'));
   const previous=JSON.parse(previousBytes);
-  const parentBytes=readFileSync(path.join(repo,'reports/engineering/repository-health.json'));
+  const parentBytes=readFileSync(repositoryFile(repo,'reports/engineering/repository-health.json'));
   const parent=JSON.parse(parentBytes).implementation_integrity;
-  const integrity=JSON.parse(readFileSync(path.join(repo,'reports/engineering/v4-integrity.json'),'utf8')).implementation_integrity;
+  const v4Bytes=readFileSync(repositoryFile(repo,'reports/engineering/v4-integrity.json'));
+  const integrity=JSON.parse(v4Bytes).implementation_integrity;
   const canonicalParent=Object.fromEntries(Object.keys(parent.files).sort().map(name=>[name,parent.files[name]]));
-  const previousTransition=readFileSync(path.join(repo,'docs/archive/engineering/public_repo_adversarial_remediation_v2.json'));
+  const previousTransition=readFileSync(repositoryFile(repo,'docs/archive/engineering/public_repo_adversarial_remediation_v2.json'));
   const canonicalHashes=Object.fromEntries(Object.keys(integrity.files).sort().map(name=>[name,integrity.files[name]]));
   if(integrity.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V4'
     || parent.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V3'
     || integrity.parent_manifest_sha256!==createHash('sha256').update(parentBytes).digest('hex')
     || parent.certificate_sha256!==createHash('sha256').update(JSON.stringify(canonicalParent)).digest('hex')
     || ['previous_certificate_sha256','previous_transition_sha256','candidate_sha256'].some(key=>integrity[key]!==parent[key])
-    || JSON.stringify(integrity.previous_source_hashes)!==JSON.stringify(parent.previous_source_hashes)
+    || canonicalJSON(integrity.previous_source_hashes)!==canonicalJSON(parent.previous_source_hashes)
     || Object.keys(parent.files).some(name=>!Object.hasOwn(integrity.files,name))
     || Object.entries(parent.files).some(([name,before])=>before!==integrity.files[name] && !integrity.changes.some(change=>
       change.path===name && change.before_sha256===before && change.after_sha256===integrity.files[name]))
@@ -102,12 +148,14 @@ export function audit() {
     || Object.entries(previous.files).some(([name,hash])=>integrity.previous_source_hashes[name]!==hash)
     || integrity.candidate_sha256!==previous.candidate_sha256
     || Object.keys(previous.files).some(name=>!Object.hasOwn(integrity.files,name))) throw new Error('CERTIFICATE_TRANSITION_BLOCKER');
-  const firewall=Object.entries(integrity.files).filter(([name,expected])=>
-    createHash('sha256').update(readFileSync(path.join(repo,name))).digest('hex')!==expected
+  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/current-implementation-integrity.json'))).implementation_integrity;
+  verifyCurrentCertificate(current,integrity,v4Bytes);
+  const firewall=Object.entries(current.files).filter(([name,expected])=>
+    createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected
   ).map(([name])=>name);
-  const documentation=JSON.parse(readFileSync(path.join(repo,'config/engineering/documentation-map.json'),'utf8'));
+  const documentation=JSON.parse(readFileSync(repositoryFile(repo,'config/engineering/documentation-map.json'),'utf8'));
   for(const item of documentation.documents.filter(item=>item.sha256 && !item.removed_from_tree)) {
-    if(createHash('sha256').update(readFileSync(path.join(repo,item.path))).digest('hex')!==item.sha256) firewall.push(item.path);
+    if(createHash('sha256').update(readFileSync(repositoryFile(repo,item.path))).digest('hex')!==item.sha256) firewall.push(item.path);
   }
   const report={status:candidates.length||forbidden.length||sealed.length||firewall.length||remote.embedded_credentials?'BLOCKED':'PASS',
     scanner:'BUILTIN_READ_ONLY_PATTERN_AND_PATH_AUDIT_NOT_A_THIRD_PARTY_CERTIFICATION',
@@ -117,7 +165,7 @@ export function audit() {
     new_secret_candidates:candidates.filter(c=>c.scope==='new').length,history_secret_candidates:candidates.filter(c=>c.scope==='history').length,
     candidates,forbidden_paths:forbidden,sealed_paths_not_read:sealed,large_files_over_500kb:large,firewall_changes:firewall,remote,
     runtime_data_tracked:forbidden.some(c=>c.scope==='tracked'),credential_values_printed:false,
-    firewall_policy:'ACTIVE_V4_INTEGRITY_WITH_IMMUTABLE_V1_V2_V3_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES',
+    firewall_policy:'CURRENT_INTEGRITY_WITH_IMMUTABLE_V1_V2_V3_V4_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES',
     public_licensing_review:'MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE'};
   return report;
 }
