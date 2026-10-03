@@ -45,6 +45,7 @@ jobs:
       - run: python -m pytest -q -m "not external_runtime"
       - run: python -m examples.minimal_demo
       - run: python -m scripts.engineering.benchmark
+      - run: python -m pytest -q tests/performance
       - run: python -m scripts.engineering.references
 
   frontend:

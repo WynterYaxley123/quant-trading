@@ -58,7 +58,6 @@ RUN python --version && pip --version
 
 # pip 重试与超时（hikyuu wheel 约 73MB，网络抖动需重试）
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn \
     && pip config set global.timeout 60 \
     && pip config set global.retries 10
 
