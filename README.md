@@ -49,8 +49,9 @@ ranking/mapping pipeline and Shadow runtime; the Research API, ETF API and dashb
 ```mermaid
 flowchart LR
  S[External pinned source] --> E[Immutable factual exports and PIT evidence]
- E --> R[Research and frozen model specification]
- R --> Q[Industry ranking and ETF policy]
+ H[Historical research lineage] -->|Frozen model specification| Q[Industry ranking and ETF policy]
+ E --> Q
+ E --> R[Approved Development artifacts]
  Q --> T[Forward Shadow runtime]
  R --> RA[Read-only Research API]
  T --> EA[Read-only ETF API]

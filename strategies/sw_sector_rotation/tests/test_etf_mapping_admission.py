@@ -4,7 +4,7 @@ from dataclasses import replace
 
 import pytest
 
-from src.data.providers.etf_local import valid_daily_open
+from quant_primitives.ohlc import valid_daily_open
 from strategies.sw_sector_rotation.src.portfolio.sector_etf_mapping import (
     MappingEvidence,
     daily_mapping_availability,

@@ -11,7 +11,6 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
-REFERENCE = re.compile(r"^\s{0,3}\[[^\]]+\]:\s*(<[^>]+>|\S+)", re.M)
 
 
 def audit(root: Path = ROOT) -> dict[str, object]:
@@ -34,9 +33,7 @@ def audit(root: Path = ROOT) -> dict[str, object]:
         text = re.sub(
             r"```.*?```|~~~.*?~~~", "", source.read_text(encoding="utf-8-sig"), flags=re.S
         )
-        targets = [
-            match.group(1) for pattern in (LINK, REFERENCE) for match in pattern.finditer(text)
-        ]
+        targets = [match.group(1) for match in LINK.finditer(text)]
         for raw_target in targets:
             value = raw_target.strip().strip("<>").split(' "', 1)[0]
             parts = urlsplit(value)

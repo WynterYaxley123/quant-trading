@@ -21,7 +21,7 @@ from strategies.etf_quant.runtime.prefix import source_prefix
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_forbidden_production_import_graph_has_no_static_or_dynamic_edges():
+def test_forbidden_import_graph_including_strategy_tests_has_no_static_or_dynamic_edges():
     violations = []
     for base, forbidden in [
         (ROOT / "strategies", "src"),
@@ -31,8 +31,6 @@ def test_forbidden_production_import_graph_has_no_static_or_dynamic_edges():
         (ROOT / "quant_primitives", "strategies"),
     ]:
         for path in base.rglob("*.py"):
-            if "tests" in path.relative_to(base).parts:
-                continue
             for node in ast.walk(ast.parse(path.read_text())):
                 modules = []
                 if isinstance(node, ast.Import):
@@ -190,7 +188,7 @@ def test_prefix_duplicate_unknown_future_and_missing_dates_preserve_byte_identit
     assert not hasattr(importlib.import_module("strategies.etf_quant.runtime.prefix"), "_INDEX")
 
 
-def test_v3_parent_manifest_remains_byte_pinned_in_v4_certificate():
+def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate():
     from hashlib import sha256
 
     from strategies.etf_quant.runtime.implementation import (

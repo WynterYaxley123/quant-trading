@@ -42,7 +42,8 @@ def package_inventory(folder: str) -> dict:
 
 def main() -> int:
     registry = _load(REPORTS / "production_pit_evidence_registry_v1.json")
-    build = _load(REPORTS / "build_report_v1.json")  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
+    # Serialized spelling belongs to the historical public registry contract.
+    cnequity_pin = registry["cneqity_pin"]
     top5 = _load(REPORTS / "production_pit_current_top5_status_v1.json")
     manifest = _load(REPORTS / "raw_source_manifest_v1.json")
     cross = _load(REPORTS / "classification_cross_check_v1.json")
@@ -69,7 +70,7 @@ def main() -> int:
             "builder_code_hash": registry["builder_code_hash"],
             "derivation_code_hash": registry["derivation_code_hash"],
             "classification_snapshot_id": registry["classification_snapshot_id"],
-            "cneqity_pin": registry["cneqity_pin"],
+            "cneqity_pin": cnequity_pin,
             "known_limitations": registry["known_limitations"],
         },
         "counts": registry["counts"],
