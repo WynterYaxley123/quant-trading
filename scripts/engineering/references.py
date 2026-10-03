@@ -5,12 +5,61 @@ from __future__ import annotations
 import hashlib
 import json
 import posixpath
-import re
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+from markdown_it import MarkdownIt
+from markdown_it.common.utils import normalizeReference
+from markdown_it.rules_inline.state_inline import StateInline
+
 ROOT = Path(__file__).resolve().parents[2]
-LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+
+
+def unresolved_reference(state: StateInline, silent: bool) -> bool:
+    """Flag undefined explicit/collapsed references outside Markdown code.
+
+    Defined shortcuts are parsed normally; unbound bracket text stays plain text.
+    Reference definitions, normalized labels and first-definition precedence come
+    from the already-pinned CommonMark parser, not a second definition regex.
+    """
+    if silent or state.src[state.pos] != "[":
+        return False
+    end = state.md.helpers.parseLinkLabel(state, state.pos, True)
+    if end < 0 or end + 1 >= state.posMax or state.src[end + 1] != "[":
+        return False
+    reference_end = state.md.helpers.parseLinkLabel(state, end + 1)
+    if reference_end < 0:
+        return False
+    label = normalizeReference(state.src[end + 2 : reference_end] or state.src[state.pos + 1 : end])
+    if label in state.env.get("references", {}):
+        return False
+    token = state.push("unresolved_reference", "", 0)
+    token.meta["label"] = label
+    state.pos = reference_end + 1
+    return True
+
+
+def markdown_links(text: str) -> tuple[list[str], list[str]]:
+    """Collect rendered destinations, effective definitions and undefined labels."""
+    parser = MarkdownIt("commonmark")
+    parser.inline.ruler.before("link", "unresolved_reference", unresolved_reference)
+    environment: dict = {}
+    tokens = parser.parse(text, environment)
+    targets: list[str] = []
+    undefined: list[str] = []
+    for block in tokens:
+        for token in block.children or []:
+            if token.type in {"link_open", "image"}:
+                target = token.attrGet("href" if token.type == "link_open" else "src")
+                if isinstance(target, str):
+                    targets.append(target)
+            elif token.type == "unresolved_reference":
+                undefined.append(token.meta["label"])
+    # Also check unused effective definitions; duplicate definitions use the first.
+    for reference in environment.get("references", {}).values():
+        if reference["href"] not in targets:
+            targets.append(reference["href"])
+    return targets, undefined
 
 
 def audit(root: Path = ROOT) -> dict[str, object]:
@@ -30,13 +79,13 @@ def audit(root: Path = ROOT) -> dict[str, object]:
             changed.append(item["path"])
         if not item["class"].startswith("ACTIVE_"):
             continue
-        text = re.sub(
-            r"```.*?```|~~~.*?~~~", "", source.read_text(encoding="utf-8-sig"), flags=re.S
+        targets, undefined = markdown_links(source.read_text(encoding="utf-8-sig"))
+        broken.extend(
+            {"document": item["path"], "target": "UNDEFINED_REFERENCE:" + label}
+            for label in undefined
         )
-        targets = [match.group(1) for match in LINK.finditer(text)]
         for raw_target in targets:
-            value = raw_target.strip().strip("<>").split(' "', 1)[0]
-            parts = urlsplit(value)
+            parts = urlsplit(raw_target)
             if parts.scheme or parts.netloc or not parts.path:
                 continue
             checked += 1
@@ -46,7 +95,8 @@ def audit(root: Path = ROOT) -> dict[str, object]:
                 else posixpath.join(posixpath.dirname(item["path"]), unquote(parts.path))
             )
             historical_alias_references += int(target in moved)
-            if target.startswith("../") or not (root / target).exists():
+            resolved = (root / target).resolve()
+            if not resolved.is_relative_to(root.resolve()) or not resolved.exists():
                 broken.append({"document": item["path"], "target": target})
     return {
         "status": "PASS" if not broken and not changed else "FAIL",

@@ -34,7 +34,7 @@ def test_archival_alias_never_hides_active_literal_404(tmp_path):
     (tmp_path / "config/engineering").mkdir(parents=True)
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/current.md").write_text(
-        "[old](old.md) [root](/README.md) [reference](missing.md)\n"
+        "[old](old.md) [root](/README.md) [reference][missing]\n\n[missing]: missing.md\n"
     )
     (tmp_path / "docs/archive.md").write_text("archive")
     (tmp_path / "README.md").write_text("readme")

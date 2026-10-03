@@ -2,7 +2,7 @@
 
 V3 addresses the reproduced engineering findings against base `1e2ffbd4f75120df2511472662dcf7dcd308b0d6`. Detailed finding classifications, measurement locations, synthetic scales and source hashes are in the [health manifest](../../reports/engineering/repository-health.json). Status: IMPLEMENTATION_ACCEPTED_DELIVERY_VIA_PR_METADATA.
 
-The [current integrity transition](../../reports/engineering/current-implementation-integrity.json) preserves historical V1/V2/V3/V4 bytes. Its digest binds every field inside `implementation_integrity` except `certificate_sha256`: source hashes, change ledger, identifiers, canonicalization and transition/provenance metadata. Serialization recursively sorts object keys by Unicode code point, preserves array order, and uses compact UTF-8 JSON without ASCII escaping. The current payload contains no floating-point values. Top-level review/validation summaries are outside this digest. This is a repository-local consistency anchor with no external signer or transparency log.
+The [current integrity transition](../../reports/engineering/release-hotfix-integrity.json) preserves historical V1/V2/V3/V4 and the prior current manifest bytes. Its digest binds every field inside `implementation_integrity` except `certificate_sha256`: source hashes, change ledger, identifiers, canonicalization and transition/provenance metadata. Serialization recursively sorts object keys by Unicode code point, preserves array order, and uses compact UTF-8 JSON without ASCII escaping. The current payload contains no floating-point values. Top-level review/validation summaries are outside this digest. This is a repository-local consistency anchor with no external signer or transparency log.
 
 ## Baseline and measured state
 
@@ -70,15 +70,19 @@ Qualified AST comparisons cover relocated methods and duplicate function names; 
 
 ## Verification, Shadow and frozen strategy
 
+Current release-hotfix validation uses the independent developer image. Portable command:
+`python -m pytest -q -m "not external_runtime"`. Focused command:
+`python -m pytest -q tests/test_reference_validation.py tests/test_measurement_contracts.py tests/test_repository_contracts.py tests/test_v4_integrity.py`.
+
 | Check | Result |
 |---|---|
-| Docker portable suite | 1069 passed, 2 skipped, 99 excluded external/integration cases |
-| Performance/correctness/measurement suite | 38 passed |
+| Docker portable suite | 1112 passed, 2 skipped, 99 deselected external/integration cases |
+| Focused documentation/measurement/certificate/import regressions | 52 passed |
 | Dashboard | 127 passed, 3 skipped; typecheck/lint/build pass |
 | Research API | 63 passed, 7 skipped; typecheck/build pass |
-| ETF API/security / Windows launcher | 117 / 2 passed |
+| ETF API/security / Windows launcher | 126 passed / 2 passed in hosted Windows CI |
 | Synthetic demo / existing scale benchmark | pass |
-| Ruff / staged Mypy / pre-commit / literal links | pass |
+| Ruff / staged Mypy / pre-commit / inline and reference links | pass |
 | Frozen image ETF acceptance | 659 passed, 1 skipped |
 | GitHub Actions | Six checks passed for the validated implementation; final PR/main state is verified through GitHub metadata |
 

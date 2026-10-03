@@ -157,7 +157,8 @@ explicitly synthetic and never published to actual runtime.
 Verification: pnpm typecheck / pnpm lint / pnpm exec vitest run --maxWorkers=1 /
 pnpm build. pnpm-lock.yaml was converted from existing npm lock; direct versions
 and existing package-lock.json were unchanged. Quant Docker is untouched.
-See ../docs/etf_quant/integration_v1_handoff.md for counts and admission blockers.
+For current product status and admission contracts, see the [project README](../README.md)
+and [strategy contract](../docs/strategy.md).
 
 ## Documentation
 
@@ -165,6 +166,6 @@ See ../docs/etf_quant/integration_v1_handoff.md for counts and admission blocker
 |------|---------|
 | `docs/architecture.md` | Architecture, data flow, future extensions |
 | `docs/api-integration.md` | API v1 contract usage, adapters, env switching |
-| `docs/integration-audit.md` | API ↔ Dashboard contract audit and real Development E2E record |
+| [Repository health](../docs/engineering/repository-health.md) | Synthetic validation and engineering integrity evidence |
 | `docs/reference-review.md` | GitHub reference-project study and decisions |
 | `THIRD_PARTY_NOTICES.md` | Licenses and adapted upstream code |

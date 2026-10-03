@@ -8,8 +8,9 @@ from collections.abc import Mapping
 from pathlib import Path
 
 V3_MANIFEST = "reports/engineering/repository-health.json"
-PARENT_MANIFEST = "reports/engineering/v4-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/current-implementation-integrity.json"
+V4_MANIFEST = "reports/engineering/v4-integrity.json"
+PARENT_MANIFEST = "reports/engineering/current-implementation-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/release-hotfix-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
@@ -50,7 +51,7 @@ def verify_implementation(root: Path) -> dict[str, str]:
         ).hexdigest()
     ):
         raise ImplementationIntegrityError("IMPLEMENTATION_TRANSITION_BLOCKER")
-    v4_bytes = (root / PARENT_MANIFEST).read_bytes()
+    v4_bytes = (root / V4_MANIFEST).read_bytes()
     v4 = json.loads(v4_bytes)["implementation_integrity"]
     immutable = (
         "previous_certificate_sha256",
@@ -77,25 +78,29 @@ def verify_implementation(root: Path) -> dict[str, str]:
             or changes[name]["after_sha256"] != v4["files"][name]
         ):
             raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
-    current = json.loads((root / ACTIVE_MANIFEST).read_bytes())["implementation_integrity"]
-    if (
-        current["identifier"] != "CURRENT_IMPLEMENTATION_INTEGRITY"
-        or current["canonicalization"] != "JSON_SORTED_KEYS_COMPACT_UTF8_V1"
-        or current["parent_manifest_path"] != PARENT_MANIFEST
-        or current["parent_manifest_sha256"] != hashlib.sha256(v4_bytes).hexdigest()
-        or not set(v4["files"]).issubset(current["files"])
-        or any(current[key] != v4[key] for key in immutable)
-        or current["certificate_sha256"] != certificate_hash(current)
-    ):
-        raise ImplementationIntegrityError("IMPLEMENTATION_TRANSITION_BLOCKER")
-    changes = {item["path"]: item for item in current["changes"]}
-    for name, before in v4["files"].items():
-        if before != current["files"][name] and (
-            name not in changes
-            or changes[name]["before_sha256"] != before
-            or changes[name]["after_sha256"] != current["files"][name]
+    parent, parent_bytes, parent_path = v4, v4_bytes, V4_MANIFEST
+    for manifest_path in (PARENT_MANIFEST, ACTIVE_MANIFEST):
+        current_bytes = (root / manifest_path).read_bytes()
+        current = json.loads(current_bytes)["implementation_integrity"]
+        if (
+            current["identifier"] != "CURRENT_IMPLEMENTATION_INTEGRITY"
+            or current["canonicalization"] != "JSON_SORTED_KEYS_COMPACT_UTF8_V1"
+            or current["parent_manifest_path"] != parent_path
+            or current["parent_manifest_sha256"] != hashlib.sha256(parent_bytes).hexdigest()
+            or not set(parent["files"]).issubset(current["files"])
+            or any(current[key] != parent[key] for key in immutable)
+            or current["certificate_sha256"] != certificate_hash(current)
         ):
-            raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
+            raise ImplementationIntegrityError("IMPLEMENTATION_TRANSITION_BLOCKER")
+        changes = {item["path"]: item for item in current["changes"]}
+        for name, before in parent["files"].items():
+            if before != current["files"][name] and (
+                name not in changes
+                or changes[name]["before_sha256"] != before
+                or changes[name]["after_sha256"] != current["files"][name]
+            ):
+                raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
+        parent, parent_bytes, parent_path = current, current_bytes, manifest_path
     files: dict[str, str] = current["files"]
     for name, expected in files.items():
         target = (root / name).resolve(strict=True)
