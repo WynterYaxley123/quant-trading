@@ -6,8 +6,8 @@ Engineering acceptance of the public quant-trading repository and ETF-Quant V1. 
 
 - Base SHA: `2de086421d1e2149faa8b987913ef14027f1c5a3` (fetched origin/main, public repository confirmed).
 - Branch: `engineering/public-repo-adversarial-remediation-v2` in an isolated worktree.
-- Final branch SHA: `resolved from the final PR head / final delivery record`.
-- Merged main SHA: `not merged at report generation`.
+- Final branch SHA: resolve `head.sha` from the [PR #7 delivery record](https://api.github.com/repos/WynterYaxley123/quant-trading/pulls/7).
+- Merged main SHA: resolve `merge_commit_sha` from that same PR record after normal merge.
 - Historical branches and deployed checkout are read-only. No force push, history rewrite, tag or release.
 
 The [single metadata manifest](../../reports/engineering/public_repo_adversarial_remediation_v2.json) contains the full inventory, ledger, source certificate and validation records. Git commit identifiers cannot be embedded in the same commit that creates them; final delivery fields resolve through the PR record and are finalized locally after merge.
@@ -426,4 +426,6 @@ Frozen production B40 factors/models/ranking/fusion/sizing/PIT/T+1 are unchanged
 411 diagnostics in 29 legacy research, historical scripts and SW-lineage files; active runtime 0. Of those 200 belong to verify_hikyuu_execution_smoke.py.
 Complete signature coverage is 29.14%; function docstrings 28.02%. Zero active diagnostics is not a claim of universal strict annotation. Remaining large modules and their reasons are listed above. Market-data redistribution rights remain unverified; first formal Shadow epoch remains absent.
 
-GitHub record: `{"merge_sha": null, "merged": false, "pr_number": null}`. Hosted checks and normal merge record are finalized after local acceptance. PR delivery metadata is the authoritative immutable head/merge record; final SHA flags are also emitted to the requester.
+GitHub delivery: [PR #7](https://github.com/WynterYaxley123/quant-trading/pull/7); [six independent checks](https://github.com/WynterYaxley123/quant-trading/pull/7/checks). Validated implementation commit: `1459f9edb34ccc78e614a33f809f97ac41600f56`. Final head and normal merge SHA resolve from the linked PR record; this avoids self-referential commit identifiers. Final concrete SHAs are emitted in the delivery flags and finalized in the local generated report/manifest after merge.
+
+Initial implementation head hosted acceptance: all six jobs PASS in [run 37100066650](https://github.com/WynterYaxley123/quant-trading/actions/runs/37100066650). The final PR head is checked again after delivery metadata is committed.

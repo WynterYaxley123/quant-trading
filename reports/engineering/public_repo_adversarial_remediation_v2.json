@@ -1,12 +1,16 @@
 {
   "schema_version": 2,
-  "status": "LOCAL_ACCEPTANCE_COMPLETE",
+  "status": "LOCAL_ACCEPTANCE_COMPLETE_DELIVERY_RECORDED_BY_PR_7",
   "base_sha": "2de086421d1e2149faa8b987913ef14027f1c5a3",
   "final_branch": "engineering/public-repo-adversarial-remediation-v2",
   "github": {
-    "pr_number": null,
-    "merged": false,
-    "merge_sha": null
+    "pr_number": 7,
+    "url": "https://github.com/WynterYaxley123/quant-trading/pull/7",
+    "delivery_status_reference": "https://api.github.com/repos/WynterYaxley123/quant-trading/pulls/7",
+    "final_branch_sha_reference": "GitHub PR #7 head.sha",
+    "merged_main_sha_reference": "GitHub PR #7 merge_commit_sha",
+    "checks_reference": "https://github.com/WynterYaxley123/quant-trading/pull/7/checks",
+    "merge_method": "merge"
   },
   "findings": [
     {
@@ -5372,10 +5376,10 @@
       "status": "PASS",
       "scanner": "BUILTIN_READ_ONLY_PATTERN_AND_PATH_AUDIT_NOT_A_THIRD_PARTY_CERTIFICATION",
       "reviewed_legacy_dummy_template_sha256": "2077e82fcc7bfbccf7eb0f671d597addc90ff9221fae04edef07a81d1178dd2a",
-      "tracked_files": 608,
-      "new_files": 5,
-      "history_commits": 227,
-      "history_blobs_scanned": 1373,
+      "tracked_files": 613,
+      "new_files": 0,
+      "history_commits": 228,
+      "history_blobs_scanned": 1383,
       "tracked_secret_candidates": 0,
       "new_secret_candidates": 0,
       "history_secret_candidates": 0,
@@ -5395,6 +5399,50 @@
       "credential_values_printed": false,
       "firewall_policy": "ACTIVE_V2_INTEGRITY_WITH_IMMUTABLE_V1_PROVENANCE_AND_ARCHIVE_HASHES",
       "public_licensing_review": "MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE"
+    },
+    "github_actions": {
+      "status": "PASS",
+      "run_id": 37100066650,
+      "run_url": "https://github.com/WynterYaxley123/quant-trading/actions/runs/37100066650",
+      "tested_head_sha": "1459f9edb34ccc78e614a33f809f97ac41600f56",
+      "jobs": [
+        {
+          "name": "research-api",
+          "job_id": 111137693955,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "python-portable",
+          "job_id": 111137694049,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "frontend",
+          "job_id": 111137694070,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "etf-api-security",
+          "job_id": 111137694105,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "hygiene",
+          "job_id": 111137694112,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "windows-launcher",
+          "job_id": 111137694117,
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
     }
   },
   "shadow": {
@@ -5496,5 +5544,6 @@
     "data_rights": "Source is MIT; market-data redistribution clearance remains unverified.",
     "performance": "Synthetic timings are comparative observations, not production guarantees.",
     "first_formal_Shadow_epoch": "Not yet created; this engineering task cannot provide real Shadow evidence."
-  }
+  },
+  "validated_source_commit": "1459f9edb34ccc78e614a33f809f97ac41600f56"
 }
