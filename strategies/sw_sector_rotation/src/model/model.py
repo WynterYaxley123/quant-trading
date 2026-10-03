@@ -282,10 +282,11 @@ class CrossSectionalRidgeModel:
         counts_by_date: dict[str, int] = {}
         counts_by_sector: dict[str, int] = {}
         dropped: dict[str, int] = {}
+        train_index = pd.DatetimeIndex(train_dates)
         for name, frame in sorted(panel.items()):
             if label_col not in frame.columns:
                 raise ValueError(f"{name}: 缺少 label column {label_col}")
-            positions = frame.index.get_indexer(pd.DatetimeIndex(train_dates))
+            positions = frame.index.get_indexer(train_index)
             sel = frame.iloc[positions[positions >= 0]]
             values = sel.loc[:, [*feature_names, label_col]].to_numpy(dtype=float)
             if np.isinf(values).any():

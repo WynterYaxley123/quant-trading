@@ -276,20 +276,13 @@ class ProxyPurity:
     weight_source_type: str
 
     @property
-    def largest_non_target_l2_code(self) -> str | None:
-        """Canonical internal name; serialized second_largest_l2_code stays compatible."""
-        return self.second_largest_l2_code
-
-    @property
-    def largest_non_target_l2_exposure(self) -> float:
-        return self.second_largest_l2_exposure
-
-    @property
     def dominance_margin(self) -> float:
-        """Target exposure minus the next-largest industry's exposure.
+        """Target exposure minus the largest non-target industry exposure.
 
         ``51 vs 49`` and ``51 vs 12`` are both "51% target" and are not the same instrument.
-        The margin is what separates them.
+        The margin is what separates them. The serialized legacy
+        ``second_largest_l2_exposure`` field means the largest non-target
+        exposure even when the target is not the largest industry.
         """
         return self.target_l2_exposure - self.second_largest_l2_exposure
 

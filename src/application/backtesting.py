@@ -16,7 +16,6 @@ risk 逻辑。这些分别属于 hikyuu_runner / 策略包。
 
 from __future__ import annotations
 
-import importlib
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from datetime import date, datetime
@@ -106,7 +105,7 @@ class StrategySpec:
 
 
 def _read_version(strategy_dir: Path) -> str:
-    """从策略包 ``__init__.py`` 或 ``pyproject`` 读版本；读不到返回 unknown。"""
+    """依次读取 ``VERSION``、``version.txt``；均不存在时返回 unknown。"""
     for cand in ("VERSION", "version.txt"):
         p = strategy_dir / cand
         if p.exists():
@@ -114,11 +113,14 @@ def _read_version(strategy_dir: Path) -> str:
     return "unknown"
 
 
-def discover_strategies(root: Path | None = None) -> dict[str, StrategySpec]:
+def discover_strategies(
+    root: Path | None = None, *, entry_loader: Callable[[str], Any] | None = None
+) -> dict[str, StrategySpec]:
     """扫描 ``strategies/`` 下的自包含策略包。
 
     一个目录被视为策略包的条件：含 ``__init__.py`` 且含 ``src/`` 子目录。
     不符合的目录（如只有 README）被跳过，**不报错**。
+    默认只读取元数据，不导入策略；入口加载由调用方显式注入。
     """
     base = root or _STRATEGIES_DIR
     found: dict[str, StrategySpec] = {}
@@ -131,25 +133,17 @@ def discover_strategies(root: Path | None = None) -> dict[str, StrategySpec]:
             continue
         pkg = f"strategies.{d.name}"
         entry = None
-        try:
-            mod = importlib.import_module(pkg)
-            # 约定：策略包顶层暴露一个 ``*Core`` 类
-            entry = next(
-                (
-                    getattr(mod, n)
-                    for n in dir(mod)
-                    if n.endswith("Core") and isinstance(getattr(mod, n), type)
-                ),
-                None,
-            )
-        except Exception:  # noqa: BLE001 - 发现阶段不因单个策略失败而中断
-            entry = None
+        if entry_loader is not None:
+            try:
+                entry = entry_loader(pkg)
+            except Exception:  # noqa: BLE001 - 发现阶段不因单个策略失败而中断
+                entry = None
 
         cfg_dir = d / "config"
         cfg_file = None
         if cfg_dir.is_dir():
             ys = sorted(cfg_dir.glob("*.yaml")) + sorted(cfg_dir.glob("*.yml"))
-            # 优先选与策略同名的配置，否则取第一个非 example
+            # 排序后的 YAML 在 YML 前；优先排除 example，否则保留全部候选
             ys = [p for p in ys if "example" not in p.name] or ys
             if ys:
                 cfg_file = ys[0].name

@@ -20,7 +20,6 @@ from scripts.etf_quant.runtime_paths import evidence_root  # noqa: E402
 RUNTIME = evidence_root("PIT")
 REPORTS = RUNTIME / "reports"
 PACKAGES = RUNTIME / "packages"
-REPO = Path(__file__).resolve().parents[2]
 
 
 def _load(path: Path):

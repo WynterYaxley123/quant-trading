@@ -80,10 +80,21 @@ export function audit() {
   // now permits source changes with a new certificate and immutable V1 provenance.
   const previousBytes=readFileSync(path.join(repo,'reports/etf_quant/autonomous_code_integrity_v1.json'));
   const previous=JSON.parse(previousBytes);
-  const integrity=JSON.parse(readFileSync(path.join(repo,'reports/engineering/repository-health.json'),'utf8')).implementation_integrity;
+  const parentBytes=readFileSync(path.join(repo,'reports/engineering/repository-health.json'));
+  const parent=JSON.parse(parentBytes).implementation_integrity;
+  const integrity=JSON.parse(readFileSync(path.join(repo,'reports/engineering/v4-integrity.json'),'utf8')).implementation_integrity;
+  const canonicalParent=Object.fromEntries(Object.keys(parent.files).sort().map(name=>[name,parent.files[name]]));
   const previousTransition=readFileSync(path.join(repo,'docs/archive/engineering/public_repo_adversarial_remediation_v2.json'));
   const canonicalHashes=Object.fromEntries(Object.keys(integrity.files).sort().map(name=>[name,integrity.files[name]]));
-  if(integrity.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V3'
+  if(integrity.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V4'
+    || parent.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V3'
+    || integrity.parent_manifest_sha256!==createHash('sha256').update(parentBytes).digest('hex')
+    || parent.certificate_sha256!==createHash('sha256').update(JSON.stringify(canonicalParent)).digest('hex')
+    || ['previous_certificate_sha256','previous_transition_sha256','candidate_sha256'].some(key=>integrity[key]!==parent[key])
+    || JSON.stringify(integrity.previous_source_hashes)!==JSON.stringify(parent.previous_source_hashes)
+    || Object.keys(parent.files).some(name=>!Object.hasOwn(integrity.files,name))
+    || Object.entries(parent.files).some(([name,before])=>before!==integrity.files[name] && !integrity.changes.some(change=>
+      change.path===name && change.before_sha256===before && change.after_sha256===integrity.files[name]))
     || integrity.previous_transition_sha256!==createHash('sha256').update(previousTransition).digest('hex')
     || integrity.certificate_sha256!==createHash('sha256').update(JSON.stringify(canonicalHashes)).digest('hex')
     || integrity.previous_certificate_sha256!==createHash('sha256').update(previousBytes).digest('hex')
@@ -106,7 +117,7 @@ export function audit() {
     new_secret_candidates:candidates.filter(c=>c.scope==='new').length,history_secret_candidates:candidates.filter(c=>c.scope==='history').length,
     candidates,forbidden_paths:forbidden,sealed_paths_not_read:sealed,large_files_over_500kb:large,firewall_changes:firewall,remote,
     runtime_data_tracked:forbidden.some(c=>c.scope==='tracked'),credential_values_printed:false,
-    firewall_policy:'ACTIVE_V3_INTEGRITY_WITH_IMMUTABLE_V1_V2_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES',
+    firewall_policy:'ACTIVE_V4_INTEGRITY_WITH_IMMUTABLE_V1_V2_V3_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES',
     public_licensing_review:'MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE'};
   return report;
 }

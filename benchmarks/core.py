@@ -17,7 +17,7 @@ from research.development_panel import DevelopmentPanel
 from strategies.etf_quant.mapping.liquidity import LiquidityLookup, assess_liquidity
 from strategies.etf_quant.runtime.industry import build_industry_series
 from strategies.etf_quant.runtime.prediction import TrainingInputs, training_rows
-from strategies.etf_quant.runtime.prefix import SourcePrefixIndex, source_prefix
+from strategies.etf_quant.runtime.prefix import source_prefix
 from strategies.sw_sector_rotation.src.model.model import CrossSectionalRidgeModel
 from strategies.sw_sector_rotation.src.strategy import SWSectorRotationCore
 
@@ -168,34 +168,17 @@ def run():
             memory="O(I*D*F) bounded to last Development signal; no sealed dates.",
         )
     )
-    cache = SourcePrefixIndex()
     provider = fixtures.industry(120, 50)
     records.append(
         compare(
             "shadow_prefix_cold",
             {"stock_rows": 36000, "total_rows": 36600, "industries": 50, "days": 120},
             lambda: reference.source_prefix(provider),
-            lambda: source_prefix(provider, index=SourcePrefixIndex()),
+            lambda: source_prefix(provider),
             equivalent=exact,
-            algorithms=("row byte authentication", "content and row byte authentication"),
-            note="Cold calls authenticate content and rebuild all row hashes; no cross-process reuse claim.",
-            memory="One result per dataset O(N); a canonical byte buffer is temporary.",
-        )
-    )
-    source_prefix(provider, index=cache)  # Explicit warm repeated-cycle comparison.
-    records.append(
-        compare(
-            "shadow_prefix_warm",
-            {"stock_rows": 36000, "total_rows": 36600, "industries": 50, "days": 120},
-            lambda: reference.source_prefix(provider),
-            lambda: source_prefix(provider, index=cache),
-            equivalent=exact,
-            algorithms=(
-                "N row serializations + SHA256 calls",
-                "content SHA256 + authenticated in-process row-hash reuse",
-            ),
-            note="Both examine all economic bytes O(N); warm row-hash calls N -> 0. New process/cold misses recompute rows.",
-            memory="One result per dataset O(N); temporary canonical content buffer; caller receives isolated copies.",
+            algorithms=("DataFrame row dictionaries + row hashes", "tuple iteration + row hashes"),
+            note="Single-pass cold path authenticates each consumed row; no process-local cache.",
+            memory="One result per dataset O(N); no aggregate content buffer or retained cache.",
         )
     )
     label_panel = core.build_panel(frames, include_rsrs=False, calendar=cal.tolist())

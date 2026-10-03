@@ -16,8 +16,10 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import os
 import sys
+from typing import Any
 
 # 保证从项目根可 import src.*
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,10 +29,23 @@ if _ROOT not in sys.path:
 DEFAULT_OUTPUT_ROOT = os.path.join(_ROOT, "reports", "backtests")
 
 
+def _load_strategy_entry(package: str) -> Any:
+    """CLI composition root: load the package's existing Core entry class."""
+    mod = importlib.import_module(package)
+    return next(
+        (
+            getattr(mod, name)
+            for name in dir(mod)
+            if name.endswith("Core") and isinstance(getattr(mod, name), type)
+        ),
+        None,
+    )
+
+
 def _cmd_strategies(_args) -> int:
     from src.backtesting import discover_strategies
 
-    specs = discover_strategies()
+    specs = discover_strategies(entry_loader=_load_strategy_entry)
     if not specs:
         print("未发现任何策略包（strategies/<name>/ 需含 __init__.py 与 src/）")
         return 0
@@ -56,6 +71,7 @@ def _cmd_backtest(args) -> int:
         BacktestRequestError,
         UnknownFrameworkError,
         UnknownStrategyError,
+        discover_strategies,
         run_backtest,
     )
 
@@ -73,7 +89,7 @@ def _cmd_backtest(args) -> int:
         return 2
 
     try:
-        res = run_backtest(req)
+        res = run_backtest(req, specs=discover_strategies(entry_loader=_load_strategy_entry))
     except UnknownFrameworkError as e:
         print(f"框架错误: {e}", file=sys.stderr)
         return 2

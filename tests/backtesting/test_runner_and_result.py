@@ -126,7 +126,9 @@ def test_register_and_available_frameworks():
 
 
 def test_discover_strategies_finds_sw_sector_rotation():
-    specs = discover_strategies()
+    from scripts.quant import _load_strategy_entry
+
+    specs = discover_strategies(entry_loader=_load_strategy_entry)
     assert "sw_sector_rotation" in specs
     sp = specs["sw_sector_rotation"]
     assert sp.package == "strategies.sw_sector_rotation"
