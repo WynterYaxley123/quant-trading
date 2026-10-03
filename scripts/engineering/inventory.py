@@ -2,7 +2,7 @@
 
 Inputs are tracked source paths, never market data or sealed performance. Function
 coverage counts complete signatures (excluding self/cls), including private helpers.
-Print/path/document classifications are explicit heuristics for subsequent review.
+Stdout identities require explicit semantic reviews; paths cover source/config/docs.
 """
 
 from __future__ import annotations
@@ -17,9 +17,12 @@ from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts.engineering.prints import CATEGORIES, classify, load_policy  # noqa: E402
 from scripts.engineering.typecheck import diagnostics  # noqa: E402 -- Standalone engineering CLI.
 
-MACHINE_PATH = re.compile(r"[CD]:[/\\]|/mnt/[a-z]/|QuantForge|/home/|/Users/|\.codex[/\\]worktrees")
+MACHINE_PATH = re.compile(
+    r"(?<![A-Za-z0-9])[A-Z]:[/\\]|/mnt/[a-z]/|QuantForge|/home/|/Users/|\.codex[/\\]worktrees", re.I
+)
 TEXT_SUFFIXES = {
     ".py",
     ".md",
@@ -63,15 +66,19 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
     python_files: list[dict[str, str | int]] = []
     bom: list[str] = []
     crlf: list[str] = []
-    prints: list[dict[str, object]] = []
+    prints: list[dict[str, str | int]] = []
     paths: list[dict[str, object]] = []
     documents: dict[str, str] = {}
+    print_policy = load_policy(root)
     map_path = root / "config/engineering/documentation-map.json"
     mapped = json.loads(map_path.read_text()) if map_path.exists() else {"documents": []}
     document_classes = {item["path"]: item["class"] for item in mapped["documents"]}
     for name in sorted(names):
         path = root / name
-        if not path.is_file() or path.suffix not in TEXT_SUFFIXES:
+        if not path.is_file() or (
+            path.suffix not in TEXT_SUFFIXES
+            and not name.endswith(("Dockerfile", ".example", ".gitignore", ".gitattributes"))
+        ):
             continue
         raw = path.read_bytes()
         if raw.startswith(b"\xef\xbb\xbf"):
@@ -79,14 +86,54 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
         if b"\r\n" in raw:
             crlf.append(name)
         content = raw.decode("utf-8-sig")
+        pattern_spans: dict[int, tuple[int, int]] = {}
+        if name == "scripts/engineering/inventory.py":
+            for definition in ast.walk(ast.parse(content)):
+                if (
+                    isinstance(definition, ast.Assign)
+                    and any(
+                        isinstance(target, ast.Name) and target.id == "MACHINE_PATH"
+                        for target in definition.targets
+                    )
+                    and isinstance(definition.value, ast.Call)
+                    and isinstance(definition.value.func, ast.Attribute)
+                    and isinstance(definition.value.func.value, ast.Name)
+                    and definition.value.func.value.id == "re"
+                    and definition.value.func.attr == "compile"
+                    and definition.value.args
+                    and isinstance(definition.value.args[0], ast.Constant)
+                    and isinstance(definition.value.args[0].value, str)
+                ):
+                    literal = definition.value.args[0]
+                    for row in range(literal.lineno, (literal.end_lineno or literal.lineno) + 1):
+                        pattern_spans[row] = (
+                            literal.col_offset if row == literal.lineno else 0,
+                            (literal.end_col_offset or 0)
+                            if row == literal.end_lineno
+                            else len(content.splitlines()[row - 1]),
+                        )
         for line, value in enumerate(content.splitlines(), 1):
-            if MACHINE_PATH.search(value):
+            matches = list(MACHINE_PATH.finditer(value))
+            if matches:
+                span = pattern_spans.get(line)
+                only_pattern = span is not None and all(
+                    span[0] <= match.start() and match.end() <= span[1] for match in matches
+                )
+                historical = document_classes.get(name, "").startswith(
+                    "HISTORICAL_"
+                ) or name.startswith("docs/archive/")
                 category = (
                     "TEST_FIXTURE"
                     if "/tests/" in name or name.startswith("tests/")
-                    else "HISTORICAL_OR_DOC_EXAMPLE"
+                    else "HISTORICAL"
+                    if historical or name.startswith("reports/etf_quant/")
+                    else "ACTIVE_DOC"
                     if path.suffix == ".md"
-                    else "OPERATIONAL_SOURCE_OR_CONFIG"
+                    else "PATTERN_DEFINITION"
+                    if only_pattern
+                    else "ACTIVE_SOURCE"
+                    if path.suffix in {".py", ".ts", ".tsx", ".js", ".mjs", ".ps1", ".sh"}
+                    else "ACTIVE_CONFIG"
                 )
                 paths.append({"path": name, "line": line, "category": category})
         if path.suffix == ".md":
@@ -94,6 +141,7 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
         if path.suffix != ".py":
             continue
         tree = ast.parse(content, filename=name)
+        prints.extend(classify(name, tree, print_policy))
         modules += 1
         module_docs += bool(ast.get_docstring(tree))
         python_files.append({"path": name, "lines": len(content.splitlines())})
@@ -109,22 +157,6 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
             elif isinstance(node, ast.ClassDef):
                 classes += 1
                 class_docs += bool(ast.get_docstring(node))
-            elif (
-                isinstance(node, ast.Call)
-                and isinstance(node.func, ast.Name)
-                and node.func.id == "print"
-            ):
-                category = (
-                    "TEST_EXAMPLE_PRINTS"
-                    if name.startswith(("tests/", "examples/"))
-                    or "/tests/" in name
-                    or name.endswith(("feishu.py", "runtime_smoke.py"))
-                    else "INTENTIONAL_CLI_PRINTS"
-                    if name.startswith(("scripts/", "research/", "services/", "examples/"))
-                    or name.endswith("cli.py")
-                    else "INTERNAL_DEBUG_PRINTS"
-                )
-                prints.append({"path": name, "line": node.lineno, "category": category})
     config = tomllib.loads((root / "pyproject.toml").read_text())
     baseline = json.loads((root / "config/engineering/mypy-baseline.json").read_text())
     historical = json.loads(
@@ -134,7 +166,7 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
         p for p in paths if documents.get(str(p["path"]), "").startswith("ACTIVE_")
     ]
     return {
-        "method": "Tracked UTF-8 source; AST complete signatures exclude self/cls. Categories are reviewed heuristics; LOC includes comments/blanks.",
+        "method": "Tracked UTF-8 source; AST complete signatures exclude self/cls. Stdout requires per-call semantic review. LOC includes comments/blanks. Literal documentation links, no alias exemptions. Machine paths cover all source/config/docs separately.",
         "python_files": modules,
         "python_lines": sum(int(f["lines"]) for f in python_files),
         "active_python_bom_files": [name for name in bom if name.endswith(".py")],
@@ -158,6 +190,13 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
             value.startswith("HISTORICAL_") for value in documents.values()
         ),
         "active_document_private_path_references": active_private_paths,
+        "active_source_private_path_references": [
+            p for p in paths if p["category"] == "ACTIVE_SOURCE"
+        ],
+        "active_config_private_path_references": [
+            p for p in paths if p["category"] == "ACTIVE_CONFIG"
+        ],
+        "historical_private_path_references": [p for p in paths if p["category"] == "HISTORICAL"],
         "functions": functions,
         "fully_annotated_functions": annotated,
         "annotation_percent": round(100 * annotated / functions, 2) if functions else None,
@@ -174,12 +213,7 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
             :15
         ],
         "print_counts": {
-            category: sum(p["category"] == category for p in prints)
-            for category in (
-                "INTENTIONAL_CLI_PRINTS",
-                "TEST_EXAMPLE_PRINTS",
-                "INTERNAL_DEBUG_PRINTS",
-            )
+            category: sum(p["category"] == category for p in prints) for category in CATEGORIES
         },
         "print_locations": prints,
         "machine_path_counts": dict(Counter(str(p["category"]) for p in paths)),
@@ -229,6 +263,10 @@ def main() -> None:
     if args.mypy_output is not None:
         result["mypy"] = mypy_inventory(args.mypy_output.read_text(encoding="utf-8"))
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    counts = result["print_counts"]
+    assert isinstance(counts, dict)
+    if any(counts[k] for k in ("DEBUG_STATUS", "ACCIDENTAL_PRINT", "UNCLASSIFIED_PRINT")):
+        raise SystemExit("Stdout semantic review gate failed; see inventory print_locations")
 
 
 if __name__ == "__main__":

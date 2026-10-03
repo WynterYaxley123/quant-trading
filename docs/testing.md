@@ -24,3 +24,12 @@ Frontend tests/types/lint/build and both API suites use synthetic fixtures. APIs
 approval/integrity, bounded reads, strict schemas, origin rules and read-only behavior.
 Synthetic scale checks have no fragile timing thresholds. Repository-native static/history
 auditing is not external certification. See [reproducibility](reproducibility.md).
+
+`python -m pytest -q tests/performance` checks reference output equality, tampering,
+label maturity and lookup operation counts. `python -m benchmarks.core` reports
+median synthetic timings at multiple scales; wall times never gate CI.
+
+Hikyuu/KData backtesting remains a maintainer research capability. Engineering
+checks use synthetic inputs and do not invoke market-data backtests or the formal
+one-shot runner. Frozen-image acceptance only reads permitted evidence with network
+disabled and mounts read-only.

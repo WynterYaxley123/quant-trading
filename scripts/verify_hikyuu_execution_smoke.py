@@ -10,7 +10,7 @@ import configparser
 import hashlib
 import json
 import sys
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from unittest.mock import patch
 from uuid import uuid4
@@ -19,7 +19,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 
-def main():
+@dataclass(frozen=True)
+class SmokeTrade:
+    """Typed evidence fields from the framework's fixed public trade schema."""
+
+    datetime: str
+    business: str
+    price: float
+    number: float
+    cost: float
+    cash: float
+
+
+def main() -> None:
     import numpy as np
 
     from src.backtesting import RESULT_FILES, BacktestRequest, StrategySpec
@@ -101,7 +113,18 @@ def main():
     # or replaces the TradeManager curve/positions used by BacktestResult.
     cash, quantity = req.initial_cash, 0.0
     ledger = {}
-    for t in trades.itertuples(index=False):
+    trade_rows = [
+        SmokeTrade(
+            str(row["datetime"]),
+            str(row["business"]),
+            float(row["price"]),
+            float(row["number"]),
+            float(row["cost"]),
+            float(row["cash"]),
+        )
+        for row in trades.to_dict("records")
+    ]
+    for t in trade_rows:
         assert t.datetime in bars, "Fill without a real bar"
         b = bars[t.datetime]
         np.testing.assert_allclose(t.price, b.open, rtol=0, atol=1e-8)
@@ -123,18 +146,19 @@ def main():
     assert eq.date.tolist() == positions.datetime.tolist() == dates
     assert np.isfinite(eq.equity).all()
     cash, quantity = req.initial_cash, 0.0
+    position_values = positions.loc[:, ["cash", "number", "market_value"]].to_numpy(dtype=float)
+    equity_values = eq.equity.to_numpy(dtype=float)
     for i, d in enumerate(dates):
         cash, quantity = ledger.get(d, (cash, quantity))
-        p = positions.iloc[i]
         np.testing.assert_allclose(
-            [p.cash, p.number, p.market_value, eq.equity.iloc[i]],
+            [*position_values[i], equity_values[i]],
             [cash, quantity, quantity * bars[d].close, cash + quantity * bars[d].close],
             rtol=0,
             atol=0.011,
         )
     assert positions.number.nunique() > 1 and positions.cash.nunique() > 1
     assert quantity > 0, "Expected unchanged smoke to retain the actual final open position"
-    assert trades.iloc[-1].datetime < dates[-1], "Unexpected terminal forced trade"
+    assert trade_rows[-1].datetime < dates[-1], "Unexpected terminal forced trade"
 
     # Prefix invariance: truncating future bars must not change earlier fills.
     prefix_system, prefix_tm = original("sh510300")

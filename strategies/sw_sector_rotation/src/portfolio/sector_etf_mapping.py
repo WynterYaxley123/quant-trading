@@ -31,6 +31,7 @@ import warnings
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date
+from typing import overload
 
 __all__ = [
     "NOT_IMPLEMENTED",
@@ -93,6 +94,14 @@ class MappingEvidence:
     notes: str | None = None
 
 
+@overload
+def _date(value: str) -> date: ...
+
+
+@overload
+def _date(value: None) -> None: ...
+
+
 def _date(value: str | None) -> date | None:
     if value is None:
         return None
@@ -113,9 +122,9 @@ def validate_mapping_evidence(rows: Sequence[MappingEvidence], catalog: Mapping[
             raise ValueError(f"无效 mapping_status: {r.mapping_status}")
         if r.etf_code is not None and not re.fullmatch(r"(sh|sz)\d{6}", r.etf_code):
             raise ValueError(f"ETF 代码必须含市场前缀: {r.etf_code}")
-        start, end, listed = map(
-            _date, (r.mapping_effective_from, r.mapping_effective_to, r.etf_listing_date)
-        )
+        start = _date(r.mapping_effective_from)
+        end = _date(r.mapping_effective_to)
+        listed = _date(r.etf_listing_date)
         if start and end and end < start:
             raise ValueError("mapping effective_to 早于 effective_from")
         if r.source_sha256 is not None and not re.fullmatch(r"[0-9a-f]{64}", r.source_sha256):
@@ -139,6 +148,7 @@ def validate_mapping_evidence(rows: Sequence[MappingEvidence], catalog: Mapping[
             )
             if not all(required) or not (r.source_url or r.source_file):
                 raise ValueError("VALIDATED mapping 缺关系、时点或来源证据")
+            assert r.etf_code is not None
             if r.market != r.etf_code[:2]:
                 raise ValueError("ETF market 与代码不符")
             # Relationship may predate listing; execution still cannot.
@@ -159,6 +169,7 @@ def validate_mapping_evidence(rows: Sequence[MappingEvidence], catalog: Mapping[
                     _date(left.mapping_effective_to),
                     _date(right.mapping_effective_to),
                 )
+                assert left_start is not None and right_start is not None
                 if (left_end is None or right_start <= left_end) and (
                     right_end is None or left_start <= right_end
                 ):
@@ -182,9 +193,9 @@ def resolve_primary_mapping(
         if r.sector_code == sector_code
         and r.is_primary
         and r.mapping_status == "VALIDATED"
-        and _date(r.mapping_effective_from) is not None
-        and day >= _date(r.mapping_effective_from)
-        and (r.mapping_effective_to is None or day <= _date(r.mapping_effective_to))
+        and (start := _date(r.mapping_effective_from)) is not None
+        and day >= start
+        and ((end := _date(r.mapping_effective_to)) is None or day <= end)
     ]
     if len(matches) > 1:
         raise ValueError(f"{sector_code}: primary ETF 不唯一")
@@ -203,7 +214,7 @@ def daily_mapping_availability(
     sector_bar_valid: bool,
 ) -> dict:
     """Use the signal session and the *next* execution session separately."""
-    from src.data.providers.etf_local import valid_daily_open
+    from src.data.ohlc import valid_daily_open
 
     if execution_date is not None and _date(execution_date) <= _date(as_of):
         raise ValueError("execution_date 必须晚于 signal date")
@@ -214,9 +225,13 @@ def daily_mapping_availability(
         if resolve_primary_mapping(rows, sector_code, execution_date) != r:
             r = None
     active = r is not None
-    listed = active and _date(as_of) >= _date(r.etf_listing_date)
+    listed = (
+        r is not None
+        and (listing_date := _date(r.etf_listing_date)) is not None
+        and _date(as_of) >= listing_date
+    )
     has_bar = bool(
-        active
+        r is not None
         and execution_date is not None
         and bar is not None
         and bar.get("date") == execution_date

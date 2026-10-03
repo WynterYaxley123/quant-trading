@@ -6,5 +6,5 @@
   "profile": "",
   "registry": "",
   "evidence_root": "",
-  "docker_executable": "C:/Program Files/Docker/Docker/resources/bin/docker.exe"
+  "docker_executable": "docker"
 }

@@ -268,7 +268,7 @@ class PolicyResult:
     actual_l2_exposure: dict[str, float]
     #: Actual exposure restricted to the signalled industries.
     actual_target_exposure: dict[str, float]
-    #: Nominal minus actual, per signalled industry. Negative means the industry got less than intended.
+    #: Actual minus nominal, per signalled industry. Negative means less exposure than intended.
     fidelity_gap: dict[str, float]
 
     metrics: dict = field(default_factory=dict)

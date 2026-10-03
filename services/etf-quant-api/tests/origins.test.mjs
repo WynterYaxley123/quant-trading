@@ -1,8 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import { readFileSync } from 'node:fs';
 import { allowedOrigins } from '../origins.mjs';
 import { createApi, PREFIX } from '../server.mjs';
+
+const cases = JSON.parse(readFileSync(new URL('../../security/origin-cases.json', import.meta.url), 'utf8'));
+for (const value of cases.valid) {
+  test(`shared origin accepts ${value}`, () => assert(allowedOrigins({DASHBOARD_ORIGINS:value}).has(value)));
+}
+for (const value of cases.invalid) {
+  test(`shared origin rejects ${value}`, () => assert.throws(() => allowedOrigins({DASHBOARD_ORIGINS:value})));
+}
 
 test('default and configurable local dashboard ports', () => {
   assert(allowedOrigins({}).has('http://localhost:5173'));

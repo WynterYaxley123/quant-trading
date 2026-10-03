@@ -1,0 +1,901 @@
+{
+  "contract": "SEMANTIC_STDOUT_REVIEW_V1",
+  "calls": [
+    {
+      "path": "benchmarks/core.py",
+      "context": "main",
+      "ast_sha256": "cd17ad5bf63b49b460cd02fd2cc3d831b02fc1367cacc2dbe242b2ed6055dac9",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Deterministic synthetic algorithm timing report"
+    },
+    {
+      "path": "examples/minimal_demo/__main__.py",
+      "context": "main",
+      "ast_sha256": "6a57a9aa9d4f6609d4d08799919d48f53da9019da99fa098025d881ef329f224",
+      "occurrence": 0,
+      "category": "EXAMPLE_OUTPUT",
+      "reason": "Deterministic synthetic demo JSON"
+    },
+    {
+      "path": "research/development_iteration1_run.py",
+      "context": "main",
+      "ast_sha256": "d0695fa5c3d25a52025280da7929c589423b093c383be614b57458a8cfd910ff",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Research CLI pre-run gate and output location"
+    },
+    {
+      "path": "research/development_iteration1_run.py",
+      "context": "main",
+      "ast_sha256": "fe1dae298723b4e4a7b7467059cf0ce1f7dbad13144d0beeaed1d946f334ec8d",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Research CLI pre-run gate and output location"
+    },
+    {
+      "path": "research/development_iteration1_run.py",
+      "context": "main",
+      "ast_sha256": "89798c287c98463d47e7f7b2f98eaa7acf4b1c061ff7628dfb43d565e1071e78",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Research CLI pre-run gate and output location"
+    },
+    {
+      "path": "research/sector_development_baseline.py",
+      "context": "main",
+      "ast_sha256": "6ff0865618bdfa0c9317cc9384fa7fcf47229a8b510871cbb678762c32eaa7c2",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Development CLI gate and artifact summary"
+    },
+    {
+      "path": "research/sector_development_baseline.py",
+      "context": "main",
+      "ast_sha256": "a9d34d071966d9e4b8f735411905c45b0483c5cb8a8d8ecd6df6fc160f6660b0",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Development CLI gate and artifact summary"
+    },
+    {
+      "path": "research/sector_development_integrity_audit.py",
+      "context": "main",
+      "ast_sha256": "87da79197dbede0f7247c6576cc56d6287cfa763e4179cf1322a2e43f2de7fb0",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Integrity audit machine-readable findings"
+    },
+    {
+      "path": "research/sector_development_protocol.py",
+      "context": "main",
+      "ast_sha256": "79768fbc0a389c9bea72de62ed1c4a9dc70dfbe29f289551c31fe722be70375b",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Protocol audit JSON result"
+    },
+    {
+      "path": "research/sector_index_baseline.py",
+      "context": "main",
+      "ast_sha256": "417d69f7e2649c396c00f78ec633bae6e14540d81fc96d6fe0f58abcf5feb7ad",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Sector baseline preparation audit JSON"
+    },
+    {
+      "path": "research/sector_research_split.py",
+      "context": "main",
+      "ast_sha256": "831ad02791ba01bb88bd351adcbcffb5f8a8ef216c6c48ab262689929efa81fc",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Split-policy audit JSON"
+    },
+    {
+      "path": "research/sector_universe_feasibility.py",
+      "context": "main",
+      "ast_sha256": "76ec767714c3718308b94a83690649003eb4641f15fca8fc76cbb61ce860eda2",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Universe feasibility audit JSON"
+    },
+    {
+      "path": "scripts/audit_etf_quant_models.py",
+      "context": "main",
+      "ast_sha256": "06045c141946a4782b93186a6bfa8f7fdd5f0be4b57a535afa357a69528e0578",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Model readiness audit summary"
+    },
+    {
+      "path": "scripts/audit_etf_quant_readiness.py",
+      "context": "main",
+      "ast_sha256": "962ec1a3af04424c28522253d05bce4039a1ac5cbac2035c2f6dbe2328f48461",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Readiness audit summary"
+    },
+    {
+      "path": "scripts/data/admit_shenwan_etf_mapping.py",
+      "context": "main",
+      "ast_sha256": "df8c2900f84f6faac3dd5a2d0c511e6c86e5d6cc10678038d7f075d9d04885b9",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mapping admission CLI report"
+    },
+    {
+      "path": "scripts/data/admit_shenwan_sector.py",
+      "context": "main",
+      "ast_sha256": "0024f95790356ab7737499365ac7f3ce94feb7d787b3b54f9638b0373cfc1c9c",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Sector admission CLI report"
+    },
+    {
+      "path": "scripts/data/audit_historical_proxy_evidence.py",
+      "context": "main",
+      "ast_sha256": "7476e36c3e67093d37df3a7f511175cc410788d2eec9839a864eadb5f1ebfba4",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Proxy audit CLI report"
+    },
+    {
+      "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+      "context": "main",
+      "ast_sha256": "e131b564d8f60a9c04bbd60e384c20657bc63b63ddfb7be6402ff5cb802cbf88",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Catalogue/manifest/quality output artifacts and counts"
+    },
+    {
+      "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+      "context": "main",
+      "ast_sha256": "c7d1f0160a65054bb9c982a3fbcd85ae159b5133dd7b354d2e3c0de0492030fa",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Catalogue/manifest/quality output artifacts and counts"
+    },
+    {
+      "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+      "context": "main",
+      "ast_sha256": "e40a3340a2125b90e831b56fb7a933869f0c88cffbafb3d1362b4b1cc02c33fb",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Catalogue/manifest/quality output artifacts and counts"
+    },
+    {
+      "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+      "context": "main",
+      "ast_sha256": "f5079a4add5878056d99b83d55661056fb60b6ae716c8685740d2d2819ba3301",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Catalogue/manifest/quality output artifacts and counts"
+    },
+    {
+      "path": "scripts/data/import_shenwan_official.py",
+      "context": "main",
+      "ast_sha256": "be9cf2fb563e8f187a06ec03a58dc45213a3c5ea988d6714b9a9435c0af58d0d",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Import CLI results, file listing and stderr validation failures"
+    },
+    {
+      "path": "scripts/data/import_shenwan_official.py",
+      "context": "main",
+      "ast_sha256": "ae5246fe42e4e6de9f46b8a6acfd011558f4547ba6d593daa066d750134f85f9",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Import CLI results, file listing and stderr validation failures"
+    },
+    {
+      "path": "scripts/data/import_shenwan_official.py",
+      "context": "main",
+      "ast_sha256": "4466c39c55f551ad30ba8d9a618ef5169966e9e40c259ad26268140dab2feaf4",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Import CLI results, file listing and stderr validation failures"
+    },
+    {
+      "path": "scripts/data/import_shenwan_official.py",
+      "context": "main",
+      "ast_sha256": "2b69e808e0e3da5c6b4233aa7c0afcac3e7c0da96b77e5ad7f58b1ba944ebeb2",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Import CLI results, file listing and stderr validation failures"
+    },
+    {
+      "path": "scripts/data/import_shenwan_official.py",
+      "context": "main",
+      "ast_sha256": "81d6f95aa22e87542d76c2162709932ac5bc6923cd73033d0bd241c12ea84450",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Import CLI results, file listing and stderr validation failures"
+    },
+    {
+      "path": "scripts/data/import_shenwan_official.py",
+      "context": "main",
+      "ast_sha256": "e2ee1943228847fa8d9f1320612cec2688e84246a81384e9103f24903d96d30d",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Import CLI results, file listing and stderr validation failures"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "b8b58d894ac93f58833324934f718954c6fa254acdfe7b86723f89c20a3fbb30",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "94967a7a6ed40be5a4e926c8fada2529cba4c6a57ce176e735c4359ea9a3afc0",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "89d7cea51acd601146460695c1437e10c078db545fbb4795f4de00cfc3ef2b1f",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "dbd3a0d0c23a8de0c3122caec09eae47593bae575eb74c2740fc9f64b886bebb",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "9e7483644dc194839b23441f9c0737e9cb902d529d4894802504fb0c833c59f8",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "8e23a7b2d80bcf1e21367558d064c06a53f121ec4abd1c7db77f45cc667e53fb",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "be393e6a66c5b0c3d8715614b7200dc12ca6c6a1ea6f452d10da37991718fd9e",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "198c6ac63aea51e32222a8514791775192222c7a3b0afe7bb844f9e0bcd914e9",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "cca6a8df53c04fb3cff450d7aadc49667bf38377212f72d4291c514c85c85d7e",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "ff6bcac5ca2c1abd32f3734d604a980848b514e1a956bd0aae281686b3e4b3c2",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/data/verify_etf_evidence.py",
+      "context": "main",
+      "ast_sha256": "8ca53d2ac11f1f7b03abdc1970881789e87035847fd86f03c784d37535a6add1",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence integrity CLI verdict and problem list"
+    },
+    {
+      "path": "scripts/engineering/benchmark.py",
+      "context": "main",
+      "ast_sha256": "12af1e3bfb334545da829ba566edd97cb05fb0e4457ac2647f534051e485dad3",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Synthetic provider/catalogue timings JSON"
+    },
+    {
+      "path": "scripts/engineering/references.py",
+      "context": "main",
+      "ast_sha256": "6bcc6df0ff3a504503559ae7a43beb82f66a3d4b1e1b28b9691164ce75905eec",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Literal-link and archived-byte audit JSON"
+    },
+    {
+      "path": "scripts/engineering/typecheck.py",
+      "context": "main",
+      "ast_sha256": "f66f98350e1787f683830d378d8f33397095d19207c200106431405b77a1252f",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mypy gate result and exact diagnostic identities"
+    },
+    {
+      "path": "scripts/engineering/typecheck.py",
+      "context": "main",
+      "ast_sha256": "f20c53a06557c600bfc57f3e7670464f8f767f3aaa03131ff3d253a1a9f2bfb1",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mypy gate result and exact diagnostic identities"
+    },
+    {
+      "path": "scripts/engineering/typecheck.py",
+      "context": "main",
+      "ast_sha256": "0dd96888a4247c310d9b255caecd1bcd2738c4ebfa49b4f757ca98c89f57dff1",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mypy gate result and exact diagnostic identities"
+    },
+    {
+      "path": "scripts/engineering/typecheck.py",
+      "context": "main",
+      "ast_sha256": "b4106c4f8058eaf1d91e2c9edc069450a06c8131f04310aeef7603ef747056fb",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mypy gate result and exact diagnostic identities"
+    },
+    {
+      "path": "scripts/engineering/typecheck.py",
+      "context": "main",
+      "ast_sha256": "c01d8341e4b1ec92719471a458da5c958f053db4847112f7daf77b742aba54fa",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mypy gate result and exact diagnostic identities"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "08f1cb57087cceddcf11a3f1f89ac5b740c8aec42409a081d3a17127aac2eb94",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "cf6cd72bef6d25f76ee25e7e58857848d65e99bce02aa04fc462a8a3518fc09e",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "803a7870f5bf6d8df154ba022cb2c7b070dca158a6b00e1ad6c3c554aab8b45f",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "a96fedc932354a73d019d2e8f9a9cea15f156d93e72a0aef387d6cf06d89d01c",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "0aa931f0f17d427857c954bba5cfa398b3c4546857c242212037fd70e1be6b31",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "f4a68d37c35af24891ab33841c68b167bd5dd127e485877dab4d553bafb5f89a",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "b88c2d203e0e84b53beccd985a121bae65924ab77716a275845c54db0f49e31c",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "be6aaff31707406682b4549b2509d69e22d5ca0dab4f20990727225224f54a02",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "context": "main",
+      "ast_sha256": "2f27f410272893b49c3053afd7dc0347c797dfce8ce9ac2fb24733c6eea58dbe",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Evidence builder CLI stage progress and package counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_manifest.py",
+      "context": "main",
+      "ast_sha256": "e9afbd637327af6b2c988679867cda08d5165c81df2ac28a598f427ec9ebeee6",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Metadata manifest locations, sizes and hashes"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_manifest.py",
+      "context": "main",
+      "ast_sha256": "6f390e216406e72debbd01c1360cc534335598d6f6756f49688d8f6f2a30db57",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Metadata manifest locations, sizes and hashes"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_top5_status.py",
+      "context": "main",
+      "ast_sha256": "d974443ffae01f639a48ba1b95350a02a88c01714c58e462bb2695931f86cf45",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Top5 evidence status report and output location"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_top5_status.py",
+      "context": "main",
+      "ast_sha256": "460ec980918bee51a1ffdfc28d934aa61a76b752f8feb78bec5ce8a9309b9ad7",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Top5 evidence status report and output location"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_pit_top5_status.py",
+      "context": "main",
+      "ast_sha256": "becd207ac005f785423341a89d2574bec715da795f064b6e4d2e1dd185b80607",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Top5 evidence status report and output location"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_strict_pit_evidence_summary.py",
+      "context": "main",
+      "ast_sha256": "35a70b0789cc44c59ebf98de4c989dffc989c84acfa063ffbeb872629fbfdca4",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Strict containment summary counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_strict_pit_evidence_summary.py",
+      "context": "main",
+      "ast_sha256": "981c4726f77c60cbca57951e6128f6e904046e7ec933ba836460b0da7d435d16",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Strict containment summary counts"
+    },
+    {
+      "path": "scripts/etf_quant/build_production_strict_pit_evidence_summary.py",
+      "context": "main",
+      "ast_sha256": "d098231f19d75c5f88c09417962c0e4cf04d8201b937949beafcfef534e2688f",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Strict containment summary counts"
+    },
+    {
+      "path": "scripts/etf_quant/l2_etf_executable_coverage.py",
+      "context": "main",
+      "ast_sha256": "bd837bf53392aad76c394fe5a3a9d5a4001b8ccc2fa30c88badebd7eb043c814",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mapping coverage summary JSON"
+    },
+    {
+      "path": "scripts/etf_quant/l2_etf_executable_coverage.py",
+      "context": "main",
+      "ast_sha256": "4314043b27a9ee1f881e3398d3c9091188d9292e1576db2d576b52b817ddf850",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mapping coverage summary JSON"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_strategies",
+      "ast_sha256": "69d14394bc5e244ff56dc7dda8029830dd00572e90573eb36bdd718d808e68e1",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_strategies",
+      "ast_sha256": "7cfbbd778d4d37cf1e18190abd05f44afb5c3171493f7b5823af7cb4a844d70c",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_frameworks",
+      "ast_sha256": "03b42eb297c4ad35f302eadcdb3b937e3b263f5fffb79aa236f7824b846fb1d8",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "3e2e15ce8c347bbc0b32add4e02e97c228895b795db6a6f7065b818286104c93",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "875e484aa81b490bc057db93c1fbc17566ef982fdc4bc8e81143432e7644474a",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "59a75bdbbca4cd4b9e9c3d624c471475f039fa7fc57b6200de6de4cf9d36d402",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "092b0d5127d2b4097a2cd50c9f2e66062c29edba435174b05c145fb4e9d3cbf9",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "70606ccc2355814d4a60f56903f12e0e31526f8fce86af59806cffc47ad29ff6",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "1d05760a6abbfd91ebbab9c6944f53c53d87613addb5ca7ff7954265a6389892",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "809ab460349391aa22f3947045aad44b5ec1158bf4e9fdad4db536ebe012bfb5",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "0ec334793c7feae202ce06a636ed4cec41b5197a3779c37b9fdb3e8725bcd1a7",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "5ac6c569dda6178c6113a3cf498e036d3f03b9abd0223eca32620e615fabe99c",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "0ec334793c7feae202ce06a636ed4cec41b5197a3779c37b9fdb3e8725bcd1a7",
+      "occurrence": 1,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/quant.py",
+      "context": "_cmd_backtest",
+      "ast_sha256": "50a795fbf1653e61d506a2339877370e0318438d4e86dac5f936548abe17f0da",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+    },
+    {
+      "path": "scripts/verify_hikyuu_execution_smoke.py",
+      "context": "main",
+      "ast_sha256": "3f662d43e9ac09e3985c7fdef9a49214c7ae91d29afb49eea8a4b796ec7c1c08",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Maintainer acceptance preflight/result JSON; never invoked in portable checks"
+    },
+    {
+      "path": "scripts/verify_hikyuu_execution_smoke.py",
+      "context": "main",
+      "ast_sha256": "98cbd5ad9e18ddc0127fe2444fe71b3da2425abeec3383c85c7fb5dcec920ab1",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Maintainer acceptance preflight/result JSON; never invoked in portable checks"
+    },
+    {
+      "path": "services/cnequity-sidecar/bootstrap.py",
+      "context": "main",
+      "ast_sha256": "4d49ccce1e504c92a05a6426ea021671dbabc920fc9f54fddce6ed5fb006f09e",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Sidecar installation receipt JSON"
+    },
+    {
+      "path": "services/cnequity-sidecar/coverage_matrix.py",
+      "context": "main",
+      "ast_sha256": "8800135c67a523426721a24c7726d790ace80b99edd24105c26a45da6046a4e0",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Coverage command JSON report"
+    },
+    {
+      "path": "services/cnequity-sidecar/forward.py",
+      "context": "main",
+      "ast_sha256": "8800135c67a523426721a24c7726d790ace80b99edd24105c26a45da6046a4e0",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Transport command JSON result"
+    },
+    {
+      "path": "services/cnequity-sidecar/runner.py",
+      "context": "main",
+      "ast_sha256": "c66673d955c0248169807fd43f0ab9e1327fc085cd8f15e94918646b1e0576c9",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Export command JSON receipt and structured failure"
+    },
+    {
+      "path": "services/cnequity-sidecar/runner.py",
+      "context": "<module>",
+      "ast_sha256": "e39e9918e0b15557ee125ae6c481b234f568f19ba873ab0966780fabd43a4a3f",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Export command JSON receipt and structured failure"
+    },
+    {
+      "path": "services/cnequity-sidecar/runner.py",
+      "context": "<module>",
+      "ast_sha256": "7ca6a151f343eced94d161c0842098a13b936f089f801478ea0a7fa56aa393ae",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Export command JSON receipt and structured failure"
+    },
+    {
+      "path": "services/etf-quant-runner/one_shot.py",
+      "context": "main",
+      "ast_sha256": "e4419e7cfc139b5e59070d26681b7c96edb7e76c1d93993ad5e8626960baa5d0",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runner transport JSON protocol"
+    },
+    {
+      "path": "services/etf-quant-runner/run.py",
+      "context": "main",
+      "ast_sha256": "658a47618ab4acc834fc08b15df8d77b73a5c5ac0abc393df7b3d4437f7ac772",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runner transport JSON result/failure protocol"
+    },
+    {
+      "path": "services/etf-quant-runner/run.py",
+      "context": "<module>",
+      "ast_sha256": "ec31f8b24ccd5821d0fde341a9dfb30509f46273d91d47a1401d0b66d8b7cdbc",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runner transport JSON result/failure protocol"
+    },
+    {
+      "path": "src/notifications/feishu.py",
+      "context": "<module>",
+      "ast_sha256": "65018f18a3b71a9b6a5ae314ef216d7dde5dc618265f02a6f6f4fbcf37310888",
+      "occurrence": 0,
+      "category": "EXAMPLE_OUTPUT",
+      "reason": "Guarded __main__ text-rendering example and configuration status"
+    },
+    {
+      "path": "src/notifications/feishu.py",
+      "context": "<module>",
+      "ast_sha256": "39c41d11ae30706b387289baf0cd86058847c712662be407f26e7192379b7d94",
+      "occurrence": 0,
+      "category": "EXAMPLE_OUTPUT",
+      "reason": "Guarded __main__ text-rendering example and configuration status"
+    },
+    {
+      "path": "src/notifications/feishu.py",
+      "context": "<module>",
+      "ast_sha256": "b8f3113246a6e9a2675555785d1702bbca6d8995005c4798b1dd74e7a3178d8c",
+      "occurrence": 0,
+      "category": "EXAMPLE_OUTPUT",
+      "reason": "Guarded __main__ text-rendering example and configuration status"
+    },
+    {
+      "path": "strategies/etf_quant/runtime/cli.py",
+      "context": "main",
+      "ast_sha256": "c652519a9f2168f8ce00b51607f312be846ce4324436284c778eacfc956be46a",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runtime CLI JSON protocol and structured blockers"
+    },
+    {
+      "path": "strategies/etf_quant/runtime/cli.py",
+      "context": "main",
+      "ast_sha256": "43bedd087e86a01c05afc459fbea8bbcd85c47e8fea2913d5ba98cb7914fdfc7",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runtime CLI JSON protocol and structured blockers"
+    },
+    {
+      "path": "strategies/etf_quant/runtime/cli.py",
+      "context": "<module>",
+      "ast_sha256": "330fbe5298c82059544707aaeabeeb6afc4a66bb662cf22a5a82ea9cb71a14de",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runtime CLI JSON protocol and structured blockers"
+    },
+    {
+      "path": "strategies/etf_quant/runtime/cli.py",
+      "context": "<module>",
+      "ast_sha256": "7b9507ba13b4cc5634a420fcb81491ccdbb60a15e53de3c5201ca7dd8fb9aa1c",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Runtime CLI JSON protocol and structured blockers"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "9f1951419b7b038c874f17f656bb38cbbf6a2eface4f24c025c4cc9f30fbbac8",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "79ad583c28f589ba058239ce43a6b05f7f93401081e46ac5b103a8227b91aaa1",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "9f1951419b7b038c874f17f656bb38cbbf6a2eface4f24c025c4cc9f30fbbac8",
+      "occurrence": 1,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "c83916fee3f242ee4845dfc4d9eeaf3515ec9a83bd67be97f6494467dd629459",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "00083f66fb1303e07111fc497fd63bc9877b35055c3b3c1fbe2d144c20185466",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "c14b82cf4f2f64441c15e26245cf2a05e18b252d0050275c8d591a13946b651d",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "e2794c359a9dac27d714ca1f009c56e47a3c03ce323a42f784cb433edb2f672e",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "e5818d61b7833cfd4bc15e449fa48e94c36d5faf93cfe48013250890933eb73c",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "4a71009544658d870cce64aaae5743c6a6f5349faf53092e420af2fce01f8098",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "e18c1ae9441bba92c0b35c640547e681d1d42236bb6ed7ac32a36b70825ee560",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "63897ce9bd667e4846abbded31b28161501b1328d048d03b9aed950e7466fe3d",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "da6159de84a87a52f0823221e617f72dbb01f4849bc788124e7d7260dac619e0",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/framework/runtime_smoke.py",
+      "context": "main",
+      "ast_sha256": "cc416dc29725a98a0e6a332ac3fe6aeba7f2469689430544741892d0c42d1b44",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Explicit test diagnostic/version output"
+    },
+    {
+      "path": "tests/verify_imports.py",
+      "context": "t",
+      "ast_sha256": "bb1ef83cff957ad1010e93bc570a0f8ac4a0ff6fa1ed90f1fce044d69d2cef5d",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Import smoke test PASS/FAIL and summary"
+    },
+    {
+      "path": "tests/verify_imports.py",
+      "context": "t",
+      "ast_sha256": "7a6e21e6962fdd4acf0a5e2c0d29ce57aae42c92e881de9c6d88ca50ad869e31",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Import smoke test PASS/FAIL and summary"
+    },
+    {
+      "path": "tests/verify_imports.py",
+      "context": "<module>",
+      "ast_sha256": "709b1c99ba1fa1c34bcf144439ba0ea578c097ee67d9028668da7cc4aa52c802",
+      "occurrence": 0,
+      "category": "TEST_OUTPUT",
+      "reason": "Import smoke test PASS/FAIL and summary"
+    }
+  ]
+}

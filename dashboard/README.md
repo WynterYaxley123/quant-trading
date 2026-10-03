@@ -15,7 +15,7 @@ Research artifacts; only their artifact-free Research health request is enabled.
 The launcher now includes Research API 8787 as well as ETF API 3312 and Dashboard
 5173. All pages show service connectivity. Missing approved Research artifacts
 produce a connected empty state; network and integrity errors remain visible.
-See [unified console](../docs/unified_console.md).
+See [unified console](../docs/operations.md).
 
 **Sector Index Research** — a read-only, modern React research dashboard for the Shenwan
 sector-index rotation research programme.

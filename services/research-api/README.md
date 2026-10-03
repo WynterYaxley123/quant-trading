@@ -6,7 +6,7 @@ Read-only Hono/TypeScript adapter for formal Shenwan sector-index Development ar
 
 Normal operation starts this API with ETF Quant API and Dashboard using
 `scripts/Start-EtfQuantConsole.ps1` from the repository root. See the
-[unified console guide](../../docs/unified_console.md). No separate terminal is
+[unified console guide](../../docs/operations.md). No separate terminal is
 needed. The launcher uses the existing `node --import tsx src/index.ts` entry
 point without installing or upgrading dependencies. Manual commands below are
 for component development.
@@ -21,7 +21,7 @@ pnpm dev
 
 The normal console supplies the optional machine-local approved workspace.
 An explicit registry anchors metadata SHA256 and its complete content manifest.
-See [workspace configuration](../../docs/research_workspace.md). Without any local
+See [workspace configuration](../../docs/research-status.md). Without any local
 configuration, the optional default is `<this worktree>/reports/research`; absent
 root/catalog is `NOT_CONFIGURED`. Invalid explicit configuration is `DEGRADED`,
 never an empty fallback. Health remains artifact-free; status/capabilities explain

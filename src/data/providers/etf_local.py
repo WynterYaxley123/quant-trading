@@ -12,22 +12,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.data.ohlc import valid_daily_open as valid_daily_open
+
 from .hikyuu_preflight import preflight
-
-
-def valid_daily_open(bar: dict | pd.Series | None) -> bool:
-    """Conservative daily-bar check; absence and malformed OHLC are not filled."""
-    if bar is None:
-        return False
-    try:
-        o, h, l, c = (float(bar[k]) for k in ("open", "high", "low", "close"))  # noqa: E741 -- Established OHLC low-price name in frozen numerical helper.
-    except (KeyError, TypeError, ValueError):
-        return False
-    from math import isfinite
-
-    return (
-        all(isfinite(x) and x > 0 for x in (o, h, l, c)) and h >= max(o, l, c) and l <= min(o, h, c)
-    )
 
 
 def read_local_etf_snapshot(data_dir: Path | str) -> tuple[pd.DataFrame, pd.DataFrame]:

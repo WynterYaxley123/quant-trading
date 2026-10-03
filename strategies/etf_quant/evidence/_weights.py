@@ -64,10 +64,6 @@ class WeightVector:
         require_text(self.benchmark_code, "benchmark_code")
         require_text(self.benchmark_name, "benchmark_name")
         require_text(self.provider, "provider")
-        for name in ("evidence_observed_at", "evidence_available_at", "valid_from"):
-            parse_instant(
-                self.evidence_observed_at, "evidence_observed_at"
-            ) if name == "evidence_observed_at" else None
         observed = parse_instant(self.evidence_observed_at, "evidence_observed_at")
         available = parse_instant(self.evidence_available_at, "evidence_available_at")
         published = optional_instant(self.source_publication_at, "source_publication_at")

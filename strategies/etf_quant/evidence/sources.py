@@ -8,7 +8,7 @@ metadata and the wall-clock instant of retrieval.
 
 Nothing here is committed to Git. The repository receives only schemas, builders,
 tests and small metadata manifests; the raw official artifacts stay under
-``D:\\QuantForge\\runtime\\...`` and are referenced by hash.
+the configured external evidence root and are referenced by hash.
 """
 
 from __future__ import annotations
@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+from ..config.runtime_paths import evidence_root
 from .schema import (
     EvidenceError,
     PinnedSource,
@@ -28,8 +29,8 @@ from .schema import (
     sha256_bytes,
 )
 
-#: Default runtime root for this task. Never inside a Git work tree.
-DEFAULT_RUNTIME_ROOT = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
+#: Shared external root with environment overrides and a labelled legacy fallback.
+DEFAULT_RUNTIME_ROOT = evidence_root("PIT")
 
 MANIFEST_NAME = "raw_source_manifest.json"
 

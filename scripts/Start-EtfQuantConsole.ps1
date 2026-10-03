@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$Config = $(if ($env:ETF_QUANT_CONSOLE_CONFIG) { $env:ETF_QUANT_CONSOLE_CONFIG } else { 'D:/QuantForge/runtime/etf-quant-v1/autonomous-control-v1/config.json' }),
+    [string]$Config = $env:ETF_QUANT_CONSOLE_CONFIG,
     [string]$ResearchReportRoot,
     [ValidateRange(1024,65535)][int]$EtfApiPort = 3312,
     [ValidateRange(1024,65535)][int]$ResearchApiPort = 8787,
@@ -9,6 +9,14 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $consoleRepo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+if (-not $Config) {
+    $consoleRoot = $env:ETF_QUANT_EXTERNAL_RUNTIME_ROOT
+    if (-not $consoleRoot) {
+        $legacyConfig = Get-Content -Raw -LiteralPath (Join-Path $consoleRepo 'config/legacy-runtime.json') | ConvertFrom-Json
+        $consoleRoot = $legacyConfig.windows_runtime_root
+    }
+    $Config = Join-Path $consoleRoot 'autonomous-control-v1/config.json'
+}
 $consoleConfig = Get-Content -Raw -LiteralPath $Config | ConvertFrom-Json
 $consoleNode = (Get-Command node -ErrorAction Stop).Source
 if ([int]((& $consoleNode --version).Trim().TrimStart('v').Split('.')[0]) -lt 24) {

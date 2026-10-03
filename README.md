@@ -19,6 +19,11 @@ B40 proxies require complete official weights, at least 40% target exposure, dom
 PIT availability and liquidity. An unexecutable slot retains its original weight as cash.
 Finalized T-close signals can only receive future T+1 simulated execution.
 
+The factor sets and model specification are frozen; Ridge coefficients are refit
+from eligible mature observations at each signal date. “Industry-first” means
+rank industries, then map the original Top5 to executable ETFs. This order is
+implemented in the [runtime](strategies/etf_quant/runtime/shadow.py) and covered by
+[mapping regressions](tests/etf_quant/test_proxy_partial_contract.py).
 See the [frozen strategy contract](docs/strategy.md). No profitability claim is made.
 
 ## Data-free quick start
@@ -37,6 +42,9 @@ data, credentials, CNEquity checkout or runtime namespace. See
 [development](docs/development.md) for frontend setup and quality commands.
 
 ## Architecture
+
+Three logical layers contain six principal components: factual exports; the
+ranking/mapping pipeline and Shadow runtime; the Research API, ETF API and dashboard.
 
 ```mermaid
 flowchart LR
@@ -66,7 +74,7 @@ observations. Their distinct trust boundaries are explained in [architecture](do
 | examples/minimal_demo/ | Data-free contributor example |
 | tests/ | Synthetic and marked maintainer tests |
 | reports/etf_quant/ | Immutable, data-free historical provenance metadata |
-| docs/archive/ | Historical audits, handoffs and delivery records |
+| docs/archive/ | Retained contract provenance and engineering certificates |
 
 ## Tests and quality
 

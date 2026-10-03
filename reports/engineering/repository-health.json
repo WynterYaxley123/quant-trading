@@ -1,0 +1,3503 @@
+{
+  "contract": "PUBLIC_REPOSITORY_HEALTH_V3",
+  "status": "IMPLEMENTATION_ACCEPTED_DELIVERY_VIA_PR_METADATA",
+  "delivery": {
+    "BASE_SHA": "1e2ffbd4f75120df2511472662dcf7dcd308b0d6",
+    "VALIDATED_IMPLEMENTATION_SHA": "ff0dc8c3abdc678306b11892d145778a898004d6",
+    "PR_NUMBER": 8,
+    "PR_URL": "https://github.com/WynterYaxley123/quant-trading/pull/8",
+    "DELIVERY_IDENTITY_SOURCE": "GITHUB_PR_METADATA"
+  },
+  "baseline": {
+    "python_files": 222,
+    "python_lines": 49138,
+    "functions": 1963,
+    "fully_annotated_functions": 572,
+    "annotation_percent": 29.14,
+    "function_docstrings": 550,
+    "function_docstring_percent": 28.02,
+    "classes": 148,
+    "class_docstrings": 72,
+    "module_docstrings": 210,
+    "tracked_markdown_files": 160,
+    "historical_markdown_files": 107,
+    "mypy": {
+      "raw_diagnostic_count": 411,
+      "files_containing_diagnostics": 29,
+      "diagnostics_by_file": {
+        "research/development_iteration1_protocol.py": 1,
+        "research/development_iteration1_run.py": 28,
+        "research/sector_development_baseline.py": 11,
+        "research/sector_development_integrity_audit.py": 17,
+        "research/sector_development_protocol.py": 9,
+        "research/sector_index_baseline.py": 4,
+        "research/sector_research_split.py": 16,
+        "research/sector_universe_feasibility.py": 6,
+        "scripts/audit_etf_quant_models.py": 1,
+        "scripts/audit_etf_quant_readiness.py": 7,
+        "scripts/data/audit_historical_proxy_evidence.py": 8,
+        "scripts/data/verify_etf_evidence.py": 4,
+        "scripts/etf_quant/build_production_pit_top5_status.py": 6,
+        "scripts/etf_quant/build_production_strict_pit_evidence_summary.py": 1,
+        "scripts/verify_hikyuu_execution_smoke.py": 200,
+        "strategies/sw_sector_rotation/src/common/temporal_integrity.py": 1,
+        "strategies/sw_sector_rotation/src/factors/rsrs.py": 2,
+        "strategies/sw_sector_rotation/src/factors/sector_rotation.py": 1,
+        "strategies/sw_sector_rotation/src/model/model.py": 4,
+        "strategies/sw_sector_rotation/src/portfolio/sector_etf_mapping.py": 18,
+        "strategies/sw_sector_rotation/src/risk/sector_rotation.py": 2,
+        "strategies/sw_sector_rotation/src/strategy.py": 3,
+        "strategies/sw_sector_rotation/tests/test_core_hardening.py": 19,
+        "strategies/sw_sector_rotation/tests/test_etf_mapping_admission.py": 1,
+        "strategies/sw_sector_rotation/tests/test_hikyuu_adapter.py": 1,
+        "strategies/sw_sector_rotation/tests/test_ranking.py": 3,
+        "strategies/sw_sector_rotation/tests/test_ridge.py": 9,
+        "strategies/sw_sector_rotation/tests/test_rsrs.py": 16,
+        "strategies/sw_sector_rotation/tests/test_temporal_integrity.py": 12
+      },
+      "diagnostics_by_top_level_area": {
+        "research": 92,
+        "scripts": 227,
+        "strategies": 92
+      },
+      "active_runtime_diagnostic_count": 0,
+      "active_runtime_scope": [
+        "src/",
+        "strategies/etf_quant/",
+        "services/etf-quant-runner/",
+        "services/cnequity-sidecar/"
+      ]
+    }
+  },
+  "after": {
+    "python_files": 239,
+    "python_lines": 50999,
+    "functions": 2032,
+    "fully_annotated_functions": 595,
+    "annotation_percent": 29.28,
+    "function_docstrings": 561,
+    "function_docstring_percent": 27.61,
+    "classes": 155,
+    "class_docstrings": 77,
+    "module_docstrings": 227,
+    "tracked_markdown_files": 70,
+    "historical_markdown_files": 17,
+    "mypy": {
+      "raw_diagnostic_count": 168,
+      "files_containing_diagnostics": 22,
+      "diagnostics_by_file": {
+        "research/development_iteration1_protocol.py": 1,
+        "research/development_iteration1_run.py": 28,
+        "research/sector_development_integrity_audit.py": 17,
+        "research/sector_development_protocol.py": 9,
+        "research/sector_index_baseline.py": 4,
+        "research/sector_research_split.py": 16,
+        "research/sector_universe_feasibility.py": 6,
+        "scripts/audit_etf_quant_models.py": 1,
+        "scripts/audit_etf_quant_readiness.py": 7,
+        "scripts/data/audit_historical_proxy_evidence.py": 8,
+        "scripts/data/verify_etf_evidence.py": 4,
+        "strategies/sw_sector_rotation/src/common/temporal_integrity.py": 1,
+        "strategies/sw_sector_rotation/src/factors/rsrs.py": 2,
+        "strategies/sw_sector_rotation/src/factors/sector_rotation.py": 1,
+        "strategies/sw_sector_rotation/src/risk/sector_rotation.py": 2,
+        "strategies/sw_sector_rotation/tests/test_core_hardening.py": 19,
+        "strategies/sw_sector_rotation/tests/test_etf_mapping_admission.py": 1,
+        "strategies/sw_sector_rotation/tests/test_hikyuu_adapter.py": 1,
+        "strategies/sw_sector_rotation/tests/test_ranking.py": 3,
+        "strategies/sw_sector_rotation/tests/test_ridge.py": 9,
+        "strategies/sw_sector_rotation/tests/test_rsrs.py": 16,
+        "strategies/sw_sector_rotation/tests/test_temporal_integrity.py": 12
+      },
+      "diagnostics_by_top_level_area": {
+        "research": 81,
+        "scripts": 20,
+        "strategies": 67
+      },
+      "active_runtime_diagnostic_count": 0,
+      "active_runtime_scope": [
+        "src/",
+        "strategies/etf_quant/",
+        "services/etf-quant-runner/",
+        "services/cnequity-sidecar/"
+      ]
+    },
+    "active_python_bom_files": [],
+    "active_python_crlf_files": [],
+    "active_python_modules_over_500_lines": [
+      {
+        "path": "research/development_iteration1_run.py",
+        "lines": 704
+      },
+      {
+        "path": "research/sector_development_baseline.py",
+        "lines": 826
+      },
+      {
+        "path": "research/sector_development_integrity_audit.py",
+        "lines": 635
+      },
+      {
+        "path": "scripts/data/audit_historical_proxy_evidence.py",
+        "lines": 509
+      },
+      {
+        "path": "services/cnequity-sidecar/export_streaming.py",
+        "lines": 530
+      },
+      {
+        "path": "services/etf-quant-runner/run.py",
+        "lines": 524
+      },
+      {
+        "path": "strategies/etf_quant/domain/__init__.py",
+        "lines": 540
+      },
+      {
+        "path": "strategies/etf_quant/evidence/builder.py",
+        "lines": 641
+      },
+      {
+        "path": "strategies/etf_quant/mapping/proxy.py",
+        "lines": 808
+      },
+      {
+        "path": "strategies/etf_quant/portfolio/policy.py",
+        "lines": 702
+      },
+      {
+        "path": "strategies/etf_quant/runtime/shadow.py",
+        "lines": 846
+      }
+    ],
+    "ruff_format_exclusions": [],
+    "machine_path_counts": {
+      "ACTIVE_CONFIG": 1,
+      "HISTORICAL": 45,
+      "PATTERN_DEFINITION": 1,
+      "TEST_FIXTURE": 22
+    },
+    "machine_path_locations": [
+      {
+        "path": "config/legacy-runtime.json",
+        "line": 4,
+        "category": "ACTIVE_CONFIG"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 21,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 22,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 23,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 24,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 59,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 81,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 85,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 98,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/audits/etf_quant--codex_frozen_model_contract_reconciliation_v1.md",
+        "line": 112,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--common_model_universe_v1.md",
+        "line": 40,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--common_model_universe_v1.md",
+        "line": 83,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_cnequity_data_contract_v1.md",
+        "line": 659,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_cnequity_data_contract_v1.md",
+        "line": 793,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_cnequity_data_contract_v1.md",
+        "line": 794,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_cnequity_data_contract_v1.md",
+        "line": 805,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_cnequity_data_contract_v1.md",
+        "line": 807,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_foundation_architecture_v1.md",
+        "line": 15,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--etf_quant_foundation_architecture_v1.md",
+        "line": 17,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--industry_etf_mapping_contract_v1.md",
+        "line": 395,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "docs/archive/delivery-records/etf_quant--production_warmup_window_contract_v1.md",
+        "line": 193,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_autonomous_shadow_continuation_v1.json",
+        "line": 158,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_autonomous_shadow_continuation_v1.json",
+        "line": 159,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_autonomous_shadow_continuation_v1.json",
+        "line": 160,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_final_data_pipeline_closure_v1.json",
+        "line": 548,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_final_data_pipeline_closure_v1.json",
+        "line": 606,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json",
+        "line": 133,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json",
+        "line": 137,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json",
+        "line": 141,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json",
+        "line": 146,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json",
+        "line": 520,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/codex_frozen_model_contract_reconciliation_v1.json",
+        "line": 675,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_final_closure_v2_manifest.json",
+        "line": 21,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_production_pit_evidence_manifest_v1.json",
+        "line": 334,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_production_pit_evidence_manifest_v1.json",
+        "line": 335,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_production_pit_evidence_manifest_v1.json",
+        "line": 336,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_production_pit_evidence_manifest_v1.json",
+        "line": 337,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_production_pit_evidence_manifest_v1.json",
+        "line": 338,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_proxy_exposure_manifest_v1.json",
+        "line": 311,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_proxy_policy_finalization_manifest_v1.json",
+        "line": 115,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/deepseek_proxy_policy_finalization_manifest_v1.json",
+        "line": 119,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/etf_quant_v1_final_release_v1.json",
+        "line": 69,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/proxy_l2_coverage_sensitivity_v1.json",
+        "line": 447,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/proxy_l2_coverage_sensitivity_v1.json",
+        "line": 449,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/proxy_policy_comparison_v1.json",
+        "line": 65,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "reports/etf_quant/strict_l2_etf_coverage_and_executable_scan_audit_v1.json",
+        "line": 244,
+        "category": "HISTORICAL"
+      },
+      {
+        "path": "scripts/engineering/inventory.py",
+        "line": 24,
+        "category": "PATTERN_DEFINITION"
+      },
+      {
+        "path": "scripts/tests/console.test.mjs",
+        "line": 12,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "services/etf-quant-api/tests/server.test.mjs",
+        "line": 113,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "services/etf-quant-api/tests/server.test.mjs",
+        "line": 214,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "services/research-api/tests/unit.test.ts",
+        "line": 126,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_forward_refresh.py",
+        "line": 350,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_forward_refresh.py",
+        "line": 352,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_forward_refresh.py",
+        "line": 354,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_production_pit_adapter.py",
+        "line": 44,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_production_pit_no_backfill_audit.py",
+        "line": 26,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_production_pit_no_backfill_audit.py",
+        "line": 398,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_production_strict_pit_evidence.py",
+        "line": 53,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_proxy_execution_policy.py",
+        "line": 52,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_proxy_exposure.py",
+        "line": 53,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/etf_quant/test_transport.py",
+        "line": 154,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "line": 3,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 106,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 107,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 112,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 113,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 114,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 115,
+        "category": "TEST_FIXTURE"
+      },
+      {
+        "path": "tests/test_measurement_contracts.py",
+        "line": 116,
+        "category": "TEST_FIXTURE"
+      }
+    ],
+    "print_counts": {
+      "CLI_OUTPUT": 20,
+      "MACHINE_READABLE_OUTPUT": 13,
+      "REPORT_OUTPUT": 59,
+      "EXAMPLE_OUTPUT": 4,
+      "TEST_OUTPUT": 16,
+      "DEBUG_STATUS": 0,
+      "ACCIDENTAL_PRINT": 0,
+      "UNCLASSIFIED_PRINT": 0
+    },
+    "print_locations": [
+      {
+        "path": "benchmarks/core.py",
+        "context": "main",
+        "ast_sha256": "cd17ad5bf63b49b460cd02fd2cc3d831b02fc1367cacc2dbe242b2ed6055dac9",
+        "occurrence": 0,
+        "line": 301,
+        "category": "REPORT_OUTPUT",
+        "reason": "Deterministic synthetic algorithm timing report"
+      },
+      {
+        "path": "examples/minimal_demo/__main__.py",
+        "context": "main",
+        "ast_sha256": "6a57a9aa9d4f6609d4d08799919d48f53da9019da99fa098025d881ef329f224",
+        "occurrence": 0,
+        "line": 83,
+        "category": "EXAMPLE_OUTPUT",
+        "reason": "Deterministic synthetic demo JSON"
+      },
+      {
+        "path": "research/development_iteration1_run.py",
+        "context": "main",
+        "ast_sha256": "d0695fa5c3d25a52025280da7929c589423b093c383be614b57458a8cfd910ff",
+        "occurrence": 0,
+        "line": 693,
+        "category": "REPORT_OUTPUT",
+        "reason": "Research CLI pre-run gate and output location"
+      },
+      {
+        "path": "research/development_iteration1_run.py",
+        "context": "main",
+        "ast_sha256": "fe1dae298723b4e4a7b7467059cf0ce1f7dbad13144d0beeaed1d946f334ec8d",
+        "occurrence": 0,
+        "line": 694,
+        "category": "REPORT_OUTPUT",
+        "reason": "Research CLI pre-run gate and output location"
+      },
+      {
+        "path": "research/development_iteration1_run.py",
+        "context": "main",
+        "ast_sha256": "89798c287c98463d47e7f7b2f98eaa7acf4b1c061ff7628dfb43d565e1071e78",
+        "occurrence": 0,
+        "line": 699,
+        "category": "REPORT_OUTPUT",
+        "reason": "Research CLI pre-run gate and output location"
+      },
+      {
+        "path": "research/sector_development_baseline.py",
+        "context": "main",
+        "ast_sha256": "6ff0865618bdfa0c9317cc9384fa7fcf47229a8b510871cbb678762c32eaa7c2",
+        "occurrence": 0,
+        "line": 803,
+        "category": "REPORT_OUTPUT",
+        "reason": "Development CLI gate and artifact summary"
+      },
+      {
+        "path": "research/sector_development_baseline.py",
+        "context": "main",
+        "ast_sha256": "a9d34d071966d9e4b8f735411905c45b0483c5cb8a8d8ecd6df6fc160f6660b0",
+        "occurrence": 0,
+        "line": 808,
+        "category": "REPORT_OUTPUT",
+        "reason": "Development CLI gate and artifact summary"
+      },
+      {
+        "path": "research/sector_development_integrity_audit.py",
+        "context": "main",
+        "ast_sha256": "87da79197dbede0f7247c6576cc56d6287cfa763e4179cf1322a2e43f2de7fb0",
+        "occurrence": 0,
+        "line": 613,
+        "category": "REPORT_OUTPUT",
+        "reason": "Integrity audit machine-readable findings"
+      },
+      {
+        "path": "research/sector_development_protocol.py",
+        "context": "main",
+        "ast_sha256": "79768fbc0a389c9bea72de62ed1c4a9dc70dfbe29f289551c31fe722be70375b",
+        "occurrence": 0,
+        "line": 341,
+        "category": "REPORT_OUTPUT",
+        "reason": "Protocol audit JSON result"
+      },
+      {
+        "path": "research/sector_index_baseline.py",
+        "context": "main",
+        "ast_sha256": "417d69f7e2649c396c00f78ec633bae6e14540d81fc96d6fe0f58abcf5feb7ad",
+        "occurrence": 0,
+        "line": 354,
+        "category": "REPORT_OUTPUT",
+        "reason": "Sector baseline preparation audit JSON"
+      },
+      {
+        "path": "research/sector_research_split.py",
+        "context": "main",
+        "ast_sha256": "831ad02791ba01bb88bd351adcbcffb5f8a8ef216c6c48ab262689929efa81fc",
+        "occurrence": 0,
+        "line": 348,
+        "category": "REPORT_OUTPUT",
+        "reason": "Split-policy audit JSON"
+      },
+      {
+        "path": "research/sector_universe_feasibility.py",
+        "context": "main",
+        "ast_sha256": "76ec767714c3718308b94a83690649003eb4641f15fca8fc76cbb61ce860eda2",
+        "occurrence": 0,
+        "line": 409,
+        "category": "REPORT_OUTPUT",
+        "reason": "Universe feasibility audit JSON"
+      },
+      {
+        "path": "scripts/audit_etf_quant_models.py",
+        "context": "main",
+        "ast_sha256": "06045c141946a4782b93186a6bfa8f7fdd5f0be4b57a535afa357a69528e0578",
+        "occurrence": 0,
+        "line": 210,
+        "category": "REPORT_OUTPUT",
+        "reason": "Model readiness audit summary"
+      },
+      {
+        "path": "scripts/audit_etf_quant_readiness.py",
+        "context": "main",
+        "ast_sha256": "962ec1a3af04424c28522253d05bce4039a1ac5cbac2035c2f6dbe2328f48461",
+        "occurrence": 0,
+        "line": 357,
+        "category": "REPORT_OUTPUT",
+        "reason": "Readiness audit summary"
+      },
+      {
+        "path": "scripts/data/admit_shenwan_etf_mapping.py",
+        "context": "main",
+        "ast_sha256": "df8c2900f84f6faac3dd5a2d0c511e6c86e5d6cc10678038d7f075d9d04885b9",
+        "occurrence": 0,
+        "line": 339,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mapping admission CLI report"
+      },
+      {
+        "path": "scripts/data/admit_shenwan_sector.py",
+        "context": "main",
+        "ast_sha256": "0024f95790356ab7737499365ac7f3ce94feb7d787b3b54f9638b0373cfc1c9c",
+        "occurrence": 0,
+        "line": 171,
+        "category": "REPORT_OUTPUT",
+        "reason": "Sector admission CLI report"
+      },
+      {
+        "path": "scripts/data/audit_historical_proxy_evidence.py",
+        "context": "main",
+        "ast_sha256": "7476e36c3e67093d37df3a7f511175cc410788d2eec9839a864eadb5f1ebfba4",
+        "occurrence": 0,
+        "line": 504,
+        "category": "REPORT_OUTPUT",
+        "reason": "Proxy audit CLI report"
+      },
+      {
+        "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+        "context": "main",
+        "ast_sha256": "e131b564d8f60a9c04bbd60e384c20657bc63b63ddfb7be6402ff5cb802cbf88",
+        "occurrence": 0,
+        "line": 95,
+        "category": "REPORT_OUTPUT",
+        "reason": "Catalogue/manifest/quality output artifacts and counts"
+      },
+      {
+        "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+        "context": "main",
+        "ast_sha256": "c7d1f0160a65054bb9c982a3fbcd85ae159b5133dd7b354d2e3c0de0492030fa",
+        "occurrence": 0,
+        "line": 173,
+        "category": "REPORT_OUTPUT",
+        "reason": "Catalogue/manifest/quality output artifacts and counts"
+      },
+      {
+        "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+        "context": "main",
+        "ast_sha256": "e40a3340a2125b90e831b56fb7a933869f0c88cffbafb3d1362b4b1cc02c33fb",
+        "occurrence": 0,
+        "line": 256,
+        "category": "REPORT_OUTPUT",
+        "reason": "Catalogue/manifest/quality output artifacts and counts"
+      },
+      {
+        "path": "scripts/data/build_shenwan_catalog_and_quality.py",
+        "context": "main",
+        "ast_sha256": "f5079a4add5878056d99b83d55661056fb60b6ae716c8685740d2d2819ba3301",
+        "occurrence": 0,
+        "line": 257,
+        "category": "REPORT_OUTPUT",
+        "reason": "Catalogue/manifest/quality output artifacts and counts"
+      },
+      {
+        "path": "scripts/data/import_shenwan_official.py",
+        "context": "main",
+        "ast_sha256": "be9cf2fb563e8f187a06ec03a58dc45213a3c5ea988d6714b9a9435c0af58d0d",
+        "occurrence": 0,
+        "line": 90,
+        "category": "CLI_OUTPUT",
+        "reason": "Import CLI results, file listing and stderr validation failures"
+      },
+      {
+        "path": "scripts/data/import_shenwan_official.py",
+        "context": "main",
+        "ast_sha256": "ae5246fe42e4e6de9f46b8a6acfd011558f4547ba6d593daa066d750134f85f9",
+        "occurrence": 0,
+        "line": 94,
+        "category": "CLI_OUTPUT",
+        "reason": "Import CLI results, file listing and stderr validation failures"
+      },
+      {
+        "path": "scripts/data/import_shenwan_official.py",
+        "context": "main",
+        "ast_sha256": "4466c39c55f551ad30ba8d9a618ef5169966e9e40c259ad26268140dab2feaf4",
+        "occurrence": 0,
+        "line": 98,
+        "category": "CLI_OUTPUT",
+        "reason": "Import CLI results, file listing and stderr validation failures"
+      },
+      {
+        "path": "scripts/data/import_shenwan_official.py",
+        "context": "main",
+        "ast_sha256": "2b69e808e0e3da5c6b4233aa7c0afcac3e7c0da96b77e5ad7f58b1ba944ebeb2",
+        "occurrence": 0,
+        "line": 109,
+        "category": "CLI_OUTPUT",
+        "reason": "Import CLI results, file listing and stderr validation failures"
+      },
+      {
+        "path": "scripts/data/import_shenwan_official.py",
+        "context": "main",
+        "ast_sha256": "81d6f95aa22e87542d76c2162709932ac5bc6923cd73033d0bd241c12ea84450",
+        "occurrence": 0,
+        "line": 118,
+        "category": "CLI_OUTPUT",
+        "reason": "Import CLI results, file listing and stderr validation failures"
+      },
+      {
+        "path": "scripts/data/import_shenwan_official.py",
+        "context": "main",
+        "ast_sha256": "e2ee1943228847fa8d9f1320612cec2688e84246a81384e9103f24903d96d30d",
+        "occurrence": 0,
+        "line": 126,
+        "category": "CLI_OUTPUT",
+        "reason": "Import CLI results, file listing and stderr validation failures"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "b8b58d894ac93f58833324934f718954c6fa254acdfe7b86723f89c20a3fbb30",
+        "occurrence": 0,
+        "line": 156,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "94967a7a6ed40be5a4e926c8fada2529cba4c6a57ce176e735c4359ea9a3afc0",
+        "occurrence": 0,
+        "line": 158,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "89d7cea51acd601146460695c1437e10c078db545fbb4795f4de00cfc3ef2b1f",
+        "occurrence": 0,
+        "line": 159,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "dbd3a0d0c23a8de0c3122caec09eae47593bae575eb74c2740fc9f64b886bebb",
+        "occurrence": 0,
+        "line": 160,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "9e7483644dc194839b23441f9c0737e9cb902d529d4894802504fb0c833c59f8",
+        "occurrence": 0,
+        "line": 161,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "8e23a7b2d80bcf1e21367558d064c06a53f121ec4abd1c7db77f45cc667e53fb",
+        "occurrence": 0,
+        "line": 162,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "be393e6a66c5b0c3d8715614b7200dc12ca6c6a1ea6f452d10da37991718fd9e",
+        "occurrence": 0,
+        "line": 163,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "198c6ac63aea51e32222a8514791775192222c7a3b0afe7bb844f9e0bcd914e9",
+        "occurrence": 0,
+        "line": 165,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "cca6a8df53c04fb3cff450d7aadc49667bf38377212f72d4291c514c85c85d7e",
+        "occurrence": 0,
+        "line": 167,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "ff6bcac5ca2c1abd32f3734d604a980848b514e1a956bd0aae281686b3e4b3c2",
+        "occurrence": 0,
+        "line": 169,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/data/verify_etf_evidence.py",
+        "context": "main",
+        "ast_sha256": "8ca53d2ac11f1f7b03abdc1970881789e87035847fd86f03c784d37535a6add1",
+        "occurrence": 0,
+        "line": 170,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence integrity CLI verdict and problem list"
+      },
+      {
+        "path": "scripts/engineering/benchmark.py",
+        "context": "main",
+        "ast_sha256": "12af1e3bfb334545da829ba566edd97cb05fb0e4457ac2647f534051e485dad3",
+        "occurrence": 0,
+        "line": 107,
+        "category": "REPORT_OUTPUT",
+        "reason": "Synthetic provider/catalogue timings JSON"
+      },
+      {
+        "path": "scripts/engineering/references.py",
+        "context": "main",
+        "ast_sha256": "6bcc6df0ff3a504503559ae7a43beb82f66a3d4b1e1b28b9691164ce75905eec",
+        "occurrence": 0,
+        "line": 67,
+        "category": "REPORT_OUTPUT",
+        "reason": "Literal-link and archived-byte audit JSON"
+      },
+      {
+        "path": "scripts/engineering/typecheck.py",
+        "context": "main",
+        "ast_sha256": "f66f98350e1787f683830d378d8f33397095d19207c200106431405b77a1252f",
+        "occurrence": 0,
+        "line": 65,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mypy gate result and exact diagnostic identities"
+      },
+      {
+        "path": "scripts/engineering/typecheck.py",
+        "context": "main",
+        "ast_sha256": "f20c53a06557c600bfc57f3e7670464f8f767f3aaa03131ff3d253a1a9f2bfb1",
+        "occurrence": 0,
+        "line": 69,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mypy gate result and exact diagnostic identities"
+      },
+      {
+        "path": "scripts/engineering/typecheck.py",
+        "context": "main",
+        "ast_sha256": "0dd96888a4247c310d9b255caecd1bcd2738c4ebfa49b4f757ca98c89f57dff1",
+        "occurrence": 0,
+        "line": 71,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mypy gate result and exact diagnostic identities"
+      },
+      {
+        "path": "scripts/engineering/typecheck.py",
+        "context": "main",
+        "ast_sha256": "b4106c4f8058eaf1d91e2c9edc069450a06c8131f04310aeef7603ef747056fb",
+        "occurrence": 0,
+        "line": 83,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mypy gate result and exact diagnostic identities"
+      },
+      {
+        "path": "scripts/engineering/typecheck.py",
+        "context": "main",
+        "ast_sha256": "c01d8341e4b1ec92719471a458da5c958f053db4847112f7daf77b742aba54fa",
+        "occurrence": 0,
+        "line": 89,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mypy gate result and exact diagnostic identities"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "08f1cb57087cceddcf11a3f1f89ac5b740c8aec42409a081d3a17127aac2eb94",
+        "occurrence": 0,
+        "line": 149,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "cf6cd72bef6d25f76ee25e7e58857848d65e99bce02aa04fc462a8a3518fc09e",
+        "occurrence": 0,
+        "line": 161,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "803a7870f5bf6d8df154ba022cb2c7b070dca158a6b00e1ad6c3c554aab8b45f",
+        "occurrence": 0,
+        "line": 181,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "a96fedc932354a73d019d2e8f9a9cea15f156d93e72a0aef387d6cf06d89d01c",
+        "occurrence": 0,
+        "line": 198,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "0aa931f0f17d427857c954bba5cfa398b3c4546857c242212037fd70e1be6b31",
+        "occurrence": 0,
+        "line": 269,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "f4a68d37c35af24891ab33841c68b167bd5dd127e485877dab4d553bafb5f89a",
+        "occurrence": 0,
+        "line": 362,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "b88c2d203e0e84b53beccd985a121bae65924ab77716a275845c54db0f49e31c",
+        "occurrence": 0,
+        "line": 389,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "be6aaff31707406682b4549b2509d69e22d5ca0dab4f20990727225224f54a02",
+        "occurrence": 0,
+        "line": 449,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_evidence.py",
+        "context": "main",
+        "ast_sha256": "2f27f410272893b49c3053afd7dc0347c797dfce8ce9ac2fb24733c6eea58dbe",
+        "occurrence": 0,
+        "line": 450,
+        "category": "REPORT_OUTPUT",
+        "reason": "Evidence builder CLI stage progress and package counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_manifest.py",
+        "context": "main",
+        "ast_sha256": "e9afbd637327af6b2c988679867cda08d5165c81df2ac28a598f427ec9ebeee6",
+        "occurrence": 0,
+        "line": 143,
+        "category": "REPORT_OUTPUT",
+        "reason": "Metadata manifest locations, sizes and hashes"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_manifest.py",
+        "context": "main",
+        "ast_sha256": "6f390e216406e72debbd01c1360cc534335598d6f6756f49688d8f6f2a30db57",
+        "occurrence": 0,
+        "line": 169,
+        "category": "REPORT_OUTPUT",
+        "reason": "Metadata manifest locations, sizes and hashes"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_top5_status.py",
+        "context": "main",
+        "ast_sha256": "d974443ffae01f639a48ba1b95350a02a88c01714c58e462bb2695931f86cf45",
+        "occurrence": 0,
+        "line": 178,
+        "category": "REPORT_OUTPUT",
+        "reason": "Top5 evidence status report and output location"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_top5_status.py",
+        "context": "main",
+        "ast_sha256": "460ec980918bee51a1ffdfc28d934aa61a76b752f8feb78bec5ce8a9309b9ad7",
+        "occurrence": 0,
+        "line": 187,
+        "category": "REPORT_OUTPUT",
+        "reason": "Top5 evidence status report and output location"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_pit_top5_status.py",
+        "context": "main",
+        "ast_sha256": "becd207ac005f785423341a89d2574bec715da795f064b6e4d2e1dd185b80607",
+        "occurrence": 0,
+        "line": 188,
+        "category": "REPORT_OUTPUT",
+        "reason": "Top5 evidence status report and output location"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_strict_pit_evidence_summary.py",
+        "context": "main",
+        "ast_sha256": "35a70b0789cc44c59ebf98de4c989dffc989c84acfa063ffbeb872629fbfdca4",
+        "occurrence": 0,
+        "line": 240,
+        "category": "REPORT_OUTPUT",
+        "reason": "Strict containment summary counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_strict_pit_evidence_summary.py",
+        "context": "main",
+        "ast_sha256": "981c4726f77c60cbca57951e6128f6e904046e7ec933ba836460b0da7d435d16",
+        "occurrence": 0,
+        "line": 241,
+        "category": "REPORT_OUTPUT",
+        "reason": "Strict containment summary counts"
+      },
+      {
+        "path": "scripts/etf_quant/build_production_strict_pit_evidence_summary.py",
+        "context": "main",
+        "ast_sha256": "d098231f19d75c5f88c09417962c0e4cf04d8201b937949beafcfef534e2688f",
+        "occurrence": 0,
+        "line": 242,
+        "category": "REPORT_OUTPUT",
+        "reason": "Strict containment summary counts"
+      },
+      {
+        "path": "scripts/etf_quant/l2_etf_executable_coverage.py",
+        "context": "main",
+        "ast_sha256": "bd837bf53392aad76c394fe5a3a9d5a4001b8ccc2fa30c88badebd7eb043c814",
+        "occurrence": 0,
+        "line": 228,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mapping coverage summary JSON"
+      },
+      {
+        "path": "scripts/etf_quant/l2_etf_executable_coverage.py",
+        "context": "main",
+        "ast_sha256": "4314043b27a9ee1f881e3398d3c9091188d9292e1576db2d576b52b817ddf850",
+        "occurrence": 0,
+        "line": 251,
+        "category": "REPORT_OUTPUT",
+        "reason": "Mapping coverage summary JSON"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_strategies",
+        "ast_sha256": "69d14394bc5e244ff56dc7dda8029830dd00572e90573eb36bdd718d808e68e1",
+        "occurrence": 0,
+        "line": 35,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_strategies",
+        "ast_sha256": "7cfbbd778d4d37cf1e18190abd05f44afb5c3171493f7b5823af7cb4a844d70c",
+        "occurrence": 0,
+        "line": 39,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_frameworks",
+        "ast_sha256": "03b42eb297c4ad35f302eadcdb3b937e3b263f5fffb79aa236f7824b846fb1d8",
+        "occurrence": 0,
+        "line": 49,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "3e2e15ce8c347bbc0b32add4e02e97c228895b795db6a6f7065b818286104c93",
+        "occurrence": 0,
+        "line": 72,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "875e484aa81b490bc057db93c1fbc17566ef982fdc4bc8e81143432e7644474a",
+        "occurrence": 0,
+        "line": 78,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "59a75bdbbca4cd4b9e9c3d624c471475f039fa7fc57b6200de6de4cf9d36d402",
+        "occurrence": 0,
+        "line": 81,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "092b0d5127d2b4097a2cd50c9f2e66062c29edba435174b05c145fb4e9d3cbf9",
+        "occurrence": 0,
+        "line": 88,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "70606ccc2355814d4a60f56903f12e0e31526f8fce86af59806cffc47ad29ff6",
+        "occurrence": 0,
+        "line": 89,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "1d05760a6abbfd91ebbab9c6944f53c53d87613addb5ca7ff7954265a6389892",
+        "occurrence": 0,
+        "line": 90,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "809ab460349391aa22f3947045aad44b5ec1158bf4e9fdad4db536ebe012bfb5",
+        "occurrence": 0,
+        "line": 91,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "0ec334793c7feae202ce06a636ed4cec41b5197a3779c37b9fdb3e8725bcd1a7",
+        "occurrence": 0,
+        "line": 92,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "5ac6c569dda6178c6113a3cf498e036d3f03b9abd0223eca32620e615fabe99c",
+        "occurrence": 0,
+        "line": 94,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "0ec334793c7feae202ce06a636ed4cec41b5197a3779c37b9fdb3e8725bcd1a7",
+        "occurrence": 1,
+        "line": 96,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/quant.py",
+        "context": "_cmd_backtest",
+        "ast_sha256": "50a795fbf1653e61d506a2339877370e0318438d4e86dac5f936548abe17f0da",
+        "occurrence": 0,
+        "line": 97,
+        "category": "CLI_OUTPUT",
+        "reason": "Explicit strategies/frameworks/backtest CLI text and errors"
+      },
+      {
+        "path": "scripts/verify_hikyuu_execution_smoke.py",
+        "context": "main",
+        "ast_sha256": "3f662d43e9ac09e3985c7fdef9a49214c7ae91d29afb49eea8a4b796ec7c1c08",
+        "occurrence": 0,
+        "line": 45,
+        "category": "REPORT_OUTPUT",
+        "reason": "Maintainer acceptance preflight/result JSON; never invoked in portable checks"
+      },
+      {
+        "path": "scripts/verify_hikyuu_execution_smoke.py",
+        "context": "main",
+        "ast_sha256": "98cbd5ad9e18ddc0127fe2444fe71b3da2425abeec3383c85c7fb5dcec920ab1",
+        "occurrence": 0,
+        "line": 226,
+        "category": "REPORT_OUTPUT",
+        "reason": "Maintainer acceptance preflight/result JSON; never invoked in portable checks"
+      },
+      {
+        "path": "services/cnequity-sidecar/bootstrap.py",
+        "context": "main",
+        "ast_sha256": "4d49ccce1e504c92a05a6426ea021671dbabc920fc9f54fddce6ed5fb006f09e",
+        "occurrence": 0,
+        "line": 186,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Sidecar installation receipt JSON"
+      },
+      {
+        "path": "services/cnequity-sidecar/coverage_matrix.py",
+        "context": "main",
+        "ast_sha256": "8800135c67a523426721a24c7726d790ace80b99edd24105c26a45da6046a4e0",
+        "occurrence": 0,
+        "line": 470,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Coverage command JSON report"
+      },
+      {
+        "path": "services/cnequity-sidecar/forward.py",
+        "context": "main",
+        "ast_sha256": "8800135c67a523426721a24c7726d790ace80b99edd24105c26a45da6046a4e0",
+        "occurrence": 0,
+        "line": 361,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Transport command JSON result"
+      },
+      {
+        "path": "services/cnequity-sidecar/runner.py",
+        "context": "main",
+        "ast_sha256": "c66673d955c0248169807fd43f0ab9e1327fc085cd8f15e94918646b1e0576c9",
+        "occurrence": 0,
+        "line": 325,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Export command JSON receipt and structured failure"
+      },
+      {
+        "path": "services/cnequity-sidecar/runner.py",
+        "context": "<module>",
+        "ast_sha256": "e39e9918e0b15557ee125ae6c481b234f568f19ba873ab0966780fabd43a4a3f",
+        "occurrence": 0,
+        "line": 333,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Export command JSON receipt and structured failure"
+      },
+      {
+        "path": "services/cnequity-sidecar/runner.py",
+        "context": "<module>",
+        "ast_sha256": "7ca6a151f343eced94d161c0842098a13b936f089f801478ea0a7fa56aa393ae",
+        "occurrence": 0,
+        "line": 336,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Export command JSON receipt and structured failure"
+      },
+      {
+        "path": "services/etf-quant-runner/one_shot.py",
+        "context": "main",
+        "ast_sha256": "e4419e7cfc139b5e59070d26681b7c96edb7e76c1d93993ad5e8626960baa5d0",
+        "occurrence": 0,
+        "line": 332,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runner transport JSON protocol"
+      },
+      {
+        "path": "services/etf-quant-runner/run.py",
+        "context": "main",
+        "ast_sha256": "658a47618ab4acc834fc08b15df8d77b73a5c5ac0abc393df7b3d4437f7ac772",
+        "occurrence": 0,
+        "line": 510,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runner transport JSON result/failure protocol"
+      },
+      {
+        "path": "services/etf-quant-runner/run.py",
+        "context": "<module>",
+        "ast_sha256": "ec31f8b24ccd5821d0fde341a9dfb30509f46273d91d47a1401d0b66d8b7cdbc",
+        "occurrence": 0,
+        "line": 519,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runner transport JSON result/failure protocol"
+      },
+      {
+        "path": "src/notifications/feishu.py",
+        "context": "<module>",
+        "ast_sha256": "65018f18a3b71a9b6a5ae314ef216d7dde5dc618265f02a6f6f4fbcf37310888",
+        "occurrence": 0,
+        "line": 193,
+        "category": "EXAMPLE_OUTPUT",
+        "reason": "Guarded __main__ text-rendering example and configuration status"
+      },
+      {
+        "path": "src/notifications/feishu.py",
+        "context": "<module>",
+        "ast_sha256": "39c41d11ae30706b387289baf0cd86058847c712662be407f26e7192379b7d94",
+        "occurrence": 0,
+        "line": 194,
+        "category": "EXAMPLE_OUTPUT",
+        "reason": "Guarded __main__ text-rendering example and configuration status"
+      },
+      {
+        "path": "src/notifications/feishu.py",
+        "context": "<module>",
+        "ast_sha256": "b8f3113246a6e9a2675555785d1702bbca6d8995005c4798b1dd74e7a3178d8c",
+        "occurrence": 0,
+        "line": 195,
+        "category": "EXAMPLE_OUTPUT",
+        "reason": "Guarded __main__ text-rendering example and configuration status"
+      },
+      {
+        "path": "strategies/etf_quant/runtime/cli.py",
+        "context": "main",
+        "ast_sha256": "c652519a9f2168f8ce00b51607f312be846ce4324436284c778eacfc956be46a",
+        "occurrence": 0,
+        "line": 39,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runtime CLI JSON protocol and structured blockers"
+      },
+      {
+        "path": "strategies/etf_quant/runtime/cli.py",
+        "context": "main",
+        "ast_sha256": "43bedd087e86a01c05afc459fbea8bbcd85c47e8fea2913d5ba98cb7914fdfc7",
+        "occurrence": 0,
+        "line": 111,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runtime CLI JSON protocol and structured blockers"
+      },
+      {
+        "path": "strategies/etf_quant/runtime/cli.py",
+        "context": "<module>",
+        "ast_sha256": "330fbe5298c82059544707aaeabeeb6afc4a66bb662cf22a5a82ea9cb71a14de",
+        "occurrence": 0,
+        "line": 119,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runtime CLI JSON protocol and structured blockers"
+      },
+      {
+        "path": "strategies/etf_quant/runtime/cli.py",
+        "context": "<module>",
+        "ast_sha256": "7b9507ba13b4cc5634a420fcb81491ccdbb60a15e53de3c5201ca7dd8fb9aa1c",
+        "occurrence": 0,
+        "line": 126,
+        "category": "MACHINE_READABLE_OUTPUT",
+        "reason": "Runtime CLI JSON protocol and structured blockers"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "9f1951419b7b038c874f17f656bb38cbbf6a2eface4f24c025c4cc9f30fbbac8",
+        "occurrence": 0,
+        "line": 17,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "79ad583c28f589ba058239ce43a6b05f7f93401081e46ac5b103a8227b91aaa1",
+        "occurrence": 0,
+        "line": 18,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "9f1951419b7b038c874f17f656bb38cbbf6a2eface4f24c025c4cc9f30fbbac8",
+        "occurrence": 1,
+        "line": 19,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "c83916fee3f242ee4845dfc4d9eeaf3515ec9a83bd67be97f6494467dd629459",
+        "occurrence": 0,
+        "line": 21,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "00083f66fb1303e07111fc497fd63bc9877b35055c3b3c1fbe2d144c20185466",
+        "occurrence": 0,
+        "line": 22,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "c14b82cf4f2f64441c15e26245cf2a05e18b252d0050275c8d591a13946b651d",
+        "occurrence": 0,
+        "line": 29,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "e2794c359a9dac27d714ca1f009c56e47a3c03ce323a42f784cb433edb2f672e",
+        "occurrence": 0,
+        "line": 30,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "e5818d61b7833cfd4bc15e449fa48e94c36d5faf93cfe48013250890933eb73c",
+        "occurrence": 0,
+        "line": 31,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "4a71009544658d870cce64aaae5743c6a6f5349faf53092e420af2fce01f8098",
+        "occurrence": 0,
+        "line": 32,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "e18c1ae9441bba92c0b35c640547e681d1d42236bb6ed7ac32a36b70825ee560",
+        "occurrence": 0,
+        "line": 37,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "63897ce9bd667e4846abbded31b28161501b1328d048d03b9aed950e7466fe3d",
+        "occurrence": 0,
+        "line": 39,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "da6159de84a87a52f0823221e617f72dbb01f4849bc788124e7d7260dac619e0",
+        "occurrence": 0,
+        "line": 42,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/framework/runtime_smoke.py",
+        "context": "main",
+        "ast_sha256": "cc416dc29725a98a0e6a332ac3fe6aeba7f2469689430544741892d0c42d1b44",
+        "occurrence": 0,
+        "line": 43,
+        "category": "TEST_OUTPUT",
+        "reason": "Explicit test diagnostic/version output"
+      },
+      {
+        "path": "tests/verify_imports.py",
+        "context": "t",
+        "ast_sha256": "bb1ef83cff957ad1010e93bc570a0f8ac4a0ff6fa1ed90f1fce044d69d2cef5d",
+        "occurrence": 0,
+        "line": 10,
+        "category": "TEST_OUTPUT",
+        "reason": "Import smoke test PASS/FAIL and summary"
+      },
+      {
+        "path": "tests/verify_imports.py",
+        "context": "t",
+        "ast_sha256": "7a6e21e6962fdd4acf0a5e2c0d29ce57aae42c92e881de9c6d88ca50ad869e31",
+        "occurrence": 0,
+        "line": 13,
+        "category": "TEST_OUTPUT",
+        "reason": "Import smoke test PASS/FAIL and summary"
+      },
+      {
+        "path": "tests/verify_imports.py",
+        "context": "<module>",
+        "ast_sha256": "709b1c99ba1fa1c34bcf144439ba0ea578c097ee67d9028668da7cc4aa52c802",
+        "occurrence": 0,
+        "line": 31,
+        "category": "TEST_OUTPUT",
+        "reason": "Import smoke test PASS/FAIL and summary"
+      }
+    ]
+  },
+  "baseline_metric_corrections": {
+    "old_directory_print_categories_invalid": true,
+    "literal_broken_links": 5,
+    "internal_logging_prints": 1,
+    "developer_image_mismatch_run_excluded": true
+  },
+  "finding_ledger": [
+    {
+      "id": "env-template",
+      "v2_claim": "JUPYTER_PASSWORD differs from mandatory token",
+      "file": ".env.example",
+      "classification": "CONFIRMED_CONFIGURATION_DRIFT",
+      "decision": "One empty external token variable; missing token rejects, configured synthetic token config exit 0",
+      "reproduction": "JUPYTER_PASSWORD template; mandatory JUPYTER_TOKEN in Compose",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_repository_contracts.py",
+        "docker compose --env-file .env.example config --quiet"
+      ],
+      "before_after": {
+        "before": "JUPYTER_PASSWORD template; mandatory JUPYTER_TOKEN in Compose",
+        "after": "One empty external token variable; missing token rejects, configured synthetic token config exit 0"
+      }
+    },
+    {
+      "id": "liquidity-fail-open",
+      "v2_claim": "empty admitted pool falls back",
+      "file": "strategies/etf_quant/mapping/proxy.py:select_execution_candidate",
+      "classification": "CONFIRMED_BUG",
+      "decision": "PASS and finite positive numeric amount; None for empty admitted pool; LIQUIDITY_ADMISSION_BLOCKED",
+      "reproduction": "PASS filter empty fell back to original pool; NaN status could pass",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_v3_contracts.py"
+      ],
+      "before_after": {
+        "before": "PASS filter empty fell back to original pool; NaN status could pass",
+        "after": "PASS and finite positive numeric amount; None for empty admitted pool; LIQUIDITY_ADMISSION_BLOCKED"
+      }
+    },
+    {
+      "id": "origin-wildcard",
+      "v2_claim": "Research config admits wildcard host",
+      "file": "services/research-api/src/config.ts",
+      "classification": "CONFIRMED_SECURITY_HARDENING",
+      "decision": "Both validators reject wildcard, credentials, paths, queries, invalid DNS/ports; shared 26-case fixture",
+      "reproduction": "Research URL parser accepted wildcard DNS",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "services/research-api/tests/origins.test.ts",
+        "services/etf-quant-api/tests/origins.test.mjs"
+      ],
+      "before_after": {
+        "before": "Research URL parser accepted wildcard DNS",
+        "after": "Both validators reject wildcard, credentials, paths, queries, invalid DNS/ports; shared 26-case fixture"
+      }
+    },
+    {
+      "id": "tls-bypass",
+      "v2_claim": "pip trusted-host disables verification",
+      "file": "docker/Dockerfile",
+      "classification": "CONFIRMED_SECURITY_HARDENING",
+      "decision": "Bypass removed; independent developer image built; deployed image retained",
+      "reproduction": "Dockerfile globally trusted the pip mirror",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_measurement_contracts.py"
+      ],
+      "before_after": {
+        "before": "Dockerfile globally trusted the pip mirror",
+        "after": "Bypass removed; independent developer image built; deployed image retained"
+      }
+    },
+    {
+      "id": "industry-scan",
+      "v2_claim": "days x industries scans all members",
+      "file": "strategies/etf_quant/runtime/industry.py",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "Complete snapshot index and chronological cursor; removed memberships stay removed",
+      "reproduction": "Full membership scan per day and industry",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py"
+      ],
+      "before_after": {
+        "before": "Full membership scan per day and industry",
+        "after": "Complete snapshot index and chronological cursor; removed memberships stay removed"
+      }
+    },
+    {
+      "id": "liquidity-scan",
+      "v2_claim": "repeated full table/day scans",
+      "file": "strategies/etf_quant/mapping/liquidity.py",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "One explicit call-scoped symbol/date lookup preserves duplicates and vetoes",
+      "reproduction": "Repeated full table scans per candidate/day",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py"
+      ],
+      "before_after": {
+        "before": "Repeated full table scans per candidate/day",
+        "after": "One explicit call-scoped symbol/date lookup preserves duplicates and vetoes"
+      }
+    },
+    {
+      "id": "shadow-hash",
+      "v2_claim": "per-row serialization/hash every call",
+      "file": "strategies/etf_quant/runtime/shadow.py:source_prefix",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "Cryptographic economic content key; bounded private memory cache, caller copies; warm-only benefit and cold overhead measured",
+      "reproduction": "Row hash recomputed every repeated call",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py"
+      ],
+      "before_after": {
+        "before": "Row hash recomputed every repeated call",
+        "after": "Cryptographic economic content key; bounded private memory cache, caller copies; warm-only benefit and cold overhead measured"
+      }
+    },
+    {
+      "id": "research-rolling",
+      "v2_claim": "rebuild from moving warmup each date",
+      "file": "research/sector_development_baseline.py",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "Causal Development-only panel with initial warmup masks and visible matured labels",
+      "reproduction": "Finite rolling factors rebuilt at every signal",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py"
+      ],
+      "before_after": {
+        "before": "Finite rolling factors rebuilt at every signal",
+        "after": "Causal Development-only panel with initial warmup masks and visible matured labels"
+      }
+    },
+    {
+      "id": "training-scan",
+      "v2_claim": "dropna full frames each horizon",
+      "file": "strategies/sw_sector_rotation/src/strategy.py",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "Window label projection and date indexer; exact sample matrices and BLAS layout",
+      "reproduction": "Full frame dropna/isin scans and repeated validity projections",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py"
+      ],
+      "before_after": {
+        "before": "Full frame dropna/isin scans and repeated validity projections",
+        "after": "Window label projection and date indexer; exact sample matrices and BLAS layout"
+      }
+    },
+    {
+      "id": "prediction-scan",
+      "v2_claim": "repeated horizon-independent close selection",
+      "file": "strategies/etf_quant/runtime/prediction.py",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "Call-scoped read-only close/feature arrays shared across horizons",
+      "reproduction": "Repeated close lookup for each horizon/sample",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py"
+      ],
+      "before_after": {
+        "before": "Repeated close lookup for each horizon/sample",
+        "after": "Call-scoped read-only close/feature arrays shared across horizons"
+      }
+    },
+    {
+      "id": "lake-hash",
+      "v2_claim": "full lake byte hashes twice",
+      "file": "services/cnequity-sidecar/runner.py",
+      "classification": "CONFIRMED_PERFORMANCE_DEBT",
+      "decision": "NO_CHANGE_WITH_REASON: no immutable authenticated child identity; metadata cache could miss same-size restored-mtime mutation",
+      "reproduction": "Entire mutable lake authenticated before/after export",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_lake.py"
+      ],
+      "before_after": {
+        "before": "Entire mutable lake authenticated before/after export",
+        "after": "NO_CHANGE_WITH_REASON: no immutable authenticated child identity; metadata cache could miss same-size restored-mtime mutation"
+      }
+    },
+    {
+      "id": "print-metric",
+      "v2_claim": "directory defaults disguise debug calls",
+      "file": "scripts/engineering/inventory.py",
+      "classification": "CONFIRMED_MEASUREMENT_BUG",
+      "decision": "Explicit per-call AST/lexical identity and reviewed reason; _log uses logging; 112 current calls include benchmark CLI",
+      "reproduction": "112 calls classified by directory: 92 CLI,20 example/test; one actual internal _log",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_measurement_contracts.py",
+        "scripts/engineering/prints.py",
+        "config/engineering/print-policy.json"
+      ],
+      "before_after": {
+        "before": "112 calls classified by directory: 92 CLI,20 example/test; one actual internal _log",
+        "after": "Explicit per-call AST/lexical identity and reviewed reason; _log uses logging; 112 current calls include benchmark CLI"
+      }
+    },
+    {
+      "id": "links",
+      "v2_claim": "aliases hide active literal 404",
+      "file": "scripts/engineering/references.py",
+      "classification": "CONFIRMED_MEASUREMENT_BUG",
+      "decision": "Five paths corrected; literal resolver reports zero, archived alias never exempts an active link",
+      "reproduction": "Aliases hid five literal active 404s",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_measurement_contracts.py",
+        "scripts/engineering/references.py"
+      ],
+      "before_after": {
+        "before": "Aliases hid five literal active 404s",
+        "after": "Five paths corrected; literal resolver reports zero, archived alias never exempts an active link"
+      }
+    },
+    {
+      "id": "paths-metric",
+      "v2_claim": "only active docs reported",
+      "file": "scripts/engineering/inventory.py",
+      "classification": "CONFIRMED_MEASUREMENT_BUG",
+      "decision": "Separate source/config/docs/history/fixtures/pattern definitions; Dockerfile and env template included",
+      "reproduction": "Docs-only metric and incomplete extensions",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "scripts/engineering/inventory.py"
+      ],
+      "before_after": {
+        "before": "Docs-only metric and incomplete extensions",
+        "after": "Separate source/config/docs/history/fixtures/pattern definitions; Dockerfile and env template included"
+      }
+    },
+    {
+      "id": "portability",
+      "v2_claim": "scattered private runtime defaults",
+      "file": "scripts/etf_quant/production_pit_settings.py",
+      "classification": "CONFIRMED_CONFIGURATION_DRIFT",
+      "decision": "Environment roots, portable data-home defaults, PATH Docker; one labelled legacy Windows root",
+      "reproduction": "Repeated private runtime paths and absolute Docker executable",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "scripts/etf_quant/runtime_paths.py",
+        "scripts/tests/launcher-unit.test.mjs"
+      ],
+      "before_after": {
+        "before": "Repeated private runtime paths and absolute Docker executable",
+        "after": "Environment roots, portable data-home defaults, PATH Docker; one labelled legacy Windows root"
+      }
+    },
+    {
+      "id": "delivery-sha",
+      "v2_claim": "tracked report cannot identify containing merge",
+      "file": "docs/engineering/public_repo_adversarial_remediation_v2.md",
+      "classification": "CONFIRMED_DOCUMENTATION_DEBT",
+      "decision": "Validated implementation commit separate from PR metadata; final main SHA only console/untracked",
+      "reproduction": "Tracked report ambiguously claimed delivery SHA",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "GitHub PR metadata"
+      ],
+      "before_after": {
+        "before": "Tracked report ambiguously claimed delivery SHA",
+        "after": "Validated implementation commit separate from PR metadata; final main SHA only console/untracked"
+      }
+    },
+    {
+      "id": "rename-claim",
+      "v2_claim": "106 moves not 106 Git renames",
+      "file": "docs/engineering/public_repo_adversarial_remediation_v2.md",
+      "classification": "CONFIRMED_DOCUMENTATION_DEBT",
+      "decision": "102 exact Git renames; four copied originals at paths rewritten for active docs; recovery hashes retained",
+      "reproduction": "Prior report called 106 records byte-preserving moves",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "git diff-tree -r -M100% 82e6f09^ 82e6f09",
+        "scripts/engineering/references.py"
+      ],
+      "before_after": {
+        "before": "Prior report called 106 records byte-preserving moves",
+        "after": "102 exact Git renames; four copied originals at paths rewritten for active docs; recovery hashes retained"
+      }
+    },
+    {
+      "id": "702e432",
+      "v2_claim": "semantic changes in formatting commit",
+      "file": "702e432",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "Qualified AST/body and whitespace-insensitive security diff reviewed; behavior groups listed separately",
+      "reproduction": "91 files mixed formatting with behavior and module extraction",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_remediation_boundaries.py",
+        "tests/etf_quant/test_export_streaming.py",
+        "services/research-api/tests/storage-boundary.test.ts"
+      ],
+      "before_after": {
+        "before": "91 files mixed formatting with behavior and module extraction",
+        "after": "Qualified AST/body and whitespace-insensitive security diff reviewed; behavior groups listed separately"
+      }
+    },
+    {
+      "id": "fidelity",
+      "v2_claim": "comment contradicts actual-minus-nominal",
+      "file": "strategies/etf_quant/portfolio/policy.py",
+      "classification": "CONFIRMED_DOCUMENTATION_DEBT",
+      "decision": "Comment corrected; actual-minus-nominal and 35% sizing mathematics unchanged",
+      "reproduction": "Docstring claimed nominal minus actual",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_etf_proxy_mapping_policy.py"
+      ],
+      "before_after": {
+        "before": "Docstring claimed nominal minus actual",
+        "after": "Comment corrected; actual-minus-nominal and 35% sizing mathematics unchanged"
+      }
+    },
+    {
+      "id": "provenance",
+      "v2_claim": "same ETF different benchmark overwrites",
+      "file": "strategies/etf_quant/mapping/pit.py",
+      "classification": "CONFIRMED_BUG",
+      "decision": "Selected exact candidate object binds its own evidence regardless of input order",
+      "reproduction": "Key (industry,ETF) overwritten by another benchmark",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_v3_contracts.py"
+      ],
+      "before_after": {
+        "before": "Key (industry,ETF) overwritten by another benchmark",
+        "after": "Selected exact candidate object binds its own evidence regardless of input order"
+      }
+    },
+    {
+      "id": "cap-comment",
+      "v2_claim": "remaining weights vs remaining capacity",
+      "file": "strategies/etf_quant/mapping/proxy.py",
+      "classification": "CONFIRMED_DOCUMENTATION_DEBT",
+      "decision": "Comment states remaining cap capacity; formula unchanged",
+      "reproduction": "Comment claimed redistribution by remaining weights",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_etf_proxy_mapping_policy.py"
+      ],
+      "before_after": {
+        "before": "Comment claimed redistribution by remaining weights",
+        "after": "Comment states remaining cap capacity; formula unchanged"
+      }
+    },
+    {
+      "id": "dominance-comment",
+      "v2_claim": "total vs mean; partial fallback priority",
+      "file": "strategies/etf_quant/mapping/proxy.py",
+      "classification": "CONFIRMED_BUG",
+      "decision": "Fixed-coverage total equals mean; partial fallback includes all defined quality priorities",
+      "reproduction": "Comment claimed mean margin; partial mask choice discarded exposure/margin priority",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_v3_contracts.py"
+      ],
+      "before_after": {
+        "before": "Comment claimed mean margin; partial mask choice discarded exposure/margin priority",
+        "after": "Fixed-coverage total equals mean; partial fallback includes all defined quality priorities"
+      }
+    },
+    {
+      "id": "dead-weights-loop",
+      "v2_claim": "discarded repeated parse",
+      "file": "strategies/etf_quant/evidence/_weights.py",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "Removed redundant loop; original named validation remains",
+      "reproduction": "Three redundant parse_instant calls discarded outputs",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_production_pit_evidence.py"
+      ],
+      "before_after": {
+        "before": "Three redundant parse_instant calls discarded outputs",
+        "after": "Removed redundant loop; original named validation remains"
+      }
+    },
+    {
+      "id": "dead-weight-variable",
+      "v2_claim": "unused variable/noqa",
+      "file": "scripts/etf_quant/build_production_pit_evidence.py",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "Removed from build_production_pit_evidence; actual validations retained",
+      "reproduction": "Unused weight_packages collection with noqa",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_production_strict_pit_evidence.py"
+      ],
+      "before_after": {
+        "before": "Unused weight_packages collection with noqa",
+        "after": "Removed from build_production_pit_evidence; actual validations retained"
+      }
+    },
+    {
+      "id": "duplicate-isinstance",
+      "v2_claim": "duplicated URL text check",
+      "file": "strategies/etf_quant/evidence/_validation.py",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "One check retains EvidenceError behavior",
+      "reproduction": "URL text checked twice",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_production_pit_evidence.py"
+      ],
+      "before_after": {
+        "before": "URL text checked twice",
+        "after": "One check retains EvidenceError behavior"
+      }
+    },
+    {
+      "id": "magic-date",
+      "v2_claim": "historical 2026-09-24 guard",
+      "file": "strategies/etf_quant/runtime/formal.py",
+      "classification": "INTENTIONAL_CONTRACT",
+      "decision": "HISTORICAL_READINESS_DATE names existing evidence boundary; value unchanged",
+      "reproduction": "Unlabelled readiness date looked arbitrary",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_formal_shadow.py"
+      ],
+      "before_after": {
+        "before": "Unlabelled readiness date looked arbitrary",
+        "after": "HISTORICAL_READINESS_DATE names existing evidence boundary; value unchanged"
+      }
+    },
+    {
+      "id": "unsorted-sessions",
+      "v2_claim": "first assumes provider order",
+      "file": "strategies/etf_quant/data/tradability.py",
+      "classification": "CONFIRMED_BUG",
+      "decision": "Minimum later session establishes deterministic T+1",
+      "reproduction": "Provider order selected next session",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_v3_contracts.py"
+      ],
+      "before_after": {
+        "before": "Provider order selected next session",
+        "after": "Minimum later session establishes deterministic T+1"
+      }
+    },
+    {
+      "id": "competitor-name",
+      "v2_claim": "second largest actually largest non-target",
+      "file": "strategies/etf_quant/mapping/proxy.py",
+      "classification": "HISTORICAL_COMPATIBILITY_CONSTRAINT",
+      "decision": "Internal semantic aliases added; published field names retained",
+      "reproduction": "second_largest fields actually largest non-target",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_etf_proxy_mapping_policy.py"
+      ],
+      "before_after": {
+        "before": "second_largest fields actually largest non-target",
+        "after": "Internal semantic aliases added; published field names retained"
+      }
+    },
+    {
+      "id": "a40-name",
+      "v2_claim": "generic admission/rejection helper",
+      "file": "strategies/etf_quant/portfolio/policy.py",
+      "classification": "FALSE_POSITIVE",
+      "decision": "FALSE_POSITIVE: BASE already uses a40_rejection_reason",
+      "reproduction": "Claimed generic helper name",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "before_after": {
+        "before": "Claimed generic helper name",
+        "after": "FALSE_POSITIVE: BASE already uses a40_rejection_reason"
+      }
+    },
+    {
+      "id": "duplicate-weight-parser",
+      "v2_claim": "duplicate percentage parsers",
+      "file": "strategies/etf_quant/evidence/_validation.py",
+      "classification": "INTENTIONAL_CONTRACT",
+      "decision": "INTENTIONAL_CONTRACT: evidence accepts JSON numbers/text; research additionally coerces numeric-text objects; corrected docstring, no shared parser",
+      "reproduction": "Docstring incorrectly claimed identical behavior",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_measurement_contracts.py"
+      ],
+      "before_after": {
+        "before": "Docstring incorrectly claimed identical behavior",
+        "after": "INTENTIONAL_CONTRACT: evidence accepts JSON numbers/text; research additionally coerces numeric-text objects; corrected docstring, no shared parser"
+      }
+    },
+    {
+      "id": "architecture",
+      "v2_claim": "strategy imports ETFLocal detail, src discovers strategies",
+      "file": "src/backtesting/runner.py",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "Discovery moved to src.application; runner API compatibility facade; neutral src.data.ohlc",
+      "reproduction": "Infrastructure runner discovered concrete strategies; strategy imported provider detail",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_measurement_contracts.py",
+        "tests/backtesting/test_runner_and_result.py"
+      ],
+      "before_after": {
+        "before": "Infrastructure runner discovered concrete strategies; strategy imported provider detail",
+        "after": "Discovery moved to src.application; runner API compatibility facade; neutral src.data.ohlc"
+      }
+    },
+    {
+      "id": "backtest-doc",
+      "v2_claim": "capability vs engineering prohibition",
+      "file": "docs/testing.md",
+      "classification": "INTENTIONAL_CONTRACT",
+      "decision": "Documented separate explicit maintainer-only KData path; no backtest executed",
+      "reproduction": "Hikyuu capability confused with engineering permission",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "docs/testing.md"
+      ],
+      "before_after": {
+        "before": "Hikyuu capability confused with engineering permission",
+        "after": "Documented separate explicit maintainer-only KData path; no backtest executed"
+      }
+    },
+    {
+      "id": "typing",
+      "v2_claim": "overbroad transition claim, 200 smoke diagnostics",
+      "file": "scripts/verify_hikyuu_execution_smoke.py",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "168 raw legacy diagnostics; typed smoke records/support boundaries; touched production and active runtime zero",
+      "reproduction": "411 raw diagnostics including 200 in smoke module",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "scripts/engineering/typecheck.py"
+      ],
+      "before_after": {
+        "before": "411 raw diagnostics including 200 in smoke module",
+        "after": "168 raw legacy diagnostics; typed smoke records/support boundaries; touched production and active runtime zero"
+      }
+    },
+    {
+      "id": "large-modules",
+      "v2_claim": "cohesion seams",
+      "file": "strategies/etf_quant/runtime/shadow.py",
+      "classification": "CONFIRMED_ARCHITECTURE_DEBT",
+      "decision": "Extracted prefix seam/application layer; preserved meaningful cohesive modules",
+      "reproduction": "Shadow and orchestration cohesion debt",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/performance/test_core.py",
+        "tests/backtesting/test_runner_and_result.py"
+      ],
+      "before_after": {
+        "before": "Shadow and orchestration cohesion debt",
+        "after": "Extracted prefix seam/application layer; preserved meaningful cohesive modules"
+      }
+    },
+    {
+      "id": "doc-sprawl",
+      "v2_claim": "160 Markdown current tree",
+      "file": "config/engineering/documentation-map.json",
+      "classification": "CONFIRMED_DOCUMENTATION_DEBT",
+      "decision": "91 redundant records removed; 16 essential historical MD plus archived V2 retained, one health report",
+      "reproduction": "160 tracked Markdown including 107 historical",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "config/engineering/documentation-map.json",
+        "scripts/engineering/references.py"
+      ],
+      "before_after": {
+        "before": "160 tracked Markdown including 107 historical",
+        "after": "91 redundant records removed; 16 essential historical MD plus archived V2 retained, one health report"
+      }
+    },
+    {
+      "id": "readme",
+      "v2_claim": "industry-first/spec/architecture claims",
+      "file": "README.md",
+      "classification": "CONFIRMED_DOCUMENTATION_DEBT",
+      "decision": "Frozen specification with causal refits; implementation/test evidence; three layers/six components reconciled",
+      "reproduction": "Ambiguous frozen-model/industry-first/layer claims",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "README.md"
+      ],
+      "before_after": {
+        "before": "Ambiguous frozen-model/industry-first/layer claims",
+        "after": "Frozen specification with causal refits; implementation/test evidence; three layers/six components reconciled"
+      }
+    },
+    {
+      "id": "prior-security",
+      "v2_claim": "bounded reads/schema/mount/path/HTTP rules",
+      "file": "services/",
+      "classification": "INTENTIONAL_CONTRACT",
+      "decision": "Existing adversarial suites plus shared origin fixtures retained; source/history paths and patterns audited",
+      "reproduction": "Existing bounded IO/mount/HTTP/schema/hash/path hardening may regress",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "services/etf-quant-api/tests",
+        "services/etf-quant-runner/security-audit.test.mjs",
+        "services/research-api/tests"
+      ],
+      "before_after": {
+        "before": "Existing bounded IO/mount/HTTP/schema/hash/path hardening may regress",
+        "after": "Existing adversarial suites plus shared origin fixtures retained; source/history paths and patterns audited"
+      }
+    },
+    {
+      "id": "certificates",
+      "v2_claim": "source transition needed",
+      "file": "strategies/etf_quant/runtime/implementation.py",
+      "classification": "HISTORICAL_COMPATIBILITY_CONSTRAINT",
+      "decision": "Immutable prior certificates preserved, new V3 current source manifest, tamper tests",
+      "reproduction": "Source changes would invalidate V1/V2",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "tests/test_repository_contracts.py",
+        "tests/etf_quant/test_proxy_final_candidate_manifest.py"
+      ],
+      "before_after": {
+        "before": "Source changes would invalidate V1/V2",
+        "after": "Immutable prior certificates preserved, new V3 current source manifest, tamper tests"
+      }
+    },
+    {
+      "id": "shadow-state",
+      "v2_claim": "zero engineering business deltas",
+      "file": "external Shadow namespace",
+      "classification": "INTENTIONAL_CONTRACT",
+      "decision": "Metadata-only filenames/size/SHA256 snapshot; external Shadow remains unchanged",
+      "reproduction": "No business history may be fabricated",
+      "contract_evidence": "AGENTS.md and repository executable contracts",
+      "tests": [
+        "external Shadow metadata comparison"
+      ],
+      "before_after": {
+        "before": "No business history may be fabricated",
+        "after": "Metadata-only filenames/size/SHA256 snapshot; external Shadow remains unchanged"
+      }
+    }
+  ],
+  "implementation_integrity": {
+    "identifier": "PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V3",
+    "candidate_sha256": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
+    "previous_certificate_sha256": "5285bf67777309ec7bb32b7aac7e41118e2c744783abc6c3c9921ad611e3d292",
+    "previous_source_hashes": {
+      "strategies/etf_quant/__init__.py": "c0c4c71258e0be82c5d5a3fbf571072904cd7f3fca40121db302a48407d087c7",
+      "strategies/etf_quant/config/__init__.py": "ce6438c097d3666a7c9bd194f6fc36c97ea899d96ba9a50e2022cce5074874dc",
+      "strategies/etf_quant/data/__init__.py": "8b85a23c1714f2e15f801dfb924fd6112a15cc32d2f387b6661a51507de19756",
+      "strategies/etf_quant/data/membership.py": "7eb0ca5a14927130f1281a4d003f8c93f4dc319b4d20af3c0a1dcb230721ea8a",
+      "strategies/etf_quant/data/source_c.py": "2f4a5297da658ea094a32340314805b8fdefa97710e049c7ce96b2660777739a",
+      "strategies/etf_quant/data/tradability.py": "20f0ea1047bf8782af56aa8f62f3d3252ea10e425250f838412028e70510e684",
+      "strategies/etf_quant/domain/__init__.py": "cf468087a6318959ff8591ce79239ce715ef0e013fdc0af067a4afcf6845f5c1",
+      "strategies/etf_quant/domain/industry_level.py": "6c1ede72f9f52dfa091c0ff102544498d6ad8f122d6202d701918625310c2832",
+      "strategies/etf_quant/evidence/__init__.py": "ee44c50422a82dc04e929f98f931ddd2d8b574e03bd1c6cc4ad30b79719dfb77",
+      "strategies/etf_quant/evidence/builder.py": "8fb860e75d42fc3ddefdb177c52d3b323291cad782dfc972c186cd902f491e89",
+      "strategies/etf_quant/evidence/schema.py": "c5aed3e1d57adbaa867a439519355a2f99d28b42b4664ceb3648b978c2bc509e",
+      "strategies/etf_quant/evidence/sources.py": "7ffa2e83dec13143b3802ee8f5798ad496bce550fdc1149902728329b72cdfa8",
+      "strategies/etf_quant/evidence/strict.py": "7c9e381db840d5ef3b4bc1217ba6550da163743eafbdedc4e2dcff96d3762ad8",
+      "strategies/etf_quant/factors/__init__.py": "15956884d2a6b950fa8e5e13b760b1f4308c2014ef1cf2216b3ddefa74815da9",
+      "strategies/etf_quant/mapping/__init__.py": "36241380643e6aaaab8762d55e0285a8617f13487df2c01a7cb5be40a6ccb229",
+      "strategies/etf_quant/mapping/liquidity.py": "4ba747fc10f2b33da4412a125787331e8dc94831853b2d10f453658c430b3166",
+      "strategies/etf_quant/mapping/partial.py": "3b87fb349d8b9712c63b88a1d14136d4fc332388bffcb749bde5144e6e39e8b8",
+      "strategies/etf_quant/mapping/pit.py": "4361c7bf9a8b13c146ecd89578ab3a20bee81b486007048f43102b73b1989fec",
+      "strategies/etf_quant/mapping/proxy.py": "f7e42b1491956ad194c6304e85e73a6cb2ddf6dcd345c54408b630e1f9d97d04",
+      "strategies/etf_quant/mapping/registry.py": "47faf17cdaaa7677b27b06e9f71d07978130a8c85a83ea016495d00dd9d9ef3f",
+      "strategies/etf_quant/models/__init__.py": "1f36cc0f2e889bf9cdaf8fa124bc90f5b3ae2e79f80ac8cee933cdb3d8e13ebb",
+      "strategies/etf_quant/models/fusion.py": "bb693d8192beae4d75632d2439af07d3b80b4066d31176ae0f10cac840fbc725",
+      "strategies/etf_quant/portfolio/__init__.py": "bf5d1956e23f8c31a49a22e79e11d182bf506afe98f2deb13bc4ba9fb9ed3f73",
+      "strategies/etf_quant/portfolio/partial.py": "83271957f1e0d087218bfebd58351295dd84be70f88b1dd234e3bf1d8b390ac3",
+      "strategies/etf_quant/portfolio/policy.py": "fdec98f7704090d3456c145b81f308ea56844dc95a2ec76ad23e5715a82d5a19",
+      "strategies/etf_quant/runtime/__init__.py": "16dda17016774710bcc2efd322d816ebac96a39cba8ec1fb6467990d2b34360d",
+      "strategies/etf_quant/runtime/cli.py": "46678492994689048930b1d067c2a453015e1e35484086ff76d72fe8dfe56087",
+      "strategies/etf_quant/runtime/exports.py": "20be4627b02d2db0392a54638d1c1337c15c694df10c9b93d64f5ec75ef196eb",
+      "strategies/etf_quant/runtime/formal.py": "4dc79b1d1ca96bcd3f760d4291cf531ba372d61337121505cd4211ec9898f4cf",
+      "strategies/etf_quant/runtime/industry.py": "8760f92db8009b545cd90093363c7b2664bf47a4f8d47c97b8823d2b003b9f91",
+      "strategies/etf_quant/runtime/oneshot.py": "dd46ff26c08b3a0892bf820d45d24bb302425e786d70c52c6779a6efd3564c0f",
+      "strategies/etf_quant/runtime/prediction.py": "452f7ec969df0b7139dd1aa7023a95e0c38681582dea28090719c6626326185c",
+      "strategies/etf_quant/runtime/shadow.py": "35bc26035083a84ad18153020bb73d3840fe993bef7fbcaa77cb2f6dc8edc62b",
+      "strategies/etf_quant/runtime/storage.py": "3c4fede1b288583675df27e42dcff89312e227cb3be51bdae862056653106e47",
+      "strategies/etf_quant/runtime/view.py": "132ed9b295ae8e526fc45c2894e96914d425f07467413852ac7e947a27425bb6",
+      "strategies/etf_quant/schemas/__init__.py": "71f64c180a8d42a18325a2624e77d69050d90e89dad9b5d349219eb4882fdedb",
+      "strategies/etf_quant/simulation/__init__.py": "f9d051a3b6acf85fd5a3a5d1e067f848b423069986f876bb9e678d14cf302346",
+      "strategies/etf_quant/simulation/lots.py": "b555f2a8f2ecea7e022d53230815ee73bb693102ea299ceb9e6674f6947d611e",
+      "services/etf-quant-runner/one_shot.py": "03ce9e9ab9a6fd01c4c330dc1018a41fb0090744b3238f59725253679432f562",
+      "services/etf-quant-runner/run.py": "b1c51de77be5401865e5de1ac415a9e21dad05ebbbbe3d6ef480e36170e5ab64",
+      "services/cnequity-sidecar/forward.py": "cfb14a2fdce64de31c197971e7182c11ba3d7fded04ff6c5780d76558ac6aee4",
+      "services/etf-quant-api/server.mjs": "00b0523631d0ef13ac178133710a3c6d96bc1266b4ebd672b931d2d502999501",
+      "services/cnequity-sidecar/finalization.py": "c0ce3a78d41a12f67224ff8997276c2c29958d3acd7907c724397c21d2d1f971",
+      "services/cnequity-sidecar/expected_bars.py": "a2dd2eafe814f932e46cc5f089a4b9880cf97930fa294a38a138e2fbe0e38353",
+      "services/cnequity-sidecar/source_compatibility.py": "fd4194b4ef518750544ce2c1fa1ece1bf31a55c322eab09b30931eb50f2ad038",
+      "services/cnequity-sidecar/bse_tip_bridge.py": "bd4675b99d556e88763b357b0239d1a8dd569bd3c71210f94a161e68934023e5",
+      "services/cnequity-sidecar/status_evidence.py": "0e95241c3581fcb92bcafdcc35d16658f26d1e965388ad29ac8153e75714bb2c",
+      "strategies/etf_quant/runtime/model_inputs.py": "f9997f404675e08656099424256c282400b683a703f29b57d4c26f27a32ae0be",
+      "strategies/etf_quant/config/common_model_universe_v1.json": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5",
+      "services/etf-quant-api/current.mjs": "7c0de1051f780df0fe954615afc2ce84b73338f39cb3505ffc668cb6d2a3d638"
+    },
+    "previous_transition_sha256": "f9fec669bb977e6c84f88ff3676b5a43491393d930347e9d60e347788b255701",
+    "files": {
+      ".env.example": "84ea609910ab4a2ddc933fd3d3e7f0f9c710eb8f62094a9723200dda113c4440",
+      ".github/workflows/quality.yml": "6f50f580cfffc0e9589cbc9e0768aff689799597e130091ba694936d58a9f37a",
+      "benchmarks/__init__.py": "3a630b08d4e2a044177d67e6288308f4d831793caa008447ea27906f0290bebe",
+      "benchmarks/core.py": "f4876119e33c0f08e2e87effbe5658b86a66a33f463bf3e61a90bf74f7ea4347",
+      "benchmarks/fixtures.py": "34fc195937a8a742f02d47eca5bebaa018d544bec1f791a950370a47f91f347f",
+      "benchmarks/lake.py": "5695497ae7bffc4085442118e133ccba3794a64c3bc0bc189dfd702e9c4aef4a",
+      "benchmarks/reference.py": "a106fa8d85b1a1ea896df5138b702f34d244ef14463967bd5225c2c046a9931a",
+      "config/engineering/documentation-map.json": "c62a8242f8561c3735b6c8979c65fdeaec01aa6265b032991671844312dd223a",
+      "config/engineering/mypy-baseline.json": "98c82a771faff887db7eaa8b7fde5cef5a57c0b8eb91c685f8905bd7a2732bc5",
+      "config/engineering/print-policy.json": "ec8b3589848bbfdd002d8887b86062bfdb981aa886ef2155ec50c870fc96ca03",
+      "config/legacy-runtime.json": "2d7e7c917e72766b79ae795f01b7b5f66b1b569b8cca955bd78a80310b5af4bd",
+      "docker/Dockerfile": "a827c4401581fa88bb3215e8aea25c56f5aa4bf590a0aabc18a04d7be966ba33",
+      "research/development_panel.py": "9c3c03c52e8f2bed2b49cd4cad4a1c5eab1e36384ea38df02c8b2f04172d6bfd",
+      "research/sector_development_baseline.py": "06c9011f6eb3a526fd56863155b7334504724f0126fdbfb943070cdf13d76b22",
+      "scripts/Start-EtfQuantConsole.ps1": "94fd661dbb0bc83546598441600f47362d1ebb87ca1ed7816aadd4cac83b11fb",
+      "scripts/data/init_hikyuu_data.py": "87568b15f38812546a73f55fe41193ff4ab43c0c6614738adca660bb92d003d0",
+      "scripts/engineering/inventory.py": "b92c512ff2067866b6b2525dd40a73662e3cdf49aff5436d14fd6a5c3b6f45ec",
+      "scripts/engineering/prints.py": "fc54985abe3ec0a19e7c7298c12d72c9748ed5899f73efc3788d324675bc4dcc",
+      "scripts/engineering/references.py": "142888ba1fb51e48d3d8586184942da4f7ae634316bf29e88c290f6e019be8f7",
+      "scripts/etf_quant/build_production_pit_evidence.py": "1865633ffe91c3726574aa8fba685e105c7dafcac0cbcf95d8bc90c7b3389345",
+      "scripts/etf_quant/build_production_pit_manifest.py": "dfcbf36099078de6477f67454659a92ca8eb49ddba1cd31a2ca9e4801b3583cf",
+      "scripts/etf_quant/build_production_pit_top5_status.py": "7e89d3bef89dcdb26586b9b1b88050145a3f28feb4cc1778ce56e4825a67ba7b",
+      "scripts/etf_quant/build_production_strict_pit_evidence_summary.py": "84f90682215ca9de08ef6953d4adebee7b9656f222287b8129718014d25ac594",
+      "scripts/etf_quant/production_pit_settings.py": "f1e79d2fe1da87d3a600e62d39ab58c00c6867991dcf5f676ef82676d4c92d59",
+      "scripts/etf_quant/runtime_paths.py": "ffdbf421bc97c511627d23f76342888fa7632d02c72f37f3c513e27bace90704",
+      "scripts/verify_hikyuu_execution_smoke.py": "5dd02c2a896676173ca38cdca8d2181f33fc6cc39f45c14e7cf0c8fda09e6fba",
+      "services/cnequity-sidecar/bj_historical_routing.py": "2080020d523529c2921135386b09f1bd7f1b4e6945d4cd1b5675be99f849c87e",
+      "services/cnequity-sidecar/bj_quote_partition.py": "f626c4378efc7f28ad3a82ab487849373e3cb556e2a95dcf4b8f2eb3c0e13495",
+      "services/cnequity-sidecar/bootstrap.py": "f67b005f6f40b22f80a07922da12fc42240924d80473abd4f99eac5e7f144c5c",
+      "services/cnequity-sidecar/bse_tip_bridge.py": "dfbdabfad2844ea1745dbf559f7ef2a1e21cb0d6e359016768b922be11ff5e70",
+      "services/cnequity-sidecar/catalogue_scan.py": "9c83279a98993df0e811b75f6883ff145b0b549e0814e9ba87ea25798af3b9ba",
+      "services/cnequity-sidecar/coverage_matrix.py": "61cf25bffd4941d26c04767d236fbbd35c2f27ed81c81c2fe7b7666e3cea30ef",
+      "services/cnequity-sidecar/expected_bars.py": "0e7cc74c93f3b8d84750b4cd148f0c399b21731fe2cefcce3466f278a653f20f",
+      "services/cnequity-sidecar/export_streaming.py": "510b013f8d5fb61468e718ccc008442f40a8193e52c0054f47b322ef7818f0cb",
+      "services/cnequity-sidecar/finalization.py": "2b99ea285350c116f73866f77d13bcc0cc172c79cae04339b87336bf712f277d",
+      "services/cnequity-sidecar/forward.py": "ace87a480339ff6a0dd9a79183b3e8468c970bbbc11dee652a5bd5729305ba85",
+      "services/cnequity-sidecar/proxy_policy.py": "da0b28d12e1d5ee398ece1aeab1d780b968f7c6ca80678379f1fb61fd8cf9a24",
+      "services/cnequity-sidecar/runner.py": "4b3a6a4c1a0acb25f9ae5f604e146c767f5048773798b4bacefa823b02189f8a",
+      "services/cnequity-sidecar/source_compatibility.py": "8398245c3ebd4aa5d2f342e3b72f8b368606f59503f7f6e5c124cca1a12b5f92",
+      "services/cnequity-sidecar/status_evidence.py": "13c687270dda118f570a1caf2c8408a7de28a7a6dffce0b2bd0a71d97ea62266",
+      "services/etf-quant-api/current.mjs": "7c0de1051f780df0fe954615afc2ce84b73338f39cb3505ffc668cb6d2a3d638",
+      "services/etf-quant-api/origins.mjs": "a1b91aab5345be3624765d999057cad4409ca46d75c8f1133728342b03b02a39",
+      "services/etf-quant-api/server.mjs": "4b028926138a635afea44a6f4219b8a3499c4fdd30e2f1ce79da76fa4af594e6",
+      "services/etf-quant-api/tests/origins.test.mjs": "26fb9b9dfc02c165a0f7a1168d73bea4ed0eba882a6dc2e5fff04ea63b08e9cc",
+      "services/etf-quant-runner/config.example.json": "107b1f09801bd67ccf3354d54d35408a7063d21fe181b163a5429ef579aef22e",
+      "services/etf-quant-runner/docker_mounts.py": "61e240ecf4d8944a9ce41df12c13beb6fa60f088163b01e84cba642b426a6fb1",
+      "services/etf-quant-runner/one_shot.config.example.json": "4c56052836a3693f4312d49611aedd0059e148225c23f4af8f102e21e909d4ae",
+      "services/etf-quant-runner/one_shot.py": "a0cecee12d07021cc596c217baf600909a57a43089d13536338467cdf98ec164",
+      "services/etf-quant-runner/run.py": "59b270f142e932e5ce3d223565860986856c4997dc9af551229476eff302fbb1",
+      "services/etf-quant-runner/security-audit.mjs": "c0495dac8c11b2fa82571879c3f987d54e33c05ceb86cab725286aa9eab4c850",
+      "services/research-api/src/config.ts": "8ce846bc948c3bc227642f1a9f4dc9cd31d904a28e636c4826bec101d5e613b8",
+      "services/research-api/src/origins.ts": "83821f37c6239435827dd3ccbf6f6ac6a4786e45deb53de997365b7608c758d3",
+      "services/research-api/tests/origins.test.ts": "3a5e350d55149c0ef8280bfe1d07d467d6c8820ea6c8fe937db7591075500f2b",
+      "services/security/origin-cases.json": "fb533f56928243b239abccdc82774e58b804c7dd92761242ac30a5cefd8ef62e",
+      "src/application/__init__.py": "c61d5122f20bbf1d2883556eda92a9064e803bdca85a8af04936ae8c07e3194e",
+      "src/application/backtesting.py": "15bba0db89056edd496a285c787ae96efc3ccb02ab71a1546d6c800c018abff8",
+      "src/backtesting/runner.py": "0003ad18b533cb2049f22f92e57c2ad342990f8e1b646c7cb46004911236d436",
+      "src/data/ohlc.py": "3a02bd831888a589f7f2dd7530358ca8930a7e0b41a9f86d0a25f777f03b9ae9",
+      "src/data/providers/etf_local.py": "5cf2d0590d8b94f025d5845ef332e36eef1d8aa712fff381c4728976115d8f44",
+      "strategies/etf_quant/__init__.py": "ebab202414b5d719d90c55e59d03fa504266230d8d8a25edef198797c71c7754",
+      "strategies/etf_quant/config/__init__.py": "57216bc8bb1d9809736670cc484bd54ce2831c2d962f79f31832a8a0ddc26846",
+      "strategies/etf_quant/config/common_model_universe_v1.json": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5",
+      "strategies/etf_quant/config/runtime_paths.py": "c9b61c677c8ec09ddda93c97ccb7854c4ef2576cbdf0d07513e8541299ca299e",
+      "strategies/etf_quant/data/__init__.py": "fcb0072199bd8dcb3615bf02f2c5ae4f6aabb0c38c08e6a2631bad3929b10164",
+      "strategies/etf_quant/data/membership.py": "7856634020c48e6da91aece5d3d7915273f3b882b65201684dc79654a78a0284",
+      "strategies/etf_quant/data/source_c.py": "2f0276f6532b560180500f1a1c9a2422d0750e9a39c2419d71ddcbc822376713",
+      "strategies/etf_quant/data/tradability.py": "fc178fec3899c4afb4232fa4cc0e4caacc80c16a04853d2235ace65adafe75b6",
+      "strategies/etf_quant/domain/__init__.py": "22f5b41bb363bcb3a46bf8e3d7aec5236391dbe12c925d507ed7a051ec920637",
+      "strategies/etf_quant/domain/industry_level.py": "77ed23274838fedab6069aaaf566a429c21b834029d9ca1699ddca3279e7f255",
+      "strategies/etf_quant/evidence/__init__.py": "8823bf44eb94c6ee30184cb4807683a83315e547d1d460cf309748d41636aac0",
+      "strategies/etf_quant/evidence/_classification.py": "19191c9cd9f81a32ba79291c9602983b7bbaa8fe926db12102c2e1eb4fd77276",
+      "strategies/etf_quant/evidence/_exposure.py": "f0960f8634f5f6ffef23d1651a6f56e435235e0d3736a10b76127acfb822bf78",
+      "strategies/etf_quant/evidence/_sources.py": "0df2c2fcfee5e90fa39307ae7acda8bfd1169fb72e8879d9dccadd60e4120f8b",
+      "strategies/etf_quant/evidence/_validation.py": "b7ff33e81f27ebb21e3814bba14f09f1d2fff559fbca568b1fdebe9ba650c9bb",
+      "strategies/etf_quant/evidence/_weights.py": "f13fd90a49b57ffe051d4d70748a994a99275517fcf3ae4fd88974750a888384",
+      "strategies/etf_quant/evidence/builder.py": "ba3ed030887172dd5c23326faf1f817224fa71fe4a06c03ed9a10cc74700e895",
+      "strategies/etf_quant/evidence/schema.py": "0a28ea56d7b6ea94876e7aedeaa9b9eeccc477004cbccacf36139a531c3c6f01",
+      "strategies/etf_quant/evidence/sources.py": "0b4eb381dc50687d4dc72aaa7794390d4dfd5d2d5ece3614e737cfc87a97b02a",
+      "strategies/etf_quant/evidence/strict.py": "6a498d88ad89889156d96507c07e44846f1b23d803f42fc2e61286bb24f2e8d6",
+      "strategies/etf_quant/factors/__init__.py": "4cb7c80e0cf31650efb4dc4989fa4744eb1a61e1bd166c31d9cdca76ad37f655",
+      "strategies/etf_quant/mapping/__init__.py": "9578083a2e13def7c715bdf0b774ab8321209f71f3eb888e0330b7ab9906ead8",
+      "strategies/etf_quant/mapping/liquidity.py": "eb85ad6555cd29c3822684a1cc0568d51a64d3674d8519e2c0bfd8c7866fabd7",
+      "strategies/etf_quant/mapping/partial.py": "616717761fbe387d1953769d036d4bea2fb2964c5a839a09c17666ee5ed3b298",
+      "strategies/etf_quant/mapping/pit.py": "6c1185d51a9c7252d285b13f1f0ae6f2f2fd3e93313e5ec974105779a56d1a9e",
+      "strategies/etf_quant/mapping/proxy.py": "bc4ecfce7c1aa35b606e5f29a16f2bf2b409692bdb91de3613e312cdaa428d7a",
+      "strategies/etf_quant/mapping/registry.py": "4a0d0af80228c0a80b757072d5028eff7e05fef82d06702e9f78242ddabad5fd",
+      "strategies/etf_quant/models/__init__.py": "01a2153173ecabc55f1d9214dd2a852008bf9356aadb206cc9d577e7c2d7cf0a",
+      "strategies/etf_quant/models/fusion.py": "60846436a1250d676975b16612175c12bb87deb03c89b49727ccb4a4e42a8a5f",
+      "strategies/etf_quant/portfolio/__init__.py": "bd7c3e749ebe2c5afaee2760d94bc3b5a4a0069e5edc03d23f4d93c7ae7d25f0",
+      "strategies/etf_quant/portfolio/partial.py": "d46b9bf88b5391c17e72f8e07f3fe3032ced89ffdcb9d926ab65ccf95d6dc814",
+      "strategies/etf_quant/portfolio/policy.py": "215f53d6971bc4799f68486ea1f48b1f504728d69e0bcb19c9476c2155ce328f",
+      "strategies/etf_quant/runtime/__init__.py": "51380a2175c78509cebabefa7a3a0c2fab55d0c7742fea0dbdd22f7a85dc5d73",
+      "strategies/etf_quant/runtime/cli.py": "c8d5a73a0d36cb70c9199c8c4a6d1d2c2d621825e0c54f27879c4c3aea9ff34b",
+      "strategies/etf_quant/runtime/exports.py": "1677d935128a2ea369fa322795e6b77dc9c2b5f8a86184962f859c32f4b2640f",
+      "strategies/etf_quant/runtime/formal.py": "95fc8307daf580ebd1a901a5fd03a3483507310fc9b9691d086891f3b27585d9",
+      "strategies/etf_quant/runtime/implementation.py": "df5310da8e83434bf0a87de171928ba89d6e36f6b8e2de6c738d03e0646e5770",
+      "strategies/etf_quant/runtime/industry.py": "103dd717b0dcbae068ab98a143002e308646f3d0f0d4d7af2575e06fd6ef9d3f",
+      "strategies/etf_quant/runtime/model_inputs.py": "693019742aa35e1a26d76db639ce106e8d795f6bcdb0cfcedd98f639eda61f91",
+      "strategies/etf_quant/runtime/oneshot.py": "5fa13bf6f1523fcbbd1e0037fd8a4075c012efb913f40cfb059753d9660d4cd5",
+      "strategies/etf_quant/runtime/prediction.py": "555c7bcf04a53ba5deec5520e94a3e05983000b7d14df853052e0eaeaca70f52",
+      "strategies/etf_quant/runtime/prefix.py": "9aad2567e4391a53f3f50d03f61d095bc892e503c332845331836a7fc507de3c",
+      "strategies/etf_quant/runtime/shadow.py": "3a51c53a3530563af0729e9671dd5afac4817cedd6f7a9ee48dd3128e96867f6",
+      "strategies/etf_quant/runtime/storage.py": "7f1aa8fe91701ee6770183cd6708c3616ce7e1012e0389ad52489aa0feae702c",
+      "strategies/etf_quant/runtime/view.py": "f3e3efc3b18bcb1e7afba07ffcbc58d6d3925aeca27c2f7f4773626305848f19",
+      "strategies/etf_quant/schemas/__init__.py": "cca3d131b9df51b643110fc0ee77d0a6998458126948863d9b1a2adef8e9beeb",
+      "strategies/etf_quant/simulation/__init__.py": "c9de0bef8c65ee0d7aa5fd11c9af3d2928eea483224850916ec4238b556bc7a4",
+      "strategies/etf_quant/simulation/lots.py": "eab77395ecb41e55b7725181b84d8c48a82f5d70ce54034cf98a907de03bd5bd",
+      "strategies/sw_sector_rotation/src/model/model.py": "54ec0552309e4edc07d28a056671b0687282d272c1a845d46fc0883a75c3d74a",
+      "strategies/sw_sector_rotation/src/portfolio/sector_etf_mapping.py": "de2c6355f15ce927b0f1237eb26382fa460d54510119ee2f3d15776384b49da5",
+      "strategies/sw_sector_rotation/src/strategy.py": "e213426a1748c461ca3ab1ae7b39c575cae4384d7bd197ec1053b0fbd71f0a63",
+      "tests/etf_quant/test_v3_contracts.py": "2522a511802d040089a07d81105754ac6a369f914daf922067e3337e6462394f",
+      "tests/performance/test_core.py": "02b09c1ea3f5eabe514cb699338e1a593d985b28d8dd4d1843bdc6124c09e85f",
+      "tests/performance/test_lake.py": "bff95cdc63edd84496d733b12b53c8bee30667cb7e2a50cd98b03cf7eee97bcc",
+      "tests/test_measurement_contracts.py": "7145d74cdd80c4d2c9e82910b19e2e1a6152722704977a4ad7d7fc6a1bc562e8",
+      "tests/test_repository_contracts.py": "d8c1c62f5410e9605b39069700c1f8f52d40ffea28d3d00d1fe0ec34ae7b35ac"
+    },
+    "certificate_sha256": "f00b91c1cdb424fca1a34354cbe80b187aec804b43ed60048c4782a29603bbdd",
+    "transition_reason": "Confirmed admission/provenance/calendar bugs; causal synthetic-equivalent indexes; strict Origin/TLS/configuration; neutral application/data boundaries; measurement and typing repairs.",
+    "regression_evidence": [
+      "tests/etf_quant/test_v3_contracts.py",
+      "tests/performance",
+      "tests/test_measurement_contracts.py",
+      "tests/test_repository_contracts.py"
+    ],
+    "frozen_parameters_changed": false
+  },
+  "commit_702e432_semantic_review": [
+    {
+      "function": "mypy_inventory",
+      "path": [
+        "scripts/engineering/inventory.py"
+      ],
+      "classification": "MEASUREMENT_CHANGE",
+      "reason": "Prior category names and manifest overrides changed; V3 replaces directory-based print claims and literal-link exemptions.",
+      "regression": [
+        "tests/test_measurement_contracts.py"
+      ]
+    },
+    {
+      "function": "audit_coverage",
+      "path": "src/data/providers/shenwan_sector.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_runtime_readiness_metadata_cannot_claim_unadmitted_production_evidence",
+      "path": "tests/etf_quant/test_proxy_final_candidate_manifest.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "call",
+      "path": "services/etf-quant-runner/run.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "encode_table",
+      "path": "strategies/etf_quant/runtime/exports.py",
+      "classification": "INTENDED_BUG_FIX",
+      "reason": "NumPy booleans serialize to canonical lower-case CSV booleans.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ]
+    },
+    {
+      "function": "observe",
+      "path": "services/cnequity-sidecar/expected_bars.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "verify_implementation",
+      "path": [
+        "strategies/etf_quant/runtime/implementation.py"
+      ],
+      "classification": "VALID_HARDENING",
+      "reason": "Closed mount/reference grammar and active source transition preserve historical certificate bytes.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py",
+        "tests/test_repository_contracts.py"
+      ]
+    },
+    {
+      "function": "_run_once",
+      "path": "services/etf-quant-runner/one_shot.py",
+      "classification": "VALID_HARDENING",
+      "reason": "Closed mount/reference grammar and active source transition preserve historical certificate bytes.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py",
+        "tests/test_repository_contracts.py"
+      ]
+    },
+    {
+      "function": "scan_catalogue",
+      "path": [
+        "services/cnequity-sidecar/catalogue_scan.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Equivalent valid-domain output with lazy catalogue projection or per-symbol date list; synthetic equality retained.",
+      "regression": [
+        "tests/etf_quant/test_export_streaming.py",
+        "tests/etf_quant/test_exports_industry.py"
+      ]
+    },
+    {
+      "function": "measure",
+      "path": "scripts/engineering/inventory.py",
+      "classification": "MEASUREMENT_CHANGE",
+      "reason": "Prior category names and manifest overrides changed; V3 replaces directory-based print claims and literal-link exemptions.",
+      "regression": [
+        "tests/test_measurement_contracts.py"
+      ]
+    },
+    {
+      "function": "enable",
+      "path": "services/cnequity-sidecar/bse_tip_bridge.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "enable",
+      "path": "services/cnequity-sidecar/source_compatibility.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "enable",
+      "path": "services/cnequity-sidecar/status_evidence.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_observation_may_not_sit_in_the_future",
+      "path": "tests/etf_quant/test_production_strict_pit_evidence.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "build_weight_vector_from_constituent_rows",
+      "path": "strategies/etf_quant/evidence/builder.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "main",
+      "path": "scripts/engineering/inventory.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "main",
+      "path": "scripts/engineering/typecheck.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "main",
+      "path": "scripts/etf_quant/build_production_pit_evidence.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "main",
+      "path": "services/cnequity-sidecar/bootstrap.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "reference_name",
+      "path": [
+        "services/etf-quant-runner/docker_mounts.py"
+      ],
+      "classification": "VALID_HARDENING",
+      "reason": "Closed mount/reference grammar and active source transition preserve historical certificate bytes.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py",
+        "tests/test_repository_contracts.py"
+      ]
+    },
+    {
+      "function": "_mapping_rows",
+      "path": "scripts/data/admit_shenwan_etf_mapping.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "_daily",
+      "path": "strategies/etf_quant/runtime/shadow.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "fuse_predictions",
+      "path": "strategies/etf_quant/models/fusion.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "evaluate_policy",
+      "path": "strategies/etf_quant/portfolio/policy.py",
+      "classification": "INTENDED_BUG_FIX",
+      "reason": "A40 rejects inadmissible liquidity/weight/classification and no-survivor; dominance exemption and B40 cash remain unchanged.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ]
+    },
+    {
+      "function": "daily_cycle",
+      "path": "strategies/etf_quant/runtime/shadow.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "_StreamTable.write_chunk",
+      "path": "services/cnequity-sidecar/export_streaming.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "build_benchmark_exposure",
+      "path": "strategies/etf_quant/mapping/proxy.py",
+      "classification": "VALID_HARDENING",
+      "reason": "Reject bool/nonpositive/non-integer declared counts with explicit ProxyError.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ]
+    },
+    {
+      "function": "candidate",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "solve_distinct_assignment",
+      "path": "strategies/etf_quant/mapping/proxy.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "IndustryCandidate.a40_rejection_reason",
+      "path": [
+        "strategies/etf_quant/portfolio/policy.py"
+      ],
+      "classification": "INTENDED_BUG_FIX",
+      "reason": "A40 rejects inadmissible liquidity/weight/classification and no-survivor; dominance exemption and B40 cash remain unchanged.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ]
+    },
+    {
+      "function": "test_mount_reference_valid_and_space_in_path_stays_in_one_argument",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "read_local_etf_snapshot",
+      "path": "src/data/providers/etf_local.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Equivalent valid-domain output with lazy catalogue projection or per-symbol date list; synthetic equality retained.",
+      "regression": [
+        "tests/etf_quant/test_export_streaming.py",
+        "tests/etf_quant/test_exports_industry.py"
+      ]
+    },
+    {
+      "function": "test_a40_preserves_dominance_exemption_and_determinism",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "parse_taxonomy",
+      "path": "strategies/etf_quant/domain/industry_level.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_a40_rejects_invalid_liquidity_without_changing_valid_weights",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "forward",
+      "path": "services/cnequity-sidecar/forward.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Removed explicit steps import is redundant: pinned JobEngine imports cnequity.steps.common, which initializes package step registration; import order has no supported-runtime semantic change.",
+      "regression": [
+        "tests/etf_quant/test_forward_refresh.py"
+      ]
+    },
+    {
+      "function": "test_observation_between_retrieval_and_wall_clock_is_accepted",
+      "path": "tests/etf_quant/test_production_strict_pit_evidence.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "fit_horizon",
+      "path": "strategies/etf_quant/models/__init__.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_a40_admission_fails_closed",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "ExportProvider._validate",
+      "path": "strategies/etf_quant/runtime/exports.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "publish_copied_runtime",
+      "path": "services/etf-quant-runner/run.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "select_mappings_partial",
+      "path": "strategies/etf_quant/mapping/partial.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "parse_classification_with_intervals",
+      "path": "src/data/providers/shenwan_sector.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "export_lake",
+      "path": "services/cnequity-sidecar/runner.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "industry_date",
+      "path": "strategies/etf_quant/data/source_c.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_final_proxy_candidate_integrity_reread",
+      "path": "tests/etf_quant/test_proxy_final_candidate_manifest.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "process_owner",
+      "path": "services/etf-quant-runner/run.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "document_class",
+      "path": "scripts/engineering/inventory.py",
+      "classification": "MEASUREMENT_CHANGE",
+      "reason": "Prior category names and manifest overrides changed; V3 replaces directory-based print claims and literal-link exemptions.",
+      "regression": [
+        "tests/test_measurement_contracts.py"
+      ]
+    },
+    {
+      "function": "greedy_assignment",
+      "path": "strategies/etf_quant/mapping/proxy.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "certified_inputs",
+      "path": "services/etf-quant-runner/one_shot.py",
+      "classification": "VALID_HARDENING",
+      "reason": "Closed mount/reference grammar and active source transition preserve historical certificate bytes.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py",
+        "tests/test_repository_contracts.py"
+      ]
+    },
+    {
+      "function": "select_pit_mappings",
+      "path": "strategies/etf_quant/mapping/pit.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "repair_symbols",
+      "path": [
+        "services/cnequity-sidecar/catalogue_scan.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Equivalent valid-domain output with lazy catalogue projection or per-symbol date list; synthetic equality retained.",
+      "regression": [
+        "tests/etf_quant/test_export_streaming.py",
+        "tests/etf_quant/test_exports_industry.py"
+      ]
+    },
+    {
+      "function": "test_observation_may_not_precede_the_last_real_retrieval",
+      "path": "tests/etf_quant/test_production_strict_pit_evidence.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "assess_liquidity",
+      "path": "strategies/etf_quant/mapping/liquidity.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "parse_stock_classification",
+      "path": "src/data/providers/shenwan_official.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_boolean_missing_or_coerced_values_cannot_become_evidence",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "lock_guard",
+      "path": "services/etf-quant-runner/run.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "build",
+      "path": "scripts/data/admit_shenwan_etf_mapping.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_constituent_weight_is_validated_before_float_conversion",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "exception_chain",
+      "path": "services/cnequity-sidecar/runner.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "select_mappings",
+      "path": "strategies/etf_quant/mapping/registry.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "build_industry_series",
+      "path": "strategies/etf_quant/runtime/industry.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "collect_tracking_relations",
+      "path": "scripts/etf_quant/production_pit_collectors.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Annotation/cast, equivalent boolean expansion, proven invariant assertion, variable rename, dict initialization, API-compatible relocation or test adaptation; valid-domain behavior unchanged.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_mount_reference_grammar_rejects_fragments",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "bind_mount",
+      "path": [
+        "services/etf-quant-runner/docker_mounts.py"
+      ],
+      "classification": "VALID_HARDENING",
+      "reason": "Closed mount/reference grammar and active source transition preserve historical certificate bytes.",
+      "regression": [
+        "tests/etf_quant/test_remediation_boundaries.py",
+        "tests/test_repository_contracts.py"
+      ]
+    },
+    {
+      "function": "test_unparseable_historical_reason_token_is_preserved",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "test_proxy_count_is_an_explicit_domain_error",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "function": "audit",
+      "path": "services/cnequity-sidecar/coverage_matrix.py",
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "The added cur/prev None guard is already entailed by is_valid. No output changes for valid or invalid rows.",
+      "regression": [
+        "tests/etf_quant/test_coverage_matrix.py"
+      ]
+    },
+    {
+      "function": "test_boolean_serialization_preserves_explicit_values",
+      "path": [
+        "tests/etf_quant/test_remediation_boundaries.py"
+      ],
+      "classification": "NO_SEMANTIC_CHANGE",
+      "reason": "Synthetic test additions/adaptations only; no production behavior.",
+      "regression": [
+        "portable regression suite"
+      ]
+    },
+    {
+      "path": "docker-compose.yml",
+      "classification": "VALID_HARDENING",
+      "reason": "Mandatory nonempty Jupyter token; V3 corrects stale template and tests configured/missing cases.",
+      "regression": [
+        "tests/test_repository_contracts.py"
+      ]
+    },
+    {
+      "path": "services/etf-quant-api/origins.mjs;server.mjs",
+      "classification": "VALID_HARDENING",
+      "reason": "Explicit configurable Origin allowlist; V3 tightens malformed host validation.",
+      "regression": [
+        "services/etf-quant-api/tests/origins.test.mjs"
+      ]
+    },
+    {
+      "path": "services/research-api/src/artifacts/storage.ts;schemas/artifacts.ts",
+      "classification": "VALID_HARDENING",
+      "reason": "32 MiB regular-file bounded reads including growth; strict content hash keys.",
+      "regression": [
+        "services/research-api/tests/storage-boundary.test.ts"
+      ]
+    },
+    {
+      "path": ".gitattributes;pyproject.toml;requirements-dev*",
+      "classification": "ENGINEERING_CONFIGURATION",
+      "reason": "Active Ruff/type tooling and line-ending gates; immutable evidence keeps byte exceptions. No strategy parameter change.",
+      "regression": [
+        "pre-commit",
+        "portable quality checks"
+      ]
+    }
+  ],
+  "prior_document_migration": {
+    "commit": "82e6f09",
+    "git_exact_renames": 102,
+    "copied_originals_with_rewritten_active_paths": [
+      {
+        "original_path": "AGENTS.md",
+        "archived_path": "docs/archive/delivery-records/AGENTS-foundation-before-v2.md"
+      },
+      {
+        "original_path": "docs/README.md",
+        "archived_path": "docs/archive/delivery-records/README.md"
+      },
+      {
+        "original_path": "docs/architecture.md",
+        "archived_path": "docs/archive/delivery-records/architecture.md"
+      },
+      {
+        "original_path": "docs/etf_quant/README.md",
+        "archived_path": "docs/archive/delivery-records/etf_quant--README.md"
+      }
+    ],
+    "claimed_moves": 106,
+    "history_rewritten": false
+  },
+  "performance": {
+    "synthetic_only": true,
+    "market_data_read": false,
+    "base_sha": "1e2ffbd4f75120df2511472662dcf7dcd308b0d6",
+    "timing_gate": false,
+    "comparisons": [
+      {
+        "hotspot": "industry",
+        "synthetic_scale": {
+          "days": 50,
+          "industries": 20,
+          "constituents": 6
+        },
+        "baseline_algorithm": "per-industry full membership scan",
+        "optimized_algorithm": "snapshot industry index",
+        "baseline_seconds": 0.03204436201485805,
+        "optimized_seconds": 0.024728184012928978,
+        "speedup": 1.2958639420551001,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Membership lookup O(D*I*C) -> O(C log C + D*C); price validation still O(D*C).",
+        "memory": "O(C) grouped membership index; price/audit storage unchanged.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "industry",
+        "synthetic_scale": {
+          "days": 50,
+          "industries": 100,
+          "constituents": 6
+        },
+        "baseline_algorithm": "per-industry full membership scan",
+        "optimized_algorithm": "snapshot industry index",
+        "baseline_seconds": 0.1915103100182023,
+        "optimized_seconds": 0.11136293300660327,
+        "speedup": 1.7196952778430026,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Membership lookup O(D*I*C) -> O(C log C + D*C); price validation still O(D*C).",
+        "memory": "O(C) grouped membership index; price/audit storage unchanged.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "liquidity",
+        "synthetic_scale": {
+          "etfs": 8,
+          "bars": 320,
+          "window": 20
+        },
+        "baseline_algorithm": "repeated full-frame boolean scans",
+        "optimized_algorithm": "one grouped index + keyed windows",
+        "baseline_seconds": 0.13663564700982533,
+        "optimized_seconds": 0.0032101089891511947,
+        "speedup": 42.56417693966024,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "O(E*W*N) scans -> O(N+E*W); index build included.",
+        "memory": "O(N) row index; duplicates retained.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "liquidity",
+        "synthetic_scale": {
+          "etfs": 40,
+          "bars": 1600,
+          "window": 20
+        },
+        "baseline_algorithm": "repeated full-frame boolean scans",
+        "optimized_algorithm": "one grouped index + keyed windows",
+        "baseline_seconds": 0.9283937990257982,
+        "optimized_seconds": 0.014317497989395633,
+        "speedup": 64.84329871835291,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "O(E*W*N) scans -> O(N+E*W); index build included.",
+        "memory": "O(N) row index; duplicates retained.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "prediction",
+        "synthetic_scale": {
+          "days": 420,
+          "sectors": 8,
+          "horizons": 3
+        },
+        "baseline_algorithm": "per-date/horizon pandas selection",
+        "optimized_algorithm": "shared ordered NumPy arrays",
+        "baseline_seconds": 0.6405135079985484,
+        "optimized_seconds": 0.020303505996707827,
+        "speedup": 31.546941109698317,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Hoisted close/feature projection; maturity and observation order identical.",
+        "memory": "O(D*I*F) read-only call-scoped arrays; no long-lived model cache.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "prediction",
+        "synthetic_scale": {
+          "days": 420,
+          "sectors": 24,
+          "horizons": 3
+        },
+        "baseline_algorithm": "per-date/horizon pandas selection",
+        "optimized_algorithm": "shared ordered NumPy arrays",
+        "baseline_seconds": 1.6472577180247754,
+        "optimized_seconds": 0.05058162400382571,
+        "speedup": 32.56632720808225,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Hoisted close/feature projection; maturity and observation order identical.",
+        "memory": "O(D*I*F) read-only call-scoped arrays; no long-lived model cache.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "research_rolling",
+        "synthetic_scale": {
+          "sectors": 6,
+          "signal_dates": 20,
+          "visible_days": 351
+        },
+        "baseline_algorithm": "rebuild finite rolling factors every signal",
+        "optimized_algorithm": "one causal panel + visible labels/warmup masks",
+        "baseline_seconds": 1.469354127009865,
+        "optimized_seconds": 0.8220009420183487,
+        "speedup": 1.7875333857915043,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Factor construction O(S*I*D*F) -> O(I*D*F); slicing/label tails remain per signal.",
+        "memory": "O(I*D*F) bounded to last Development signal; no sealed dates.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "shadow_prefix_cold",
+        "synthetic_scale": {
+          "stock_rows": 36000,
+          "total_rows": 36600,
+          "industries": 50,
+          "days": 120
+        },
+        "baseline_algorithm": "row byte authentication",
+        "optimized_algorithm": "content and row byte authentication",
+        "baseline_seconds": 0.2540952099952847,
+        "optimized_seconds": 0.3092469070106745,
+        "speedup": 0.821658048099779,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Cold calls authenticate content and rebuild all row hashes; no cross-process reuse claim.",
+        "memory": "One result per dataset O(N); a canonical byte buffer is temporary.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "shadow_prefix_warm",
+        "synthetic_scale": {
+          "stock_rows": 36000,
+          "total_rows": 36600,
+          "industries": 50,
+          "days": 120
+        },
+        "baseline_algorithm": "N row serializations + SHA256 calls",
+        "optimized_algorithm": "content SHA256 + authenticated in-process row-hash reuse",
+        "baseline_seconds": 0.2605806569918059,
+        "optimized_seconds": 0.20177521998994052,
+        "speedup": 1.2914403314975798,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Both examine all economic bytes O(N); warm row-hash calls N -> 0. New process/cold misses recompute rows.",
+        "memory": "One result per dataset O(N); temporary canonical content buffer; caller receives isolated copies.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "training_dates",
+        "synthetic_scale": {
+          "sectors": 6,
+          "frame_days": 600,
+          "train_days": 121
+        },
+        "baseline_algorithm": "full-factor-frame dropna per horizon",
+        "optimized_algorithm": "date-slice and label-only validity",
+        "baseline_seconds": 0.00584590999642387,
+        "optimized_seconds": 0.0011014030023943633,
+        "speedup": 5.307693899249705,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Validity work O(I*D*F) -> O(I*T), with T the eligible window.",
+        "memory": "Only eligible label-date sets; sample selection unchanged.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "training_assembly",
+        "synthetic_scale": {
+          "sectors": 6,
+          "frame_days": 600,
+          "train_days": 121,
+          "features": 19
+        },
+        "baseline_algorithm": "full index masks and repeated frame validity work",
+        "optimized_algorithm": "index positions and one projected validity array",
+        "baseline_seconds": 0.009143098985077813,
+        "optimized_seconds": 0.006383080006344244,
+        "speedup": 1.4323961122201732,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "Date lookup O(I*D) -> O(I*T); selected sample and matrix layout preserved. Ridge fit still O(P cubed).",
+        "memory": "Combined validity projection O(I*T*P); retain Pandas matrix layout for exact BLAS results.",
+        "repetitions": 3,
+        "statistic": "median"
+      },
+      {
+        "hotspot": "lake_fingerprint",
+        "synthetic_scale": {
+          "files": 12,
+          "bytes": 3145728
+        },
+        "baseline_algorithm": "full byte authentication",
+        "optimized_algorithm": "retained full byte authentication",
+        "baseline_seconds": 0.002605495013995096,
+        "optimized_seconds": 0.0024798859958536923,
+        "speedup": 1.050651126040237,
+        "output_equivalence": "PASS",
+        "asymptotic_note": "NO_CHANGE: mutable lake lacks authenticated immutable child identities. Safe lower bound O(bytes).",
+        "memory": "Production streams 1 MiB blocks; no unsafe persistent hash cache.",
+        "repetitions": 3,
+        "statistic": "median"
+      }
+    ]
+  },
+  "links": {
+    "status": "PASS",
+    "active_local_links_checked": 95,
+    "broken_active_links": [],
+    "changed_archived_bytes": [],
+    "historical_path_aliases": 108,
+    "historical_alias_references": 4
+  },
+  "architecture": {
+    "application": "src/application/backtesting.py owns strategy discovery",
+    "compatibility": "src/backtesting/runner.py reexports old public API",
+    "neutral_validation": "src/data/ohlc.py",
+    "cohesive_seams": [
+      "runtime/prefix.py",
+      "research/development_panel.py",
+      "mapping/LiquidityLookup",
+      "runtime/TrainingInputs"
+    ]
+  },
+  "documentation": {
+    "removed_redundant_markdown": 91,
+    "historical_bytes_preserved": true,
+    "git_recovery": "config/engineering/documentation-map.json",
+    "active_report_count": 1
+  },
+  "tests": {
+    "targeted": {
+      "status": "PASS",
+      "passed": 38,
+      "skipped": 0,
+      "deselected": 0,
+      "warnings": 2,
+      "seconds": 4.45
+    },
+    "portable": {
+      "status": "PASS",
+      "passed": 1069,
+      "skipped": 2,
+      "deselected": 99,
+      "warnings": 4,
+      "seconds": 47.93
+    },
+    "frozen_acceptance": {
+      "status": "PASS",
+      "passed": 659,
+      "skipped": 1,
+      "deselected": 0,
+      "warnings": 0,
+      "seconds": 732.19,
+      "quant_source_snapshot_commit": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f",
+      "quantitative_sources_unchanged_through": "ff0dc8c3abdc678306b11892d145778a898004d6",
+      "source_equivalence_evidence": "git diff --quiet 88bb36f ff0dc8c -- strategies services/cnequity-sidecar src research: exit 0; current certificate and measurement regression pass separately"
+    },
+    "frontend": {
+      "passed": 127,
+      "skipped": 3,
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "build": "PASS"
+    },
+    "research_api": {
+      "passed": 63,
+      "skipped": 7,
+      "typecheck": "PASS",
+      "build": "PASS"
+    },
+    "compose_missing": "FAIL_CLOSED_EXIT_1",
+    "compose_configured": "PASS_EXIT_0",
+    "developer_build": "PASS",
+    "performance": "PASS",
+    "synthetic_demo": "PASS",
+    "etf_api_security": {
+      "status": "PASS",
+      "passed": 117
+    },
+    "windows_launcher": {
+      "status": "PASS",
+      "passed": 2
+    },
+    "pre_commit": "PASS",
+    "ruff_lint": "PASS",
+    "ruff_format": "PASS",
+    "production_format_exclusions": 0,
+    "staged_mypy": "PASS",
+    "github_actions": {
+      "status": "PASS",
+      "validated_implementation_sha": "ff0dc8c3abdc678306b11892d145778a898004d6",
+      "run_id": 37113194938,
+      "url": "https://github.com/WynterYaxley123/quant-trading/actions/runs/37113194938",
+      "jobs": [
+        "hygiene",
+        "python-portable",
+        "frontend",
+        "research-api",
+        "etf-api-security",
+        "windows-launcher"
+      ],
+      "all_six_jobs": "SUCCESS",
+      "final_pr_and_main_authority": "GITHUB_PR_METADATA"
+    }
+  },
+  "security": {
+    "high_or_critical_confirmed_findings": 2,
+    "findings": [
+      "Origin wildcard admission",
+      "pip TLS trusted-host bypass"
+    ],
+    "remaining_high_or_critical": 0,
+    "scan_scope": "Built-in path/secret-pattern and full reachable-history audit, adversarial service suites; not third-party dependency certification",
+    "audit": {
+      "status": "PASS",
+      "scanner": "BUILTIN_READ_ONLY_PATTERN_AND_PATH_AUDIT_NOT_A_THIRD_PARTY_CERTIFICATION",
+      "reviewed_legacy_dummy_template_sha256": "2077e82fcc7bfbccf7eb0f671d597addc90ff9221fae04edef07a81d1178dd2a",
+      "tracked_files": 545,
+      "new_files": 0,
+      "history_commits": 237,
+      "history_blobs_scanned": 1469,
+      "tracked_secret_candidates": 0,
+      "new_secret_candidates": 0,
+      "history_secret_candidates": 0,
+      "candidates": [],
+      "forbidden_paths": [],
+      "sealed_paths_not_read": [],
+      "large_files_over_500kb": [],
+      "firewall_changes": [],
+      "remote": {
+        "name": "origin",
+        "scheme": "https:",
+        "host": "github.com",
+        "path": "/WynterYaxley123/quant-trading.git",
+        "embedded_credentials": false
+      },
+      "runtime_data_tracked": false,
+      "credential_values_printed": false,
+      "firewall_policy": "ACTIVE_V3_INTEGRITY_WITH_IMMUTABLE_V1_V2_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES",
+      "public_licensing_review": "MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE"
+    },
+    "audited_commit": "ff0dc8c3abdc678306b11892d145778a898004d6"
+  },
+  "shadow": {
+    "comparison": "PASS_IDENTICAL_FILENAMES_SIZES_SHA256",
+    "files": 6,
+    "epoch_delta": 0,
+    "signal_delta": 0,
+    "intent_delta": 0,
+    "fill_delta": 0,
+    "metadata_only": true,
+    "payloads_published": false
+  },
+  "frozen_strategy": {
+    "factors_models_ranking_fusion_sizing_pit_t1_parameters_changed": false,
+    "fidelity_gap": "ACTUAL_MINUS_NOMINAL_UNCHANGED",
+    "cnequity_pin_changed": false,
+    "broker_enabled": false,
+    "real_order_path": false,
+    "market_backtests_run": false,
+    "sealed_performance_read": false,
+    "formal_one_shot_run": false,
+    "deployed_image_rebuilt": false,
+    "validation_performance": null,
+    "final_oos_performance": null,
+    "deployed_image_content_id_unchanged": true,
+    "deployed_start_time_comparison": "NOT_COMPARABLE_DIFFERENT_CONTAINER_IDENTITIES",
+    "deployed_lifecycle_commands_executed": false
+  },
+  "residual_debt": [
+    "168 legacy Mypy diagnostics across research, legacy support scripts, sector helpers and tests; staged count cannot grow.",
+    "Whole-project annotation/docstring percentages remain partial; active runtime zero diagnostics is scoped, not whole-repository strict typing.",
+    "Warm prefix reuse is private to one process. Cold/new-process calls still authenticate and hash every row, with measured cold overhead.",
+    "Mutable lake remains full byte hashing; no safe immutable authenticated child identities exist.",
+    "Large cohesive policy/evidence/research modules remain; no speculative framework or bulk formatting.",
+    "One explicit legacy Windows root remains in config/legacy-runtime.json."
+  ],
+  "remaining_engineering_blockers": []
+}

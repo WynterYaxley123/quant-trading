@@ -12,6 +12,7 @@ from scripts.engineering.references import audit
 from strategies.etf_quant.runtime.implementation import (
     ACTIVE_MANIFEST,
     PREVIOUS_MANIFEST,
+    PREVIOUS_TRANSITION,
     ImplementationIntegrityError,
     verify_implementation,
 )
@@ -37,7 +38,7 @@ def test_document_aliases_and_archive_bytes_are_consistent():
 
 def test_implementation_rejects_changed_source_and_forged_transition(tmp_path):
     files = verify_implementation(ROOT)
-    for name in [*files, ACTIVE_MANIFEST, PREVIOUS_MANIFEST]:
+    for name in [*files, ACTIVE_MANIFEST, PREVIOUS_MANIFEST, PREVIOUS_TRANSITION]:
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, target)

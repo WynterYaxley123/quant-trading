@@ -1,15 +1,44 @@
 """Current-snapshot warmup only; no historical performance or walk-forward."""
 
-from datetime import datetime
+from dataclasses import dataclass
+from datetime import date, datetime
 
 import numpy as np
 import pandas as pd
+from numpy.typing import NDArray
 
 from ..domain import ModelPrediction, StrategyConfig, TradingCalendar
 from ..factors import compute_close_factors
 from ..models import NumPyRidge, TrainingObservation, fit_horizon, predict_industries
 from ..models.fusion import fuse_predictions
 from .storage import GateError
+
+
+@dataclass(frozen=True)
+class TrainingInputs:
+    """Call-scoped, ordered arrays shared by horizons; no historical cache."""
+
+    days: tuple[date, ...]
+    closes: NDArray[np.float64]
+    features: dict[tuple[str, ...], NDArray[np.float64]]
+
+    @classmethod
+    def build(cls, series, universe, features, specs) -> "TrainingInputs":
+        closes = series.closes.loc[:, list(universe)].to_numpy(dtype=float, copy=True)
+        arrays = {
+            names: np.stack(
+                [
+                    features[c].loc[series.closes.index, list(names)].to_numpy(dtype=float)
+                    for c in universe
+                ],
+                axis=1,
+            )
+            for names in {s.factor_names for s in specs}
+        }
+        closes.setflags(write=False)
+        for values in arrays.values():
+            values.setflags(write=False)
+        return cls(tuple(d.date() for d in series.closes.index), closes, arrays)
 
 
 def current_predictions(series, provider, *, signal_at: datetime, config=None):
@@ -20,12 +49,13 @@ def current_predictions(series, provider, *, signal_at: datetime, config=None):
     calendar = TradingCalendar(days)
     signal_i = len(days) - 1
     universe, features = model_features(series, provider)
+    inputs = TrainingInputs.build(series, universe, features, config.horizons)
     models, predictions = {}, {}
     for spec in config.horizons:
         h = int(spec.horizon)
         if signal_i < h:
             raise GateError("MODEL_WARMUP_INCOMPLETE")
-        observations, _ = training_rows(series, provider, spec, universe, features)
+        observations, _ = training_rows(series, provider, spec, universe, features, inputs=inputs)
         # available_at here is the actual CURRENT snapshot observation time,
         # not a claimed historical publication timestamp. Source timing stays
         # UNKNOWN/null in the export, Source C audit and public model metadata.
@@ -60,13 +90,16 @@ def model_features(series, provider):
     return universe, {code: compute_close_factors(series.closes[code]) for code in universe}
 
 
-def training_rows(series, provider, spec, universe, features):
+def training_rows(
+    series, provider, spec, universe, features, *, inputs: TrainingInputs | None = None
+):
     """Date × sector rows; full cross-sections inside the admitted universe.
 
     Rows from nonadmitted taxonomy industries cannot veto a model date. A
     partial date *inside* the admitted universe is still rejected unchanged.
     """
-    days = tuple(d.date() for d in series.closes.index)
+    inputs = TrainingInputs.build(series, universe, features, (spec,)) if inputs is None else inputs
+    days = inputs.days
     h = int(spec.horizon)
     if len(days) <= h:
         raise GateError("MODEL_WARMUP_INCOMPLETE")
@@ -78,12 +111,9 @@ def training_rows(series, provider, spec, universe, features):
         if not start <= day <= cutoff:
             continue
         end = days[i + h]
-        a = series.closes.loc[pd.Timestamp(day), list(universe)].to_numpy(dtype=float)
-        b = series.closes.loc[pd.Timestamp(end), list(universe)].to_numpy(dtype=float)
-        x = [
-            features[c].loc[pd.Timestamp(day), list(spec.factor_names)].to_numpy(dtype=float)
-            for c in universe
-        ]
+        a = inputs.closes[i]
+        b = inputs.closes[i + h]
+        x = inputs.features[spec.factor_names][i]
         if not (
             np.isfinite(a).all() and np.isfinite(b).all() and all(np.isfinite(v).all() for v in x)
         ):
@@ -122,9 +152,10 @@ def model_readiness_reference(series, provider, *, config=None):
     """
     config = StrategyConfig() if config is None else config
     universe, features = model_features(series, provider)
+    inputs = TrainingInputs.build(series, universe, features, config.horizons)
     reports, predictions = {}, {}
     for spec in config.horizons:
-        rows, stats = training_rows(series, provider, spec, universe, features)
+        rows, stats = training_rows(series, provider, spec, universe, features, inputs=inputs)
         if stats["status"] != "PASS":
             raise GateError("MODEL_WARMUP_INCOMPLETE", stats)
         targets = np.asarray([r.raw_forward_return for r in rows]).reshape(-1, len(universe))

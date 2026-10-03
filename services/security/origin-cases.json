@@ -1,0 +1,4 @@
+{
+  "valid": ["http://localhost:5173", "http://127.0.0.1:5173", "https://example.com", "https://dashboard.example.com:8443", "http://[::1]:5173"],
+  "invalid": ["*", "", "null", "http://*.evil.com", "https://foo.*.com", "http://example.com/path", "http://example.com/", "http://user@example.com", "http://user:pass@example.com", "javascript:alert(1)", "http://example.com:abc", "http://example.com:65536", "http://example.com:0", "http://example.com?query", "http://example.com#fragment", "http://foo..com", "http://-bad.com", "http://bad_.com", "http://example.com\\path"]
+}

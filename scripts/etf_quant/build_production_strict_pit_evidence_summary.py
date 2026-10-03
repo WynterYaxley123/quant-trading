@@ -22,6 +22,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 
+from scripts.etf_quant.runtime_paths import evidence_root  # noqa: E402
 from strategies.etf_quant.domain.industry_level import default_taxonomy  # noqa: E402
 from strategies.etf_quant.evidence.schema import WEIGHT_COMPLETE  # noqa: E402
 from strategies.etf_quant.evidence.strict import (  # noqa: E402
@@ -30,7 +31,7 @@ from strategies.etf_quant.evidence.strict import (  # noqa: E402
     prove_constituent_containment,
 )
 
-RUNTIME = Path(r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1")
+RUNTIME = evidence_root("PIT")
 PACKAGES = RUNTIME / "packages"
 BOOK = RUNTIME / "adapter-tests" / "production_evidence_book_v1.json"
 REGISTRY = REPO / "strategies" / "etf_quant" / "config" / "verified_mappings_v1.json"
@@ -158,7 +159,7 @@ def main() -> int:
             }
         )
 
-    summary = {
+    summary: dict = {
         "schema_version": "1.0.0",
         "artifact": "PRODUCTION_STRICT_PIT_EVIDENCE_SUMMARY_V1",
         "identity": CONTAINMENT_IDENTITY,

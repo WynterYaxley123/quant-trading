@@ -1,0 +1,5 @@
+{
+  "contract": "LEGACY_WINDOWS_RUNTIME_FALLBACK",
+  "purpose": "Compatibility only; explicit environment/config paths take precedence.",
+  "windows_runtime_root": "D:/QuantForge/runtime/etf-quant-v1"
+}

@@ -31,6 +31,7 @@ from .exports import SHANGHAI, observed_time
 from .formal import FormalContract, record_signal, start_gate
 from .industry import build_industry_series
 from .prediction import current_predictions
+from .prefix import source_prefix
 from .storage import (
     GateError,
     atomic_bytes,
@@ -87,40 +88,6 @@ def _portfolio(doc):
         applied_fill_ids=tuple(doc["applied_fill_ids"]),
         executed_intent_ids=tuple(doc["executed_intent_ids"]),
     )
-
-
-def source_prefix(provider):
-    result = {}
-    from .exports import KEYS
-
-    for name, frame in provider.tables.items():
-        date_key = (
-            "list_date"
-            if name == "instruments"
-            else "as_of_date"
-            if name == "industry_membership"
-            else "trade_date"
-        )
-        if date_key not in frame:
-            continue
-        records = {}
-        for row in frame.to_dict("records"):
-            # Undated instrument evidence is not allowed to silently change
-            # after it influenced listing/tradability admission. Future known
-            # listings are not part of the already-consumed historical prefix.
-            row_day = row[date_key]
-            if row_day is not None and row_day > provider.cutoff:
-                continue
-            key = "|".join(str(row[k]) for k in KEYS[name])
-            # Observation time can advance on re-fetch; economic values/identity
-            # may not silently change in a consumed historical prefix.
-            economic = {k: str(v) for k, v in row.items() if k != "fetched_at"}
-            records[key] = {
-                "date": str(row_day) if row_day is not None else None,
-                "hash": digest(json_bytes(economic)),
-            }
-        result[name] = records
-    return result
 
 
 def check_prefix(previous, current, cutoff, *, previous_decision_at=None):

@@ -11,6 +11,7 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+REFERENCE = re.compile(r"^\s{0,3}\[[^\]]+\]:\s*(<[^>]+>|\S+)", re.M)
 
 
 def audit(root: Path = ROOT) -> dict[str, object]:
@@ -21,8 +22,11 @@ def audit(root: Path = ROOT) -> dict[str, object]:
     broken: list[dict[str, str]] = []
     changed: list[str] = []
     checked = 0
+    historical_alias_references = 0
     for item in documents:
         source = root / item["path"]
+        if item.get("removed_from_tree"):
+            continue
         if item.get("sha256") and hashlib.sha256(source.read_bytes()).hexdigest() != item["sha256"]:
             changed.append(item["path"])
         if not item["class"].startswith("ACTIVE_"):
@@ -30,17 +34,22 @@ def audit(root: Path = ROOT) -> dict[str, object]:
         text = re.sub(
             r"```.*?```|~~~.*?~~~", "", source.read_text(encoding="utf-8-sig"), flags=re.S
         )
-        for match in LINK.finditer(text):
-            value = match.group(1).strip().strip("<>").split(' "', 1)[0]
+        targets = [
+            match.group(1) for pattern in (LINK, REFERENCE) for match in pattern.finditer(text)
+        ]
+        for raw_target in targets:
+            value = raw_target.strip().strip("<>").split(' "', 1)[0]
             parts = urlsplit(value)
             if parts.scheme or parts.netloc or not parts.path:
                 continue
             checked += 1
             target = posixpath.normpath(
-                posixpath.join(posixpath.dirname(item["path"]), unquote(parts.path))
+                unquote(parts.path).lstrip("/")
+                if parts.path.startswith("/")
+                else posixpath.join(posixpath.dirname(item["path"]), unquote(parts.path))
             )
-            resolved = moved.get(target, target)
-            if target.startswith("../") or not (root / resolved).exists():
+            historical_alias_references += int(target in moved)
+            if target.startswith("../") or not (root / target).exists():
                 broken.append({"document": item["path"], "target": target})
     return {
         "status": "PASS" if not broken and not changed else "FAIL",
@@ -48,6 +57,7 @@ def audit(root: Path = ROOT) -> dict[str, object]:
         "broken_active_links": broken,
         "changed_archived_bytes": changed,
         "historical_path_aliases": len(moved),
+        "historical_alias_references": historical_alias_references,
     }
 
 

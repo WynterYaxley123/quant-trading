@@ -2,6 +2,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readFileSync } from 'node:fs'
 import { z } from 'zod'
+import { isExactOrigin } from './origins.js'
 
 export interface ApiConfig {
   reportRoot: string
@@ -52,14 +53,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
   const origins = env.DASHBOARD_ORIGINS === undefined
     ? DEFAULT_ORIGINS
     : env.DASHBOARD_ORIGINS.split(',').map((origin) => origin.trim())
-  if (!origins.length || origins.some((origin) => {
-    try {
-      const parsed = new URL(origin)
-      return !['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== origin || origin === '*'
-    } catch {
-      return true
-    }
-  })) {
+  if (!origins.length || origins.some(origin => !isExactOrigin(origin))) {
     throw new Error('DASHBOARD_ORIGINS must be comma-separated exact http(s) origins, never *')
   }
   return { reportRoot, host, port, origins, artifactId, optionalRoot, configurationError,
