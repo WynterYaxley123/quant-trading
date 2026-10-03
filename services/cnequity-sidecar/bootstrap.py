@@ -64,7 +64,7 @@ def locked_runtime(lock, environment):
 
     packages = lock["package"]
     root = next(p for p in packages if p["name"] == "cnequity")
-    chosen = {}
+    chosen: dict[str, dict[str, object]] = {}
 
     def visit(dependency):
         if dependency.get("marker") and not Marker(dependency["marker"]).evaluate(environment):
@@ -174,9 +174,9 @@ def main():
         check=True,
     )
     subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
-    from importlib.metadata import version
+    from importlib.metadata import version as installed_version
 
-    if version("cnequity") != "0.11.0":
+    if installed_version("cnequity") != "0.11.0":
         raise ValueError("INSTALLED_VERSION_BLOCKER")
     import cnequity as installed
 

@@ -15,5 +15,6 @@ types-PyYAML==6.0.12.20250915
 types-requests==2.32.4.20250913
 # HDF5 preflight tests use tiny generated files, not market datasets.
 tables==3.11.1
+polars==1.42.1
 matplotlib==3.10.9
 python-dotenv==1.1.1

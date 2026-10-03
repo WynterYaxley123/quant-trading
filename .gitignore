@@ -34,6 +34,7 @@ services/cnequity-sidecar/logs/
 *.pfx
 id_rsa*
 node_modules/
+.pnpm-store/
 
 # 回测产物（每次运行生成，体积大且不可复现，不进 Git）
 /reports/backtests/

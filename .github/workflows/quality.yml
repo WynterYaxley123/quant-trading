@@ -44,8 +44,10 @@ jobs:
       - run: python scripts/engineering/typecheck.py
       - run: python -m pytest -q -m "not external_runtime"
       - run: python -m examples.minimal_demo
+      - run: python -m scripts.engineering.benchmark
+      - run: python -m scripts.engineering.references
 
-  frontend-and-apis:
+  frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -60,10 +62,29 @@ jobs:
       - run: pnpm --dir dashboard typecheck
       - run: pnpm --dir dashboard lint
       - run: pnpm --dir dashboard build
+
+  research-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.19.0'
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: '11.25.0'
       - run: pnpm --dir services/research-api install --frozen-lockfile
       - run: pnpm --dir services/research-api test
       - run: pnpm --dir services/research-api typecheck
       - run: pnpm --dir services/research-api build
+
+  etf-api-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.19.0'
       - run: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/security-audit.test.mjs
 
   windows-launcher:

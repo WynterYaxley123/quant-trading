@@ -1,0 +1,23 @@
+# Data and point-in-time evidence
+
+CNEquity is external and pinned. Raw/curated/runtime market data does not belong in Git.
+Factual exports carry hashes, schemas, cutoff, retrieval instants, adjustments and
+source identity. Source-C is an internal equal-weight series, not an official index.
+
+Effective date, issuer publication, system observation and system availability are
+different facts. Later observation never proves earlier availability. Official tracking,
+complete weights and explicit classification establish a mapping package. Unknown
+classification and incomplete weights fail closed; missing mass is not renormalized.
+
+B40 additionally requires dominance, 40% target exposure, twenty valid liquidity
+sessions and availability at decision time. Unavailable Top5 slots stay cash. Current
+routing identity cannot prove historical trading; engineering reference dates create no history.
+
+CSV booleans are explicit true/false. NumPy scalar booleans serialize canonically;
+nullable missing values remain invalid evidence. Built-in bool identity after JSON/schema
+validation is deliberate. `UNPARSEABLE` remains a historical serialized reason token
+for invalid instants; compatibility requires preserving it.
+
+Research API reads at most 32 MiB per artifact, with descriptor stat and bounded reads.
+Approved artifact hash keys are strict. MIT source licensing grants no market-data rights;
+redistribution clearance remains unverified. See [market-data policy](data/market_data_policy.md).

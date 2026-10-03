@@ -20,6 +20,7 @@ this module asserts a number.
 Pure functions over pre-loaded rows: no I/O, no provider import, no I/O-side
 effects. The caller supplies membership rows and a session list.
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
@@ -61,9 +62,9 @@ class SessionUniverse:
 
     session: date
     snapshot_date: date
-    members: Mapping[str, str]           # symbol -> industry_code (level as stored)
-    taxonomy_active_count: int           # distinct industries, as-of
-    by_exchange: Mapping[str, int]       # SH/SZ/BJ -> member count
+    members: Mapping[str, str]  # symbol -> industry_code (level as stored)
+    taxonomy_active_count: int  # distinct industries, as-of
+    by_exchange: Mapping[str, int]  # SH/SZ/BJ -> member count
 
     def members_for(self, industry_code: str) -> tuple[str, ...]:
         return tuple(sorted(s for s, c in self.members.items() if c == industry_code))
@@ -114,7 +115,9 @@ def level_of(code: str, width: int) -> str:
     return code[:width]
 
 
-def session_universe(rows: Sequence[MembershipRow], session: date, *, width: int = 4) -> SessionUniverse:
+def session_universe(
+    rows: Sequence[MembershipRow], session: date, *, width: int = 4
+) -> SessionUniverse:
     """Resolve the universe in force on *session*.
 
     A backward as-of join: keep rows whose snapshot is at or before the session,
@@ -135,13 +138,18 @@ def session_universe(rows: Sequence[MembershipRow], session: date, *, width: int
     counts: dict[str, int] = {SH_EXCHANGE: 0, SZ_EXCHANGE: 0, BJ_EXCHANGE: 0}
     for symbol in members:
         counts[exchange_of(symbol)] += 1
-    return SessionUniverse(session=session, snapshot_date=latest, members=members,
-                           taxonomy_active_count=len(set(members.values())),
-                           by_exchange=counts)
+    return SessionUniverse(
+        session=session,
+        snapshot_date=latest,
+        members=members,
+        taxonomy_active_count=len(set(members.values())),
+        by_exchange=counts,
+    )
 
 
-def required_symbols(rows: Sequence[MembershipRow], sessions: Sequence[date], *,
-                     width: int = 4) -> tuple[str, ...]:
+def required_symbols(
+    rows: Sequence[MembershipRow], sessions: Sequence[date], *, width: int = 4
+) -> tuple[str, ...]:
     """Union of members across every warm-up session -- the fetch requirement.
 
     Beijing members are included by construction. ``INCLUDE_BJ_AS_INDUSTRY_CONSTITUENTS``
@@ -153,8 +161,9 @@ def required_symbols(rows: Sequence[MembershipRow], sessions: Sequence[date], *,
     return tuple(sorted(symbols))
 
 
-def historical_only_symbols(rows: Sequence[MembershipRow], sessions: Sequence[date], *,
-                            width: int = 4) -> tuple[str, ...]:
+def historical_only_symbols(
+    rows: Sequence[MembershipRow], sessions: Sequence[date], *, width: int = 4
+) -> tuple[str, ...]:
     """Members needed during warm-up that are NOT members in the final session.
 
     These are the names a naive "current membership" build would silently drop.
@@ -175,8 +184,9 @@ MEASURED_TAXONOMY_REGIMES = {
 }
 
 
-def taxonomy_counts(rows: Sequence[MembershipRow], sessions: Sequence[date], *,
-                    width: int = 4) -> dict[str, object]:
+def taxonomy_counts(
+    rows: Sequence[MembershipRow], sessions: Sequence[date], *, width: int = 4
+) -> dict[str, object]:
     """Derived taxonomy counts. Never hard-code these in a report.
 
     Returns the distinct taxonomy-active counts observed across the sessions, the
@@ -205,10 +215,10 @@ def taxonomy_counts(rows: Sequence[MembershipRow], sessions: Sequence[date], *,
         "observed_active_counts": distinct,
         "regime_labels": labels,
         "taxonomy_active_last": per_session[sessions[-1]] if sessions else None,
-        "union_over_sessions": len({level_of(r.industry_code, width)
-                                    for r in rows}),
-        "sessions_by_observed_count": {str(k): v for k, v in
-                                       sorted(_histogram(per_session).items())},
+        "union_over_sessions": len({level_of(r.industry_code, width) for r in rows}),
+        "sessions_by_observed_count": {
+            str(k): v for k, v in sorted(_histogram(per_session).items())
+        },
     }
 
 
@@ -219,8 +229,9 @@ def _histogram(per_session: Mapping[date, int]) -> dict[int, int]:
     return counts
 
 
-def bj_constituent_accounting(rows: Sequence[MembershipRow], session: date, *,
-                              width: int = 4) -> dict[str, object]:
+def bj_constituent_accounting(
+    rows: Sequence[MembershipRow], session: date, *, width: int = 4
+) -> dict[str, object]:
     """Per-industry Beijing share, so an exclusion can never be silent.
 
     ``INCLUDE_BJ_AS_INDUSTRY_CONSTITUENTS`` means an industry's BJ members are

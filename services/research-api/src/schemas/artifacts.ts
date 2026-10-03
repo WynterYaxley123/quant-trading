@@ -57,7 +57,7 @@ export const metadataSchema = z.object({
   content_sha256: z.object({
     'candidate_summary.json': sha,
     D0: candidateHashes, D1: candidateHashes, D2: candidateHashes, D3: candidateHashes,
-  }).passthrough(),
+  }).strict(),
 }).superRefine((value, ctx) => {
   if (!value.notices.includes('NOT TRADABLE')) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'NOT TRADABLE notice absent' })

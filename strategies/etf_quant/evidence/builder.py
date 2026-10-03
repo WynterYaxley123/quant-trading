@@ -16,24 +16,41 @@ Design rules encoded here
 * **Never renormalise.** A weight vector whose sum falls outside the runtime's band
   is built as ``INCOMPLETE`` and is never admitted; the raw sum is reported.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
-import json
 from pathlib import Path
 
-from .schema import (AVAILABILITY_FORWARD_ONLY, AVAILABILITY_HISTORICAL_PIT,
-                     CLASSIFICATION_IDENTITY, CLASSIFICATION_OFFICIAL,
-                     CLASSIFICATION_UNCLASSIFIED, EVIDENCE_SCHEMA_VERSION,
-                     EXPOSURE_IDENTITY, MAPPING_IDENTITY, REGISTRY_IDENTITY,
-                     TRACKING_IDENTITY, VALIDITY_FORWARD_ONLY_UNTIL_SUPERSEDED,
-                     WEIGHT_COMPLETE, WEIGHT_IDENTITY, WEIGHT_INCOMPLETE,
-                     B40MappingEvidence, BenchmarkL2Exposure, ClassificationRow,
-                     ClassificationSnapshot, ConstituentRow, EvidenceError,
-                     PinnedSource, TrackingRelation, WeightVector, bare_code,
-                     canonical_bytes, decide_b40_mapping, derive_l2_exposure,
-                     parse_weight_pct, require_official_url, sha256_bytes, sha256_json)
-from .sources import SourcePin
+from .schema import (
+    CLASSIFICATION_IDENTITY,
+    CLASSIFICATION_OFFICIAL,
+    CLASSIFICATION_UNCLASSIFIED,
+    EVIDENCE_SCHEMA_VERSION,
+    EXPOSURE_IDENTITY,
+    MAPPING_IDENTITY,
+    TRACKING_IDENTITY,
+    VALIDITY_FORWARD_ONLY_UNTIL_SUPERSEDED,
+    WEIGHT_IDENTITY,
+    WEIGHT_INCOMPLETE,
+    B40MappingEvidence,
+    BenchmarkL2Exposure,
+    ClassificationRow,
+    ClassificationSnapshot,
+    ConstituentRow,
+    EvidenceError,
+    PinnedSource,
+    TrackingRelation,
+    WeightVector,
+    bare_code,
+    canonical_bytes,
+    decide_b40_mapping,
+    derive_l2_exposure,
+    parse_weight_pct,
+    require_official_url,
+    sha256_bytes,
+    sha256_json,
+)
 
 
 def _iso(moment: datetime) -> str:
@@ -44,56 +61,82 @@ def _iso(moment: datetime) -> str:
 # Benchmark constituent weight vector
 # ---------------------------------------------------------------------------
 
-def build_weight_vector_from_constituent_rows(*, benchmark_code: str, benchmark_name: str,
-                                              provider: str, weight_source_type: str,
-                                              constituent_effective_date: str,
-                                              observed_at: str, available_at: str,
-                                              declared_constituent_count: int,
-                                              rows: list[dict], valid_from: str,
-                                              valid_to: str | None = None,
-                                              source_publication_at: str | None = None,
-                                              sources: tuple[PinnedSource, ...] = (),
-                                              notes: tuple[str, ...] = ()) -> WeightVector:
+
+def build_weight_vector_from_constituent_rows(
+    *,
+    benchmark_code: str,
+    benchmark_name: str,
+    provider: str,
+    weight_source_type: str,
+    constituent_effective_date: str,
+    observed_at: str,
+    available_at: str,
+    declared_constituent_count: int,
+    rows: list[dict],
+    valid_from: str,
+    valid_to: str | None = None,
+    source_publication_at: str | None = None,
+    sources: tuple[PinnedSource, ...] = (),
+    notes: tuple[str, ...] = (),
+) -> WeightVector:
     """Assemble a weight vector and let the completeness predicate decide its quality."""
     constituents = []
     unparsed = []
     for index, row in enumerate(rows):
         code = bare_code(row.get("security_code"))
         if not code:
-            raise EvidenceError("EVIDENCE_WEIGHT_BLOCKER",
-                                {"reason": "MISSING_SECURITY_CODE", "row": index})
+            raise EvidenceError(
+                "EVIDENCE_WEIGHT_BLOCKER", {"reason": "MISSING_SECURITY_CODE", "row": index}
+            )
         weight = parse_weight_pct(row.get("weight_pct"))
         if weight is None:
             unparsed.append(code)
             continue
-        constituents.append(ConstituentRow(security_code=code, weight_pct=float(weight),
-                                           security_name=row.get("security_name")))
-    notes = list(notes)
+        constituents.append(
+            ConstituentRow(
+                security_code=code, weight_pct=float(weight), security_name=row.get("security_name")
+            )
+        )
+    quality_notes_input = list(notes)
     if unparsed:
-        notes.append("UNPARSED_WEIGHT_ROWS=%d" % len(unparsed))
+        quality_notes_input.append("UNPARSED_WEIGHT_ROWS=%d" % len(unparsed))
     provisional = WeightVector(
-        benchmark_code=benchmark_code, benchmark_name=benchmark_name, provider=provider,
+        benchmark_code=benchmark_code,
+        benchmark_name=benchmark_name,
+        provider=provider,
         weight_source_type=weight_source_type,
         constituent_effective_date=constituent_effective_date,
-        source_publication_at=source_publication_at, evidence_observed_at=observed_at,
-        evidence_available_at=available_at, valid_from=valid_from, valid_to=valid_to,
+        source_publication_at=source_publication_at,
+        evidence_observed_at=observed_at,
+        evidence_available_at=available_at,
+        valid_from=valid_from,
+        valid_to=valid_to,
         declared_constituent_count=declared_constituent_count,
-        rows=tuple(constituents), weight_quality=WEIGHT_INCOMPLETE, notes=tuple(notes),
-        sources=sources)
+        rows=tuple(constituents),
+        weight_quality=WEIGHT_INCOMPLETE,
+        notes=tuple(quality_notes_input),
+        sources=sources,
+    )
     quality, quality_notes = provisional.recompute_quality()
     if unparsed:
         quality = WEIGHT_INCOMPLETE
     return WeightVector(
-        benchmark_code=provisional.benchmark_code, benchmark_name=provisional.benchmark_name,
-        provider=provisional.provider, weight_source_type=provisional.weight_source_type,
+        benchmark_code=provisional.benchmark_code,
+        benchmark_name=provisional.benchmark_name,
+        provider=provisional.provider,
+        weight_source_type=provisional.weight_source_type,
         constituent_effective_date=provisional.constituent_effective_date,
         source_publication_at=provisional.source_publication_at,
         evidence_observed_at=provisional.evidence_observed_at,
         evidence_available_at=provisional.evidence_available_at,
-        valid_from=provisional.valid_from, valid_to=provisional.valid_to,
+        valid_from=provisional.valid_from,
+        valid_to=provisional.valid_to,
         declared_constituent_count=provisional.declared_constituent_count,
-        rows=provisional.rows, weight_quality=quality,
-        notes=tuple(notes) + quality_notes, sources=provisional.sources)
+        rows=provisional.rows,
+        weight_quality=quality,
+        notes=tuple(quality_notes_input) + quality_notes,
+        sources=provisional.sources,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -120,11 +163,15 @@ def _sse_listing_date(value) -> str | None:
     return f"{text[:4]}-{text[4:6]}-{text[6:]}"
 
 
-def build_tracking_relations_from_sse_catalog(*, catalog_rows: list[dict], observed_at: str,
-                                              available_at: str, source: PinnedSource,
-                                              valid_from: str,
-                                              source_publication_at: str | None = None
-                                              ) -> tuple[TrackingRelation, ...]:
+def build_tracking_relations_from_sse_catalog(
+    *,
+    catalog_rows: list[dict],
+    observed_at: str,
+    available_at: str,
+    source: PinnedSource,
+    valid_from: str,
+    source_publication_at: str | None = None,
+) -> tuple[TrackingRelation, ...]:
     """One row per ETF that the exchange itself maps to a tracked index.
 
     The catalog carries no listing-status field, so status is reported as
@@ -153,32 +200,51 @@ def build_tracking_relations_from_sse_catalog(*, catalog_rows: list[dict], obser
         if etf_code in seen:
             continue
         seen.add(etf_code)
-        relations.append(TrackingRelation(
-            exchange="SSE", etf_code=etf_code, etf_name=name, benchmark_code=index_code,
-            benchmark_name=index_name or index_code, index_provider="CSI_OR_SSE_PUBLISHED_CODE",
-            listing_status="LISTED", listing_date=_sse_listing_date(row.get("listingDate")),
-            source_type="EXCHANGE_FUND_CATALOG", official_source_url=source.source_url,
-            source_publication_at=source_publication_at, evidence_observed_at=observed_at,
-            evidence_available_at=available_at, raw_source_hash=source.source_sha256,
-            valid_from=valid_from,
-            notes=("TRACKED_INDEX_NAME_AS_PUBLISHED_BY_EXCHANGE" if index_name
-                   else "TRACKED_INDEX_NAME_NOT_PUBLISHED",)))
+        relations.append(
+            TrackingRelation(
+                exchange="SSE",
+                etf_code=etf_code,
+                etf_name=name,
+                benchmark_code=index_code,
+                benchmark_name=index_name or index_code,
+                index_provider="CSI_OR_SSE_PUBLISHED_CODE",
+                listing_status="LISTED",
+                listing_date=_sse_listing_date(row.get("listingDate")),
+                source_type="EXCHANGE_FUND_CATALOG",
+                official_source_url=source.source_url,
+                source_publication_at=source_publication_at,
+                evidence_observed_at=observed_at,
+                evidence_available_at=available_at,
+                raw_source_hash=source.source_sha256,
+                valid_from=valid_from,
+                notes=(
+                    "TRACKED_INDEX_NAME_AS_PUBLISHED_BY_EXCHANGE"
+                    if index_name
+                    else "TRACKED_INDEX_NAME_NOT_PUBLISHED",
+                ),
+            )
+        )
     return tuple(relations)
 
 
 def _strip_html(value) -> str:
     import re
+
     if not isinstance(value, str):
         return ""
     text = re.sub(r"<[^>]*>", "", value)
     return " ".join(text.split())
 
 
-def build_tracking_relations_from_szse_catalog(*, catalog_rows: list[dict], observed_at: str,
-                                               available_at: str, source: PinnedSource,
-                                               valid_from: str,
-                                               source_publication_at: str | None = None
-                                               ) -> tuple[TrackingRelation, ...]:
+def build_tracking_relations_from_szse_catalog(
+    *,
+    catalog_rows: list[dict],
+    observed_at: str,
+    available_at: str,
+    source: PinnedSource,
+    valid_from: str,
+    source_publication_at: str | None = None,
+) -> tuple[TrackingRelation, ...]:
     """SZSE rows carry the tracked index in one combined ``nhzs`` field.
 
     The field is either ``"399667 创业成长"`` or a bare code. A bare code yields a
@@ -202,17 +268,31 @@ def build_tracking_relations_from_szse_catalog(*, catalog_rows: list[dict], obse
         if etf_code in seen:
             continue
         seen.add(etf_code)
-        relations.append(TrackingRelation(
-            exchange="SZSE", etf_code=etf_code, etf_name=name, benchmark_code=index_code,
-            benchmark_name=index_name or index_code,
-            index_provider="CNI_OR_SZSE_PUBLISHED_CODE", listing_status="LISTED",
-            listing_date=None, source_type="EXCHANGE_FUND_CATALOG",
-            official_source_url=source.source_url, source_publication_at=source_publication_at,
-            evidence_observed_at=observed_at, evidence_available_at=available_at,
-            raw_source_hash=source.source_sha256, valid_from=valid_from,
-            notes=("LISTING_DATE_NOT_PUBLISHED_BY_SZSE_CATALOG",
-                   "TRACKED_INDEX_NAME_AS_PUBLISHED_BY_EXCHANGE" if index_name
-                   else "TRACKED_INDEX_NAME_NOT_PUBLISHED")))
+        relations.append(
+            TrackingRelation(
+                exchange="SZSE",
+                etf_code=etf_code,
+                etf_name=name,
+                benchmark_code=index_code,
+                benchmark_name=index_name or index_code,
+                index_provider="CNI_OR_SZSE_PUBLISHED_CODE",
+                listing_status="LISTED",
+                listing_date=None,
+                source_type="EXCHANGE_FUND_CATALOG",
+                official_source_url=source.source_url,
+                source_publication_at=source_publication_at,
+                evidence_observed_at=observed_at,
+                evidence_available_at=available_at,
+                raw_source_hash=source.source_sha256,
+                valid_from=valid_from,
+                notes=(
+                    "LISTING_DATE_NOT_PUBLISHED_BY_SZSE_CATALOG",
+                    "TRACKED_INDEX_NAME_AS_PUBLISHED_BY_EXCHANGE"
+                    if index_name
+                    else "TRACKED_INDEX_NAME_NOT_PUBLISHED",
+                ),
+            )
+        )
     return tuple(relations)
 
 
@@ -223,16 +303,19 @@ def build_tracking_relations_from_szse_catalog(*, catalog_rows: list[dict], obse
 TAXONOMY_VERSION = "SWCLASS2021"
 
 
-def build_classification_rows(*, assignments: dict[str, tuple[str, str, str, str]],
-                              observed_at: str, available_at: str,
-                              effective_from: str,
-                              source_publication_at: str | None = None,
-                              conflicts: frozenset[str] = frozenset(),
-                              unclassified: frozenset[str] = frozenset(),
-                              security_names: dict[str, str] | None = None,
-                              effective_to: str | None = None,
-                              effective_dates: dict[str, str] | None = None
-                              ) -> tuple[ClassificationRow, ...]:
+def build_classification_rows(
+    *,
+    assignments: dict[str, tuple[str, str, str, str]],
+    observed_at: str,
+    available_at: str,
+    effective_from: str,
+    source_publication_at: str | None = None,
+    conflicts: frozenset[str] = frozenset(),
+    unclassified: frozenset[str] = frozenset(),
+    security_names: dict[str, str] | None = None,
+    effective_to: str | None = None,
+    effective_dates: dict[str, str] | None = None,
+) -> tuple[ClassificationRow, ...]:
     """Turn ``{security: (l1_code, l1_name, l2_code, l2_name)}`` into typed rows.
 
     A security listed in ``conflicts`` is recorded as a conflict and never as a
@@ -264,64 +347,100 @@ def build_classification_rows(*, assignments: dict[str, tuple[str, str, str, str
             l1_code, l1_name, l2_code, l2_name = assignments.get(code, ("", "", None, ""))
             if l2_code is None:
                 continue
-            rows.append(ClassificationRow(
-                security_code=code, security_name=names.get(code),
-                shenwan_l1_code=l1_code or "UNKNOWN", shenwan_l1_name=l1_name or "UNKNOWN",
-                shenwan_l2_code=l2_code,
-                shenwan_l2_name=l2_name or "UNKNOWN", taxonomy_version=TAXONOMY_VERSION,
-                classification_effective_from=row_effective_from,
-                classification_effective_to=effective_to,
-                source_publication_at=source_publication_at,
-                evidence_observed_at=observed_at, evidence_available_at=available_at,
-                classification_quality="CLASSIFICATION_CONFLICT"))
+            rows.append(
+                ClassificationRow(
+                    security_code=code,
+                    security_name=names.get(code),
+                    shenwan_l1_code=l1_code or "UNKNOWN",
+                    shenwan_l1_name=l1_name or "UNKNOWN",
+                    shenwan_l2_code=l2_code,
+                    shenwan_l2_name=l2_name or "UNKNOWN",
+                    taxonomy_version=TAXONOMY_VERSION,
+                    classification_effective_from=row_effective_from,
+                    classification_effective_to=effective_to,
+                    source_publication_at=source_publication_at,
+                    evidence_observed_at=observed_at,
+                    evidence_available_at=available_at,
+                    classification_quality="CLASSIFICATION_CONFLICT",
+                )
+            )
             continue
         if code in unclassified or code not in assignments:
-            l1_code, l1_name, l2_code, l2_name = assignments.get(code, ("UNKNOWN", "UNKNOWN", None, "UNKNOWN"))
+            l1_code, l1_name, l2_code, l2_name = assignments.get(
+                code, ("UNKNOWN", "UNKNOWN", None, "UNKNOWN")
+            )
             if l2_code is None:
                 continue
-            rows.append(ClassificationRow(
-                security_code=code, security_name=names.get(code),
-                shenwan_l1_code=l1_code or "UNKNOWN", shenwan_l1_name=l1_name or "UNKNOWN",
-                shenwan_l2_code=l2_code, shenwan_l2_name=l2_name or "UNKNOWN",
+            rows.append(
+                ClassificationRow(
+                    security_code=code,
+                    security_name=names.get(code),
+                    shenwan_l1_code=l1_code or "UNKNOWN",
+                    shenwan_l1_name=l1_name or "UNKNOWN",
+                    shenwan_l2_code=l2_code,
+                    shenwan_l2_name=l2_name or "UNKNOWN",
+                    taxonomy_version=TAXONOMY_VERSION,
+                    classification_effective_from=row_effective_from,
+                    classification_effective_to=effective_to,
+                    source_publication_at=source_publication_at,
+                    evidence_observed_at=observed_at,
+                    evidence_available_at=available_at,
+                    classification_quality=CLASSIFICATION_UNCLASSIFIED,
+                )
+            )
+            continue
+        l1_code, l1_name, l2_code, l2_name = assignments[code]
+        rows.append(
+            ClassificationRow(
+                security_code=code,
+                security_name=names.get(code),
+                shenwan_l1_code=l1_code,
+                shenwan_l1_name=l1_name,
+                shenwan_l2_code=l2_code,
+                shenwan_l2_name=l2_name,
                 taxonomy_version=TAXONOMY_VERSION,
                 classification_effective_from=row_effective_from,
                 classification_effective_to=effective_to,
                 source_publication_at=source_publication_at,
-                evidence_observed_at=observed_at, evidence_available_at=available_at,
-                classification_quality=CLASSIFICATION_UNCLASSIFIED))
-            continue
-        l1_code, l1_name, l2_code, l2_name = assignments[code]
-        rows.append(ClassificationRow(
-            security_code=code, security_name=names.get(code),
-            shenwan_l1_code=l1_code, shenwan_l1_name=l1_name, shenwan_l2_code=l2_code,
-            shenwan_l2_name=l2_name, taxonomy_version=TAXONOMY_VERSION,
-            classification_effective_from=row_effective_from,
-            classification_effective_to=effective_to,
-            source_publication_at=source_publication_at,
-            evidence_observed_at=observed_at, evidence_available_at=available_at,
-            classification_quality=CLASSIFICATION_OFFICIAL))
+                evidence_observed_at=observed_at,
+                evidence_available_at=available_at,
+                classification_quality=CLASSIFICATION_OFFICIAL,
+            )
+        )
     return tuple(rows)
 
 
-def build_classification_snapshot(*, snapshot_id: str, rows: tuple[ClassificationRow, ...],
-                                  observed_at: str, available_at: str,
-                                  sources: tuple[PinnedSource, ...],
-                                  superseded_by: str | None = None,
-                                  source_publication_at: str | None = None,
-                                  coverage_gap: tuple[str, ...] = (),
-                                  taxonomy_version: str = TAXONOMY_VERSION
-                                  ) -> ClassificationSnapshot:
+def build_classification_snapshot(
+    *,
+    snapshot_id: str,
+    rows: tuple[ClassificationRow, ...],
+    observed_at: str,
+    available_at: str,
+    sources: tuple[PinnedSource, ...],
+    superseded_by: str | None = None,
+    source_publication_at: str | None = None,
+    coverage_gap: tuple[str, ...] = (),
+    taxonomy_version: str = TAXONOMY_VERSION,
+) -> ClassificationSnapshot:
     return ClassificationSnapshot(
-        snapshot_id=snapshot_id, taxonomy_version=taxonomy_version,
+        snapshot_id=snapshot_id,
+        taxonomy_version=taxonomy_version,
         validity_semantics=VALIDITY_FORWARD_ONLY_UNTIL_SUPERSEDED,
-        snapshot_as_observed_at=observed_at, source_publication_at=source_publication_at,
-        evidence_observed_at=observed_at, evidence_available_at=available_at, rows=rows,
-        sources=sources, superseded_by=superseded_by, coverage_gap=coverage_gap)
+        snapshot_as_observed_at=observed_at,
+        source_publication_at=source_publication_at,
+        evidence_observed_at=observed_at,
+        evidence_available_at=available_at,
+        rows=rows,
+        sources=sources,
+        superseded_by=superseded_by,
+        coverage_gap=coverage_gap,
+    )
 
 
 # ---------------------------------------------------------------------------
 # Package envelopes and hashes
 # ---------------------------------------------------------------------------
+
 
 def package_hash(payload: dict) -> str:
     """Hash of a package excluding its own ``package_hash`` field."""
@@ -363,10 +482,14 @@ def write_package(path: Path, document: dict) -> dict:
     if target.exists():
         existing = target.read_bytes()
         if existing != body:
-            raise EvidenceError("EVIDENCE_PACKAGE_IMMUTABILITY_BLOCKER",
-                                {"path": str(target),
-                                 "existing_hash": sha256_bytes(existing),
-                                 "incoming_hash": sha256_bytes(body)})
+            raise EvidenceError(
+                "EVIDENCE_PACKAGE_IMMUTABILITY_BLOCKER",
+                {
+                    "path": str(target),
+                    "existing_hash": sha256_bytes(existing),
+                    "incoming_hash": sha256_bytes(body),
+                },
+            )
         return document
     target.write_bytes(body)
     return document
@@ -380,9 +503,13 @@ ADAPTER_BOOK_IDENTITY = "POINT_IN_TIME_EXECUTION_EVIDENCE_V1"
 ADAPTER_SCHEMA_VERSION = "1.0.0"
 
 
-def adapter_weight_source_document(*, benchmark_code: str, constituent_effective_date: str,
-                                   rows: tuple[ConstituentRow, ...],
-                                   declared_constituent_count: int) -> bytes:
+def adapter_weight_source_document(
+    *,
+    benchmark_code: str,
+    constituent_effective_date: str,
+    rows: tuple[ConstituentRow, ...],
+    declared_constituent_count: int,
+) -> bytes:
     """The pinned ``weight_source`` document.
 
     It carries exactly the keys the adapter cross-checks (``constituents`` and
@@ -398,30 +525,48 @@ def adapter_weight_source_document(*, benchmark_code: str, constituent_effective
     return canonical_bytes(payload)
 
 
-def adapter_classification_source_document(*, rows: tuple[ClassificationRow, ...],
-                                           effective_date: str,
-                                           available_at: str) -> bytes:
+def adapter_classification_source_document(
+    *, rows: tuple[ClassificationRow, ...], effective_date: str, available_at: str
+) -> bytes:
     """The pinned ``classification_source`` document, in the adapter's row shape."""
     payload = {
         "artifact": "SHENWAN_L2_CLASSIFICATION_VECTOR_V1",
         "classifications": [
-            {"security_code": row.security_code, "l2_code": row.shenwan_l2_code,
-             "effective_date": row.classification_effective_from, "available_at": available_at,
-             "l2_name": row.shenwan_l2_name, "l1_code": row.shenwan_l1_code,
-             "l1_name": row.shenwan_l1_name, "quality": row.classification_quality}
+            {
+                "security_code": row.security_code,
+                "l2_code": row.shenwan_l2_code,
+                "effective_date": row.classification_effective_from,
+                "available_at": available_at,
+                "l2_name": row.shenwan_l2_name,
+                "l1_code": row.shenwan_l1_code,
+                "l1_name": row.shenwan_l1_name,
+                "quality": row.classification_quality,
+            }
             for row in rows
         ],
     }
     return canonical_bytes(payload)
 
 
-def adapter_record(*, industry_code: str, etf_code: str, etf_name: str, benchmark_code: str,
-                   source_publication_at: str | None, evidence_observed_at: str,
-                   available_at: str, constituent_effective_date: str,
-                   weight_effective_date: str, valid_through: str,
-                   declared_constituent_count: int, weight_source: PinnedSource,
-                   classification_source: PinnedSource, constituents: list[dict],
-                   classifications: list[dict], provider: str) -> dict:
+def adapter_record(
+    *,
+    industry_code: str,
+    etf_code: str,
+    etf_name: str,
+    benchmark_code: str,
+    source_publication_at: str | None,
+    evidence_observed_at: str,
+    available_at: str,
+    constituent_effective_date: str,
+    weight_effective_date: str,
+    valid_through: str,
+    declared_constituent_count: int,
+    weight_source: PinnedSource,
+    classification_source: PinnedSource,
+    constituents: list[dict],
+    classifications: list[dict],
+    provider: str,
+) -> dict:
     """One record in the existing adapter's evidence-book schema.
 
     A record is emitted only when the arithmetic the adapter re-checks can hold:
@@ -436,14 +581,18 @@ def adapter_record(*, industry_code: str, etf_code: str, etf_name: str, benchmar
     require_official_url(weight_source.source_url, "weight_source_url")
     require_official_url(classification_source.source_url, "classification_source_url")
     return {
-        "industry_code": industry_code, "etf_code": etf_code, "etf_name": etf_name,
+        "industry_code": industry_code,
+        "etf_code": etf_code,
+        "etf_name": etf_name,
         "benchmark_code": benchmark_code,
         "weight_source_type": "OFFICIAL_WEIGHT",
         "weight_source_provider": provider,
         "source_publication_at": source_publication_at,
-        "evidence_observed_at": evidence_observed_at, "available_at": available_at,
+        "evidence_observed_at": evidence_observed_at,
+        "available_at": available_at,
         "constituent_effective_date": constituent_effective_date,
-        "weight_effective_date": weight_effective_date, "valid_through": valid_through,
+        "weight_effective_date": weight_effective_date,
+        "valid_through": valid_through,
         "declared_constituent_count": int(declared_constituent_count),
         "weight_source_file": weight_source.relative_path,
         "weight_source_sha256": weight_source.source_sha256,
@@ -451,20 +600,24 @@ def adapter_record(*, industry_code: str, etf_code: str, etf_name: str, benchmar
         "classification_source_file": classification_source.relative_path,
         "classification_source_sha256": classification_source.source_sha256,
         "classification_source_url": classification_source.source_url,
-        "constituents": constituents, "classifications": classifications,
+        "constituents": constituents,
+        "classifications": classifications,
     }
 
 
 def adapter_book_document(*, records: list[dict]) -> bytes:
-    return canonical_bytes({"schema_version": ADAPTER_SCHEMA_VERSION,
-                            "identity": ADAPTER_BOOK_IDENTITY, "records": records})
+    return canonical_bytes(
+        {
+            "schema_version": ADAPTER_SCHEMA_VERSION,
+            "identity": ADAPTER_BOOK_IDENTITY,
+            "records": records,
+        }
+    )
 
 
 __all__ = [
     "ADAPTER_BOOK_IDENTITY",
     "ADAPTER_SCHEMA_VERSION",
-    "SSE_CATALOG_URL",
-    "SZSE_CATALOG_URL",
     "TAXONOMY_VERSION",
     "adapter_book_document",
     "adapter_classification_source_document",

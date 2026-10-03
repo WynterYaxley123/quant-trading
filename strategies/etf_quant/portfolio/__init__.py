@@ -1,8 +1,9 @@
 """Deterministic capped softmax and Top5 SET-change contract only."""
-from dataclasses import dataclass
-from enum import Enum
+
 import math
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from enum import Enum
 
 import numpy as np
 
@@ -24,8 +25,9 @@ class AllocationResult:
     reason: str | None = None
 
 
-def size_targets(scores: Mapping[str, float], *, max_weight: float = 0.35,
-                 required_assets: int = 5) -> AllocationResult:
+def size_targets(
+    scores: Mapping[str, float], *, max_weight: float = 0.35, required_assets: int = 5
+) -> AllocationResult:
     """Only caller-supplied executable identities; never perform ETF mapping.
 
     Insufficient/infeasible cases return no allocations and explicitly retain
@@ -38,13 +40,17 @@ def size_targets(scores: Mapping[str, float], *, max_weight: float = 0.35,
     for code in codes:
         identifier(code)
         finite(scores[code], "sizing score")
-    if not codes: return AllocationResult(AllocationStatus.EMPTY, reason="NO_EXECUTABLE_ASSETS")
-    if len(codes) > required_assets: raise ValueError("selection exceeds required asset count")
+    if not codes:
+        return AllocationResult(AllocationStatus.EMPTY, reason="NO_EXECUTABLE_ASSETS")
+    if len(codes) > required_assets:
+        raise ValueError("selection exceeds required asset count")
     if len(codes) * cap < 1:
         return AllocationResult(AllocationStatus.INFEASIBLE, reason="SELECTED_CAPACITY_BELOW_ONE")
     if len(codes) != required_assets:
-        return AllocationResult(AllocationStatus.INSUFFICIENT_ASSETS, reason="REQUIRED_EXECUTABLE_COUNT_NOT_MET")
-    result = {}
+        return AllocationResult(
+            AllocationStatus.INSUFFICIENT_ASSETS, reason="REQUIRED_EXECUTABLE_COUNT_NOT_MET"
+        )
+    result: dict[str, float] = {}
     active, remaining = list(codes), 1.0
     while active:
         # Recompute on the remaining original scores, mathematically equivalent
@@ -58,14 +64,20 @@ def size_targets(scores: Mapping[str, float], *, max_weight: float = 0.35,
         if not over:
             result.update(zip(active, map(float, proposed)))
             break
-        for code in over: result[code] = cap
+        for code in over:
+            result[code] = cap
         remaining -= cap * len(over)
         active = [code for code in active if code not in over]
     total = math.fsum(result.values())
-    if (not math.isclose(total, 1.0, abs_tol=1e-12) or any(not 0 <= v <= cap for v in result.values())):
+    if not math.isclose(total, 1.0, abs_tol=1e-12) or any(
+        not 0 <= v <= cap for v in result.values()
+    ):
         raise ValueError("sizing numerical feasibility blocker")
-    return AllocationResult(AllocationStatus.READY,
-        tuple(TargetPosition(code, result[code]) for code in codes), max(0.0, 1.0 - total))
+    return AllocationResult(
+        AllocationStatus.READY,
+        tuple(TargetPosition(code, result[code]) for code in codes),
+        max(0.0, 1.0 - total),
+    )
 
 
 class RebalanceStatus(str, Enum):
@@ -73,10 +85,19 @@ class RebalanceStatus(str, Enum):
     REQUIRED = "REBALANCE_REQUIRED"
 
 
-def rebalance_decision(previous_members: Sequence[str], current_members: Sequence[str]) -> RebalanceStatus:
+def rebalance_decision(
+    previous_members: Sequence[str], current_members: Sequence[str]
+) -> RebalanceStatus:
     previous, current = tuple(previous_members), tuple(current_members)
-    for code in (*previous, *current): identifier(code)
-    if (len(set(previous)) != len(previous) or len(set(current)) != len(current)
-            or len(current) != 5 or len(previous) not in (0, 5)):
+    for code in (*previous, *current):
+        identifier(code)
+    if (
+        len(set(previous)) != len(previous)
+        or len(set(current)) != len(current)
+        or len(current) != 5
+        or len(previous) not in (0, 5)
+    ):
         raise ValueError("unique Top5 member sets (or initial empty set) required")
-    return RebalanceStatus.NO_REBALANCE if set(previous) == set(current) else RebalanceStatus.REQUIRED
+    return (
+        RebalanceStatus.NO_REBALANCE if set(previous) == set(current) else RebalanceStatus.REQUIRED
+    )

@@ -12,30 +12,67 @@ build that silently re-fetched would destroy reproducibility.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import os
-import re
 import sys
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 
+from scripts.etf_quant.production_pit_adapter import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    _classified as _classified,
+)
+from scripts.etf_quant.production_pit_adapter import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    _row,
+    _tally,
+    _target_of,
+    benchmark_effective_day,
+    build_adapter_records,
+)
+from scripts.etf_quant.production_pit_collectors import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    code_hash_of,
+    collect_csi_weight_vectors,
+    collect_sws_classification,
+    collect_tracking_relations,
+    load_csi_index_register,
+    now_iso,
+)
+from scripts.etf_quant.production_pit_collectors import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    load_json as load_json,
+)
+from scripts.etf_quant.production_pit_collectors import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    sws_catalog_name_map as sws_catalog_name_map,
+)
+from scripts.etf_quant.production_pit_lineage import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    assert_observed_after_every_retrieval,
+    csi_reverse_lineage,
+    lineage_payload,
+    parse_for_order,
+)
+from scripts.etf_quant.production_pit_lineage import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    latest_real_retrieval as latest_real_retrieval,
+)
+
+# Explicit external roots support other machines; existing deployment defaults
+# remain compatible. This builder is not part of the portable demo/test flow.
+from scripts.etf_quant.production_pit_settings import (  # noqa: E402 -- Standalone CLI must first resolve its checkout.
+    CSI_WEIGHT_ENDPOINT,
+    CSI_WEIGHT_METHOD,
+    PACKAGES,
+    REPORTS,
+    RUNTIME,
+    SOURCE_ROOT,
+    SWS_CATALOG_ENDPOINT,
+)
 from strategies.etf_quant.domain.industry_level import default_taxonomy  # noqa: E402
 from strategies.etf_quant.evidence import (  # noqa: E402
     KIND_DOCUMENTED_EXTRACTION,
     EvidenceError,
     SourcePin,
     adapter_book_document,
-    adapter_classification_source_document,
-    adapter_record,
     adapter_weight_source_document,
     build_classification_rows,
     build_classification_snapshot,
-    build_tracking_relations_from_sse_catalog,
-    build_tracking_relations_from_szse_catalog,
     build_weight_vector_from_constituent_rows,
     classification_package,
     decide_b40_mapping,
@@ -45,501 +82,6 @@ from strategies.etf_quant.evidence import (  # noqa: E402
     weight_package,
     write_package,
 )
-
-# Explicit external roots support other machines; existing deployment defaults
-# remain compatible. This builder is not part of the portable demo/test flow.
-RUNTIME = Path(
-    os.environ.get(
-        "ETF_QUANT_PIT_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1"
-    )
-)
-PRIOR = Path(
-    os.environ.get("ETF_QUANT_PROXY_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\proxy-exposure-v1")
-)
-SUBAGENTS = RUNTIME / "subagents"
-BUILD = RUNTIME / "build"
-RAW = RUNTIME / "raw"
-PACKAGES = RUNTIME / "packages"
-SOURCE_ROOT = RUNTIME / "adapter-sources"
-REPORTS = RUNTIME / "reports"
-
-CSI_REVERSE = PRIOR / "official-sources" / "raw" / "csi_reverse"
-SWS_RAW_L2 = RAW / "sws" / "raw_members"
-SWS_CATALOG = RAW / "sws" / "catalog"
-SWS_FULL_CATALOG = RAW / "sws" / "raw_catalog" / "sws_index_name_all.json"
-
-#: The provider endpoint that actually produced the benchmark weight evidence.
-#: The first build recorded a sibling path that answers `code=500` when called
-#: without the reverse-lookup body; an independent audit re-fetched it and caught
-#: the mistake. This is the endpoint the collector really used.
-CSI_WEIGHT_ENDPOINT = "https://www.csindex.com.cn/csindex-home/indexInfo/index-sample-information"
-CSI_WEIGHT_METHOD = "POST {searchInput:<security>,pageNum,pageSize,sortField,sortOrder}"
-
-#: SWS industry-index membership endpoint, verbatim capture.
-SWS_MEMBERSHIP_ENDPOINT = (
-    "https://www.swsresearch.com/institute-sw/api/index_publish/details/component_stocks/"
-)
-SWS_CATALOG_ENDPOINT = "https://www.swsresearch.com/institute-sw/api/index_publish/current/"
-
-WEIGHT_SUM_BAND = (99.0, 100.5)
-TARGET_L2_CODES = ("3701", "3703", "3706", "4803", "4901")
-
-
-def now_iso() -> str:
-    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
-
-
-def load_json(path: Path):
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def code_hash_of(module_file: Path) -> str:
-    return hashlib.sha256(module_file.read_bytes()).hexdigest()
-
-
-# ---------------------------------------------------------------------------
-# Stage 1 — official CSI benchmark weight vectors
-# ---------------------------------------------------------------------------
-
-
-def load_csi_index_register() -> dict[str, dict]:
-    """The official CSI index register, used only to confirm an index exists."""
-    candidates = list((SUBAGENTS / "B-csi-weights").glob("csi_index-list_query-index-item.json"))
-    register = {}
-    for path in candidates:
-        doc = load_json(path)
-        for row in doc.get("data") or []:
-            code = str(row.get("indexCode") or "").strip()
-            if code:
-                register[code] = {
-                    "name": row.get("indexName") or "",
-                    "cons_number": row.get("consNumber"),
-                }
-    return register
-
-
-def collect_csi_weight_vectors(
-    *,
-    register: dict[str, dict],
-    observed_at: str,
-    available_at: str,
-    valid_from: str,
-    scope: frozenset[str] | None = None,
-) -> tuple[dict[str, dict], dict]:
-    """Rebuild every benchmark whose reverse-query rows form a complete vector.
-
-    Completeness is decided by the arithmetic, never asserted: the counted
-    constituents must equal the count the provider declares on its own rows, and
-    the weights must land inside the band the runtime uses.
-
-    ``scope`` restricts the rebuild to benchmarks an ETF actually references, so a
-    build pins only the weight vectors that can reach a decision.
-    """
-    by_index: dict[str, dict[str, dict]] = {}
-    for path in sorted(CSI_REVERSE.glob("*.json")):
-        try:
-            doc = load_json(path)
-        except Exception:
-            continue
-        if doc.get("error"):
-            continue
-        security = path.stem
-        for row in doc.get("data") or []:
-            index_code = str(row.get("indexCode") or "").strip()
-            if not index_code:
-                continue
-            if scope is not None and index_code not in scope:
-                continue
-            by_index.setdefault(index_code, {})[
-                str(row.get("securityCode") or security).zfill(6)
-            ] = {
-                "weight_pct": row.get("weightPct"),
-                "cons_number": row.get("consNumber"),
-                "security_name": row.get("securityName"),
-                "index_name": row.get("indexName"),
-                "registry_file": str(path),
-            }
-
-    vectors, rejected = (
-        {},
-        {"sum_out_of_band": 0, "count_mismatch": 0, "no_registry_entry": 0, "unparsable": 0},
-    )
-    for index_code, members in sorted(by_index.items()):
-        if index_code not in register:
-            rejected["no_registry_entry"] += 1
-            continue
-        rows, declared_values, total = [], set(), 0.0
-        for security, payload in sorted(members.items()):
-            raw_weight = payload["weight_pct"]
-            text = raw_weight.strip().rstrip("%") if isinstance(raw_weight, str) else raw_weight
-            try:
-                weight = float(text)
-            except (TypeError, ValueError):
-                continue
-            if not 0.0 <= weight <= 100.0:
-                continue
-            rows.append(
-                {
-                    "security_code": security,
-                    "security_name": payload["security_name"],
-                    "weight_pct": weight,
-                }
-            )
-            total += weight
-            if payload["cons_number"] is not None:
-                declared_values.add(str(payload["cons_number"]).strip())
-        if not rows:
-            rejected["unparsable"] += 1
-            continue
-        registry_count = register[index_code].get("cons_number")
-        declared = None
-        if registry_count is not None and str(registry_count).strip().isdigit():
-            declared = int(str(registry_count).strip())
-        declared_set = {
-            int(float(value))
-            for value in declared_values
-            if re.fullmatch(r"[0-9]+(\.[0-9]+)?", value)
-        }
-        if declared is None and len(declared_set) == 1:
-            declared = declared_set.pop()
-        if declared is None:
-            rejected["count_mismatch"] += 1
-            continue
-        total = round(total, 6)
-        if len(rows) != declared:
-            rejected["count_mismatch"] += 1
-            continue
-        if not (WEIGHT_SUM_BAND[0] <= total <= WEIGHT_SUM_BAND[1]):
-            rejected["sum_out_of_band"] += 1
-            continue
-        vectors[index_code] = {
-            "rows": rows,
-            "declared": declared,
-            "weight_sum": total,
-            "index_name": register[index_code].get("name")
-            or members[list(members)[0]]["index_name"],
-            "registry_files": sorted({payload["registry_file"] for payload in members.values()}),
-        }
-    return vectors, rejected
-
-
-# ---------------------------------------------------------------------------
-# Stage 2 — official SWS Shenwan L2 classification
-# ---------------------------------------------------------------------------
-
-
-def sws_catalog_name_map() -> dict[str, str]:
-    """``801012`` -> ``1105`` style mapping, established by *name* equality only.
-
-    The provider's industry index codes are not arithmetically derivable from the
-    sealed taxonomy codes, so the link is made through the official name the
-    provider publishes and the official name the sealed taxonomy records. A name
-    that does not match exactly, or that matches more than one taxonomy code, is
-    dropped — never guessed.
-    """
-    taxonomy = default_taxonomy()
-    by_name: dict[str, list[str]] = {}
-    for code in taxonomy.named_industry_codes:
-        by_name.setdefault(taxonomy.name_of(code), []).append(code)
-    mapping = {}
-    # The mapping is read from the UNFILTERED official index-name catalogue, not from
-    # the ``indextype=二级行业`` query. That query is the provider's own tagging and it
-    # omits ten of the 134 industries the sealed taxonomy names, which silently starved
-    # the classification and failed benchmarks closed for no real reason. The
-    # unfiltered catalogue resolves all 134, each with exactly one name match.
-    rows = []
-    if SWS_FULL_CATALOG.exists():
-        rows = load_json(SWS_FULL_CATALOG).get("data") or []
-    else:
-        for path in sorted(SWS_CATALOG.glob("*.json")):
-            rows.extend((load_json(path).get("data") or {}).get("results") or [])
-    for row in rows:
-        index_code = str(row.get("swindexcode") or "").strip()
-        name = str(row.get("swindexname") or "").strip()
-        if not index_code or not name:
-            continue
-        matches = by_name.get(name, [])
-        if len(matches) == 1:
-            mapping[index_code] = matches[0]
-    return mapping
-
-
-def collect_sws_classification(
-    *, observed_at: str, available_at: str
-) -> tuple[
-    dict[str, tuple[str, str, str, str]], dict, list[str], dict, dict[str, str], dict[str, str]
-]:
-    """Union of official Shenwan L2 industry-index memberships, from verbatim bytes.
-
-    Reads ``raw/sws/raw_members/`` -- the provider's responses stored exactly as
-    received, verified to re-fetch to identical SHA-256. The first pass wrapped each
-    response in a local envelope, which made the recorded hash unreproducible; that
-    tree is kept aside as a superseded draft and is not used here.
-
-    Returns the resolved mapping, conflicts, unparsable rows, diagnostics, the
-    earliest official ``beginningdate`` per security, and the retrieval ledger that
-    ties every consumed byte stream to its URL and hash.
-    """
-    index_to_l2 = sws_catalog_name_map()
-    taxonomy = default_taxonomy()
-    assignments: dict[str, list[tuple[str, str]]] = {}
-    per_l2: dict[str, int] = {}
-    unparsed = []
-    effective: dict[str, str] = {}
-    provenance: dict[str, str] = {}
-    ledger = {}
-    ledger_path = REPORTS / "sws_raw_retrieval_ledger.jsonl"
-    if ledger_path.exists():
-        for line in ledger_path.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            try:
-                row = json.loads(line)
-            except ValueError:
-                continue
-            ledger[str(row.get("index_code"))] = row
-
-    files = sorted(SWS_RAW_L2.glob("*.json"))
-    for path in files:
-        index_code = path.stem
-        l2_code = index_to_l2.get(index_code)
-        body = path.read_bytes()
-        provenance[index_code] = sha256_bytes(body)
-        if l2_code is None:
-            continue
-        doc = json.loads(body.decode("utf-8"))
-        results = (doc.get("data") or {}).get("results") or []
-        declared = (doc.get("data") or {}).get("count")
-        if declared is not None and len(results) != int(declared):
-            unparsed.append(f"INCOMPLETE:{index_code}:{len(results)}!={declared}")
-            continue
-        per_l2[l2_code] = per_l2.get(l2_code, 0) + len(results)
-        for row in results:
-            security = str(row.get("stockcode") or "").strip()
-            if not re.fullmatch(r"[0-9]{6}", security):
-                unparsed.append(f"{index_code}:{security}")
-                continue
-            assignments.setdefault(security, []).append((l2_code, index_code))
-            beginning = row.get("beginningdate")
-            if isinstance(beginning, str) and beginning:
-                day = beginning[:10]
-                if re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):  # noqa: SIM102 -- Preserve independently documented frozen validation branches.
-                    if security not in effective or day < effective[security]:
-                        effective[security] = day
-
-    resolved: dict[str, tuple[str, str, str, str]] = {}
-    conflicts: dict[str, list[str]] = {}
-    for security, memberships in sorted(assignments.items()):
-        codes = sorted({code for code, _index in memberships})
-        if len(codes) > 1:
-            conflicts[security] = codes
-            continue
-        l2 = codes[0]
-        resolved[security] = (l2[:2], taxonomy.name_of(l2), l2, taxonomy.name_of(l2))
-    diagnostics = {
-        "catalog_index_to_l2": len(index_to_l2),
-        "member_files": len(files),
-        "verbatim_files": len(provenance),
-        "ledger_entries": len(ledger),
-        "securities_seen": len(assignments),
-        "securities_classified": len(resolved),
-        "securities_conflicted": len(conflicts),
-        "unparsable_rows": len(unparsed),
-        "l2_industries_covered": len(per_l2),
-        "securities_with_official_beginningdate": len(effective),
-        "unmapped_catalog_indices": len(files) - len(index_to_l2),
-    }
-    return resolved, conflicts, unparsed, diagnostics, effective, provenance
-
-
-# ---------------------------------------------------------------------------
-# Stage 3 — official exchange ETF tracking relations
-# ---------------------------------------------------------------------------
-
-
-def collect_tracking_relations(
-    *, pin: SourcePin, observed_at: str, available_at: str, valid_from: str
-) -> tuple[list, dict]:
-    relations, diagnostics = [], {}
-    sse_pages = sorted((SUBAGENTS / "E-etf-tracking" / "raw").glob("sse_etf_catalog_p*.json"))
-    sse_rows = []
-    for page in sse_pages:
-        body = page.read_bytes()
-        doc = json.loads(body.decode("utf-8"))
-        sse_rows.extend((doc.get("pageHelp") or {}).get("data") or [])
-        pin.pin_bytes(
-            relative_path=f"exchange/sse_etf_catalog_{page.stem.split('_')[-1]}.json",
-            body=body,
-            source_url="https://query.sse.com.cn/commonSoaQuery.do",
-            content_type="application/json;charset=UTF-8",
-            evidence_observed_at=observed_at,
-            source_retrieved_at=observed_at,
-            note="SSE fund catalogue page",
-        )
-    if sse_rows:
-        source = pin.require_pinned(
-            f"exchange/sse_etf_catalog_{sse_pages[0].stem.split('_')[-1]}.json"
-        )
-        sse_relations = build_tracking_relations_from_sse_catalog(
-            catalog_rows=sse_rows,
-            observed_at=observed_at,
-            available_at=available_at,
-            source=source,
-            valid_from=valid_from,
-        )
-        relations.extend(sse_relations)
-        diagnostics["sse_rows"] = len(sse_rows)
-        diagnostics["sse_relations"] = len(sse_relations)
-        diagnostics["sse_pages"] = len(sse_pages)
-
-    szse_rows = []
-    szse_dir = SUBAGENTS / "C-cni-szse"
-    pages = sorted(szse_dir.glob("szse_etf_list_p*.json"))
-    for page in pages:
-        body = page.read_bytes()
-        doc = json.loads(body.decode("utf-8"))
-        block = doc[0] if isinstance(doc, list) and doc else {}
-        szse_rows.extend(block.get("data") or [])
-        pin.pin_bytes(
-            relative_path=f"exchange/szse_etf_list_{page.stem.split('_')[-1]}.json",
-            body=body,
-            source_url="https://www.szse.cn/api/report/ShowReport/data",
-            content_type="application/json",
-            evidence_observed_at=observed_at,
-            source_retrieved_at=observed_at,
-            note="SZSE ETF catalogue page",
-        )
-    if szse_rows and pages:
-        source = pin.require_pinned(f"exchange/szse_etf_list_{pages[0].stem.split('_')[-1]}.json")
-        szse_relations = build_tracking_relations_from_szse_catalog(
-            catalog_rows=szse_rows,
-            observed_at=observed_at,
-            available_at=available_at,
-            source=source,
-            valid_from=valid_from,
-        )
-        relations.extend(szse_relations)
-        diagnostics["szse_rows"] = len(szse_rows)
-        diagnostics["szse_relations"] = len(szse_relations)
-        diagnostics["szse_pages"] = len(pages)
-    return relations, diagnostics
-
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-# Observation instant
-# ---------------------------------------------------------------------------
-
-
-def latest_real_retrieval() -> tuple[str, str]:
-    """The latest instant at which any pinned byte stream was actually retrieved.
-
-    A build may never claim to have observed evidence earlier than the moment the
-    last raw byte came back from the provider. That would be exactly the historical
-    backfill this task forbids, committed by the builder instead of by a strategy.
-    The value is derived from the collection ledgers, never typed in by hand.
-    """
-    candidates: list[tuple[str, str]] = []
-    sws_ledger = REPORTS / "sws_harvest_ledger.jsonl"
-    if sws_ledger.exists():
-        for line in sws_ledger.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except ValueError:
-                continue
-            moment = row.get("retrieved_at")
-            if isinstance(moment, str) and moment:
-                candidates.append((moment, f"sws:{row.get('file')}"))
-    csi_ledger = PRIOR / "official-sources" / "raw" / "csi_reverse"
-    if csi_ledger.exists():
-        newest = max((path.stat().st_mtime for path in csi_ledger.glob("*.json")), default=None)
-        if newest is not None:
-            moment = (
-                datetime.fromtimestamp(newest, timezone.utc)
-                .astimezone()
-                .isoformat(timespec="seconds")
-            )
-            candidates.append((moment, "csi_reverse:filesystem_mtime_of_newest_response"))
-    if not candidates:
-        raise SystemExit("no collection ledger found; cannot establish an observation instant")
-    moment, origin = max(candidates, key=lambda item: parse_for_order(item[0]))
-    return moment, origin
-
-
-def parse_for_order(value: str) -> datetime:
-    return datetime.fromisoformat(value.replace("Z", "+00:00"))
-
-
-def assert_observed_after_every_retrieval(observed_at: str) -> tuple[str, str]:
-    """Bound the claimed observation instant from both sides.
-
-    It may not precede the last real retrieval (that would be history backfill) and
-    it may not sit in the future (that would overstate how long the evidence has
-    been usable). Both are the same class of error: a timestamp this system is not
-    entitled to assert.
-    """
-    moment, origin = latest_real_retrieval()
-    claimed = parse_for_order(observed_at)
-    if claimed < parse_for_order(moment):
-        raise SystemExit(
-            f"REFUSING TO BACKDATE: --observed-at {observed_at} precedes the real "
-            f"retrieval at {moment} ({origin}). Pass an instant at or after {moment}."
-        )
-    wall_clock = datetime.now(timezone.utc).astimezone()
-    if claimed > wall_clock + timedelta(minutes=2):
-        raise SystemExit(
-            f"REFUSING A FUTURE OBSERVATION: --observed-at {observed_at} is later than "
-            f"the real wall clock {wall_clock.isoformat(timespec='seconds')}. Evidence "
-            "cannot claim to have been observed at an instant that has not happened."
-        )
-    return moment, origin
-
-
-def csi_reverse_lineage(
-    scope: frozenset[str] | None,
-) -> tuple[dict[str, tuple[str, str]], dict[str, tuple[str, str]]]:
-    """Per-security and per-benchmark lineage back to the verbatim CSI responses.
-
-    Returns ``(by_security, by_index)`` where each value is ``(file_name, sha256)``.
-    Every rebuilt weight vector can therefore name the exact official byte streams
-    it was assembled from, instead of merely asserting an endpoint.
-    """
-    by_security: dict[str, tuple[str, str]] = {}
-    by_index: dict[str, tuple[str, str]] = {}
-    for path in sorted(CSI_REVERSE.glob("*.json")):
-        try:
-            body = path.read_bytes()
-            doc = json.loads(body)
-        except Exception:
-            continue
-        if doc.get("error"):
-            continue
-        digest = sha256_bytes(body)
-        by_security[path.stem] = (path.name, digest)
-        for row in doc.get("data") or []:
-            index_code = str(row.get("indexCode") or "").strip()
-            if not index_code or (scope is not None and index_code not in scope):
-                continue
-            by_index.setdefault(index_code, set()).add(path.name)
-    resolved = {code: tuple(sorted(names)) for code, names in by_index.items()}
-    return by_security, resolved
-
-
-def lineage_payload(
-    names, by_security: dict[str, tuple[str, str]], *, limit: int = 400
-) -> tuple[dict, ...]:
-    """The upstream capture list for one extraction, capped and counted."""
-    items = []
-    for name in sorted(names)[:limit]:
-        digest = next((value[1] for value in by_security.values() if value[0] == name), None)
-        items.append({"capture": name, "sha256": digest})
-    return tuple(items)
 
 
 def main() -> int:
@@ -736,7 +278,8 @@ def main() -> int:
     # same relative path with the same bytes; the immutability check would refuse a
     # second, differently-dated write, which is precisely how a silent divergence
     # between the two documents was prevented from shipping.
-    exposures, mappings, weight_packages, failures = {}, [], [], []  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
+    exposures, mappings, failures = {}, [], []
+    weight_packages: list[dict] = []  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
     effective = dict(sws_effective)
     floor_day = min(min(effective.values()), valid_from) if effective else valid_from
     for benchmark_code, vector in sorted(vectors.items()):
@@ -907,204 +450,6 @@ def main() -> int:
     print("[7] registry written:", registry_path, flush=True)
     print(json.dumps(report["adapter_book"], ensure_ascii=False), flush=True)
     return 0
-
-
-def _row(payload: dict):
-    from strategies.etf_quant.evidence import ConstituentRow
-
-    return ConstituentRow(
-        security_code=payload["security_code"],
-        weight_pct=float(payload["weight_pct"]),
-        security_name=payload.get("security_name"),
-    )
-
-
-def _target_of(exposure) -> str:
-    for code in TARGET_L2_CODES:
-        if exposure.exposure(code) > 0:
-            return code
-    return exposure.ranked_l2[0][0]
-
-
-def _tally(failures: list[dict]) -> dict:
-    counts: dict[str, int] = {}
-    for item in failures:
-        counts[item["code"]] = counts.get(item["code"], 0) + 1
-    return counts
-
-
-def benchmark_effective_day(
-    vector: dict, effective: dict[str, str], *, valid_from: str, floor_day: str
-) -> str:
-    """The one effective date a benchmark's weight vector may honestly carry.
-
-    It must not post-date any constituent's own official date, or the adapter would
-    see a classification taking effect after the vector it explains, and it must not
-    post-date the validity window. Where the provider states no date, the floor is
-    the observation date. Computing this in exactly one place is what keeps the
-    weight document and the adapter record from disagreeing.
-    """
-    member_days = [
-        effective[row["security_code"]]
-        for row in vector["rows"]
-        if row["security_code"] in effective
-    ]
-    day = max(member_days) if member_days else min(floor_day, valid_from)
-    return min(day, valid_from)
-
-
-def build_adapter_records(
-    *,
-    vectors,
-    assignments,
-    relations,
-    pin,
-    observed_at,
-    available_at,
-    valid_from,
-    valid_through,
-    sws_effective=None,
-    sws_provenance=None,
-    csi_lineage_by_index=None,
-    csi_by_security=None,
-) -> list[dict]:
-    """Emit adapter records only for benchmarks that carry a full, classified vector.
-
-    Each classification row's ``effective_date`` is the provider's own earliest
-    official ``beginningdate`` for that security's industry membership -- never the
-    date this build ran. Using the build date would both misstate the fact and
-    violate the adapter's rule that a classification may not take effect after the
-    weight vector it explains.
-
-    The weight vector's own effective date is therefore anchored at or before the
-    earliest official date any of its constituents carries, so the two documents
-    cannot contradict each other. When the provider states no date at all, the
-    fallback is the local date of the observation instant and the record says so.
-    """
-    taxonomy = default_taxonomy()  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
-    effective = dict(sws_effective or {})
-    sws_provenance = dict(sws_provenance or {})
-    csi_lineage_by_index = dict(csi_lineage_by_index or {})
-    csi_by_security = dict(csi_by_security or {})
-    official_days = sorted(day for day in effective.values() if day <= valid_from)
-    floor_day = official_days[0] if official_days else valid_from
-    by_benchmark: dict[str, list] = {}
-    for relation in relations:
-        by_benchmark.setdefault(relation.benchmark_code, []).append(relation)
-    records = []
-    for benchmark_code, vector in sorted(vectors.items()):
-        members = [row for row in vector["rows"] if row["security_code"] in assignments]
-        if len(members) != len(vector["rows"]):
-            continue
-        weight_day = benchmark_effective_day(
-            vector, effective, valid_from=valid_from, floor_day=floor_day
-        )
-        weight_doc = adapter_weight_source_document(
-            benchmark_code=benchmark_code,
-            constituent_effective_date=weight_day,
-            rows=tuple(_row(row) for row in members),
-            declared_constituent_count=vector["declared"],
-        )
-        benchmark_note = (
-            f"CSI official constituent weight vector for {benchmark_code}, rebuilt from "
-            f"the provider's per-security reverse-query responses; constituent effective "
-            f"date {weight_day} anchored to the earliest official constituent date and "
-            f"capped at the validity start {valid_from}"
-        )
-        weight_source = pin.pin_bytes(
-            relative_path=f"weights/{benchmark_code}_weights_v1.json",
-            body=weight_doc,
-            source_url=CSI_WEIGHT_ENDPOINT,
-            content_type="application/json;charset=UTF-8",
-            evidence_observed_at=observed_at,
-            source_retrieved_at=observed_at,
-            note=benchmark_note,
-            kind=KIND_DOCUMENTED_EXTRACTION,
-            derived_from=lineage_payload(
-                csi_lineage_by_index.get(benchmark_code, ()), csi_by_security
-            ),
-        )
-        # The classification document is rebuilt per relation because the adapter
-        # requires every classification row's availability to be no later than the
-        # record's own availability instant. Pinning per relation keeps each record's
-        # pinned bytes internally consistent instead of reusing one loose document.
-        for relation in by_benchmark.get(benchmark_code, []):
-            class_doc = adapter_classification_source_document(
-                rows=tuple(
-                    _classified(
-                        row, assignments, effective, weight_day, relation.evidence_available_at
-                    )
-                    for row in members
-                ),
-                effective_date=weight_day,
-                available_at=relation.evidence_available_at,
-            )
-            class_source = pin.pin_bytes(
-                relative_path=(
-                    f"classification/{benchmark_code}_"
-                    f"{relation.etf_code.replace('.', '_')}_classification_v1.json"
-                ),
-                body=class_doc,
-                source_url=SWS_MEMBERSHIP_ENDPOINT,
-                content_type="application/json",
-                evidence_observed_at=relation.evidence_observed_at,
-                source_retrieved_at=relation.evidence_observed_at,
-                note="adapter classification source, extracted from the official "
-                "Shenwan L2 industry-index membership responses",
-                kind=KIND_DOCUMENTED_EXTRACTION,
-                derived_from=tuple(
-                    {"capture": f"raw_members/{code}.json", "sha256": digest}
-                    for code, digest in sorted(sws_provenance.items())
-                )[:400],
-            )
-            decoded_weight = json.loads(weight_doc.decode("utf-8"))
-            decoded_class = json.loads(class_doc.decode("utf-8"))
-            constituents = decoded_weight["constituents"]
-            classifications = decoded_class["classifications"]
-            declared = decoded_weight["declared_constituent_count"]
-            for industry_code in sorted({assignments[row["security_code"]][2] for row in members}):
-                records.append(
-                    adapter_record(
-                        industry_code=industry_code,
-                        etf_code=relation.etf_code,
-                        etf_name=relation.etf_name,
-                        benchmark_code=benchmark_code,
-                        source_publication_at=None,
-                        evidence_observed_at=relation.evidence_observed_at,
-                        available_at=relation.evidence_available_at,
-                        constituent_effective_date=weight_day,
-                        weight_effective_date=weight_day,
-                        valid_through=valid_through,
-                        declared_constituent_count=declared,
-                        weight_source=weight_source,
-                        classification_source=class_source,
-                        constituents=constituents,
-                        classifications=classifications,
-                        provider="中证指数有限公司 (China Securities Index Co., Ltd.)",
-                    )
-                )
-    return records
-
-
-def _classified(row, assignments, effective, fallback, available_at):
-    from strategies.etf_quant.evidence import ClassificationRow
-
-    security = row["security_code"]
-    l1, l1_name, l2, l2_name = assignments[security]
-    day = effective.get(security, fallback)
-    if day > fallback:
-        day = fallback
-    return ClassificationRow(
-        security_code=security,
-        shenwan_l1_code=l1,
-        shenwan_l1_name=l1_name,
-        shenwan_l2_code=l2,
-        shenwan_l2_name=l2_name,
-        taxonomy_version="SWCLASS2021",
-        classification_effective_from=day,
-        evidence_observed_at=available_at,
-        evidence_available_at=available_at,
-    )
 
 
 if __name__ == "__main__":

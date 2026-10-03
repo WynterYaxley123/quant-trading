@@ -378,7 +378,7 @@ def parse_stock_classification(
     )
     canonical["source_filename"] = record.original_filename
     canonical["source_sha256"] = record.sha256
-    return canonical.loc[:, CANONICAL_CLASSIFICATION_COLUMNS].reset_index(drop=True)
+    return canonical.loc[:, list(CANONICAL_CLASSIFICATION_COLUMNS)].reset_index(drop=True)
 
 
 def level_b_admission_issues(frame: pd.DataFrame) -> tuple[str, ...]:

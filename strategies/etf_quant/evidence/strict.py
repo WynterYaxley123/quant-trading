@@ -22,15 +22,22 @@ production availability. Otherwise the record is ``REJECTED`` with the first
 failing reason; it is never silently relabelled as a proxy mapping, and no
 observation is invented.
 """
+
 from __future__ import annotations
 
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Iterable, Mapping, Sequence
 
-from .schema import (B40MappingEvidence, EvidenceError, WEIGHT_COMPLETE,
-                     REJECTION_CLASSIFICATION_INCOMPLETE, REJECTION_NOT_YET_AVAILABLE,
-                     REJECTION_NO_OFFICIAL_WEIGHT, parse_instant)
+from .schema import (
+    REJECTION_CLASSIFICATION_INCOMPLETE,
+    REJECTION_NO_OFFICIAL_WEIGHT,
+    REJECTION_NOT_YET_AVAILABLE,
+    WEIGHT_COMPLETE,
+    B40MappingEvidence,
+    EvidenceError,
+    parse_instant,
+)
 
 #: The mechanical strict condition this module proves, named for provenance
 #: records. It states an evidence fact, not a new mapping contract.
@@ -52,8 +59,7 @@ class ContainmentProof:
 
     @property
     def proven(self) -> bool:
-        return (self.constituent_count > 0 and not self.unclassified
-                and not self.out_of_bounds)
+        return self.constituent_count > 0 and not self.unclassified and not self.out_of_bounds
 
     @property
     def reason(self) -> str | None:
@@ -66,16 +72,18 @@ class ContainmentProof:
         return None
 
     def as_dict(self) -> dict:
-        return {"target_l2_code": self.target_l2_code,
-                "constituent_count": self.constituent_count,
-                "classified_count": self.classified_count,
-                "unclassified_count": len(self.unclassified),
-                "out_of_bounds_count": len(self.out_of_bounds)}
+        return {
+            "target_l2_code": self.target_l2_code,
+            "constituent_count": self.constituent_count,
+            "classified_count": self.classified_count,
+            "unclassified_count": len(self.unclassified),
+            "out_of_bounds_count": len(self.out_of_bounds),
+        }
 
 
-def prove_constituent_containment(*, constituents: Iterable[str],
-                                  stock_to_l2: Mapping[str, str],
-                                  target_l2_code: str) -> ContainmentProof:
+def prove_constituent_containment(
+    *, constituents: Iterable[str], stock_to_l2: Mapping[str, str], target_l2_code: str
+) -> ContainmentProof:
     """Prove the benchmark constituent set is contained in the target L2 set.
 
     Every constituent security must carry a classification and every
@@ -99,20 +107,28 @@ def prove_constituent_containment(*, constituents: Iterable[str],
         constituent_count=len(codes),
         classified_count=len(codes) - len(unclassified),
         unclassified=tuple(sorted(unclassified)),
-        out_of_bounds=tuple(sorted(out_of_bounds)))
+        out_of_bounds=tuple(sorted(out_of_bounds)),
+    )
 
 
-def derive_strict_mapping_evidence(*, benchmark_code: str, target_l2_code: str,
-                                   target_l2_name: str, etf_code: str, etf_name: str,
-                                   constituents: Sequence[str],
-                                   stock_to_l2: Mapping[str, str],
-                                   target_l2_exposure: float, target_is_largest: bool,
-                                   unmapped_weight: float, weight_quality: str,
-                                   production_available_at: str,
-                                   input_package_hashes: Sequence[str],
-                                   available_from: str,
-                                   decision_at: datetime | None = None
-                                   ) -> B40MappingEvidence:
+def derive_strict_mapping_evidence(
+    *,
+    benchmark_code: str,
+    target_l2_code: str,
+    target_l2_name: str,
+    etf_code: str,
+    etf_name: str,
+    constituents: Sequence[str],
+    stock_to_l2: Mapping[str, str],
+    target_l2_exposure: float,
+    target_is_largest: bool,
+    unmapped_weight: float,
+    weight_quality: str,
+    production_available_at: str,
+    input_package_hashes: Sequence[str],
+    available_from: str,
+    decision_at: datetime | None = None,
+) -> B40MappingEvidence:
     """Derive one STRICT mapping evidence record, or a rejected one with a reason.
 
     The conditions mirror the frozen strict semantics and are all mechanical:
@@ -123,9 +139,9 @@ def derive_strict_mapping_evidence(*, benchmark_code: str, target_l2_code: str,
     the rejection chain. Only facts supplied by the caller are asserted here;
     this function invents no exposure, no dominance and no timestamp.
     """
-    proof = prove_constituent_containment(constituents=constituents,
-                                          stock_to_l2=stock_to_l2,
-                                          target_l2_code=target_l2_code)
+    proof = prove_constituent_containment(
+        constituents=constituents, stock_to_l2=stock_to_l2, target_l2_code=target_l2_code
+    )
     available = parse_instant(production_available_at, "production_available_at")
     started = parse_instant(available_from, "available_from")
     production_available = max(available, started)

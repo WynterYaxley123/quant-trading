@@ -1,13 +1,13 @@
 """Current-snapshot warmup only; no historical performance or walk-forward."""
+
 from datetime import datetime
 
 import numpy as np
 import pandas as pd
 
-from ..domain import Horizon, StrategyConfig, TradingCalendar
+from ..domain import ModelPrediction, StrategyConfig, TradingCalendar
 from ..factors import compute_close_factors
-from ..models import TrainingObservation, NumPyRidge, fit_horizon, predict_industries
-from ..domain import ModelPrediction
+from ..models import NumPyRidge, TrainingObservation, fit_horizon, predict_industries
 from ..models.fusion import fuse_predictions
 from .storage import GateError
 
@@ -30,15 +30,25 @@ def current_predictions(series, provider, *, signal_at: datetime, config=None):
         # not a claimed historical publication timestamp. Source timing stays
         # UNKNOWN/null in the export, Source C audit and public model metadata.
         try:
-            model = fit_horizon(spec, observations, calendar=calendar, signal_at=signal_at,
-                                industry_universe=universe)
+            model = fit_horizon(
+                spec,
+                observations,
+                calendar=calendar,
+                signal_at=signal_at,
+                industry_universe=universe,
+            )
             current = {c: tuple(features[c].iloc[-1][list(spec.factor_names)]) for c in universe}
-            predictions[spec.horizon] = predict_industries(model, current, factor_names=spec.factor_names,
-                                                         signal_date=provider.cutoff)
+            predictions[spec.horizon] = predict_industries(
+                model, current, factor_names=spec.factor_names, signal_date=provider.cutoff
+            )
         except (ValueError, FloatingPointError) as error:
             raise GateError("MODEL_WARMUP_INCOMPLETE", {"horizon": h}) from error
         models[spec.horizon] = model
-    return models, predictions, fuse_predictions(predictions, config=config, industry_universe=universe)
+    return (
+        models,
+        predictions,
+        fuse_predictions(predictions, config=config, industry_universe=universe),
+    )
 
 
 def model_features(series, provider):
@@ -70,18 +80,38 @@ def training_rows(series, provider, spec, universe, features):
         end = days[i + h]
         a = series.closes.loc[pd.Timestamp(day), list(universe)].to_numpy(dtype=float)
         b = series.closes.loc[pd.Timestamp(end), list(universe)].to_numpy(dtype=float)
-        x = [features[c].loc[pd.Timestamp(day), list(spec.factor_names)].to_numpy(dtype=float) for c in universe]
-        if not (np.isfinite(a).all() and np.isfinite(b).all() and all(np.isfinite(v).all() for v in x)):
+        x = [
+            features[c].loc[pd.Timestamp(day), list(spec.factor_names)].to_numpy(dtype=float)
+            for c in universe
+        ]
+        if not (
+            np.isfinite(a).all() and np.isfinite(b).all() and all(np.isfinite(v).all() for v in x)
+        ):
             continue
         accepted.append(day)
         for c, values, left, right in zip(universe, x, a, b):
-            observations.append(TrainingObservation(spec.horizon, c, day, end, provider.created_at,
-                spec.factor_names, tuple(map(float, values)), float(right / left - 1)))
-    return observations, {"horizon": h, "valid_observations": len(observations),
-        "unique_valid_dates": len(accepted), "valid_sectors": len(universe) if observations else 0,
-        "mature_cutoff": str(cutoff), "window_start": str(start),
+            observations.append(
+                TrainingObservation(
+                    spec.horizon,
+                    c,
+                    day,
+                    end,
+                    provider.created_at,
+                    spec.factor_names,
+                    tuple(map(float, values)),
+                    float(right / left - 1),
+                )
+            )
+    return observations, {
+        "horizon": h,
+        "valid_observations": len(observations),
+        "unique_valid_dates": len(accepted),
+        "valid_sectors": len(universe) if observations else 0,
+        "mature_cutoff": str(cutoff),
+        "window_start": str(start),
         "minimum_valid_dates": spec.minimum_valid_training_days,
-        "status": "PASS" if len(accepted) >= spec.minimum_valid_training_days else "FAIL"}
+        "status": "PASS" if len(accepted) >= spec.minimum_valid_training_days else "FAIL",
+    }
 
 
 def model_readiness_reference(series, provider, *, config=None):
@@ -100,16 +130,37 @@ def model_readiness_reference(series, provider, *, config=None):
         targets = np.asarray([r.raw_forward_return for r in rows]).reshape(-1, len(universe))
         y = (targets - targets.mean(axis=1, keepdims=True)).reshape(-1)
         model = NumPyRidge(alpha=spec.alpha).fit([r.features for r in rows], y)
-        current = [features[c].iloc[-1][list(spec.factor_names)].to_numpy(dtype=float) for c in universe]
+        current = [
+            features[c].iloc[-1][list(spec.factor_names)].to_numpy(dtype=float) for c in universe
+        ]
         scores = model.predict(current)
-        predictions[spec.horizon] = tuple(ModelPrediction(spec.horizon, provider.cutoff, c, float(v))
-            for c, v in zip(universe, scores))
-        reports[str(int(spec.horizon))] = {**stats, "coefficients": dict(zip(spec.factor_names, model.coef_.tolist())),
-            "intercept": model.intercept_, "raw_predictions": dict(zip(universe, scores.tolist()))}
+        predictions[spec.horizon] = tuple(
+            ModelPrediction(spec.horizon, provider.cutoff, c, float(v))
+            for c, v in zip(universe, scores)
+        )
+        reports[str(int(spec.horizon))] = {
+            **stats,
+            "coefficients": dict(zip(spec.factor_names, model.coef_.tolist())),
+            "intercept": model.intercept_,
+            "raw_predictions": dict(zip(universe, scores.tolist())),
+        }
     fused = fuse_predictions(predictions, config=config, industry_universe=universe)
-    return {"artifact": "MODEL_READINESS_REFERENCE", "formal_signal": False,
-        "formal_epoch_created": False, "intent_created": False, "historical_available_at": None,
-        "historical_membership_pit_proven": False, "reference_date": str(provider.cutoff),
-        "universe": list(universe), "horizons": reports,
-        "horizon_zscores": {str(int(h)): {p.industry_code: p.prediction for p in rows} for h, rows in fused.horizon_zscores},
-        "ranking": [{"rank": r.rank, "industry_code": r.industry_code, "score": r.score} for r in fused.rankings]}
+    return {
+        "artifact": "MODEL_READINESS_REFERENCE",
+        "formal_signal": False,
+        "formal_epoch_created": False,
+        "intent_created": False,
+        "historical_available_at": None,
+        "historical_membership_pit_proven": False,
+        "reference_date": str(provider.cutoff),
+        "universe": list(universe),
+        "horizons": reports,
+        "horizon_zscores": {
+            str(int(h)): {p.industry_code: p.prediction for p in rows}
+            for h, rows in fused.horizon_zscores
+        },
+        "ranking": [
+            {"rank": r.rank, "industry_code": r.industry_code, "score": r.score}
+            for r in fused.rankings
+        ],
+    }

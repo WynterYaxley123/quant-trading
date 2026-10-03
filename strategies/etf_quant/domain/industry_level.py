@@ -27,16 +27,17 @@ silently coerced.
 
 Name-only or fuzzy matching is not implemented anywhere in this module.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
 import functools
 import json
-from pathlib import Path
 import re
+from collections.abc import Mapping
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping
 
 #: The single frozen production industry level for ETF-Quant V1.
 ETF_QUANT_INDUSTRY_LEVEL_V1 = "SHENWAN_L2"
@@ -118,27 +119,38 @@ class IndustryTaxonomy:
         try:
             return self.level3_to_level2[level3_code]
         except KeyError as error:
-            raise TaxonomyError("INDUSTRY_TAXONOMY_BLOCKER",
-                                {"reason": "LEVEL3_CODE_ABSENT_FROM_OFFICIAL_TAXONOMY",
-                                 "level3_code": level3_code}) from error
+            raise TaxonomyError(
+                "INDUSTRY_TAXONOMY_BLOCKER",
+                {"reason": "LEVEL3_CODE_ABSENT_FROM_OFFICIAL_TAXONOMY", "level3_code": level3_code},
+            ) from error
 
     def name_of(self, industry_code: str) -> str:
         try:
             return self.industry_names[industry_code]
         except KeyError as error:
-            raise TaxonomyError("INDUSTRY_TAXONOMY_BLOCKER",
-                                {"reason": "NO_EVIDENCE_BACKED_NAME_FOR_INDUSTRY_CODE",
-                                 "industry_code": industry_code}) from error
+            raise TaxonomyError(
+                "INDUSTRY_TAXONOMY_BLOCKER",
+                {
+                    "reason": "NO_EVIDENCE_BACKED_NAME_FOR_INDUSTRY_CODE",
+                    "industry_code": industry_code,
+                },
+            ) from error
 
     def assert_level(self, industry_code: str) -> str:
         """A production mapping key must be a Level-2 code of this taxonomy."""
         if not isinstance(industry_code, str) or not _LEVEL2.fullmatch(industry_code):
-            raise TaxonomyError("INDUSTRY_LEVEL_CONTRACT_BLOCKER",
-                                {"reason": "INDUSTRY_CODE_NOT_LEVEL2", "industry_code": industry_code})
+            raise TaxonomyError(
+                "INDUSTRY_LEVEL_CONTRACT_BLOCKER",
+                {"reason": "INDUSTRY_CODE_NOT_LEVEL2", "industry_code": industry_code},
+            )
         if industry_code not in self.level3_children:
-            raise TaxonomyError("INDUSTRY_LEVEL_CONTRACT_BLOCKER",
-                                {"reason": "INDUSTRY_CODE_ABSENT_FROM_OFFICIAL_TAXONOMY",
-                                 "industry_code": industry_code})
+            raise TaxonomyError(
+                "INDUSTRY_LEVEL_CONTRACT_BLOCKER",
+                {
+                    "reason": "INDUSTRY_CODE_ABSENT_FROM_OFFICIAL_TAXONOMY",
+                    "industry_code": industry_code,
+                },
+            )
         return industry_code
 
 
@@ -149,19 +161,26 @@ def parse_taxonomy(body: bytes) -> IndustryTaxonomy:
         raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "NOT_JSON"}) from error
     if not isinstance(doc, dict):
         raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "NOT_AN_OBJECT"})
-    if (doc.get("schema_version") != "1.0.0" or doc.get("taxonomy_identity") != TAXONOMY_IDENTITY
-            or doc.get("industry_level") != ETF_QUANT_INDUSTRY_LEVEL_V1
-            or doc.get("level_width") != INDUSTRY_LEVEL_WIDTH
-            or doc.get("classification_version") != CLASSIFICATION_VERSION):
+    if (
+        doc.get("schema_version") != "1.0.0"
+        or doc.get("taxonomy_identity") != TAXONOMY_IDENTITY
+        or doc.get("industry_level") != ETF_QUANT_INDUSTRY_LEVEL_V1
+        or doc.get("level_width") != INDUSTRY_LEVEL_WIDTH
+        or doc.get("classification_version") != CLASSIFICATION_VERSION
+    ):
         raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "IDENTITY_OR_LEVEL_MISMATCH"})
     source = doc.get("source")
     if not isinstance(source, dict):
         raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "MISSING_SOURCE"})
     publisher, source_url = source.get("publisher"), source.get("source_url")
-    if (not isinstance(publisher, str) or not publisher.strip()
-            or not isinstance(source_url, str) or not _HTTPS.fullmatch(source_url)
-            or not isinstance(source.get("source_sha256"), str)
-            or not _SHA256.fullmatch(source["source_sha256"])):
+    if (
+        not isinstance(publisher, str)
+        or not publisher.strip()
+        or not isinstance(source_url, str)
+        or not _HTTPS.fullmatch(source_url)
+        or not isinstance(source.get("source_sha256"), str)
+        or not _SHA256.fullmatch(source["source_sha256"])
+    ):
         raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "UNUSABLE_SOURCE"})
     retrieved = _retrieved(source.get("source_retrieved_at"), "source.source_retrieved_at")
     evidence = doc.get("hierarchy_evidence")
@@ -169,32 +188,57 @@ def parse_taxonomy(body: bytes) -> IndustryTaxonomy:
         raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "MISSING_HIERARCHY_EVIDENCE"})
     checked = []
     for item in evidence:
-        if (not isinstance(item, dict) or not isinstance(item.get("source_url"), str)
-                or not _OPTIONAL_HTTPS.fullmatch(item["source_url"])
-                or not isinstance(item.get("statement"), str) or not item["statement"].strip()
-                or not isinstance(item.get("publisher"), str) or not item["publisher"].strip()):
-            raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "MALFORMED_HIERARCHY_EVIDENCE"})
-        checked.append({"publisher": item["publisher"], "source_url": item["source_url"],
-                        "statement": item["statement"],
-                        "evidence_type": item.get("evidence_type", "OFFICIAL_PUBLICATION"),
-                        "observed_at": item.get("observed_at")})
+        if (
+            not isinstance(item, dict)
+            or not isinstance(item.get("source_url"), str)
+            or not _OPTIONAL_HTTPS.fullmatch(item["source_url"])
+            or not isinstance(item.get("statement"), str)
+            or not item["statement"].strip()
+            or not isinstance(item.get("publisher"), str)
+            or not item["publisher"].strip()
+        ):
+            raise TaxonomyError(
+                "TAXONOMY_EVIDENCE_BLOCKER", {"reason": "MALFORMED_HIERARCHY_EVIDENCE"}
+            )
+        checked.append(
+            {
+                "publisher": item["publisher"],
+                "source_url": item["source_url"],
+                "statement": item["statement"],
+                "evidence_type": item.get("evidence_type", "OFFICIAL_PUBLICATION"),
+                "observed_at": item.get("observed_at"),
+            }
+        )
     name_evidence = doc.get("name_evidence")
     if not isinstance(name_evidence, list) or not name_evidence:
         raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "MISSING_NAME_EVIDENCE"})
     checked_names = []
     for item in name_evidence:
-        if (not isinstance(item, dict) or not isinstance(item.get("publisher"), str) or not item["publisher"].strip()
-                or not isinstance(item.get("statement"), str) or not item["statement"].strip()
-                or not isinstance(item.get("source_url"), str) or not _OPTIONAL_HTTPS.fullmatch(item["source_url"])):
+        if (
+            not isinstance(item, dict)
+            or not isinstance(item.get("publisher"), str)
+            or not item["publisher"].strip()
+            or not isinstance(item.get("statement"), str)
+            or not item["statement"].strip()
+            or not isinstance(item.get("source_url"), str)
+            or not _OPTIONAL_HTTPS.fullmatch(item["source_url"])
+        ):
             raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "MALFORMED_NAME_EVIDENCE"})
-        checked_names.append({"publisher": item["publisher"], "source_url": item["source_url"],
-                              "statement": item["statement"],
-                              "evidence_type": item.get("evidence_type", "OFFICIAL_PUBLICATION"),
-                              "observed_at": item.get("observed_at")})
+        checked_names.append(
+            {
+                "publisher": item["publisher"],
+                "source_url": item["source_url"],
+                "statement": item["statement"],
+                "evidence_type": item.get("evidence_type", "OFFICIAL_PUBLICATION"),
+                "observed_at": item.get("observed_at"),
+            }
+        )
     rows = doc.get("industries")
     if not isinstance(rows, list) or not rows:
         raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "NO_INDUSTRIES"})
-    names, children, relation = {}, {}, {}
+    names = {}
+    children = {}
+    relation: dict[str, str] = {}
     for raw in rows:
         if not isinstance(raw, dict):
             raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "INDUSTRY_ROW_NOT_OBJECT"})
@@ -203,15 +247,22 @@ def parse_taxonomy(body: bytes) -> IndustryTaxonomy:
         # A name is optional; when present it must be a usable label. Names are
         # never invented for a code the evidence does not cover.
         if name is not None and (not isinstance(name, str) or not name.strip()):
-            raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "EMPTY_INDUSTRY_NAME",
-                                                            "industry_code": code})
-        if (raw.get("industry_level") != ETF_QUANT_INDUSTRY_LEVEL_V1
-                or not isinstance(code, str) or not _LEVEL2.fullmatch(code)
-                or not isinstance(kids, list) or not kids
-                or any(not isinstance(k, str) or not _LEVEL3.fullmatch(k) for k in kids)
-                or len(set(kids)) != len(kids)):
-            raise TaxonomyError("TAXONOMY_SCHEMA_BLOCKER", {"reason": "MALFORMED_INDUSTRY_ROW",
-                                                            "industry_code": code})
+            raise TaxonomyError(
+                "TAXONOMY_SCHEMA_BLOCKER", {"reason": "EMPTY_INDUSTRY_NAME", "industry_code": code}
+            )
+        if (
+            raw.get("industry_level") != ETF_QUANT_INDUSTRY_LEVEL_V1
+            or not isinstance(code, str)
+            or not _LEVEL2.fullmatch(code)
+            or not isinstance(kids, list)
+            or not kids
+            or any(not isinstance(k, str) or not _LEVEL3.fullmatch(k) for k in kids)
+            or len(set(kids)) != len(kids)
+        ):
+            raise TaxonomyError(
+                "TAXONOMY_SCHEMA_BLOCKER",
+                {"reason": "MALFORMED_INDUSTRY_ROW", "industry_code": code},
+            )
         if code in children:
             raise TaxonomyError("TAXONOMY_DUPLICATE_BLOCKER", {"industry_code": code})
         ordered = tuple(sorted(kids))
@@ -220,22 +271,31 @@ def parse_taxonomy(body: bytes) -> IndustryTaxonomy:
         children[code] = ordered
         for kid in ordered:
             if kid in relation:
-                raise TaxonomyError("TAXONOMY_DUPLICATE_BLOCKER",
-                                    {"level3_code": kid, "level2_codes": [relation[kid], code]})
+                raise TaxonomyError(
+                    "TAXONOMY_DUPLICATE_BLOCKER",
+                    {"level3_code": kid, "level2_codes": [relation[kid], code]},
+                )
             relation[kid] = code
-    return IndustryTaxonomy(industry_level=ETF_QUANT_INDUSTRY_LEVEL_V1, level_width=INDUSTRY_LEVEL_WIDTH,
-                            classification_version=CLASSIFICATION_VERSION,
-                            industry_names=MappingProxyType(names),
-                            level3_to_level2=MappingProxyType(relation),
-                            level3_children=MappingProxyType(children),
-                            publisher=publisher.strip(), source_url=source_url,
-                            source_sha256=source["source_sha256"], source_retrieved_at=retrieved,
-                            hierarchy_evidence=tuple(checked), name_evidence=tuple(checked_names),
-                            sha256=_digest(body))
+    return IndustryTaxonomy(
+        industry_level=ETF_QUANT_INDUSTRY_LEVEL_V1,
+        level_width=INDUSTRY_LEVEL_WIDTH,
+        classification_version=CLASSIFICATION_VERSION,
+        industry_names=MappingProxyType(names),
+        level3_to_level2=MappingProxyType(relation),
+        level3_children=MappingProxyType(children),
+        publisher=publisher.strip(),
+        source_url=source_url,
+        source_sha256=source["source_sha256"],
+        source_retrieved_at=retrieved,
+        hierarchy_evidence=tuple(checked),
+        name_evidence=tuple(checked_names),
+        sha256=_digest(body),
+    )
 
 
 def _digest(body: bytes) -> str:
     import hashlib
+
     return hashlib.sha256(body).hexdigest()
 
 
@@ -246,7 +306,9 @@ def load_taxonomy(path: Path | None = None) -> IndustryTaxonomy:
     except TaxonomyError:
         raise
     except OSError as error:
-        raise TaxonomyError("TAXONOMY_EVIDENCE_BLOCKER", {"reason": "TAXONOMY_ARTIFACT_UNREADABLE"}) from error
+        raise TaxonomyError(
+            "TAXONOMY_EVIDENCE_BLOCKER", {"reason": "TAXONOMY_ARTIFACT_UNREADABLE"}
+        ) from error
 
 
 @functools.lru_cache(maxsize=4)

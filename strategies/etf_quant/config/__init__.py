@@ -1,8 +1,26 @@
 """Frozen product baseline; no research imports or provider-specific fields."""
+
 BASELINE_COMMIT = "bd13d278b25eace66a7eae287307413f930effd9"
 FACTORS_19 = (
-    "d5", "d10", "d20", "d60", "d120", "p5", "p10", "p20", "p60", "p120",
-    "align", "v5", "v20", "vc", "rev5", "rev10", "dd20", "dd60", "rsi",
+    "d5",
+    "d10",
+    "d20",
+    "d60",
+    "d120",
+    "p5",
+    "p10",
+    "p20",
+    "p60",
+    "p120",
+    "align",
+    "v5",
+    "v20",
+    "vc",
+    "rev5",
+    "rev10",
+    "dd20",
+    "dd60",
+    "rsi",
 )
 H10_FACTORS = ("d10", "p5", "align", "vc", "dd20")
 HORIZON_FACTORS = ((10, H10_FACTORS), (40, FACTORS_19), (120, FACTORS_19))
