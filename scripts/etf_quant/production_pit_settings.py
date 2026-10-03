@@ -11,22 +11,17 @@ build that silently re-fetched would destroy reproducibility.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
+
+from scripts.etf_quant.runtime_paths import evidence_root
 
 REPO = Path(__file__).resolve().parents[2]
 
 
 # Explicit external roots support other machines; existing deployment defaults
 # remain compatible. This builder is not part of the portable demo/test flow.
-RUNTIME = Path(
-    os.environ.get(
-        "ETF_QUANT_PIT_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1"
-    )
-)
-PRIOR = Path(
-    os.environ.get("ETF_QUANT_PROXY_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\proxy-exposure-v1")
-)
+RUNTIME = evidence_root("PIT")
+PRIOR = evidence_root("PROXY")
 SUBAGENTS = RUNTIME / "subagents"
 BUILD = RUNTIME / "build"
 RAW = RUNTIME / "raw"

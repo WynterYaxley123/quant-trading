@@ -8,7 +8,6 @@ what would be available at a future decision instant, not a result for 2026-09-2
 from __future__ import annotations
 
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,16 +16,12 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "scripts" / "etf_quant"))
 
-import build_production_pit_evidence as build  # noqa: E402
-
+from scripts.etf_quant import build_production_pit_evidence as build  # noqa: E402
+from scripts.etf_quant.runtime_paths import evidence_root  # noqa: E402
 from strategies.etf_quant.domain.industry_level import default_taxonomy  # noqa: E402
 from strategies.etf_quant.evidence import SourcePin  # noqa: E402
 
-RUNTIME = Path(
-    os.environ.get(
-        "ETF_QUANT_PIT_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1"
-    )
-)
+RUNTIME = evidence_root("PIT")
 REPORTS = RUNTIME / "reports"
 PACKAGES = RUNTIME / "packages"
 SOURCE_ROOT = RUNTIME / "adapter-sources"
@@ -100,7 +95,7 @@ def main() -> int:
                 }
             )
 
-    industries = []
+    industries: list[dict] = []
     for code in TOP5:
         candidates = sorted(
             by_industry[code], key=lambda row: (-row["target_l2_exposure"], row["benchmark_code"])
@@ -142,7 +137,7 @@ def main() -> int:
     strict_rows = [
         row for row in book["records"] if row["industry_code"] in TOP5 and row["etf_code"]
     ]
-    strict_registry = (  # noqa: F841 -- Keep validation/construction side effects even when result is unused.
+    (
         load_json(REPORTS / "strict_mapping_status_v1.json")
         if (REPORTS / "strict_mapping_status_v1.json").exists()
         else None
@@ -178,8 +173,8 @@ def main() -> int:
         },
         "known_gaps": build_report.get("derivation", {}).get("failure_reasons", {}),
     }
-    target = REPORTS / "production_pit_current_top5_status_v1.json"
-    target.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    output_path = REPORTS / "production_pit_current_top5_status_v1.json"
+    output_path.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(report["summary"], ensure_ascii=False))
     for row in industries:
         best = row["best_candidate"]
@@ -190,7 +185,7 @@ def main() -> int:
             else "no complete official benchmark evidence"
         )
         print(f"  {row['industry_code']} {row['industry_name']:<12} {row['status']:<45} {detail}")
-    print("written:", target)
+    print("written:", output_path)
     return 0
 
 

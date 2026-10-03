@@ -25,6 +25,7 @@ Hikyuu 2.8.2 在 Linux 容器内没有官方 CLI 导入工具，其 GUI（Hikyuu
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import sqlite3
 import sys
@@ -55,7 +56,7 @@ DEFAULT_ETF_SYMBOLS: tuple[str, ...] = (
 
 
 def _log(msg: str) -> None:
-    print(f"[init_hikyuu_data] {msg}", flush=True)
+    logging.getLogger(__name__).info("%s", msg)
 
 
 # --- 步骤 1：数据库与配置 -------------------------------------------------
@@ -248,6 +249,7 @@ DEST_CACHE: list[str] = [DEFAULT_DEST]
 
 
 def main(argv: list[str] | None = None) -> int:
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     ap = argparse.ArgumentParser(description="初始化 Hikyuu 日线行情数据")
     ap.add_argument("--dest", default=DEFAULT_DEST, help="Hikyuu 数据目录")
     ap.add_argument("--symbols", default="", help="逗号分隔的证券代码；留空则用默认 ETF 集")

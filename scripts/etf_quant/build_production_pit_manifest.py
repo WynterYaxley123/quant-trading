@@ -7,16 +7,17 @@ No constituent rows, no classification tables, no raw provider bytes.
 from __future__ import annotations
 
 import json
-import os
+import sys
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 
-RUNTIME = Path(
-    os.environ.get(
-        "ETF_QUANT_PIT_ROOT", r"D:\QuantForge\runtime\etf-quant-v1\production-pit-evidence-v1"
-    )
-)
+REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO))
+
+from scripts.etf_quant.runtime_paths import evidence_root  # noqa: E402
+
+RUNTIME = evidence_root("PIT")
 REPORTS = RUNTIME / "reports"
 PACKAGES = RUNTIME / "packages"
 REPO = Path(__file__).resolve().parents[2]
