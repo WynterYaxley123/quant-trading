@@ -24,4 +24,4 @@ The audit verifies active source and archive byte integrity.
 
 Security scans omit sealed performance content and publish finding identifiers/counts.
 Shadow checks use real namespace path/size/hash metadata before/after, without creating
-business records. See the [remediation report](engineering/public_repo_adversarial_remediation_v2.md).
+business records. See the [remediation report](engineering/repository-health.md).

@@ -14,6 +14,8 @@ Inside the independent container:
 ```sh
 python -m examples.minimal_demo
 python -m pytest -q -m "not external_runtime"
+python -m pytest -q tests/performance
+python -m benchmarks.core
 ruff check .
 ruff format --check .
 python scripts/engineering/typecheck.py
@@ -36,3 +38,11 @@ A Windows managed worktree .git pointer names a host path: an independent Linux
 container needs the Git common directory mounted read-only and GIT_DIR/GIT_WORK_TREE
 pointing to its corresponding worktree metadata/checkout. Portable checks require
 no runtime mounts or private data. [Testing](testing.md) describes maintainer acceptance.
+
+Copy `.env.example` to a private `.env` and set a nonempty `JUPYTER_TOKEN`
+before `docker compose config --quiet`. The empty template deliberately fails
+closed. Configuration validation does not start Jupyter.
+
+On Docker Desktop, keeping installed Node dependencies inside the container avoids
+slow Windows bind-mount I/O. Run the same lockfile and commands against a complete
+source copy; dashboard fixtures also read `services/etf-quant-api/strategy.json`.

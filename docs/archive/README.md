@@ -1,13 +1,19 @@
-# Historical evidence archive
+# Historical provenance
 
-These dated audits, agent runs, handoffs, research lineage and delivery records are
-historical evidence, not current operating documentation. Claims apply to their
-original scope/date. Use the [active index](../index.md) for current instructions.
+This directory retains frozen contract provenance, research protocols and prior
+engineering certificates. Historical statements describe their original source
+state; the current [repository health](../engineering/repository-health.md) records
+corrections and the active implementation.
 
-The [documentation manifest](../../config/engineering/documentation-map.json) records
-original/current paths, classes and preserved SHA-256. Resolve old paths in immutable
-reports through it. Individual documents moved with Git and retain their content bytes.
-Old relative links are interpreted from their original locations through that map.
+Redundant agent transcripts and handoffs were removed from the current tree.
+[Documentation mapping](../../config/engineering/documentation-map.json) records
+original paths, byte hashes and a Git recovery commit for each removed file:
 
-Folders separate agent-runs, audits, handoffs and delivery-records. Old role/workflow
-restrictions are factual history and do not supersede current engineering rules.
+```sh
+git show <git_recovery_commit>:<git_recovery_path> > recovered.md
+sha256sum recovered.md
+```
+
+Use a full clone for recovery. Retained contracts are in `delivery-records/`, and
+prior engineering manifests are in `engineering/`. Archive aliases support historical
+lookup; active Markdown must link to a literal current GitHub path.

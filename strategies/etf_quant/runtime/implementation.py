@@ -6,8 +6,9 @@ import hashlib
 import json
 from pathlib import Path
 
-ACTIVE_MANIFEST = "reports/engineering/public_repo_adversarial_remediation_v2.json"
+ACTIVE_MANIFEST = "reports/engineering/repository-health.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
+PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
 
 class ImplementationIntegrityError(ValueError):
@@ -19,8 +20,10 @@ def verify_implementation(root: Path) -> dict[str, str]:
     previous_bytes = (root / PREVIOUS_MANIFEST).read_bytes()
     previous = json.loads(previous_bytes)
     active = json.loads((root / ACTIVE_MANIFEST).read_bytes())["implementation_integrity"]
+    previous_transition = (root / PREVIOUS_TRANSITION).read_bytes()
     if (
-        active["identifier"] != "PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V2"
+        active["identifier"] != "PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V3"
+        or active["previous_transition_sha256"] != hashlib.sha256(previous_transition).hexdigest()
         or active["previous_certificate_sha256"] != hashlib.sha256(previous_bytes).hexdigest()
         or active["previous_source_hashes"] != previous["files"]
         or active["candidate_sha256"] != previous["candidate_sha256"]

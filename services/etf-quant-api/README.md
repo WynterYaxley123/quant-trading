@@ -11,7 +11,7 @@ Set both `ETF_QUANT_RUNTIME_ROOT` and `ETF_QUANT_CONTROL_ROOT` to external roots
 The root `scripts/Start-EtfQuantConsole.ps1` reads the existing external config
 and starts all three loopback components (ETF API 3312, Research API 8787,
 Dashboard 5173) with health checks, verified reuse and failure rollback. It does
-not invoke one-shot. See [unified console](../../docs/unified_console.md).
+not invoke one-shot. See [unified console](../../docs/operations.md).
 Existing endpoints remain compatible. Only explicitly superseded failure codes
 before the certified cutoff become HISTORICAL; new/unknown failures remain visible.
 

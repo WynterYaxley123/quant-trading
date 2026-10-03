@@ -80,9 +80,11 @@ export function audit() {
   // now permits source changes with a new certificate and immutable V1 provenance.
   const previousBytes=readFileSync(path.join(repo,'reports/etf_quant/autonomous_code_integrity_v1.json'));
   const previous=JSON.parse(previousBytes);
-  const integrity=JSON.parse(readFileSync(path.join(repo,'reports/engineering/public_repo_adversarial_remediation_v2.json'),'utf8')).implementation_integrity;
+  const integrity=JSON.parse(readFileSync(path.join(repo,'reports/engineering/repository-health.json'),'utf8')).implementation_integrity;
+  const previousTransition=readFileSync(path.join(repo,'docs/archive/engineering/public_repo_adversarial_remediation_v2.json'));
   const canonicalHashes=Object.fromEntries(Object.keys(integrity.files).sort().map(name=>[name,integrity.files[name]]));
-  if(integrity.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V2'
+  if(integrity.identifier!=='PUBLIC_REPO_IMPLEMENTATION_INTEGRITY_V3'
+    || integrity.previous_transition_sha256!==createHash('sha256').update(previousTransition).digest('hex')
     || integrity.certificate_sha256!==createHash('sha256').update(JSON.stringify(canonicalHashes)).digest('hex')
     || integrity.previous_certificate_sha256!==createHash('sha256').update(previousBytes).digest('hex')
     || Object.keys(integrity.previous_source_hashes).length!==Object.keys(previous.files).length
@@ -93,7 +95,7 @@ export function audit() {
     createHash('sha256').update(readFileSync(path.join(repo,name))).digest('hex')!==expected
   ).map(([name])=>name);
   const documentation=JSON.parse(readFileSync(path.join(repo,'config/engineering/documentation-map.json'),'utf8'));
-  for(const item of documentation.documents.filter(item=>item.sha256)) {
+  for(const item of documentation.documents.filter(item=>item.sha256 && !item.removed_from_tree)) {
     if(createHash('sha256').update(readFileSync(path.join(repo,item.path))).digest('hex')!==item.sha256) firewall.push(item.path);
   }
   const report={status:candidates.length||forbidden.length||sealed.length||firewall.length||remote.embedded_credentials?'BLOCKED':'PASS',
@@ -104,7 +106,7 @@ export function audit() {
     new_secret_candidates:candidates.filter(c=>c.scope==='new').length,history_secret_candidates:candidates.filter(c=>c.scope==='history').length,
     candidates,forbidden_paths:forbidden,sealed_paths_not_read:sealed,large_files_over_500kb:large,firewall_changes:firewall,remote,
     runtime_data_tracked:forbidden.some(c=>c.scope==='tracked'),credential_values_printed:false,
-    firewall_policy:'ACTIVE_V2_INTEGRITY_WITH_IMMUTABLE_V1_PROVENANCE_AND_ARCHIVE_HASHES',
+    firewall_policy:'ACTIVE_V3_INTEGRITY_WITH_IMMUTABLE_V1_V2_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES',
     public_licensing_review:'MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE'};
   return report;
 }

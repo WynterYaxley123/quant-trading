@@ -14,5 +14,5 @@ Start with the [README](../README.md), then choose the guide for your task.
 | [Research status](research-status.md) | Current status and result limitations |
 
 [Contributing](../CONTRIBUTING.md), [security reporting](../SECURITY.md),
-[agent rules](../AGENTS.md), [remediation report](engineering/public_repo_adversarial_remediation_v2.md)
+[agent rules](../AGENTS.md), [remediation report](engineering/repository-health.md)
 and [historical archive](archive/README.md).
