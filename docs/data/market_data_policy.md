@@ -1,38 +1,30 @@
 # Market data policy and data-rights matrix
 
-Reviewed 2026-10-04. Source-code licensing is separate from data ownership and
-redistribution. This is the project's canonical rights inventory; it records evidence
-and unresolved clearance rather than granting legal permission.
+Reviewed 2026-10-04. Software licensing, data ownership, private research and public
+redistribution are separate. Accessible endpoints are not inferred licences.
+CNEquity remains external at commit `1650e384a3fd1f67a70144a489acc91432f1df27`.
+No private credentials, substitute quantitative provider, upstream edit or raw dataset
+is included in Git. Unknown redistribution rights require private storage.
 
-Formal ETF/V2 market data uses only the existing external CNEquity pin. Record the
-actual internal provider route; do not call substitute market-data packages or move
-lake/export/curated data into Git. Private research storage and public redistribution
-are separate decisions. An unresolved redistribution licence does not require
-discarding private research observations.
-
-| Component | Source/provider | Code licence | Data ownership / clearance | Redistribution status | Evidence / confidence | Project action |
+| Source / data | Code licence | Data ownership | Private research | Redistribution | Evidence / confidence | Project action |
 | --- | --- | --- | --- | --- | --- | --- |
-| Project source | quant-trading | MIT | Code licence excludes upstream datasets | PERMITTED (code only) | [Project licence](../../LICENSE); high | Publish source and synthetic fixtures with notices |
-| Pinned CNEquity software | rootSunc/CNEquity | Apache-2.0 | No market-data grant established | PERMITTED (code only) | [Pinned licence](https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/LICENSE); local byte verification, high | Keep source external and pin unchanged; preserve notices |
-| Industry classification / constituents | CNEquity → SWS Research workbook | Adapter covered by Apache-2.0 | SWS Research claims website copyright; no dataset redistribution grant verified | REVIEW_REQUIRED | [Pinned adapter and URL](https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sw/industry_history.py), [official index site](https://www.swsresearch.com/institute_sw/allIndex/announcementIndex); medium | External private storage; historical availability/completeness remain separate admission blockers |
-| Stock/ETF/index bars | CNEquity → recorded `tdx_protocol`, `ths`, `sina`, `bse` routes | CNEquity adapter code: Apache-2.0 | Feed/venue/provider rights; no grant verified for the stored datasets | REVIEW_REQUIRED | [Pinned adapters](https://github.com/rootSunc/CNEquity/tree/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters), audit source fields; high for route labels, low for clearance | Do not redistribute raw or curated rows; do not equate an accessible endpoint with a licence |
-| Adjustments / corporate actions | CNEquity → `sina`, `eastmoney`, `tdx_protocol` | CNEquity adapter code: Apache-2.0 | Provider/issuer rights; no grant verified | REVIEW_REQUIRED | Pinned adapter tree and factual audit source labels; low for clearance | Keep external; exactness and historical publication require independent evidence |
-| Identities / listing boundaries / status | CNEquity → `baostock`, `bse`, `tdx_protocol`, exchange and derived status routes | CNEquity adapter code: Apache-2.0 | Mixed provider facts; derived gaps do not prove genuine historical status | REVIEW_REQUIRED | Pinned adapter tree and factual audit source labels; low for clearance | Keep private; do not infer listing/delisting or halts from missing bars |
-| Exchange website information | SSE and relevant exchange/issuer disclosures accessed through permitted adapters | Not a dataset software licence | SSE asserts rights, allows conditional noncommercial browsing/download and requires written permission for specified commercial use | REVIEW_REQUIRED | [SSE legal statement](https://www.sse.com.cn/home/legal/); high for statement, dataset-specific clearance unresolved | No public row-level redistribution; obtain dataset-specific permission before any distribution |
-| Trading calendar | CNEquity exchange-calendar route and seeds | CNEquity code: Apache-2.0 | Calendar facts and upstream publication rights not independently cleared | REVIEW_REQUIRED | [Pinned calendar adapter](https://github.com/rootSunc/CNEquity/tree/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/calendar); low for clearance | Store dated provenance externally; future announced sessions are not finalized prices |
+| Project source and synthetic fixtures | MIT | Project code | PERMITTED | PERMITTED (source only) | [MIT](../../LICENSE); high | Publish code; licence excludes datasets |
+| External CNEquity adapter code | Apache-2.0 | Upstream software; no data grant established | PERMITTED (code) | PERMITTED (code with notices) | [Pinned licence](https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/LICENSE); high | Keep external and unchanged |
+| CNEquity → SWS effective-dated classification workbook | Apache-2.0 adapter | SWS/provider material | UNKNOWN | UNKNOWN | [Pinned adapter](https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sw/industry_history.py), public official endpoint; high source identity, low rights clearance | User-authorized private reconstruction; retain raw workbook externally; publish only counts/hashes |
+| CNEquity → TDX stock bars | Apache-2.0 adapter | Feed/provider/exchange facts | UNKNOWN | UNKNOWN | [Pinned adapter tree](https://github.com/rootSunc/CNEquity/tree/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters); high route identity, low clearance | Private bounded/paced recovery; no raw/curated redistribution |
+| CNEquity → Sina adjustment events | Apache-2.0 adapter | Provider/issuer facts | UNKNOWN | UNKNOWN | Pinned adapter/cache provenance; high route identity, low clearance | Private event-date joins; no fabricated adjustments |
+| CNEquity → Baostock annual historical rosters / retired bars | Apache-2.0 adapter | Mixed exchange/provider facts | UNKNOWN | UNKNOWN | Pinned normalized public SDK route; high identity, low clearance | Private roster completeness check; public aggregates only |
+| CNEquity calendar routes/seeds | Apache-2.0 code | Calendar facts and upstream rights | UNKNOWN | UNKNOWN | Pinned calendar adapter and factual hashes; medium | Keep calendar externally; announced sessions do not prove finalized prices |
+| SSE website disclosures | No dataset software grant | Exchange/issuer | PERMITTED (conditional noncommercial browsing/download only) | REVIEW_REQUIRED | [SSE legal statement](https://www.sse.com.cn/home/legal/), checked 2026-10-04; high for statement, dataset-specific scope unresolved | No licence inference for other providers; no raw redistribution |
+| Existing ETF official mapping/weights and liquidity evidence | Project/Pinned adapter licences only | Exchange/issuer/provider | UNKNOWN | REVIEW_REQUIRED | Existing immutable V1 admission registries; high provenance, low clearance | Reuse privately for prospective mapping; never backstamp availability |
 
-`UNKNOWN` never becomes `PERMITTED` by inference. `REVIEW_REQUIRED` means clearance
-is unresolved for redistribution; it is not a claim that all private research is prohibited.
-No legal authorization is requested or supplied by this engineering task.
+No source was marked PERMITTED for private dataset use merely because it was reachable.
+`UNKNOWN` does not mean PROHIBITED. Under the user's explicit instruction, unresolved
+redistribution does not automatically block private research. Any explicit contrary
+terms require source exclusion. Commercial distribution needs dataset-specific review.
 
-Public Git may contain code, schemas, synthetic fixtures, hashes, range/count metadata
-and approved non-reconstructive Development aggregates. It must not contain credentials,
-raw/curated market data, runtime databases, Shadow payloads, private source dumps or
-sealed performance. The security audit checks paths/content/history without printing
-secrets or reading sealed performance.
-
-Data admission rules are in [data and PIT](../data-and-pit.md): no fabricated missing
-prices/amounts, no guessed halts/listing boundaries, no retrospective membership,
-exact stock adjustment evidence and genuine future finalized T/T+1 execution.
-The earlier eight-ETF import-session policy remains recoverable from Git history;
-it does not describe the current CNEquity/V1/V2 data boundary.
+Git contains code, schemas, synthetic fixtures, hashes, ranges/counts and concise
+non-reconstructive aggregate research evidence. Full grids, model rows, source dumps,
+raw/curated facts, credentials, runtime databases and Shadow payloads remain private.
+The source/history security audit omits sealed performance content. See
+[data evidence](../data-and-pit.md) and [V2 protocol](../etf-quant-v2-protocol.md).

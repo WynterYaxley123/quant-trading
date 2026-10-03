@@ -20,6 +20,7 @@ BASELINE = ROOT / "config/engineering/mypy-baseline.json"
 ERROR = re.compile(r"^(.+?):\d+(?::\d+)?: error: (.+)  \[([^]]+)\]$")
 STRICT_PATHS = (
     "research/etf_quant_v2/",
+    "strategies/etf_quant_v2/",
     "scripts/engineering/",
     "examples/",
     "src/data/schema.py",

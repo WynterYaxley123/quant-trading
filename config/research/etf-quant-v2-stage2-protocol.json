@@ -1,0 +1,648 @@
+{
+  "comparison_policy": "COMMON_6M_12M_ALL_HORIZON_EVALUATION_DATES_WITHIN_EACH_MODE;24M_SUBJECT_TO_160_SIGNALS",
+  "contract": "ETF_QUANT_V2_SINGLE_FOCUSED_EXTENSION",
+  "data_sha256": "83e322e391e2e4126e0854cbe0baa4475b353292d9cc318f39ba8e59f82aa2c8",
+  "evidence_modes": [
+    "HIGH_CONFIDENCE",
+    "EXTENDED_HISTORY"
+  ],
+  "execution": {
+    "historical_missing_mapping": "CASH;NO_CURRENT_EVIDENCE_BACKSTAMP",
+    "policy": "V1_VERIFIED_MAPPING_PROXY_CASH_SIZING_T_PLUS_1_UNCHANGED"
+  },
+  "extension_cycle": 1,
+  "final_oos_access": "DENIED",
+  "mode_development_start": {
+    "EXTENDED_HISTORY": 990,
+    "HIGH_CONFIDENCE": 1349
+  },
+  "one_focused_stage2": true,
+  "one_validation_informed_development_revision": true,
+  "parent_protocol_sha256": "fb2721f41e0d6e0ce4f05270e9535af160be482bc0edce75fff5da3d3a96f5db",
+  "phase_dates": {
+    "development_end": "2024-09-02",
+    "development_start": "2022-01-27",
+    "final_oos_end": "2026-04-02",
+    "final_oos_start": "2025-12-30",
+    "maturity_tail_start": "2026-04-03",
+    "validation_end": "2025-07-04",
+    "validation_start": "2025-03-10"
+  },
+  "protocol_sha256": "25b7919bd4850fb4f158a32ef801331e6b95b8029cc3d5e4de0d3e2d90e08f33",
+  "reason_before_results": "Stage1 has positive high-confidence mean IC/spread but an under-observed calendar fold fails the unchanged 30-observation floor. Define four contiguous calendar blocks with equal observable target counts, using availability only, preserving gaps in block bootstrap. Raw alpha=10 and 12m are the coherent leading region; test 3/10/30 and 9/12/18m. Retain H120 versus no-long-horizon contrast because incremental evidence is positive yet ESS is low.",
+  "selection": {
+    "bootstrap_block": 120,
+    "fold_partition": "TARGET_OBSERVABILITY_CALENDAR_BLOCKS",
+    "folds": 4,
+    "long_incremental_rank_ic": 0.005,
+    "maximum_coefficient_norm_cv": 1.0,
+    "maximum_positive_fold_concentration": 0.6,
+    "minimum_cross_section": 12,
+    "minimum_signals": 160,
+    "minimum_worst_rank_ic": -0.05,
+    "positive_fold_majority": 3,
+    "positive_mean_rank_ic_and_spread": true,
+    "prefer": "HIGH_CONFIDENCE_PASS;MEDIAN_FOLD_IC;MEDIAN_FOLD_SPREAD;WORST_FOLD;STABILITY;SIMPLICITY",
+    "replications": 1000,
+    "seed": 20261004,
+    "ties": {
+      "rank_ic": 0.005,
+      "spread": 0.001
+    }
+  },
+  "split": {
+    "development_end": 1619,
+    "development_start": 990,
+    "final_oos_end": 1999,
+    "final_oos_start": 1940,
+    "maturity_tail_start": 2000,
+    "validation_end": 1819,
+    "validation_start": 1740
+  },
+  "stage1": [
+    {
+      "alpha": 3.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m9-a3",
+      "scaling": "RAW",
+      "training_months": 9
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m9-a3",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 9
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m12-a3",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m12-a3",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m18-a3",
+      "scaling": "RAW",
+      "training_months": 18
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m18-a3",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 18
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m9-a10",
+      "scaling": "RAW",
+      "training_months": 9
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m9-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 9
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m12-a10",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m12-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m18-a10",
+      "scaling": "RAW",
+      "training_months": 18
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m18-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 18
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m9-a30",
+      "scaling": "RAW",
+      "training_months": 9
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m9-a30",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 9
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m12-a30",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m12-a30",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-RAW-m18-a30",
+      "scaling": "RAW",
+      "training_months": 18
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2A",
+      "fusion": [
+        0.25,
+        0.5,
+        0.25
+      ],
+      "horizons": [
+        10,
+        40,
+        120
+      ],
+      "identifier": "S2A-TRAIN_ONLY_STANDARDIZED-m18-a30",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 18
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m9-a3",
+      "scaling": "RAW",
+      "training_months": 9
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m9-a3",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 9
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m12-a3",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m12-a3",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m18-a3",
+      "scaling": "RAW",
+      "training_months": 18
+    },
+    {
+      "alpha": 3.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m18-a3",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 18
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m9-a10",
+      "scaling": "RAW",
+      "training_months": 9
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m9-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 9
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m12-a10",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m12-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m18-a10",
+      "scaling": "RAW",
+      "training_months": 18
+    },
+    {
+      "alpha": 10.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m18-a10",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 18
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m9-a30",
+      "scaling": "RAW",
+      "training_months": 9
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m9-a30",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 9
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m12-a30",
+      "scaling": "RAW",
+      "training_months": 12
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m12-a30",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 12
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-RAW-m18-a30",
+      "scaling": "RAW",
+      "training_months": 18
+    },
+    {
+      "alpha": 30.0,
+      "family": "S2C",
+      "fusion": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "horizons": [
+        10,
+        40
+      ],
+      "identifier": "S2C-TRAIN_ONLY_STANDARDIZED-m18-a30",
+      "scaling": "TRAIN_ONLY_STANDARDIZED",
+      "training_months": 18
+    }
+  ],
+  "stage1_results_sha256": "ac4ae7cb0b214a5c95a9021bb9e5d70b39dd04bcbb571b3f3718ad777e691631",
+  "training": {
+    "calendar_window_before_mature_horizon_cutoff": true,
+    "cross_section": "SIGNAL_FEATURE_ELIGIBLE_UNIVERSE;COMPLETE_MATURED_TARGETS;NO_FUTURE_ASSET_SELECTION",
+    "minimum_dates": 30,
+    "training_only_population_standardization": true
+  },
+  "validation_open_count_maximum": 1
+}

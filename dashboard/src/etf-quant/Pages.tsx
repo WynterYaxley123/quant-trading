@@ -15,6 +15,7 @@ import { MappingsSection } from './sections/Mappings';
 import { TradesSection } from './sections/Trades';
 import { BenchmarksSection } from './sections/Benchmarks';
 import { HealthSection } from './sections/Health';
+import { V2ResearchSection } from './sections/V2Research';
 import type { EtfQuantSnapshot } from './contracts';
 
 export type EtfSection = 'overview' | 'readiness' | 'portfolio' | 'rankings' | 'factors' | 'mappings' | 'trades' | 'benchmarks' | 'health';
@@ -80,6 +81,7 @@ function SnapshotPage({ section }: { section: SnapshotSection }) {
           </Button>
         }
       />
+      {section==='overview' && <V2ResearchSection />}
       {resource.loading ? (
         <LoadingState label="正在读取 ETF Quant 独立快照" />
       ) : resource.error ? (

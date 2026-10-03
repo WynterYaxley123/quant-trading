@@ -23,9 +23,10 @@ Research API reads at most 32 MiB per artifact, with descriptor stat and bounded
 Approved artifact hash keys are strict. MIT source licensing grants no market-data rights;
 redistribution clearance remains unverified. See [market-data policy](data/market_data_policy.md).
 
-V2 additionally requires complete historical membership and dated publication/
-availability evidence before any market-data model comparison. A current interval
-workbook or reconstructed monthly snapshot is insufficient. Unknown historical
-denominators keep coverage ratios null; absent bars/amounts stay missing. V2 roots
-must remain separate from V1 and outside Git. See the [V2 protocol](etf-quant-v2-protocol.md)
-and [glossary](glossary.md).
+V2 distinguishes strict historical availability (Tier A), verified effective-dated
+reconstruction (B), weaker/retrospective reconstruction (C) and excluded unsupported
+rows (D). Later observation never upgrades reconstructed rows to strict PIT.
+Annual independent public stock rosters check symbol coverage, not industry accuracy.
+Current membership alone cannot be backfilled. Unknown denominators remain null;
+absent bars/amounts stay missing. V2 roots are independent of V1 and outside Git.
+See the [executed V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary.md).

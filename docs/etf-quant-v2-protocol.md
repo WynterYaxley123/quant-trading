@@ -1,74 +1,70 @@
-# ETF-Quant V2 research protocol
+# ETF-Quant V2 research and forward protocol
 
-Status: **data admission blocked; date-specific protocol not frozen**. The result-free
-search specification is preregistered in `research/etf_quant_v2/protocol.py` and its
-hash is recorded in the [research summary](etf-quant-v2-development.md). There is no
-Development-selected candidate. V1 remains the frozen forward baseline.
+V2's authorized evidence-tier policy supersedes the previous strict-PIT-only
+admission decision. The original prerequisite certificate/report remain immutable.
+V1 numerical contracts and its sealed results remain unchanged and unread.
 
-Formal data stays inside the existing CNEquity pin
-`1650e384a3fd1f67a70144a489acc91432f1df27`. The effective research range is the
-intersection of reliable calendar, historical membership, identities, exact stock
-adjustments and bars. ETF bars, amount/liquidity and mapping evidence are additional
-execution requirements. Nominal component ranges cannot substitute for this intersection.
+Tier A requires independent official historical availability evidence. Tier B uses
+real effective-dated spells after the 2021 taxonomy publication and ≥95% independent
+annual stock-roster symbol coverage, but can lack historical publication instants.
+Tier C is explicitly weaker/retrospective historical reconstruction. Unsupported
+assignments are Tier D and excluded. Never backfill current membership without
+real historical effective intervals. Scheme publication does not establish
+publication of each reconstructed assignment.
 
-The existing Shenwan adapter reconstructs monthly snapshots from a current interval
-workbook. The pinned schema carries `as_of_date` and `fetched_at`, but does not prove
-complete historical membership or historical publication/availability. No such
-snapshot is admitted to formal V2 selection. Retain weaker observations privately as
-an inventory, with `MEMBERSHIP_UNSUPPORTED`; never backstamp current constituents.
+The unchanged external CNEquity commit is `1650e384a3fd1f67a70144a489acc91432f1df27`.
+Public source routes supply normalized TDX stock bars, Sina adjustment events,
+SWS effective intervals, annual Baostock stock rosters and the supplied calendar.
+Full hashes, symbol failures, rows and caches stay in private external storage.
+Only concise non-reconstructive aggregates/configuration enter Git.
 
-Before fitting any market candidate, require dated source-backed membership evidence,
-complete historical-universe evidence, valid listing boundaries, finalized bars and
-exact adjustments. Record a stable data snapshot hash, reconstruct V1 boundaries
-from protocol metadata only, and freeze a separate date-specific V2 plan. No result
-reader is used to establish a split. V1 sealed signals start on 2026-03-03; conservatively
-exclude that date and all subsequent dates from V2 Development, including label outcomes.
+Development signals span 2022-01-27–2024-09-02, with a later high-confidence common
+comparison start for window/maturity history. Purge/maturity isolation is 120 sessions.
+Validation is 2025-03-10–2025-07-04 (80 signal dates). Final OOS is
+**2025-12-30–2026-04-02**, sealed; its 120-session maturity tail extends into the
+factual cutoff. Normalizing later prices does not authorize OOS labels. The phase
+gate rejects OOS computation. Development labels end before the V1 sealed period.
+Universe selection ends before the first Development signal.
 
-The date utility reserves chronological Development, at least 120 maturity sessions,
-120 Validation signals, a second 120-session isolation, 120 Final-OOS signals and a
-120-session label tail. It rejects inadequate history rather than shortening windows.
-Warmup and all 24-calendar-month training history must exist. Four common chronological
-Development folds require at least 120 eligible signals each. Real eligibility and
-phase dates remain unassigned until data is admitted.
+Stage 1 fixes four horizon/fusion families, five alphas (0.001/.01/.1/1/10), three
+calendar windows (6/12/24 months) and raw/training-only standardized features:
+120 specifications. Frozen V1 factors are used without factor mining. At T, training
+ends at T−h, with at least 30 complete mature cross sections. No future asset selection,
+gap bridging, future scaling, guessed prices or mock response is permitted.
 
-| Dimension | Closed specification |
-| --- | --- |
-| Factors | Frozen V1 H10 five factors; frozen 19 factors for H40/H80/H120 |
-| Target | Same-date cross-sectional excess forward return, retaining the ETF model vocabulary |
-| Scaling | Raw; training-only column standardization (population std; reject zero/invalid variance) |
-| Alpha | 0.001, 0.01, 0.1, 1, 10 |
-| Window | 6, 12, 24 calendar months before each horizon's mature label cutoff |
-| Family A | H10/H40/H120, 0.25/0.50/0.25 |
-| Family B | H10/H40/H120, 0.30/0.60/0.10 |
-| Family C | H10/H40, 1/3 and 2/3 |
-| Family D | H10/H40/H80, 0.25/0.50/0.25 |
-| Total | 120 specifications before feasibility pruning |
+Selection requires ≥160 observed H40 signals, ≥30 per fold, positive aggregate IC
+and spread, three positive folds, worst IC ≥−.05, positive-fold concentration ≤60%,
+norm CV ≤1, and included long-horizon incremental IC ≥.005. Stage 1 used equal
+calendar blocks. One focused Stage 2 declared observability-balanced contiguous
+calendar blocks before its results, retained gates, and tested 36 specifications:
+baseline fusion versus no H120, alphas 3/10/30, windows 9/12/18, raw/standardized.
+Exact executed policies: [Stage 1](../config/research/etf-quant-v2-stage1-protocol.json),
+[Stage 2](../config/research/etf-quant-v2-stage2-protocol.json).
 
-Compute factual trailing features once. Cache identity includes data/factor hashes,
-date range and preprocessing configuration. The V2 pure fit uses the existing V1
-numerical Ridge solver and prediction z-score without changing V1 defaults. Require
-at least 30 mature training dates and complete dated cross sections; persist the
-transformation for each fit. No future normalization or arbitrary factor search.
+After candidate freeze, a hash-bound exclusive Validation gate opened once.
+The fixed model was evaluated without retuning and failed. The single authorized
+[revision policy](../config/research/etf-quant-v2-revision-protocol.json) returned to
+Development with unchanged specifications, all-fold positivity, norm CV ≤.2 and
+worst-fold priority. No second Validation or other OOS slice was opened. The candidate
+is Validation-informed, not independently validated. Moving-block diagnostics preserve
+calendar gaps (120-session blocks, 1,000 draws, seed 20261004). ESS/uncertainty are
+assumption-dependent, not independent proof.
 
-Before performance search, diagnose feature scales/correlation/eigenvalues/conditioning,
-per-industry target autocorrelation, positive-sequence temporal ESS, horizon-block
-counts, missingness and mature label counts. Compare raw alpha 0.01 against OLS using
-coefficient norms/signs and prediction differences. Use moving-block uncertainty
-(120 sessions, 1,000 replications, fixed seed); do not treat stacked industries as
-independent temporal samples. Diagnostics are not sufficient proof of profitability.
+Recovery checkpoints validate symbol-file hashes and the source pin. Completed
+coverage/panel checkpoints are digest-verified. Component caches are addressed by
+data/protocol/phase/fit-code/horizon/window/alpha/scaling. Diagnostic/grid/freeze
+artifacts persist externally; immutable freeze/access artifacts cannot be replaced.
+An early window-feasibility bug was corrected before Validation; its superseded
+Development grid is preserved by hash as engineering evidence. Only the corrected
+grid governs selection.
 
-Selection uses H40 daily RankIC and fixed top-five-minus-bottom-five spreads across
-four preregistered chronological folds. Gate aggregate positivity, positivity in
-three folds, maximum 60% positive contribution from one fold, worst-fold RankIC at
-least -0.05, finite fits and coefficient norm CV at most 1. Included long horizons
-must add at least 0.005 incremental RankIC and have prediction correlation below
-0.95 against the short/medium combination. Prefer fold-median RankIC, fold-median
-spread, worst-fold RankIC and coefficient stability, in that order. Effective ties
-(RankIC 0.005, spread 0.001) prefer the baseline-like specification, then fewer
-horizons, then deterministic candidate ID. No passing candidate means no freeze.
-
-These criteria are a declared specification; a complete performance runner and
-candidate freeze are blocked by admission. Synthetic model tests are engineering
-evidence only. No Validation/Final-OOS metrics, portfolio result, epoch, signal,
-intent, fill or NAV is created. Shadow integration needs a real Development-selected
-candidate and separate future human launch authorization. V2 Shadow is not ready or started.
+V2 reuses unchanged verified industry mapping, 40% proxy/cash fallback, capped
+softmax, executable-member rebalance and T+1 accounting primitives. Its independent
+`strategies.etf_quant_v2` path is input-driven and deterministic.
+`python -m strategies.etf_quant_v2.runtime --candidate strategies/etf_quant_v2/config/candidate.json --readiness-only`
+checks configuration without state. A future one-shot additionally needs human
+launch authorization, finalized normalized facts/admitted mappings, an external
+root named `etf-quant-v2` and explicit unvalidated-research acknowledgement.
+It rejects V1/repository namespaces, historical launch dates and competing dates.
+The read-only endpoint `/api/etf-quant/v2/research` binds candidate, aggregate report
+and current certificate. Shadow remains unstarted.
