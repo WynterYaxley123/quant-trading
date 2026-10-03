@@ -3,7 +3,7 @@
   "status": "IMPLEMENTATION_ACCEPTED_DELIVERY_VIA_PR_METADATA",
   "delivery": {
     "BASE_SHA": "1e2ffbd4f75120df2511472662dcf7dcd308b0d6",
-    "VALIDATED_IMPLEMENTATION_SHA": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f",
+    "VALIDATED_IMPLEMENTATION_SHA": "ff0dc8c3abdc678306b11892d145778a898004d6",
     "PR_NUMBER": 8,
     "PR_URL": "https://github.com/WynterYaxley123/quant-trading/pull/8",
     "DELIVERY_IDENTITY_SOURCE": "GITHUB_PR_METADATA"
@@ -3358,7 +3358,7 @@
       "skipped": 0,
       "deselected": 0,
       "warnings": 2,
-      "seconds": 7.15
+      "seconds": 4.45
     },
     "portable": {
       "status": "PASS",
@@ -3366,7 +3366,7 @@
       "skipped": 2,
       "deselected": 99,
       "warnings": 4,
-      "seconds": 86.11
+      "seconds": 47.93
     },
     "frozen_acceptance": {
       "status": "PASS",
@@ -3374,7 +3374,10 @@
       "skipped": 1,
       "deselected": 0,
       "warnings": 0,
-      "seconds": 732.19
+      "seconds": 732.19,
+      "quant_source_snapshot_commit": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f",
+      "quantitative_sources_unchanged_through": "ff0dc8c3abdc678306b11892d145778a898004d6",
+      "source_equivalence_evidence": "git diff --quiet 88bb36f ff0dc8c -- strategies services/cnequity-sidecar src research: exit 0; current certificate and measurement regression pass separately"
     },
     "frontend": {
       "passed": 127,
@@ -3409,9 +3412,9 @@
     "staged_mypy": "PASS",
     "github_actions": {
       "status": "PASS",
-      "validated_implementation_sha": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f",
-      "run_id": 37109651004,
-      "url": "https://github.com/WynterYaxley123/quant-trading/actions/runs/37109651004",
+      "validated_implementation_sha": "ff0dc8c3abdc678306b11892d145778a898004d6",
+      "run_id": 37113194938,
+      "url": "https://github.com/WynterYaxley123/quant-trading/actions/runs/37113194938",
       "jobs": [
         "hygiene",
         "python-portable",
@@ -3438,8 +3441,8 @@
       "reviewed_legacy_dummy_template_sha256": "2077e82fcc7bfbccf7eb0f671d597addc90ff9221fae04edef07a81d1178dd2a",
       "tracked_files": 545,
       "new_files": 0,
-      "history_commits": 236,
-      "history_blobs_scanned": 1464,
+      "history_commits": 237,
+      "history_blobs_scanned": 1469,
       "tracked_secret_candidates": 0,
       "new_secret_candidates": 0,
       "history_secret_candidates": 0,
@@ -3460,7 +3463,7 @@
       "firewall_policy": "ACTIVE_V3_INTEGRITY_WITH_IMMUTABLE_V1_V2_PROVENANCE_AND_RETAINED_ARCHIVE_HASHES",
       "public_licensing_review": "MIT_OWNER_AUTHORIZED_DATA_RIGHTS_SEPARATE"
     },
-    "audited_commit": "88bb36f2867838e0e60a5c34a0d7f1be1de3231f"
+    "audited_commit": "ff0dc8c3abdc678306b11892d145778a898004d6"
   },
   "shadow": {
     "comparison": "PASS_IDENTICAL_FILENAMES_SIZES_SHA256",

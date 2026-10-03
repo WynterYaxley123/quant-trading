@@ -88,6 +88,6 @@ No known correctness/security blocker remains after local checks. Residual debt 
 
 GitHub PR metadata is delivery authority. The tracked report records base and the explicitly validated implementation commit, plus PR number/URL when created. A metadata-only report commit can follow without changing validated source. The actual final main SHA is emitted after normal merge only in the console/untracked delivery state; this file cannot name its own containing merge commit.
 
-Validated implementation: `88bb36f2867838e0e60a5c34a0d7f1be1de3231f`.
+Validated implementation: `ff0dc8c3abdc678306b11892d145778a898004d6`.
 
 PR: [8](https://github.com/WynterYaxley123/quant-trading/pull/8).
