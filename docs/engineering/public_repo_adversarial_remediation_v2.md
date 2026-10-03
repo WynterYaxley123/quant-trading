@@ -285,7 +285,7 @@ Result: Eligibility and heterogeneous-schema output equivalent to eager implemen
 
 ### 12.4: Repeated CSV inside loops
 
-Class: **FALSE_POSITIVE**. Current location: `research/development_iteration1_run.py:1` / `run`.
+Class: **FALSE_POSITIVE**. Current location: `research/development_iteration1_run.py:560` / `write_run`.
 
 Evidence: Existing schema/tests and surrounding callsites; baseline reproduction..
 
@@ -327,7 +327,7 @@ Result: Data-free contributor path exercises real core logic without private art
 
 ### 21-22: Secrets/data/license risks
 
-Class: **CONFIRMED_SECURITY_HARDENING**. Current location: `services/etf-quant-runner/security-audit.mjs:1` / `audit`.
+Class: **CONFIRMED_SECURITY_HARDENING**. Current location: `services/etf-quant-runner/security-audit.mjs:37` / `audit`.
 
 Evidence: Existing schema/tests and surrounding callsites; baseline reproduction..
 
@@ -341,7 +341,7 @@ Result: No candidates/forbidden data/sealed paths/integrity drift found; no thir
 
 ### 12.1a: Discovered accumulated-bar rescan per ETF
 
-Class: **CONFIRMED_PERFORMANCE_DEBT**. Current location: `src/data/providers/etf_local.py:1` / `read_local_etf_snapshot`.
+Class: **CONFIRMED_PERFORMANCE_DEBT**. Current location: `src/data/providers/etf_local.py:33` / `read_local_etf_snapshot`.
 
 Evidence: own_dates formerly filtered the ever-growing accumulated rows for every symbol.
 

@@ -281,13 +281,13 @@
       "id": "12.4",
       "claim": "Repeated CSV inside loops",
       "path": "research/development_iteration1_run.py",
-      "function": "run",
+      "function": "write_run",
       "classification": "FALSE_POSITIVE",
       "decision": "Each distinct candidate file is read once, no same-file redundant reads.",
       "implementation": "Preserve reads of distinct per-candidate CSV files; no repeat read of the same input in identified loop.",
       "tests": "Static per-candidate path/lifetime inspection",
       "resulting_behavior": "No fabricated optimization or cache introduced.",
-      "line": 1,
+      "line": 560,
       "evidence": [
         "Existing schema/tests and surrounding callsites; baseline reproduction."
       ]
@@ -332,7 +332,7 @@
       "implementation": "Native read-only source/history secret and forbidden-data scan; verify V2 source and V1/archive provenance. Preserve owner-authorized MIT and notices; distinguish data rights.",
       "tests": "Native source/history scan and scanner unit tests",
       "resulting_behavior": "No candidates/forbidden data/sealed paths/integrity drift found; no third-party certification claimed.",
-      "line": 1,
+      "line": 37,
       "evidence": [
         "Existing schema/tests and surrounding callsites; baseline reproduction."
       ]
@@ -342,7 +342,7 @@
       "claim": "Discovered accumulated-bar rescan per ETF",
       "path": "src/data/providers/etf_local.py",
       "function": "read_local_etf_snapshot",
-      "line": 1,
+      "line": 33,
       "classification": "CONFIRMED_PERFORMANCE_DEBT",
       "evidence": [
         "own_dates formerly filtered the ever-growing accumulated rows for every symbol"
