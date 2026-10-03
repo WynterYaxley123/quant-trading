@@ -40,6 +40,16 @@ test('semantic key order accepts equivalent mappings, including nested and numer
     '{"10":"ten","2":"two","nested":{"":"bmp","😀":"astral"}}');
   assert.equal(certificateHash(current),certificateHash(JSON.parse(JSON.stringify(current))));
 });
+test('the appended hotfix transition requires the byte-bound previous current manifest path',()=>{
+  const {current}=transition();
+  const bytes=Buffer.from(JSON.stringify(current));
+  const child=structuredClone(current),parentPath='reports/engineering/current-implementation-integrity.json';
+  child.parent_manifest_path=parentPath;
+  child.parent_manifest_sha256=createHash('sha256').update(bytes).digest('hex');
+  child.certificate_sha256=certificateHash(child);
+  assert.doesNotThrow(()=>verifyCurrentCertificate(child,current,bytes,parentPath));
+  assert.throws(()=>verifyCurrentCertificate(child,current,bytes),/CERTIFICATE_TRANSITION_BLOCKER/);
+});
 for(const kind of ['changed','missing','extra'])test(`historical source mapping ${kind} fails even with a recomputed digest`,()=>{
   const {current,parent,bytes}=transition();
   if(kind==='changed')current.previous_source_hashes.a='changed';

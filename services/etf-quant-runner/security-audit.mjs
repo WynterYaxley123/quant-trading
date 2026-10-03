@@ -39,10 +39,10 @@ export function repositoryFile(root,name) {
   if(!contained(resolved) || !statSync(resolved).isFile())blocked();
   return resolved;
 }
-export function verifyCurrentCertificate(current,parent,parentBytes) {
+export function verifyCurrentCertificate(current,parent,parentBytes,parentPath='reports/engineering/v4-integrity.json') {
   if(current.identifier!=='CURRENT_IMPLEMENTATION_INTEGRITY'
     || current.canonicalization!=='JSON_SORTED_KEYS_COMPACT_UTF8_V1'
-    || current.parent_manifest_path!=='reports/engineering/v4-integrity.json'
+    || current.parent_manifest_path!==parentPath
     || current.parent_manifest_sha256!==createHash('sha256').update(parentBytes).digest('hex')
     || ['previous_certificate_sha256','previous_transition_sha256','previous_source_hashes','candidate_sha256']
       .some(key=>canonicalJSON(current[key])!==canonicalJSON(parent[key]))
@@ -148,8 +148,12 @@ export function audit() {
     || Object.entries(previous.files).some(([name,hash])=>integrity.previous_source_hashes[name]!==hash)
     || integrity.candidate_sha256!==previous.candidate_sha256
     || Object.keys(previous.files).some(name=>!Object.hasOwn(integrity.files,name))) throw new Error('CERTIFICATE_TRANSITION_BLOCKER');
-  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/current-implementation-integrity.json'))).implementation_integrity;
-  verifyCurrentCertificate(current,integrity,v4Bytes);
+  const previousCurrentPath='reports/engineering/current-implementation-integrity.json';
+  const previousCurrentBytes=readFileSync(repositoryFile(repo,previousCurrentPath));
+  const previousCurrent=JSON.parse(previousCurrentBytes).implementation_integrity;
+  verifyCurrentCertificate(previousCurrent,integrity,v4Bytes);
+  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/release-hotfix-integrity.json'))).implementation_integrity;
+  verifyCurrentCertificate(current,previousCurrent,previousCurrentBytes,previousCurrentPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected
   ).map(([name])=>name);

@@ -73,7 +73,8 @@ checked instead of rewriting the Candidate to pretend its old hash is current.
 Production evidence remains forward-only. First legal T is strictly after the
 Shanghai date when certified evidence first became available; the historical
 reference 2026-09-24 can never initialize a formal epoch. Current finalized
-same-day export, frozen models, listing, 20/20 liquidity and Strict > B40 > Cash
+same-day export, frozen model specification with eligible coefficient refits,
+listing, 20/20 liquidity and Strict > B40 > Cash
 gates are enforced inside Docker. Missing evidence -> Cash; no coverage quota.
 
 The following legacy strict-only transport is retained for compatibility; it
