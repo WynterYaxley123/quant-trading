@@ -12,7 +12,7 @@ from research.development_panel import DevelopmentPanel
 from strategies.etf_quant.mapping.liquidity import LiquidityLookup, assess_liquidity
 from strategies.etf_quant.runtime.industry import build_industry_series
 from strategies.etf_quant.runtime.prediction import TrainingInputs, training_rows
-from strategies.etf_quant.runtime.prefix import SourcePrefixIndex, source_prefix
+from strategies.etf_quant.runtime.prefix import source_prefix
 from strategies.etf_quant.runtime.shadow import check_prefix
 from strategies.etf_quant.runtime.storage import GateError
 from strategies.sw_sector_rotation.src.model import model as sw_model
@@ -61,27 +61,26 @@ def test_liquidity_reference_equivalence_and_no_full_scans_after_indexing(fault)
     assert actual == expected
 
 
-def test_prefix_reference_equivalence_tampering_reorder_and_content_cache():
+def test_prefix_reference_equivalence_tampering_reorder_and_single_pass():
     p = fixtures.industry(30, 5)
-    cache = SourcePrefixIndex()
     expected = reference.source_prefix(p)
-    assert source_prefix(p, index=cache) == expected
+    assert source_prefix(p) == expected
     with patch(
         "strategies.etf_quant.runtime.prefix.digest",
         wraps=__import__("strategies.etf_quant.runtime.prefix", fromlist=["digest"]).digest,
     ) as hashing:
-        assert source_prefix(p, index=cache) == expected
-        assert hashing.call_count == len(p.tables)  # cryptographic content auth, zero row rehashes
+        assert source_prefix(p) == expected
+        assert hashing.call_count == sum(len(frame) for frame in p.tables.values())
     for frame in p.tables.values():
         frame["fetched_at"] = "irrelevant observation"
-    assert source_prefix(p, index=cache) == expected
+    assert source_prefix(p) == expected
     p.tables = {name: frame.iloc[::-1].copy() for name, frame in p.tables.items()}
-    assert source_prefix(p, index=cache) == expected
-    returned = source_prefix(p, index=cache)
+    assert source_prefix(p) == expected
+    returned = source_prefix(p)
     returned["stock_bars"].clear()
-    assert source_prefix(p, index=cache) == expected  # caller cannot poison cache
+    assert source_prefix(p) == expected  # each result is freshly authenticated
     p.tables["stock_bars"].iloc[0, p.tables["stock_bars"].columns.get_loc("adj_close")] += 0.1
-    changed = source_prefix(p, index=cache)
+    changed = source_prefix(p)
     assert changed == reference.source_prefix(p) and changed != expected
     with pytest.raises(GateError, match="HISTORICAL_REVISION"):
         check_prefix(expected, changed, str(p.cutoff))

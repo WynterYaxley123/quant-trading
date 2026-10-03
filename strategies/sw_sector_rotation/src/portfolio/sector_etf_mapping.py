@@ -214,7 +214,7 @@ def daily_mapping_availability(
     sector_bar_valid: bool,
 ) -> dict:
     """Use the signal session and the *next* execution session separately."""
-    from src.data.ohlc import valid_daily_open
+    from quant_primitives.ohlc import valid_daily_open
 
     if execution_date is not None and _date(execution_date) <= _date(as_of):
         raise ValueError("execution_date 必须晚于 signal date")

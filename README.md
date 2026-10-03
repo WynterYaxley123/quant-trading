@@ -1,8 +1,8 @@
 # quant-trading
 
 `quant-trading` is a quantitative research system with one current product:
-**ETF-Quant V1**, an industry-first Chinese equity ETF research and forward Shadow
-workflow. It turns dated factual inputs into industry rankings, evidence-backed ETF
+**ETF-Quant V1**, a Chinese equity ETF research and forward Shadow workflow that
+ranks industries first, then maps them to executable ETFs. It turns dated factual inputs into industry rankings, evidence-backed ETF
 mappings and an observable simulated portfolio. The dashboard reads verified artifacts.
 
 Engineering preparation is complete. **The first formal Shadow epoch has not yet been
@@ -20,8 +20,8 @@ PIT availability and liquidity. An unexecutable slot retains its original weight
 Finalized T-close signals can only receive future T+1 simulated execution.
 
 The factor sets and model specification are frozen; Ridge coefficients are refit
-from eligible mature observations at each signal date. “Industry-first” means
-rank industries, then map the original Top5 to executable ETFs. This order is
+from eligible mature observations at each signal date. The original Top5 industry
+ranking is mapped to executable ETFs, preserving unexecutable slots as cash. This order is
 implemented in the [runtime](strategies/etf_quant/runtime/shadow.py) and covered by
 [mapping regressions](tests/etf_quant/test_proxy_partial_contract.py).
 See the [frozen strategy contract](docs/strategy.md). No profitability claim is made.
@@ -49,7 +49,7 @@ ranking/mapping pipeline and Shadow runtime; the Research API, ETF API and dashb
 ```mermaid
 flowchart LR
  S[External pinned source] --> E[Immutable factual exports and PIT evidence]
- E --> R[Research and frozen models]
+ E --> R[Research and frozen model specification]
  R --> Q[Industry ranking and ETF policy]
  Q --> T[Forward Shadow runtime]
  R --> RA[Read-only Research API]
