@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "status": "LOCAL_ACCEPTANCE_PENDING_FROZEN",
+  "status": "LOCAL_ACCEPTANCE_COMPLETE",
   "base_sha": "2de086421d1e2149faa8b987913ef14027f1c5a3",
   "final_branch": "engineering/public-repo-adversarial-remediation-v2",
   "github": {
@@ -20,7 +20,7 @@
         "docs/etf_quant/proxy_execution_policy_v1.md:2.1 and frozen liquidity rule",
         "test_liquidity_never_enters_the_alpha_weights",
         "runtime uses B40_WITH_CASH only",
-        "docs/archive/agent-runs/etf_quant--proxy_execution_policy_v1.md (resolved through documentation map if category differs)",
+        "docs/archive/delivery-records/etf_quant--proxy_execution_policy_v1.md: A40 contract section 2.1",
         "A40 only relaxes dominant exposure; formal runtime callers select B40_WITH_CASH."
       ],
       "decision": "Apply shared evidence/liquidity admission; preserve A40 dominance relaxation and sizing.",
@@ -247,13 +247,13 @@
       "id": "12.2",
       "claim": "apply(pd.to_numeric) inefficiency",
       "path": "src/data/loaders/shenwan_sector_loader.py",
-      "function": "valid_sector_bar",
+      "function": "_market",
       "classification": "INTENTIONAL_CONTRACT",
       "decision": "Four-column vector conversion is bounded and preserves invalid-to-NA semantics.",
       "implementation": "Preserve four-column vectorized to_numeric conversion with errors=coerce.",
       "tests": "Existing malformed/missing bar tests",
       "resulting_behavior": "NA/finiteness behavior unchanged; no speculative conversion optimization.",
-      "line": 1,
+      "line": 47,
       "evidence": [
         "Existing schema/tests and surrounding callsites; baseline reproduction."
       ]
@@ -5317,7 +5317,7 @@
     },
     "documentation_references": {
       "status": "PASS",
-      "active_local_links_checked": 93,
+      "active_local_links_checked": 94,
       "broken_active_links": [],
       "changed_archived_bytes": [],
       "historical_path_aliases": 107
@@ -5329,13 +5329,16 @@
       "service_started": false
     },
     "frozen_etf": {
-      "status": "PENDING",
+      "status": "PASS",
       "before_passed": 602,
       "before_skipped": 1,
       "before_seconds": 577.17,
       "image": "quant-research:py3.12",
       "network": "none",
-      "runtime_mount": "read-only"
+      "runtime_mount": "read-only",
+      "passed": 645,
+      "skipped": 1,
+      "seconds": 578.22
     },
     "security_before": {
       "status": "PASS",
@@ -5369,10 +5372,10 @@
       "status": "PASS",
       "scanner": "BUILTIN_READ_ONLY_PATTERN_AND_PATH_AUDIT_NOT_A_THIRD_PARTY_CERTIFICATION",
       "reviewed_legacy_dummy_template_sha256": "2077e82fcc7bfbccf7eb0f671d597addc90ff9221fae04edef07a81d1178dd2a",
-      "tracked_files": 574,
-      "new_files": 39,
-      "history_commits": 225,
-      "history_blobs_scanned": 1262,
+      "tracked_files": 608,
+      "new_files": 5,
+      "history_commits": 227,
+      "history_blobs_scanned": 1373,
       "tracked_secret_candidates": 0,
       "new_secret_candidates": 0,
       "history_secret_candidates": 0,
