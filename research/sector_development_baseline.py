@@ -20,6 +20,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from research.development_panel import DevelopmentPanel
 from research.sector_development_protocol import (
     FROZEN_BOUNDARY_DATES,
     audit_local_policy,
@@ -236,10 +237,9 @@ def evaluate_date(
             for code in sector_codes
             if code in scores
             and code in labels
-            and scores[code] is not None
-            and labels[code] is not None
-            and np.isfinite(scores[code])
-            and np.isfinite(labels[code])
+            and all(
+                value is not None and np.isfinite(value) for value in (scores[code], labels[code])
+            )
         ]
         valid_count = len(complete)
         metric_names = (
@@ -418,6 +418,7 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
     if core.feature_names != list(EXPECTED_FEATURES):
         raise ValueError("REPO_PROTOCOL_CONFLICT: core feature order changed")
     labels_expost = {}
+    reusable_panel = DevelopmentPanel(frames, development_dates[-1])
     label_calendar = calendar[
         calendar <= pd.Timestamp(audit["development_last_120_label_endpoint"])
     ]
@@ -434,11 +435,12 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
         guard_evaluation("development", [ordinal])
         signal_s = str(signal.date())
         signal_i = int(calendar.get_loc(signal))
-        boundaries = {
-            p: core.boundaries(calendar[: signal_i + 1], signal, p) for p in FORWARD_WINDOWS
-        }
-        if any(value is None for value in boundaries.values()):
-            raise ValueError("RESEARCH_LEAKAGE_BLOCKER: missing frozen temporal boundary")
+        boundaries = {}
+        for p in FORWARD_WINDOWS:
+            boundary = core.boundaries(calendar[: signal_i + 1], signal, p)
+            if boundary is None:
+                raise ValueError("RESEARCH_LEAKAGE_BLOCKER: missing frozen temporal boundary")
+            boundaries[p] = boundary
         first_train = min(b.train_start for b in boundaries.values())
         first_train_i = int(calendar.searchsorted(first_train))
         warmup_i = first_train_i - FEATURE_WARMUP
@@ -452,7 +454,7 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
                 "RESEARCH_BASELINE_IMPLEMENTATION_BLOCKER: fixed U0 history incomplete"
             )
         # build_panel sees only <= signal_date; its labels cannot include future prices.
-        panel = core.build_panel(visible_frames, include_rsrs=False, calendar=visible_calendar)
+        panel = reusable_panel.visible(warmup, signal, tuple(FORWARD_WINDOWS.values()))
         period_results, day_diagnostics = {}, []
         skip_reason = None
         for period, horizon in FORWARD_WINDOWS.items():
@@ -578,7 +580,8 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
                         }
                     )
             continue
-        fused = core.model.fuse_periods({p: r["result"] for p, r in period_results.items()})
+        successful_periods = {p: r for p, r in period_results.items() if r is not None}
+        fused = core.model.fuse_periods({p: r["result"] for p, r in successful_periods.items()})
         if len(fused) != 124:
             raise ValueError("RESEARCH_BASELINE_IMPLEMENTATION_BLOCKER: fused U0 incomplete")
         top_codes = {code for code, _ in fused[:DEFAULT_TOP_N]}
@@ -586,7 +589,7 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
         fused_rank = {code: i for i, (code, _) in enumerate(fused, 1)}
         scores_by_horizon, labels_by_horizon = {}, {}
         for period, horizon in FORWARD_WINDOWS.items():
-            result = period_results[period]
+            result = successful_periods[period]
             score = result["scores"]
             scores_by_horizon[horizon] = score
             endpoint_i = signal_i + horizon
@@ -641,7 +644,7 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
         )
         successful += 1
     per_date_df = pd.DataFrame(per_date, columns=PER_DATE_COLUMNS)
-    result = DevelopmentOutput(
+    output = DevelopmentOutput(
         predictions=pd.DataFrame(predictions, columns=PREDICTION_COLUMNS),
         per_date_metrics=per_date_df,
         aggregate_metrics=aggregate_metrics(per_date_df),
@@ -722,7 +725,7 @@ def compute_development(processed_dir: Path, gate: Mapping[str, object]) -> Deve
             "docker_image_id": gate["docker_image_id"],
         },
     )
-    return result
+    return output
 
 
 def _json_bytes(value: object) -> bytes:

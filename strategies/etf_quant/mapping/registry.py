@@ -32,7 +32,7 @@ from ..domain.industry_level import (
 )
 from ..runtime.exports import observed_time
 from ..runtime.storage import GateError, contained, digest
-from .liquidity import LIQUIDITY_SESSIONS, assess_liquidity, liquidity_window
+from .liquidity import LIQUIDITY_SESSIONS, LiquidityLookup, assess_liquidity, liquidity_window
 
 REGISTRY_IDENTITY = "VERIFIED_MAPPING_REGISTRY_V1"
 VERIFICATION_STATES = ("VERIFIED", "UNVERIFIED", "REJECTED")
@@ -309,6 +309,7 @@ def select_mappings(registry, rankings, provider, *, signal_at, require_executio
     if window is None or execution_day is None:
         raise GateError("MAPPING_CALENDAR_BLOCKER")
     chosen, diagnostics, used, collision = [], [], set(), False
+    lookup = LiquidityLookup.build(provider.tables)
     blocked_industries, missing_industries = [], []
     for rank in rankings[:5]:
         code = rank.industry_code
@@ -326,7 +327,7 @@ def select_mappings(registry, rankings, provider, *, signal_at, require_executio
                     }
                 )
                 continue
-            liquidity = assess_liquidity(provider, row["etf_code"], window)
+            liquidity = assess_liquidity(provider, row["etf_code"], window, lookup=lookup)
             if not liquidity.passed:
                 blocked.append(
                     {

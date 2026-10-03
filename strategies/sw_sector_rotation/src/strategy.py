@@ -192,7 +192,7 @@ class SWSectorRotationCore:
             indices = [f.index for f in market_frames.values()]
             if any(not idx.equals(indices[0]) for idx in indices[1:]):
                 raise ValueError("行业日期不一致时必须提供公共交易日历")
-            calendar = indices[0]
+            calendar = indices[0].tolist()
         for name, frame in market_frames.items():
             feats = compute_all_price_features(frame, include_rsrs=include_rsrs)
             for w in self.config.forward_windows.values():
@@ -235,7 +235,9 @@ class SWSectorRotationCore:
         # 训练日期：已实现标签且落在 [train_start, label_cutoff]
         labelled_sets = []
         for frame in panel.values():
-            labelled_sets.append(set(frame.dropna(subset=[label_col]).index))
+            # Restrict chronology before allocating validity sets or selecting columns.
+            labels = frame.loc[b.train_start : b.label_cutoff, label_col]
+            labelled_sets.append(set(labels.index[labels.notna()]))
         labelled = sorted(set.intersection(*labelled_sets)) if labelled_sets else []
         train_dates = [d for d in labelled if b.train_start <= d <= b.label_cutoff]
         model = self.model.fit_period(period, dict(panel), self.feature_names, train_dates)
@@ -277,12 +279,13 @@ class SWSectorRotationCore:
             raise ValueError("live_flow 仅允许在显式启用的 inference 模式使用")
         cal = trading_calendar(calendar)
         timing = {
-            p: signal_timing(cal, predict_date, w) for p, w in self.config.forward_windows.items()
+            p: signal_timing(cal.tolist(), predict_date, w)
+            for p, w in self.config.forward_windows.items()
         }
         visible = {
             name: as_of_truncate(frame, predict_date) for name, frame in market_frames.items()
         }
-        panel = self.build_panel(visible, calendar=cal[cal <= pd.Timestamp(predict_date)])
+        panel = self.build_panel(visible, calendar=cal[cal <= pd.Timestamp(predict_date)].tolist())
         results = {}
         for period in self.config.forward_windows:
             results[period] = self.run_period(period, panel, calendar, predict_date)

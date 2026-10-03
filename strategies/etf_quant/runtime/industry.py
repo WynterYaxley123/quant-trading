@@ -101,17 +101,25 @@ def build_industry_series(
     changes: dict[date, list[dict]] = {}
     for r in members.to_dict("records"):
         changes.setdefault(r["as_of_date"], []).append(r)
-    active = {}
+    active_by_industry: dict[str, list[str]] = {}
+    change_days = sorted(changes)
+    change_i = 0
     levels: dict[str, float] = {}
     started, broken, result, audit = set(), set(), [], []
     for i, day in enumerate(days):
-        for change_day in sorted(d for d in changes if d <= day):
+        while change_i < len(change_days) and change_days[change_i] <= day:
+            change_day = change_days[change_i]
             # Reference membership snapshots replace the complete constituent
             # set. Retaining absent symbols invents members after removal.
-            active = {r["symbol"]: resolved[r["industry_code"]] for r in changes.pop(change_day)}
+            active_by_industry = {}
+            for r in changes[change_day]:
+                active_by_industry.setdefault(resolved[r["industry_code"]], []).append(r["symbol"])
+            for symbols in active_by_industry.values():
+                symbols.sort()
+            change_i += 1
         closes = {}
         for code in universe:
-            symbols = sorted(s for s, c in active.items() if c == code)
+            symbols = active_by_industry.get(code, [])
             values, rejected = [], []
             for symbol in symbols:
                 cur = records.get((symbol, day))

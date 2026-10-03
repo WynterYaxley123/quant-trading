@@ -24,7 +24,9 @@ never writes.
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import date
 
 import pandas as pd
 
@@ -58,6 +60,31 @@ class LiquidityAdmission:
         return self.status == PASS
 
 
+@dataclass(frozen=True)
+class LiquidityLookup:
+    """Call-scoped snapshot index; rebuild after any provider mutation.
+
+    Lists retain duplicates so indexing never changes the fail-closed row-count gate.
+    Mapping callers build one index for all their candidates, never a global mutable cache.
+    """
+
+    instruments: dict[str, list[dict]]
+    bars: dict[tuple[str, date], list[dict]]
+    status: dict[tuple[str, date], list[dict]]
+
+    @classmethod
+    def build(cls, tables: Mapping[str, pd.DataFrame]) -> LiquidityLookup:
+        instruments: dict[str, list[dict]] = {}
+        bars: dict[tuple[str, date], list[dict]] = {}
+        status: dict[tuple[str, date], list[dict]] = {}
+        for row in tables["instruments"].to_dict("records"):
+            instruments.setdefault(row["symbol"], []).append(row)
+        for name, target in (("etf_bars", bars), ("trading_status", status)):
+            for row in tables[name].to_dict("records"):
+                target.setdefault((row["symbol"], row["trade_date"]), []).append(row)
+        return cls(instruments, bars, status)
+
+
 def liquidity_window(provider, signal_day):
     """The 20 exchange sessions ending at ``signal_day``, or ``None`` if short.
 
@@ -73,16 +100,13 @@ def liquidity_window(provider, signal_day):
     return tuple(provider.sessions[index - (LIQUIDITY_SESSIONS - 1) : index + 1]), execution_day
 
 
-def _instrument(provider, etf_code):
-    instruments = provider.tables["instruments"]
-    rows = instruments.loc[instruments.symbol == etf_code]
-    return None if len(rows) != 1 else rows.iloc[0]
+def _instrument(lookup: LiquidityLookup, etf_code: str) -> pd.Series | None:
+    rows = lookup.instruments.get(etf_code, [])
+    return None if len(rows) != 1 else pd.Series(rows[0])
 
 
-def _status_veto(provider, etf_code, day):
-    status = provider.tables["trading_status"]
-    rows = status.loc[(status.symbol == etf_code) & (status.trade_date == day)]
-    for row in rows.to_dict("records"):
+def _status_veto(lookup: LiquidityLookup, etf_code: str, day: date) -> str | None:
+    for row in lookup.status.get((etf_code, day), []):
         if row["source"] in VETO_SOURCES and (
             row["is_trading"] is not True or row["status"] != "normal"
         ):
@@ -90,13 +114,11 @@ def _status_veto(provider, etf_code, day):
     return None
 
 
-def _bar_failure(provider, etf_code, day):
+def _bar_failure(rows: list[dict]) -> str | None:
     """One session's admissibility. ``amount`` evidence is mandatory here."""
-    frame = provider.tables["etf_bars"]
-    rows = frame.loc[(frame.symbol == etf_code) & (frame.trade_date == day)]
     if len(rows) != 1:
         return "BAR_MISSING_OR_DUPLICATE"
-    bar = rows.iloc[0].to_dict()
+    bar = rows[0]
     prices = ("open", "high", "low", "close")
     if any(
         not pd.notna(bar[k]) or not math.isfinite(float(bar[k])) or float(bar[k]) <= 0
@@ -118,7 +140,9 @@ def _bar_failure(provider, etf_code, day):
     return None
 
 
-def assess_liquidity(provider, etf_code, window) -> LiquidityAdmission:
+def assess_liquidity(
+    provider, etf_code, window, *, lookup: LiquidityLookup | None = None
+) -> LiquidityAdmission:
     """Frozen 20-session admission for one ETF over one explicit window."""
     if len(window) != LIQUIDITY_SESSIONS:
         # A caller-supplied short window would be a silent methodology change.
@@ -126,7 +150,8 @@ def assess_liquidity(provider, etf_code, window) -> LiquidityAdmission:
             "the frozen liquidity window is exactly twenty sessions; it is never shortened"
         )
     days = tuple(str(day) for day in window)
-    instrument = _instrument(provider, etf_code)
+    lookup = LiquidityLookup.build(provider.tables) if lookup is None else lookup
+    instrument = _instrument(lookup, etf_code)
     if instrument is None or instrument.asset_type != "etf":
         return LiquidityAdmission(
             etf_code, FAIL, LIQUIDITY_SESSIONS, 0, None, "LISTED_ETF_IDENTITY_UNPROVEN", days, ()
@@ -159,9 +184,10 @@ def assess_liquidity(provider, etf_code, window) -> LiquidityAdmission:
         if instrument.delist_date is not None and instrument.delist_date <= day:
             failure = "ETF_DELISTED"
         if failure is None:
-            failure = _status_veto(provider, etf_code, day)
+            failure = _status_veto(lookup, etf_code, day)
+        rows = lookup.bars.get((etf_code, day), [])
         if failure is None:
-            failure = _bar_failure(provider, etf_code, day)
+            failure = _bar_failure(rows)
         if failure is not None:
             daily.append(
                 {"trade_date": str(day), "admitted": False, "reason": failure, "amount_cny": None}
@@ -169,8 +195,7 @@ def assess_liquidity(provider, etf_code, window) -> LiquidityAdmission:
             return LiquidityAdmission(
                 etf_code, FAIL, LIQUIDITY_SESSIONS, len(amounts), None, failure, days, tuple(daily)
             )
-        frame = provider.tables["etf_bars"]
-        row = frame.loc[(frame.symbol == etf_code) & (frame.trade_date == day)].iloc[0]
+        row = rows[0]
         amount = float(row["amount"])
         amounts.append(amount)
         daily.append(

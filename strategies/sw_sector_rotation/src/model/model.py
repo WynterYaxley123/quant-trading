@@ -172,8 +172,8 @@ class RankingResult:
     period: str
     forward_days: int
     predict_date: pd.Timestamp
-    train_start: pd.Timestamp
-    train_end: pd.Timestamp
+    train_start: pd.Timestamp | None
+    train_end: pd.Timestamp | None
     n_train_dates: int
     n_train_samples: int
     scores: dict = field(default_factory=dict)
@@ -277,24 +277,30 @@ class CrossSectionalRidgeModel:
             return None
 
         label_col = label_col or f"fwd{self.forward_windows[period]}"
-        dates = set(pd.Timestamp(d) for d in train_dates)
 
         xs, ys = [], []
-        counts_by_date, counts_by_sector, dropped = {}, {}, {}
+        counts_by_date: dict[str, int] = {}
+        counts_by_sector: dict[str, int] = {}
+        dropped: dict[str, int] = {}
         for name, frame in sorted(panel.items()):
             if label_col not in frame.columns:
                 raise ValueError(f"{name}: 缺少 label column {label_col}")
-            sel = frame.loc[frame.index.isin(dates)]
-            if np.isinf(sel[list(feature_names) + [label_col]].to_numpy(dtype=float)).any():
+            positions = frame.index.get_indexer(pd.DatetimeIndex(train_dates))
+            sel = frame.iloc[positions[positions >= 0]]
+            values = sel.loc[:, [*feature_names, label_col]].to_numpy(dtype=float)
+            if np.isinf(values).any():
                 raise ValueError(f"{name}: training data 含 Inf")
             before = len(sel)
-            sel = sel.dropna(subset=list(feature_names) + [label_col])
+            valid = ~np.isnan(values).any(axis=1)
+            sel = sel.loc[valid]
             dropped[name] = before - len(sel)
             counts_by_sector[name] = len(sel)
             for d in sel.index:
                 counts_by_date[str(d.date())] = counts_by_date.get(str(d.date()), 0) + 1
             if sel.empty:
                 continue
+            # Preserve Pandas' feature-array layout so BLAS follows the original
+            # numerical path; reuse the combined projection for validity only.
             xs.append(sel[list(feature_names)].to_numpy(dtype=float))
             ys.append(sel[label_col].to_numpy(dtype=float))
 
@@ -422,19 +428,19 @@ class CrossSectionalRidgeModel:
         if not common:
             warnings.warn("horizon 无共同可用行业", RuntimeWarning, stacklevel=2)
             return []
-        common = sorted(common)
-        if any(set(r.scores) != set(common) for r in available.values()):
+        common_sectors = sorted(common)
+        if any(set(r.scores) != set(common_sectors) for r in available.values()):
             warnings.warn(
                 "horizon sector coverage 不一致，融合仅取交集", RuntimeWarning, stacklevel=2
             )
 
-        fused: dict[str, float] = {s: 0.0 for s in common}
+        fused: dict[str, float] = {s: 0.0 for s in common_sectors}
         total_w = 0.0
         for period, r in available.items():
             w = float(self.fusion_weights.get(period, 0.0))
             if w <= 0:
                 continue
-            vals = np.array([r.scores[s] for s in common], dtype=float)
+            vals = np.array([r.scores[s] for s in common_sectors], dtype=float)
             # z-score 对正比例缩放不变，先缩放可避免有限极值溢出。
             magnitude = max(float(np.max(np.abs(vals))), 1.0)
             vals = vals / magnitude
@@ -443,7 +449,7 @@ class CrossSectionalRidgeModel:
                 z = (vals - vals.mean()) / std
             else:
                 z = np.zeros_like(vals)
-            for s, zi in zip(common, z):
+            for s, zi in zip(common_sectors, z):
                 fused[s] += w * float(zi)
             total_w += w
         if total_w <= 0:
