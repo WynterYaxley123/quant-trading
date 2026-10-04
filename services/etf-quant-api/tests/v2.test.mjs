@@ -29,8 +29,8 @@ test('V2 endpoint keeps local origin/read-only/path boundaries',async t=>{
 });
 test('forged report or tampered certified fit source fails closed',async t=>{
   const temp=await mkdtemp(path.join(os.tmpdir(),'SYNTHETIC-v2-integrity-'));t.after(()=>rm(temp,{recursive:true,force:true}));
-  const manifest=JSON.parse(await readFile(path.join(root,'reports/engineering/etf-quant-v2-finalization-integrity.json')));
-  const names=new Set([...Object.keys(manifest.implementation_integrity.files),'reports/engineering/etf-quant-v2-finalization-integrity.json','reports/engineering/etf-quant-v2-build-integrity.json']);
+  const manifest=JSON.parse(await readFile(path.join(root,'reports/engineering/etf-quant-v2-observation-integrity.json')));
+  const names=new Set([...Object.keys(manifest.implementation_integrity.files),'reports/engineering/etf-quant-v2-observation-integrity.json']);
   for(const name of names){await mkdir(path.dirname(path.join(temp,name)),{recursive:true});await writeFile(path.join(temp,name),await readFile(path.join(root,name)));}
   assert.equal((await observeV2(temp)).validation_status,'FAILED');
   await writeFile(path.join(temp,'research/etf_quant_v2/experiment.py'),'SYNTHETIC tamper');

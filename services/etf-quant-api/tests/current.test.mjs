@@ -1,12 +1,14 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {once} from 'node:events';
 import os from 'node:os';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {createApi,emptyView,PREFIX} from '../server.mjs';
+import {aggregateCurrent} from '../current.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const bytes=v=>Buffer.from(JSON.stringify(v));
@@ -123,4 +125,31 @@ test('unknown or newer failure is not silently superseded by old certification',
   const r=await f.get();assert.equal(r.body.data.historical_status,null);
   assert.equal(r.body.data.shadow_runtime_armed,false);assert.equal(r.body.data.shadow_start_gate,'BLOCKED_INTEGRITY');
   assert.equal((await f.get('health')).body.data.status,'DEGRADED');
+});
+
+test('actual versioned repository preserves frozen V1 certification through an explicit transition',async t=>{
+  const f=await fixture(t),repoRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
+  const release=JSON.parse(await readFile(path.join(repoRoot,'reports/etf_quant/etf_quant_v1_final_release_v1.json')));
+  const id='f'.repeat(64),calendar=Buffer.from('trade_date,is_trading\n2026-09-30,true\n2026-10-04,false\n2026-10-08,true\n2026-10-09,true\n');
+  const manifest=bytes({snapshot_id:id,source_commit:release.cnequity_pin,data_cutoff:'2026-09-30',created_at:'2026-09-30T12:00:00Z',files:{'trading_calendar.csv':sha(calendar)}});
+  await save(path.join(f.control,`exports/${id}/manifest.json`),manifest);
+  await save(path.join(f.control,`exports/${id}/trading_calendar.csv`),calendar);
+  await save(path.join(f.control,'latest_export.json'),bytes({snapshot_id:id,manifest_sha256:sha(manifest)}));
+  const now=()=>Date.parse('2026-10-04T08:00:00Z');
+  assert.equal((await aggregateCurrent({controlRoot:f.control,repoRoot,view:emptyView(),now:now()})).formal.epoch_count,0);
+  const server=createApi({runtimeRoot:f.runtime,controlRoot:f.control,repoRoot,now});
+  server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>server.close());
+  const response=await fetch(`http://127.0.0.1:${server.address().port}${PREFIX}current`),body=await response.json();
+  assert.equal(response.status,200);assert.equal(body.data.shadow_runtime_armed,true);
+  assert.equal(body.data.provenance.candidate_hash,release.candidate_hash);
+  assert.equal(body.data.formal.epoch_count,0);assert.equal(body.data.formal.signal_count,0);
+  assert.equal(body.data.formal.nav,null);assert.equal(body.data.calendar.next_eligible_trading_date,'2026-10-08');
+  const certificate=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/etf-quant-v2-observation-integrity.json')));
+  for(const name of [...Object.keys(certificate.implementation_integrity.files),'reports/engineering/etf-quant-v2-observation-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json']) {
+    await save(path.join(f.repo,name),await readFile(path.join(repoRoot,name)));
+  }
+  await save(path.join(f.repo,'services/etf-quant-api/server.mjs'),Buffer.from('UNREVIEWED_SERVER_DRIFT'));
+  f.setTime('2026-10-04T08:00:00Z');
+  const corrupted=await f.get();assert.equal(corrupted.status,503);
+  assert.equal(corrupted.body.error.code,'RUNTIME_INTEGRITY_BLOCKER');
 });

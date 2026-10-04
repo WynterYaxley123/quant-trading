@@ -7,6 +7,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { observeV2 } from './v2.mjs';
 
 export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const HASH = /^[a-f0-9]{64}$/;
@@ -69,7 +70,8 @@ export function unconfiguredCurrent(now) {
 export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.now(),repoRoot=REPO}) {
   if(!controlRoot) return unconfiguredCurrent(now);
   const root=await external(controlRoot);
-  const release=json(await leaf(repoRoot,'reports/etf_quant/etf_quant_v1_final_release_v1.json'));
+  const releaseFile=await leaf(repoRoot,'reports/etf_quant/etf_quant_v1_final_release_v1.json');
+  const release=json(releaseFile);
   check(release.project==='ETF-Quant V1' && release.mode==='SIMULATION_ONLY'
     && release.broker_enabled===false && release.real_order_path===false
     && Number.isFinite(Date.parse(release.generated_at)) && Date.parse(release.generated_at)<=now);
@@ -79,9 +81,19 @@ export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.n
     ['strategies/etf_quant/config/verified_mappings_v1.json','strict_registry_hash']]) {
     check(HASH.test(release[field]) && release.certified_files[name]===release[field]);
   }
+  let transition;
   for(const [name,hash] of Object.entries(release.certified_files)) {
     check(HASH.test(hash) && !path.isAbsolute(name) && !name.split(/[\\/]/).includes('..'));
-    check(digest((await leaf(repoRoot,name)).raw)===hash);
+    const currentHash=digest((await leaf(repoRoot,name)).raw);
+    if(currentHash===hash) continue;
+    check(['services/etf-quant-api/server.mjs','services/etf-quant-api/current.mjs'].includes(name));
+    if(!transition) {
+      await observeV2(repoRoot); // Verify the complete current certificate and its immutable parent.
+      transition=json(await leaf(repoRoot,'reports/engineering/etf-quant-v2-observation-integrity.json')).implementation_integrity;
+      check(transition.v1_observation_transition.release_manifest_sha256===digest(releaseFile.raw));
+    }
+    const change=transition.v1_observation_transition.files[name];
+    check(transition.files[name]===currentHash && change?.before_sha256===hash && change.after_sha256===currentHash);
   }
   const observationFile=await leaf(root,'latest_observation.json',128*1024);
   const observation=json(observationFile);

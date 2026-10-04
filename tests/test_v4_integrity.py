@@ -196,6 +196,7 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
         HOTFIX_MANIFEST,
         PARENT_MANIFEST,
         V2_BUILD_MANIFEST,
+        V2_FINALIZATION_MANIFEST,
         V2_PREREQUISITE_MANIFEST,
         ImplementationIntegrityError,
         verify_implementation,
@@ -204,11 +205,12 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
     report = json.loads((ROOT / ACTIVE_MANIFEST).read_text())["implementation_integrity"]
     assert (
         report["parent_manifest_sha256"]
-        == sha256((ROOT / V2_BUILD_MANIFEST).read_bytes()).hexdigest()
+        == sha256((ROOT / V2_FINALIZATION_MANIFEST).read_bytes()).hexdigest()
     )
     assert PARENT_MANIFEST in verify_implementation(ROOT)
     assert HOTFIX_MANIFEST in verify_implementation(ROOT)
     assert V2_PREREQUISITE_MANIFEST in verify_implementation(ROOT)
     assert V2_BUILD_MANIFEST in verify_implementation(ROOT)
+    assert V2_FINALIZATION_MANIFEST in verify_implementation(ROOT)
     # The existing source-tamper/forged-hash regression covers every active certificate.
     assert issubclass(ImplementationIntegrityError, ValueError)
