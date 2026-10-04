@@ -7,7 +7,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { observeV2 } from './v2.mjs';
+import { observeV2, CURRENT_MANIFEST } from './v2.mjs';
 
 export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const HASH = /^[a-f0-9]{64}$/;
@@ -33,6 +33,21 @@ async function leaf(root, relative, limit=1024*1024) {
   return {raw:await readFile(file),mtime:info.mtime.toISOString()};
 }
 const json = item => JSON.parse(item.raw);
+export async function operationalOneShot({controlRoot,repoRoot=REPO,transportPython,runtimeRoot}) {
+  // Never copy a historical release command into a different active namespace.
+  if(!transportPython) return null;
+  check(path.isAbsolute(transportPython));
+  const python=await realpath(transportPython),info=await stat(python);
+  check(info.isFile());
+  const root=await external(controlRoot),config=json(await leaf(root,'config.json',128*1024));
+  check(config.strategy_version==='ETF_QUANT_V1' && path.isAbsolute(config.control_root)
+    && await realpath(config.control_root)===root && path.isAbsolute(config.runtime_root)
+    && runtimeRoot && await realpath(config.runtime_root)===await realpath(runtimeRoot));
+  const entry=await realpath(path.join(repoRoot,'services/etf-quant-runner/one_shot.py'));
+  check((await stat(entry)).isFile());
+  const quote=value=>{check(!/[\r\n\0]/.test(value));return `'${value.replaceAll("'","''")}'`;};
+  return `& ${quote(python)} -B ${quote(entry)} --config ${quote(path.join(root,'config.json'))}`;
+}
 export function calendarState(raw, now) {
   // Calendar CSV dates and booleans occupy the first schema columns, before
   // provenance. Quoted field splitting also accepts a standard CSV writer.
@@ -67,7 +82,7 @@ export function unconfiguredCurrent(now) {
     evidence:{production_pit:'UNKNOWN',strict_registry:'UNKNOWN',sws:'UNKNOWN',known_limitation:null},
     historical_status:null,one_shot_command:null,release_as_of:null,broker_enabled:false,real_order_path:false};
 }
-export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.now(),repoRoot=REPO}) {
+export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.now(),repoRoot=REPO,transportPython,runtimeRoot}) {
   if(!controlRoot) return unconfiguredCurrent(now);
   const root=await external(controlRoot);
   const releaseFile=await leaf(repoRoot,'reports/etf_quant/etf_quant_v1_final_release_v1.json');
@@ -81,7 +96,7 @@ export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.n
     ['strategies/etf_quant/config/verified_mappings_v1.json','strict_registry_hash']]) {
     check(HASH.test(release[field]) && release.certified_files[name]===release[field]);
   }
-  let transition;
+  let transition,active;
   for(const [name,hash] of Object.entries(release.certified_files)) {
     check(HASH.test(hash) && !path.isAbsolute(name) && !name.split(/[\\/]/).includes('..'));
     const currentHash=digest((await leaf(repoRoot,name)).raw);
@@ -90,10 +105,12 @@ export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.n
     if(!transition) {
       await observeV2(repoRoot); // Verify the complete current certificate and its immutable parent.
       transition=json(await leaf(repoRoot,'reports/engineering/etf-quant-v2-observation-integrity.json')).implementation_integrity;
+      active=json(await leaf(repoRoot,CURRENT_MANIFEST)).implementation_integrity;
       check(transition.v1_observation_transition.release_manifest_sha256===digest(releaseFile.raw));
     }
     const change=transition.v1_observation_transition.files[name];
-    check(transition.files[name]===currentHash && change?.before_sha256===hash && change.after_sha256===currentHash);
+    check(active.files[name]===currentHash && change?.before_sha256===hash
+      && change.after_sha256===transition.files[name]);
   }
   const observationFile=await leaf(root,'latest_observation.json',128*1024);
   const observation=json(observationFile);
@@ -142,7 +159,7 @@ export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.n
       count_scope:'CURRENT_COMMITTED_FORMAL_VIEW'},
     provenance:{code_sha:codeSha,release_code_sha:release.code_sha,candidate_hash:release.candidate_hash,
       pit_registry_hash:release.pit_registry_hash,strict_registry_hash:release.strict_registry_hash,cnequity_pin:release.cnequity_pin},
-    evidence:release.evidence,one_shot_command:release.one_shot_command,
+    evidence:release.evidence,one_shot_command:await operationalOneShot({controlRoot:root,repoRoot,transportPython,runtimeRoot}),
     historical_status:superseded?{
       status:'SUPERSEDED / HISTORICAL',reason_code:view.health.blockers[0]??null,
       processed_at:view.health.last_attempt_at??null}:null};

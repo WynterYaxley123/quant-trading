@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createApi,emptyView,PREFIX} from '../server.mjs';
-import {aggregateCurrent} from '../current.mjs';
+import {aggregateCurrent,operationalOneShot} from '../current.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const bytes=v=>Buffer.from(JSON.stringify(v));
@@ -84,6 +84,26 @@ test('armed current status accepts missing formal namespace and exposes certifie
   assert.equal(r.body.data.latest_finalized_market_date,'2026-09-30');
   assert.equal(r.body.data.provenance.candidate_hash,f.release.candidate_hash);
   assert.equal(r.body.data.runner.status,'READY_NO_SIGNAL');assert.equal(r.body.data.broker_enabled,false);
+  assert.equal(r.body.data.one_shot_command,null); // Historical release commands cannot target the active namespace.
+});
+test('operational command binds the active checkout, control and runtime with literal quoting',async t=>{
+  const f=await fixture(t),python=path.join(f.control,"transport name's.exe");
+  await save(python,'SYNTHETIC_NOT_EXECUTED');
+  await save(path.join(f.repo,'services/etf-quant-runner/one_shot.py'),'SYNTHETIC_NOT_EXECUTED');
+  const config={strategy_version:'ETF_QUANT_V1',control_root:f.control,runtime_root:f.runtime};
+  await save(path.join(f.control,'config.json'),bytes(config));
+  const options={controlRoot:f.control,repoRoot:f.repo,transportPython:python,runtimeRoot:f.runtime};
+  const command=await operationalOneShot(options);
+  assert.ok(command.includes("transport name''s.exe"));
+  assert.ok(command.includes(path.join(f.repo,'services/etf-quant-runner/one_shot.py')));
+  assert.ok(command.endsWith(`--config '${path.join(f.control,'config.json')}'`));
+  const current=await aggregateCurrent({...options,view:emptyView(),now:Date.parse('2026-10-01T08:00:00Z')});
+  assert.equal(current.one_shot_command,command);
+  assert.ok(!command.includes(f.release.one_shot_command));
+  await save(path.join(f.control,'config.json'),bytes({...config,runtime_root:f.control}));
+  await assert.rejects(()=>operationalOneShot(options),/CURRENT_STATUS_INTEGRITY_BLOCKER/);
+  await save(path.join(f.control,'config.json'),bytes({...config,strategy_version:'ETF_QUANT_V2'}));
+  await assert.rejects(()=>operationalOneShot(options),/CURRENT_STATUS_INTEGRITY_BLOCKER/);
 });
 test('historical model failure does not override current armed status or fabricate mapping',async t=>{
   const f=await fixture(t,{failed:true}),r=await f.get();
@@ -144,8 +164,8 @@ test('actual versioned repository preserves frozen V1 certification through an e
   assert.equal(body.data.provenance.candidate_hash,release.candidate_hash);
   assert.equal(body.data.formal.epoch_count,0);assert.equal(body.data.formal.signal_count,0);
   assert.equal(body.data.formal.nav,null);assert.equal(body.data.calendar.next_eligible_trading_date,'2026-10-08');
-  const certificate=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/etf-quant-v2-factual-units-integrity.json')));
-  for(const name of [...Object.keys(certificate.implementation_integrity.files),'reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json']) {
+  const certificate=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/etf-quant-v2-console-integrity.json')));
+  for(const name of [...Object.keys(certificate.implementation_integrity.files),'reports/engineering/etf-quant-v2-console-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json']) {
     await save(path.join(f.repo,name),await readFile(path.join(repoRoot,name)));
   }
   await save(path.join(f.repo,'services/etf-quant-api/server.mjs'),Buffer.from('UNREVIEWED_SERVER_DRIFT'));
