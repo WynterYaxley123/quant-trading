@@ -8,7 +8,7 @@ import json
 import subprocess
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -176,7 +176,24 @@ def with_current_etf_bars(
         file = contained(output, str(day) + "/" + row["symbol"] + ".parquet")
         if checksum(file) != row["bars_sha256"]:
             raise ValueError("ETF_EXPORT_RECEIPT_HASH_ERROR")
-        frames.append(pl.read_parquet(file))
+        observed = datetime.fromisoformat(row["observed_at"])
+        if (
+            row["source_commit"] != PIN
+            or row["data_cutoff"] != str(day)
+            or observed.tzinfo is None
+            or observed > datetime.now(SHANGHAI)
+        ):
+            raise ValueError("ETF_EXPORT_RECEIPT_IDENTITY_ERROR")
+        # Direct public SDK rows have no lake publication provenance. Bind
+        # supplemental rows to their actual receipt, without claiming a settled
+        # upstream dataset version or backdating the observation to trade_date.
+        frames.append(
+            pl.read_parquet(file).with_columns(
+                pl.lit("cnequity_public_tdx_protocol").alias("source"),
+                pl.lit("PUBLIC_TDX_RECEIPT:" + row["bars_sha256"]).alias("data_version"),
+                pl.lit(observed.astimezone(timezone.utc)).alias("fetched_at"),
+            )
+        )
     current = pl.concat(frames, how="diagonal_relaxed") if frames else pl.DataFrame()
 
     def load(dataset: str, **kwargs: Any) -> pl.DataFrame:

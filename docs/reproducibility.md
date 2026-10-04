@@ -34,12 +34,18 @@ code. The original candidate remains byte-identical. Forward fitting may consume
 already-opened V2 raw facts only after labels mature; no OOS performance drives
 parameters. Consumed factual prefixes are hash-bound against later revisions.
 
-The active transition is `reports/engineering/etf-quant-v2-observation-integrity.json`.
+The observation transition is `reports/engineering/etf-quant-v2-observation-integrity.json`.
 It preserves the merged finalization certificate and repairs a proven observation
 contract bug: the historical V1 release pins the API's original files. Updated
 shared API files require a verified source transition with matching before/after
 hashes; frozen model, candidate and mapping pins never receive this exception.
 An actual repository test checks V1 arming and rejects uncertified server drift.
+
+The active transition is `reports/engineering/etf-quant-v2-factual-refresh-integrity.json`.
+It preserves both merged certificates and repairs the verified ETF export boundary:
+direct SDK rows gain provenance from their hashed receipt and actual observation
+time, explicitly distinguished from a settled lake dataset version. Market values
+and existing normalized keys remain unchanged; invalid receipts fail closed.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

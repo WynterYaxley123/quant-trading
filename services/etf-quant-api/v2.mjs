@@ -8,9 +8,9 @@ import {repositoryFile,verifyCurrentCertificate} from '../etf-quant-runner/secur
 const defaultRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const CANDIDATE='strategies/etf_quant_v2/config/candidate.json';
 const REPORT='reports/engineering/etf-quant-v2-build-research.json';
-const MANIFEST='reports/engineering/etf-quant-v2-observation-integrity.json';
-const PARENT='reports/engineering/etf-quant-v2-finalization-integrity.json';
-const GRANDPARENT='reports/engineering/etf-quant-v2-build-integrity.json';
+const MANIFEST='reports/engineering/etf-quant-v2-factual-refresh-integrity.json';
+const PARENTS=['reports/engineering/etf-quant-v2-observation-integrity.json',
+  'reports/engineering/etf-quant-v2-finalization-integrity.json','reports/engineering/etf-quant-v2-build-integrity.json'];
 const FINAL='reports/engineering/etf-quant-v2-final-oos.json';
 const RELEASE='strategies/etf_quant_v2/config/release.json';
 const MAPPING='reports/engineering/etf-quant-v2-mapping-study.json';
@@ -25,11 +25,13 @@ async function bounded(root,name) {
 }
 export async function observeV2(root=defaultRoot) {
   const real=await realpath(root);
-  const [candidateBytes,reportBytes,manifestBytes,parentBytes]=await Promise.all([CANDIDATE,REPORT,MANIFEST,PARENT].map(n=>bounded(real,n)));
+  const [candidateBytes,reportBytes,manifestBytes,...parentBytes]=await Promise.all([CANDIDATE,REPORT,MANIFEST,...PARENTS].map(n=>bounded(real,n)));
   const candidate=JSON.parse(candidateBytes),report=JSON.parse(reportBytes),manifest=JSON.parse(manifestBytes).implementation_integrity;
-  const grandparentBytes=await bounded(real,GRANDPARENT);
-  verifyCurrentCertificate(JSON.parse(parentBytes).implementation_integrity,JSON.parse(grandparentBytes).implementation_integrity,grandparentBytes,GRANDPARENT);
-  verifyCurrentCertificate(manifest,JSON.parse(parentBytes).implementation_integrity,parentBytes,PARENT);
+  let child=manifest;
+  for(let i=0;i<PARENTS.length;i++) {
+    const parent=JSON.parse(parentBytes[i]).implementation_integrity;
+    verifyCurrentCertificate(child,parent,parentBytes[i],PARENTS[i]);child=parent;
+  }
   // Verify every certified source, not merely report self-consistency.
   for(const [name,expected] of Object.entries(manifest.files))requireValue(sha(await readFile(repositoryFile(real,name)))===expected);
   // Python's frozen identity preserves 30.0; JS JSON normalizes it to 30.
