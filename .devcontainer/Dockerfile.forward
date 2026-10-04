@@ -1,0 +1,8 @@
+# Independent operational image; no deployed quant-research image modification.
+ARG DEVELOPER_IMAGE=quant-trading-dev:local
+FROM ${DEVELOPER_IMAGE}
+COPY requirements-forward.lock.txt /tmp/requirements-forward.lock.txt
+RUN python -m pip install --no-cache-dir -r /tmp/requirements-forward.lock.txt
+# CNEquity source is supplied as a read-only mount at its externally verified pin.
+ENV PYTHONDONTWRITEBYTECODE=1
+WORKDIR /workspace

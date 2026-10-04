@@ -12,6 +12,7 @@ from pathlib import Path
 
 import run as transport
 from docker_mounts import MountInputError, bind_mount, reference_name
+from docker_refresh import refresh_command, refresh_v2_bars
 
 REPO = Path(__file__).resolve().parents[2]
 SHANGHAI = timezone(timedelta(hours=8))
@@ -73,7 +74,11 @@ def run_once(config, *, now=None):
     # A separate metadata-only control root serializes refresh and initialization.
     control = transport.external_directory(config["control_root"])
     with transport.transport_lock(control):
-        result = _run_once(config, control, now=now)
+        version = config.get("strategy_version", "ETF_QUANT_V1")
+        if version not in ("ETF_QUANT_V1", "ETF_QUANT_V2"):
+            raise transport.GateError("UNKNOWN_STRATEGY_VERSION")
+        operation = _run_v2 if version == "ETF_QUANT_V2" else _run_once
+        result = operation(config, control, now=now)
         # A real refresh can cross the closing boundary. Recheck once, never
         # sleep/schedule/replay and never allow a test clock to become live.
         if (
@@ -81,7 +86,7 @@ def run_once(config, *, now=None):
             and result["status"] == "WAITING_FOR_MARKET_CLOSE"
             and datetime.now(timezone.utc).astimezone(SHANGHAI).time() >= time(15, 5)
         ):
-            result = _run_once(config, control)
+            result = operation(config, control)
         result["shadow_runtime_armed"] = not result["status"].startswith("BLOCKED")
         result["shadow_start_gate"] = (
             "STARTED"
@@ -96,12 +101,109 @@ def run_once(config, *, now=None):
         return result
 
 
+def _run_v2(config, control, *, now=None):
+    if now is not None:
+        raise transport.GateError("LIVE_V2_CLOCK_OVERRIDE_DENIED")
+    commit = transport.committed_code()
+    merged = transport.call(
+        ["git", "--no-optional-locks", "rev-parse", "origin/main"], cwd=REPO, timeout=30
+    )
+    if merged.returncode or merged.stdout.strip() != commit:
+        raise transport.GateError("V2_MERGED_MAIN_REQUIRED")
+    snapshot = transport.external_directory(config["snapshot"])
+    pointer_path = control / "latest_export.json"
+    if pointer_path.exists():
+        pointer = json.loads(pointer_path.read_bytes())
+        snapshot = transport.storage.contained(
+            transport.external_directory(config["export_root"]), pointer["snapshot_id"]
+        )
+        if checksum(snapshot / "manifest.json") != pointer["manifest_sha256"]:
+            raise transport.GateError("EXPORT_HASH_BLOCKER")
+    meta = transport.verify_snapshot_files(snapshot)
+    local = datetime.now(timezone.utc).astimezone(SHANGHAI)
+    with (snapshot / "trading_calendar.csv").open(encoding="utf-8", newline="") as handle:
+        sessions = [
+            date.fromisoformat(r["trade_date"])
+            for r in csv.DictReader(handle)
+            if r["is_trading"] == "true"
+        ]
+    completed = [
+        d for d in sessions if d < local.date() or d == local.date() and local.time() >= time(15, 5)
+    ]
+    if completed and meta["data_cutoff"] < str(max(completed)):
+        refresh_result = transport.call(
+            refresh_command(config, max(completed), meta["data_cutoff"]), timeout=3600
+        )
+        refresh = transport.result_json(refresh_result)
+        finalized = refresh.get("latest_finalized")
+        if finalized:
+            snapshot = transport.storage.contained(
+                transport.external_directory(config["export_root"]), finalized["snapshot_id"]
+            )
+            if checksum(snapshot / "manifest.json") != finalized["manifest_sha256"]:
+                raise transport.GateError("EXPORT_HASH_BLOCKER")
+            transport.verify_snapshot_files(snapshot)
+            transport.storage.atomic_bytes(pointer_path, transport.storage.json_bytes(finalized))
+        if refresh_result.returncode or refresh.get("status") != "REFRESH_EXPORTED":
+            return {
+                "status": refresh.get("status", "WAITING_FOR_PROVIDER_DATA"),
+                "strategy_version": "ETF_QUANT_V2",
+                "reason_code": refresh.get("reason_code", "SOURCE_SESSION_INCOMPLETE"),
+            }
+    if local.date() in sessions and local.time() >= time(15, 5):
+        refresh_v2_bars(config, snapshot)
+    image = config.get("developer_image", "quant-trading-forward:local")
+    if image.startswith("quant-research"):
+        raise transport.GateError("INDEPENDENT_V2_DEVELOPER_IMAGE_REQUIRED")
+    config_file = transport.external_file(config["container_config"])
+    mounts = [(REPO, "/workspace", True), (config_file, "/config.json", True)]
+    for field, target, readonly in (
+        ("snapshot", "/snapshot", True),
+        ("warmup_panel", "/warmup", True),
+        ("liquidity_root", "/liquidity", True),
+        ("exposure_vectors", "/vectors.json", True),
+        ("runtime_root", "/shadow-v2", False),
+        ("v2_control_root", "/control-v2", False),
+    ):
+        path = (
+            snapshot
+            if field == "snapshot"
+            else transport.external_file(config[field])
+            if field == "exposure_vectors"
+            else transport.external_directory(config[field])
+        )
+        mounts.append((path, target, readonly))
+    argv = [config.get("docker_executable", "docker"), "run", "--rm", "--network", "none"]
+    for source, target, readonly in mounts:
+        argv += bind_mount(source, target, readonly=readonly)
+    argv += [
+        "-e",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "-e",
+        "PYTHONPATH=/workspace",
+        "-w",
+        "/workspace",
+        image,
+        "python",
+        "-B",
+        "services/etf-quant-runner/versioned.py",
+        "--config",
+        "/config.json",
+        "--commit",
+        commit,
+    ]
+    result = transport.call(argv, timeout=3600)
+    response = transport.result_json(result)
+    if result.returncode:
+        raise transport.GateError("V2_FORMAL_DOCKER_CYCLE_BLOCKER")
+    return response
+
+
 def _run_once(config, control, *, now=None):
     now = datetime.now(timezone.utc) if now is None else now
     commit = transport.committed_code()
-    if (
-        transport.call(["git", "branch", "--show-current"], cwd=REPO).stdout.strip()
-        != "integration/etf-quant-v1-shadow-autonomous-final"
+    if not transport.formal_branch_allowed(
+        transport.call(["git", "branch", "--show-current"], cwd=REPO).stdout.strip(), commit
     ):
         raise transport.GateError("FORMAL_INTEGRATION_BRANCH_REQUIRED")
     pins = certified_inputs(config)
@@ -153,12 +255,14 @@ def _run_once(config, control, *, now=None):
     target = max(eligible_days) if eligible_days else None
     refresh = {"refresh_attempted": False}
     if target and meta["data_cutoff"] < str(target):
-        sidecar = transport.external_directory(config["sidecar_root"])
-        interpreter = sidecar / "venv/Scripts/python.exe"
-        if not interpreter.exists():
-            interpreter = sidecar / "venv/bin/python"
-        result = transport.call(
-            [
+        if config.get("docker_source_root"):
+            command = refresh_command(config, target, meta["data_cutoff"])
+        else:
+            sidecar = transport.external_directory(config["sidecar_root"])
+            interpreter = sidecar / "venv/Scripts/python.exe"
+            if not interpreter.exists():
+                interpreter = sidecar / "venv/bin/python"
+            command = [
                 interpreter,
                 "-B",
                 REPO / "services/cnequity-sidecar/forward.py",
@@ -172,9 +276,8 @@ def _run_once(config, control, *, now=None):
                 target,
                 "--after",
                 meta["data_cutoff"],
-            ],
-            timeout=3600,
-        )
+            ]
+        result = transport.call(command, timeout=3600)
         refresh = transport.result_json(result)
         receipt_id = now.strftime("%Y%m%dT%H%M%S") + "_" + transport.uuid4().hex[:12]
         transport.storage.publish_generation(

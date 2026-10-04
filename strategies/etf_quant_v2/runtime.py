@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 
 from strategies.etf_quant.config import FACTORS_19, H10_FACTORS
-from strategies.etf_quant.mapping.partial import select_mappings_partial
 from strategies.etf_quant.models import NumPyRidge
 from strategies.etf_quant.portfolio.policy import (
     POLICY_B40_WITH_CASH,
@@ -26,6 +25,8 @@ from strategies.etf_quant.portfolio.policy import (
     IndustryCandidate,
     evaluate_policy,
 )
+
+from .mapping import select_mappings
 
 SHANGHAI = ZoneInfo("Asia/Shanghai")
 
@@ -49,6 +50,7 @@ class FrozenSpecification:
     final_oos_start: date
     final_oos_end: date
     validated: bool
+    final_oos_authorized: bool = False
 
     def __post_init__(self) -> None:
         if (
@@ -131,7 +133,10 @@ def prepare_signal(
         rows = [
             r
             for r in observations
-            if window <= r.day <= cutoff and not spec.final_oos_start <= r.day <= spec.final_oos_end
+            if window <= r.day <= cutoff
+            and (
+                spec.final_oos_authorized or not spec.final_oos_start <= r.day <= spec.final_oos_end
+            )
         ]
         eligible = [
             r
@@ -208,7 +213,7 @@ def prepare_signal(
         )
         for code, score in top
     }
-    chosen = select_mappings_partial(top, pools, execution_policy=POLICY_B40_WITH_CASH)
+    chosen = select_mappings(top, pools)
     allocation = evaluate_policy(POLICY_B40_WITH_CASH, list(chosen), exposure_vectors, cap=0.35)
     return {
         "product": "ETF_QUANT_V2",
@@ -220,7 +225,8 @@ def prepare_signal(
         "allocation": allocation.as_dict(),
         "accounting": "WAIT_FOR_GENUINE_FINALIZED_T_PLUS_ONE_RAW_OPEN",
         "mode": "SIMULATION_ONLY",
-        "validation_accepted": spec.validated,
+        "validation_accepted": spec.validated and not spec.final_oos_authorized,
+        "historical_final_oos_accepted": spec.validated and spec.final_oos_authorized,
         "broker_enabled": False,
         "real_order_path": False,
     }

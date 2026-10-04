@@ -198,8 +198,36 @@ def configure_io_root(cfg, paths):
     cfg.data_root = io_root
 
 
-def forward(root, source_config, export_config, target, after, *, now=None, observation=None):
-    verify_install(root)
+def forward(
+    root,
+    source_config,
+    export_config,
+    target,
+    after,
+    *,
+    now=None,
+    observation=None,
+    docker_source=None,
+):
+    if docker_source is None:
+        verify_install(root)
+    else:
+        # Container-only alternative to the historical host-sidecar venv.
+        # The same upstream JobEngine, finalization and exporter remain in use.
+        from importlib.util import find_spec
+
+        from strategies.etf_quant_v2.refresh import verify_source
+
+        if not Path("/.dockerenv").is_file():
+            raise ValueError("INDEPENDENT_DEVELOPER_CONTAINER_REQUIRED")
+        verify_source(docker_source)
+        spec = find_spec("cnequity")
+        if (
+            spec is None
+            or spec.origin is None
+            or not Path(spec.origin).resolve().is_relative_to(docker_source.resolve())
+        ):
+            raise ValueError("PINNED_CONTAINER_IMPORT_REQUIRED")
     from cnequity.config import load_config
     from cnequity.domain.market_time import SHANGHAI_TZ
     from cnequity.orchestrator.engine import JobEngine
@@ -312,7 +340,18 @@ def forward(root, source_config, export_config, target, after, *, now=None, obse
             # Use the identical short physical spelling for writer AND reader.
             settings["paths"]["lake_root"] = str(cfg.data_root)
             journal.prepare(session, receipts[-1]["run_id"], lake_fingerprint(cfg.data_root))
-            result = export_lake_streaming(settings, load)
+            exporter_load = load
+            if docker_source is not None:
+                from strategies.etf_quant_v2.refresh import with_current_etf_bars
+
+                exporter_load = with_current_etf_bars(
+                    load,
+                    settings["export"]["etf_symbols"],
+                    session,
+                    Path(settings["paths"]["export_root"]).parent / "etf-bars",
+                    docker_source,
+                )
+            result = export_lake_streaming(settings, exporter_load)
             journal.publish(session, result, receipts[-1]["run_id"])
             if observation is not None:
                 observation["latest_finalized"] = journal.latest
@@ -333,6 +372,7 @@ def main():
     parser.add_argument("--export-config", type=Path, required=True)
     parser.add_argument("--target", type=date.fromisoformat, required=True)
     parser.add_argument("--after", type=date.fromisoformat, required=True)
+    parser.add_argument("--docker-source", type=Path)
     args = parser.parse_args()
     observation: dict[str, object] = {}
     try:
@@ -344,6 +384,7 @@ def main():
                 args.target,
                 args.after,
                 observation=observation,
+                docker_source=args.docker_source,
             )
     except Exception as error:
         # Provider readiness failure cannot produce a signal or invented cutoff.
