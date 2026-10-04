@@ -3,6 +3,7 @@
 import json
 from datetime import date, datetime, timezone
 from pathlib import Path
+from types import SimpleNamespace
 
 import polars as pl
 import pytest
@@ -58,17 +59,23 @@ def test_normalized_export_supplement_preserves_existing_keys_and_stock_queries(
     )
     assert result["close"].to_list() == [10.0, 11.0]
     supplemental = result.row(1, named=True)
-    assert supplemental["source"] == "cnequity_public_tdx_protocol"
-    assert supplemental["data_version"] == "PUBLIC_TDX_RECEIPT:" + module.checksum(path)
+    assert supplemental["source"] == "tdx_protocol"
+    assert supplemental["data_version"] == "v2"
+    assert supplemental["sdk_receipt_sha256"] == module.checksum(path)
+    assert supplemental["sdk_receipt_source_commit"] == module.PIN
+    assert supplemental["volume"] == 1000.0 and supplemental["amount"] == 11000.0
     assert supplemental["fetched_at"] == observed
     monkeypatch.syspath_prepend(
         str(Path(__file__).resolve().parents[1] / "services/cnequity-sidecar")
     )
-    from export_streaming import _check_cells
+    from export_streaming import _check_cells, _validate_row
 
     from strategies.etf_quant.runtime.exports import PROVENANCE, SCHEMAS
 
     _check_cells(supplemental, {**SCHEMAS["etf_bars"], **PROVENANCE})
+    _validate_row(
+        "etf_bars", supplemental, day, {date(2026, 9, 29), day}, SimpleNamespace(max_fetched=None)
+    )
     assert load(
         "daily_bars", symbols=["600000.SH"], start="2026-09-29", end=str(day), adjust="hfq"
     ).equals(old)

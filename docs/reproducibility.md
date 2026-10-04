@@ -41,11 +41,18 @@ shared API files require a verified source transition with matching before/after
 hashes; frozen model, candidate and mapping pins never receive this exception.
 An actual repository test checks V1 arming and rejects uncertified server drift.
 
-The active transition is `reports/engineering/etf-quant-v2-factual-refresh-integrity.json`.
+The factual transition is `reports/engineering/etf-quant-v2-factual-refresh-integrity.json`.
 It preserves both merged certificates and repairs the verified ETF export boundary:
 direct SDK rows gain provenance from their hashed receipt and actual observation
 time, explicitly distinguished from a settled lake dataset version. Market values
 and existing normalized keys remain unchanged; invalid receipts fail closed.
+
+The active transition is `reports/engineering/etf-quant-v2-factual-units-integrity.json`.
+The complete snapshot validator requires `data_version=v2` for the share-volume
+unit contract. The pinned public SDK already supplies shares, so no numeric
+conversion occurs. Supplemental receipt hashes and source pins are separate
+columns; observed timestamps remain actual. Tests exercise the unchanged complete
+price, volume, calendar and finalized-time gates as well as the cell schema.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

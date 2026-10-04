@@ -185,12 +185,15 @@ def with_current_etf_bars(
         ):
             raise ValueError("ETF_EXPORT_RECEIPT_IDENTITY_ERROR")
         # Direct public SDK rows have no lake publication provenance. Bind
-        # supplemental rows to their actual receipt, without claiming a settled
-        # upstream dataset version or backdating the observation to trade_date.
+        # supplemental rows to their actual receipt. The pinned SDK stock/ETF
+        # path already converts lots to shares; v2 is that unit contract, not a
+        # publication identifier. Keep the receipt identity in separate columns.
         frames.append(
             pl.read_parquet(file).with_columns(
-                pl.lit("cnequity_public_tdx_protocol").alias("source"),
-                pl.lit("PUBLIC_TDX_RECEIPT:" + row["bars_sha256"]).alias("data_version"),
+                pl.lit("tdx_protocol").alias("source"),
+                pl.lit("v2").alias("data_version"),
+                pl.lit(row["bars_sha256"]).alias("sdk_receipt_sha256"),
+                pl.lit(PIN).alias("sdk_receipt_source_commit"),
                 pl.lit(observed.astimezone(timezone.utc)).alias("fetched_at"),
             )
         )

@@ -172,8 +172,12 @@ export function audit() {
   const observationBytes=readFileSync(repositoryFile(repo,observationPath));
   const observation=JSON.parse(observationBytes).implementation_integrity;
   verifyCurrentCertificate(observation,finalization,finalizationBytes,finalizationPath);
-  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/etf-quant-v2-factual-refresh-integrity.json'))).implementation_integrity;
-  verifyCurrentCertificate(current,observation,observationBytes,observationPath);
+  const factualPath='reports/engineering/etf-quant-v2-factual-refresh-integrity.json';
+  const factualBytes=readFileSync(repositoryFile(repo,factualPath));
+  const factual=JSON.parse(factualBytes).implementation_integrity;
+  verifyCurrentCertificate(factual,observation,observationBytes,observationPath);
+  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/etf-quant-v2-factual-units-integrity.json'))).implementation_integrity;
+  verifyCurrentCertificate(current,factual,factualBytes,factualPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected
   ).map(([name])=>name);

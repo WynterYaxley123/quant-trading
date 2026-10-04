@@ -144,8 +144,8 @@ test('actual versioned repository preserves frozen V1 certification through an e
   assert.equal(body.data.provenance.candidate_hash,release.candidate_hash);
   assert.equal(body.data.formal.epoch_count,0);assert.equal(body.data.formal.signal_count,0);
   assert.equal(body.data.formal.nav,null);assert.equal(body.data.calendar.next_eligible_trading_date,'2026-10-08');
-  const certificate=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/etf-quant-v2-factual-refresh-integrity.json')));
-  for(const name of [...Object.keys(certificate.implementation_integrity.files),'reports/engineering/etf-quant-v2-factual-refresh-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json']) {
+  const certificate=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/etf-quant-v2-factual-units-integrity.json')));
+  for(const name of [...Object.keys(certificate.implementation_integrity.files),'reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json']) {
     await save(path.join(f.repo,name),await readFile(path.join(repoRoot,name)));
   }
   await save(path.join(f.repo,'services/etf-quant-api/server.mjs'),Buffer.from('UNREVIEWED_SERVER_DRIFT'));
