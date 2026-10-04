@@ -48,8 +48,9 @@ the worst fold, required all four folds positive and coefficient-norm CV ≤0.2.
 It selected **Ridge α=30, raw features, 12 months, H10/H40/H120 fusion
 0.25/0.50/0.25**, retaining the frozen 5/19/19 factor sets. Development RankIC is
 **0.143103**, spread **0.037231**, fold IC **0.06694/0.22820/0.13568/0.14016**,
-coefficient-norm CV **0.064856**. This is **Validation-informed and not independently
-validated**. Final OOS remains sealed. No alternative linear family was used.
+coefficient-norm CV **0.064856**. At the build milestone this was **Validation-informed
+and not independently validated**. Its later single Final OOS is recorded in the
+[finalization protocol](etf-quant-v2-protocol.md); no alternative linear family was used.
 
 Recent common-date high-confidence and extended-history coefficients agree within
 3.5e−12 and their signs agree. Their 12-month fit windows contain the same Tier B
@@ -62,7 +63,7 @@ Historical mapping therefore falls back to cash 100%; actual ETF turnover and co
 are zero, and no tradable ETF NAV is inferred. Revised industry top-five absolute
 weight turnover is 0.74696; its 8bps cost proxy is 0.0005976 per signal. These are
 counterfactual industry diagnostics, not an executable ETF performance result.
-The immutable direct-mapping registry currently covers one of the 124 model
+The immutable V1 direct-mapping registry covers one of the 124 model
 industries with two verified entries. Other direct/theme/proxy entries still require
 the unchanged evidence and fresh liquidity gates; prospective cash exposure can be
 substantial and is not predicted from historical unavailable evidence.
@@ -70,5 +71,6 @@ substantial and is not predicted from historical unavailable evidence.
 See [aggregate evidence](../reports/engineering/etf-quant-v2-build-research.json),
 [candidate](../strategies/etf_quant_v2/config/candidate.json), and [protocol](etf-quant-v2-protocol.md).
 V1 contracts/candidate/Shadow are unchanged. V2 Shadow has zero epochs, signals,
-intents and fills. Future operation requires launch authorization and acknowledgement
-of the unvalidated revision; no launcher was invoked in this task.
+intents and fills at that historical build milestone. The subsequent finalization task
+explicitly authorizes post-merge operation, adds an independent registry and records
+the separate Final-OOS result without changing this Development evidence.

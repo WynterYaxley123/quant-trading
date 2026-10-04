@@ -4,7 +4,8 @@ The project contains historical Shenwan sector-rotation research, frozen ETF-Qua
 independent ETF-Quant V2 Research, shared data/runner/API infrastructure and the observation
 dashboard. V2 primitives reuse the frozen numerical solver and factor vocabulary; V1
 does not import V2. V2 has a separate candidate/forward package and state namespace.
-Its single Validation failed; the Development revision remains unvalidated.
+Its original Validation failed; the frozen Development revision passed its single
+preregistered Final OOS. Evidence limitations remain visible.
 See the [V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary.md).
 
 External pinned CNEquity produces normalized immutable factual exports. This repository
@@ -24,8 +25,9 @@ Research API requires approval of exact Development artifact hashes and excludes
 phases. ETF API verifies immutable runtime generations and public-view integrity. These
 distinct trust contracts justify two services. Both are local and read-only; dashboard
 and launcher observe them without invoking a formal cycle. The bounded V2 research
-endpoint exposes certified aggregate metadata and failed Validation, without market
-rows or an OOS/runner route. The V2 card remains distinct from V1 runtime observations.
+endpoint exposes certified aggregate Final-OOS metadata and failed original Validation,
+without market rows or evaluation/runner routes. The versioned current endpoint and
+dashboard compare independently persisted V1/V2 forward ledgers.
 
 `reports/etf_quant/` retains historical metadata; active source integrity is versioned
 separately. See [reproducibility](reproducibility.md) and [data and PIT](data-and-pit.md).

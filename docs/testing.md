@@ -39,3 +39,11 @@ Validation in the independent developer container. These private-data operations
 not portable tests or CI. V2's forward preparation, mature labels, sealed-region
 exclusion, costs, cash, rebalance and T+1 gates are verified with synthetic inputs.
 Its read-only API verifies the published aggregate/candidate/source hash chain.
+
+The separately authorized finalization opens V2 Final OOS once; portable tests
+verify immutable gate/result identities without rerunning the real evaluation.
+`tests/test_etf_quant_v2_shadow.py` exercises synthetic facts, factors, Ridge/fusion,
+independent mapping, collisions/cash, T-close intent, delayed T+1 lot/cost accounting,
+idempotence and NAV/public view. API/frontend tests verify empty arming, scientific
+failure labels, version selection and date-aligned ledgers. Post-merge operational
+arming/launch is explicitly authorized and remains outside engineering acceptance.

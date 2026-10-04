@@ -73,3 +73,11 @@ Run `node --test tests/*.test.mjs`. All fixtures are synthetic and temporary;
 they are never published into the user's real runtime. Clients must verify that
 all endpoint envelopes refer to the same generation; the dashboard rejects a
 mid-refresh pointer change and offers manual refresh, not mixed generations.
+
+V2 uses `/api/etf-quant/v2/research` for the certified single Final-OOS result and
+independent mapping inventory, and `/api/etf-quant/v2/current` for forward state.
+Set `ETF_QUANT_V2_RUNTIME_ROOT` and `ETF_QUANT_V2_CONTROL_ROOT` to disjoint external
+V2 roots. The current DTO carries `strategy_version=ETF_QUANT_V2`, scientific
+classification, candidate/registry/release hashes and actual business counts.
+Control arming never implies an epoch or NAV. Verified runtime generations take
+precedence after start. V1 routes and frozen specification remain compatible.

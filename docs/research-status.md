@@ -12,7 +12,10 @@ later cycles. Synthetic fixtures and engineering portfolios are not formal histo
 Absent result metrics remain null, without substituted zeros or estimates.
 
 ETF-Quant V2 completed actual evidence-tier Development research and one Validation.
-Validation failed. The single authorized Development revision is Validation-informed
-and has not been independently validated. Final OOS remains sealed. V2 Shadow
-engineering is prepared with zero formal records; no launch occurred.
+Original Validation failed. The frozen single Development revision subsequently passed
+its preregistered single Final OOS: PASS_STRONG / HISTORICALLY_VALIDATED_STRONG.
+The 60 overlapping signals have no dependence-aware confidence interval; Tier A is zero.
+The independent 40% proxy registry covers 22/124 industries; remaining slots retain cash.
+Versioned Shadow engineering is complete. The October 4 release waits for the next
+post-freeze finalized trading session without backfilling September 30 signals.
 See the [measured V2 status](etf-quant-v2-development.md).

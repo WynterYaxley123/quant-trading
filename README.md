@@ -14,8 +14,11 @@ real orders, leverage or shorting. V1 sealed research phases remain inaccessible
 evidence tiers. Actual Development experiments and one reserved Validation have
 completed. Validation failed; one authorized Development revision selected Ridge
 α=30, a 12-month window and 10/40/120-session predictions. This revision is
-**Validation-informed and has not been independently validated**. Its independent
-Shadow implementation is prepared but has not started. Final OOS remains sealed.
+**Final OOS PASS_STRONG under the preregistered gate** (60 overlapping signals;
+dependence-aware uncertainty is unavailable). The original Validation failure
+remains recorded. V2 has independent mapping for 22/124 industries; other slots
+retain cash. The versioned runner, API and dashboard support independent CNY 10,000
+forward Shadow ledgers. The first formal epoch awaits a legal post-freeze date.
 The [V2 protocol](docs/etf-quant-v2-protocol.md) and
 [measured research status](docs/etf-quant-v2-development.md) explain the evidence
 limits and results. No profitability claim is made.

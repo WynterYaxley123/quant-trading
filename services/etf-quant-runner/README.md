@@ -1,4 +1,4 @@
-# Manual ETF transport V1
+# Versioned ETF forward transport
 
 Current deployment authority: root README and
 `reports/etf_quant/etf_quant_v1_final_release_v1.json`. The certified one_shot.py
@@ -9,13 +9,37 @@ is required. The console helper starts observation services only.
 
 ## Certified autonomous one-shot entry (no daemon)
 
-The current formal branch is `integration/etf-quant-v1-shadow-autonomous-final`.
+Formal delivery requires a clean committed tree at fetched `origin/main`; historical
+integration branch compatibility remains available. Release branches only run formally
+after their HEAD equals main.
 Use `one_shot.py --config <external-one-shot-config.json>` with the **existing
 isolated CNEquity interpreter**, not Windows global Python. The separate
 `one_shot.config.example.json` enumerates required paths; the deployment config
 is outside Git at `<runtime-root>`.
 Only file transport / calendar metadata execute on the host. Model, allocation,
 PIT admission and accounting run inside the existing frozen Docker image.
+
+V2 and new portable operational configurations use an independent developer image
+for source refresh, never a host quantitative environment. Set `strategy_version`
+explicitly to `ETF_QUANT_V1` or `ETF_QUANT_V2`; omitted retains V1 compatibility.
+For Docker refresh set `docker_source_root` to the pinned read-only CNEquity source,
+`operational_lake_root` to an owned external directory named `forward-source-lake`,
+and source/export TOML files to `/operational-lake` and `/source-control/exports`
+container paths. The source control's `config.json` pins the original instrument
+baseline at `/seed-snapshot` for the existing source-compatibility gate.
+Seed that owned lake from permitted factual source tables before the first refresh.
+The existing upstream JobEngine, session journal, streaming exporter and admission
+gates remain in use; the canonical lake and other services are read-only.
+
+V2 also supplies `container_config`, frozen `warmup_panel`, `liquidity_root`,
+`exposure_vectors`, independent `runtime_root` and `v2_control_root`. The container
+config uses `/snapshot`, `/warmup`, `/liquidity`, `/vectors.json`, `/shadow-v2` and
+`/control-v2`. Future ETF bars refresh through the pinned public SDK in a separate
+network-enabled developer container; numerical signal/accounting uses network=none.
+The adapter binds the V2 release and independent registry, preserves consumed factual
+prefixes and rejects retroactive signals. Both budgets are CNY 10,000 with separate
+locks/generations, intents, fills, NAV and benchmark baselines. Launch arming stores
+real observation metadata and zero business counts until the first eligible T.
 
 The one-shot refreshes only already completed official sessions via the pinned
 upstream job engine, preserving stage / batch / compact / revision / audit gates.
