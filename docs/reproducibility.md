@@ -47,12 +47,21 @@ direct SDK rows gain provenance from their hashed receipt and actual observation
 time, explicitly distinguished from a settled lake dataset version. Market values
 and existing normalized keys remain unchanged; invalid receipts fail closed.
 
-The active transition is `reports/engineering/etf-quant-v2-factual-units-integrity.json`.
+The unit transition is `reports/engineering/etf-quant-v2-factual-units-integrity.json`.
 The complete snapshot validator requires `data_version=v2` for the share-volume
 unit contract. The pinned public SDK already supplies shares, so no numeric
 conversion occurs. Supplemental receipt hashes and source pins are separate
 columns; observed timestamps remain actual. Tests exercise the unchanged complete
 price, volume, calendar and finalized-time gates as well as the cell schema.
+
+The active transition is `reports/engineering/etf-quant-v2-console-integrity.json`.
+The read-only V1 console derives its PowerShell command from the active checkout,
+control configuration and runtime, with an explicit `ETF_QUANT_TRANSPORT_PYTHON`
+standard-library transport interpreter. Each path is quoted literally; a mismatched
+version or namespace rejects. Without this interpreter setting the command is null,
+so the immutable release's old command never points a new deployment at an old ledger.
+The original V1 API transition remains immutable; later source changes require the
+complete verified certificate chain. No console operation executes the command.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

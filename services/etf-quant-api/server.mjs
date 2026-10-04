@@ -282,7 +282,7 @@ export async function observeReadiness(root, now = Date.now()) {
   return doc;
 }
 
-export function createApi({runtimeRoot='',controlRoot='',v2RuntimeRoot='',v2ControlRoot='',repoRoot,now=()=>Date.now(),origins=allowedOrigins()}={}) {
+export function createApi({runtimeRoot='',controlRoot='',v2RuntimeRoot='',v2ControlRoot='',repoRoot,transportPython,now=()=>Date.now(),origins=allowedOrigins()}={}) {
   return http.createServer(async (req,res)=>{
     res.setHeader('Content-Type','application/json; charset=utf-8');
     res.setHeader('Cache-Control','no-store');
@@ -316,7 +316,7 @@ export function createApi({runtimeRoot='',controlRoot='',v2RuntimeRoot='',v2Cont
     try {
       const {view,pointer,attemptPointer}=await observe(runtimeRoot,now());
       const current=(controlRoot || resource==='current')
-        ? await aggregateCurrent({controlRoot,repoRoot,view,pointer,now:now()}) : null;
+        ? await aggregateCurrent({controlRoot,repoRoot,view,pointer,now:now(),transportPython,runtimeRoot}) : null;
       if(current && controlRoot) projectCurrent(view,current);
       const route=ENDPOINTS[resource];
       const data=resource==='current'?current:resource==='readiness'?await observeReadiness(runtimeRoot,now())
@@ -331,6 +331,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   const port=Number(process.env.ETF_QUANT_API_PORT || 3312);
   if (!Number.isInteger(port) || port<1024 || port>65535) throw new Error('INVALID_LOCAL_PORT');
   const server=createApi({runtimeRoot:process.env.ETF_QUANT_RUNTIME_ROOT || '',
-    controlRoot:process.env.ETF_QUANT_CONTROL_ROOT || '',v2RuntimeRoot:process.env.ETF_QUANT_V2_RUNTIME_ROOT || '',v2ControlRoot:process.env.ETF_QUANT_V2_CONTROL_ROOT || ''});
+    controlRoot:process.env.ETF_QUANT_CONTROL_ROOT || '',v2RuntimeRoot:process.env.ETF_QUANT_V2_RUNTIME_ROOT || '',v2ControlRoot:process.env.ETF_QUANT_V2_CONTROL_ROOT || '',transportPython:process.env.ETF_QUANT_TRANSPORT_PYTHON});
   server.listen(port,'127.0.0.1',()=>process.stdout.write(`ETF_QUANT_READ_ONLY_API 127.0.0.1:${port}\n`));
 }
