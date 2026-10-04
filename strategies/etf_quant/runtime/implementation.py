@@ -15,7 +15,8 @@ V2_PREREQUISITE_MANIFEST = "reports/engineering/etf-quant-v2-integrity.json"
 V2_BUILD_MANIFEST = "reports/engineering/etf-quant-v2-build-integrity.json"
 V2_FINALIZATION_MANIFEST = "reports/engineering/etf-quant-v2-finalization-integrity.json"
 V2_OBSERVATION_MANIFEST = "reports/engineering/etf-quant-v2-observation-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/etf-quant-v2-factual-refresh-integrity.json"
+V2_FACTUAL_REFRESH_MANIFEST = "reports/engineering/etf-quant-v2-factual-refresh-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/etf-quant-v2-factual-units-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
@@ -91,6 +92,7 @@ def verify_implementation(root: Path) -> dict[str, str]:
         V2_BUILD_MANIFEST,
         V2_FINALIZATION_MANIFEST,
         V2_OBSERVATION_MANIFEST,
+        V2_FACTUAL_REFRESH_MANIFEST,
         ACTIVE_MANIFEST,
     ):
         current_bytes = (root / manifest_path).read_bytes()
