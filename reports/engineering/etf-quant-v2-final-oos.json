@@ -1,0 +1,78 @@
+{
+  "candidate_sha256": "bd0e83629c2c0b9eb8ecd89fa11f19f8051dd53287c28db3244d7377a4d6680f",
+  "completed_at": "2026-10-04T04:55:52.506007+00:00",
+  "contract": "ETF_QUANT_V2_FINAL_OOS_SINGLE_OPEN",
+  "decision": {
+    "classification": "PASS_STRONG",
+    "development_to_oos_rank_ic_ratio": 0.9343200043558811,
+    "directional": true,
+    "numerical_stability": true,
+    "positive_block_ic_concentration": 0.4337347601521179,
+    "product_status": "HISTORICALLY_VALIDATED_RESEARCH_CANDIDATE",
+    "scientific_status": "HISTORICALLY_VALIDATED_STRONG",
+    "secondary": {
+      "concentration": true,
+      "development_direction_retention": true
+    },
+    "temporal_robustness": true
+  },
+  "end": "2026-04-02",
+  "final_oos_opened": true,
+  "freeze_sha256": "65aaaa23402136d6a7b8c550efacbf320f37f4ab7a463811d32b0767d18b4105",
+  "gate_sha256": "dbc48afbf41d8933045a68f15dfac2289faa17ffab8e0fc68cff157989abecca",
+  "metrics": {
+    "all_fitted_coefficients_finite": true,
+    "coefficient_norm_cv": 0.06503050049970682,
+    "coefficient_norm_median": 0.3089912637663298,
+    "component_norm_cv": {
+      "10": 0.1986864449418678,
+      "120": 0.03809033022760599,
+      "40": 0.13936908421164917
+    },
+    "counterfactual_industry_cost_proxy": 0.0007386666666666668,
+    "folds": [
+      {
+        "mean_rank_ic": 0.2319689483346446,
+        "mean_spread": 0.05368605338144807,
+        "signals": 15
+      },
+      {
+        "mean_rank_ic": 0.022288801468659847,
+        "mean_spread": 0.040153117159932354,
+        "signals": 15
+      },
+      {
+        "mean_rank_ic": 0.12659805927091528,
+        "mean_spread": 0.055119739167307585,
+        "signals": 15
+      },
+      {
+        "mean_rank_ic": 0.15396170993968006,
+        "mean_spread": 0.07822421533114385,
+        "signals": 15
+      }
+    ],
+    "mean_rank_ic": 0.13370437975347496,
+    "mean_spread": 0.056795781259957975,
+    "median_rank_ic": 0.13076632572777339,
+    "minimum_component_fit_fraction": 1.0,
+    "positive_rank_ic_fraction": 0.9333333333333333,
+    "prediction_absolute_score_change": 0.2617447932074394,
+    "predictive_top5_absolute_weight_turnover": 0.9233333333333335,
+    "rank_ic_ir": 1.2013314040051903,
+    "ranking_turnover_one_minus_spearman": 0.1435715638293618,
+    "signals": 60,
+    "uncertainty": {
+      "bootstrap_ess": null,
+      "interval": null,
+      "reason": "INSUFFICIENT_BLOCKS"
+    }
+  },
+  "model_retuned": false,
+  "open_count": 1,
+  "panel_sha256": "f76c3c23061314de27813577502e7a44b53251436be44df6b1c48cc6bbd37f15",
+  "scope": "INDUSTRY_PREDICTION;NOT_ETF_NAV;OVERLAPPING_H40_LABELS;NO_INDEPENDENT_TIER_A",
+  "signal_calendar_count": 60,
+  "start": "2025-12-30",
+  "v1_sealed_performance_read": false
+}

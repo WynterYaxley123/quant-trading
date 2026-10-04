@@ -1,12 +1,41 @@
 """Synthetic authorization and unchanged target-equation checks."""
 
+import hashlib
 import json
+from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pytest
 
 from research.etf_quant_v2.experiment import ExperimentSplit, targets
 from research.etf_quant_v2.finalization import classify, exclusive_json, final_targets
+
+
+def test_published_result_is_bound_to_the_preaccess_frozen_gate_and_unchanged_model():
+    root = Path(__file__).resolve().parents[2]
+    freeze = json.loads((root / "config/research/etf-quant-v2-final-oos-freeze.json").read_bytes())
+    result = json.loads((root / "reports/engineering/etf-quant-v2-final-oos.json").read_bytes())
+    candidate_path = root / "strategies/etf_quant_v2/config/candidate.json"
+    candidate = json.loads(candidate_path.read_bytes())
+    assert result["open_count"] == freeze["open_count_maximum"] == 1
+    assert result["model_retuned"] is freeze["retuning_allowed"] is False
+    assert (
+        freeze["candidate_file_sha256"] == hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+    )
+    assert result["candidate_sha256"] == freeze["candidate_sha256"] == candidate["candidate_sha256"]
+    assert result["freeze_sha256"] == freeze["freeze_sha256"]
+    assert result["gate_sha256"] == freeze["gate_sha256"]
+    assert (
+        freeze["evaluation_code_sha256"]
+        == hashlib.sha256((root / "research/etf_quant_v2/finalization.py").read_bytes()).hexdigest()
+    )
+    assert datetime.fromisoformat(freeze["frozen_at"]) < datetime.fromisoformat(
+        result["completed_at"]
+    )
+    assert result["decision"] == classify(
+        result["metrics"], freeze["gate"], freeze["development_rank_ic"]
+    )
 
 
 def test_target_equation_matches_frozen_research():
