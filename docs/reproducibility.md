@@ -27,12 +27,19 @@ one failed Validation, the authorized Development revision and V1 regression.
 Candidate/protocol/data/code hashes resolve independently of Git delivery metadata.
 Full private research artifacts and original freeze records remain externally hashed.
 
-The active transition is `reports/engineering/etf-quant-v2-finalization-integrity.json`.
+The finalization transition is `reports/engineering/etf-quant-v2-finalization-integrity.json`.
 It appends the immutable build certificate, binds the preregistered Final-OOS freeze,
 single completed result, independent mapping/release manifests and versioned product
 code. The original candidate remains byte-identical. Forward fitting may consume
 already-opened V2 raw facts only after labels mature; no OOS performance drives
 parameters. Consumed factual prefixes are hash-bound against later revisions.
+
+The active transition is `reports/engineering/etf-quant-v2-observation-integrity.json`.
+It preserves the merged finalization certificate and repairs a proven observation
+contract bug: the historical V1 release pins the API's original files. Updated
+shared API files require a verified source transition with matching before/after
+hashes; frozen model, candidate and mapping pins never receive this exception.
+An actual repository test checks V1 arming and rejects uncertified server drift.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

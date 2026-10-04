@@ -81,3 +81,8 @@ V2 roots. The current DTO carries `strategy_version=ETF_QUANT_V2`, scientific
 classification, candidate/registry/release hashes and actual business counts.
 Control arming never implies an epoch or NAV. Verified runtime generations take
 precedence after start. V1 routes and frozen specification remain compatible.
+
+V1's historical release certificate remains immutable. Updated `server.mjs` and
+`current.mjs` are accepted only through the current verified integrity chain and
+explicit matching before/after hashes. Every other V1 certified input must retain
+its original hash. The actual repository acceptance test also rejects server drift.
