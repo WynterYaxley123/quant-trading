@@ -16,14 +16,14 @@ the runner, APIs and dashboard. Serialized historical identifiers remain compati
 | Walk-forward | Refit chronologically using only earlier features and labels already matured at each signal. |
 | Development | The sole phase allowed for model specification comparison and selection. |
 | Validation | Reserved chronological evidence evaluated after candidate freeze. V1 remains sealed; V2 opened once and failed. |
-| Validation-informed revision | One Development revision after Validation diagnosis; it is not independently validated. |
+| Validation-informed revision | One Development revision after Validation diagnosis; independent status requires its separately frozen Final-OOS result. |
 | Tier A | Official historical membership with historical availability evidence. |
 | Tier B | Real effective-dated historical reconstruction with sufficient source/roster coverage; historical availability can be unknown. |
 | Tier C | Weaker or retrospective historical reconstruction, explicitly identified for sensitivity analysis. |
 | Tier D | Unsupported/unclassifiable records excluded from modeling. |
 | High-confidence research | Uses eligible A/B records under the declared coverage policy. |
 | Extended-history research | Also admits explicitly labelled C records; does not imply strict PIT. |
-| Final OOS | Final out-of-sample phase, unopened and excluded from selection. |
+| Final OOS | Final out-of-sample phase, excluded from selection. V1 remains sealed; V2 opened once under the preregistered gate, with no subsequent retuning. |
 | Purge / maturity isolation | Separate signal phases so forward labels cannot cross into the next evaluation phase. |
 | Effective sample size (ESS) | An assumption-dependent estimate of temporal information under dependence. Cross-sectional rows are not additional independent time periods. |
 | Universe | The industries or instruments eligible on a specific date, with explicit membership evidence. |
@@ -35,6 +35,9 @@ the runner, APIs and dashboard. Serialized historical identifiers remain compati
 | Direct tracking ETF | An ETF with admitted direct industry-tracking evidence; historical mapping category `Strict` is retained. This does not by itself certify historical data PIT. |
 | Industry-exposure proxy ETF | An ETF admitted through complete official weights, target exposure, dominance, PIT and liquidity evidence. |
 | Cash fallback | Preserve the original unexecutable slot's weight as unallocated capacity; do not redistribute it or treat cash as an ETF. |
+| Strong / weak historical support | `PASS_STRONG` / `PASS_WEAK` under the frozen multi-metric gate; neither proves profitable ETF execution or removes dependence/PIT limitations. |
+| Forward experimental Shadow | `EXPERIMENTAL_UNVALIDATED_RESEARCH_SHADOW`: the required public label after Final-OOS failure; still simulation only. |
+| Armed launch | Persisted configuration and readiness for the next eligible date, with no manufactured epoch, intent or NAV. |
 
 | Canonical public term | Legacy identifier | Compatibility reason |
 | --- | --- | --- |
@@ -42,6 +45,9 @@ the runner, APIs and dashboard. Serialized historical identifiers remain compati
 | Original five highest-ranked industries | `Top5` / `FrozenTop5` | Historical selection/evidence wording; ranking and skipped weights are unchanged. |
 | 40% industry-exposure proxy with cash fallback | `B40_WITH_CASH` | Frozen candidate, API schema and historical evidence identity. |
 | Direct tracking mapping | `Strict` | Serialized mapping category; distinguish it from strict historical PIT. |
+| Direct industry tracker | `DIRECT_INDUSTRY_TRACKER` / `STRICT_MAPPING` | V2 canonical class and legacy compatibility alias. |
+| Verified industry proxy | `VERIFIED_INDUSTRY_PROXY` / `PROXY_EXPOSURE` | Complete primary weights, dominant exposure and current liquidity admission. |
+| No reliable mapping | `NO_RELIABLE_MAPPING` / `CASH_UNEXECUTABLE_SIGNAL` | Preserve the original industry's assigned cash capacity. |
 | Mapping contract pending | `PENDING_DEEPSEEK_CONTRACT` | Existing state/reason strings; canonical Python name is `MAPPING_CONTRACT_PENDING`. |
 | Public integration review pending | `PENDING_MIMO_AUDIT` | Existing state strings; canonical Python name is `PUBLIC_INTEGRATION_REVIEW_PENDING`. |
 

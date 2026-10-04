@@ -17,6 +17,7 @@ is included in Git. Unknown redistribution rights require private storage.
 | CNEquity calendar routes/seeds | Apache-2.0 code | Calendar facts and upstream rights | UNKNOWN | UNKNOWN | Pinned calendar adapter and factual hashes; medium | Keep calendar externally; announced sessions do not prove finalized prices |
 | SSE website disclosures | No dataset software grant | Exchange/issuer | PERMITTED (conditional noncommercial browsing/download only) | REVIEW_REQUIRED | [SSE legal statement](https://www.sse.com.cn/home/legal/), checked 2026-10-04; high for statement, dataset-specific scope unresolved | No licence inference for other providers; no raw redistribution |
 | Existing ETF official mapping/weights and liquidity evidence | Project/Pinned adapter licences only | Exchange/issuer/provider | UNKNOWN | REVIEW_REQUIRED | Existing immutable V1 admission registries; high provenance, low clearance | Reuse privately for prospective mapping; never backstamp availability |
+| V2 SSE/SZSE ETF catalogue and CSI/CNI complete index-weight files | No dataset grant inferred | Exchange/index provider | UNKNOWN | REVIEW_REQUIRED | Official product/index identities, effective/observed dates and full-file hashes; high source identity, unresolved redistribution | Raw catalogues/constituents remain external; publish aggregate industry exposure and evidence pointers only |
 
 No source was marked PERMITTED for private dataset use merely because it was reachable.
 `UNKNOWN` does not mean PROHIBITED. Under the user's explicit instruction, unresolved

@@ -1,0 +1,19 @@
+{
+  "strategy_version": "ETF_QUANT_V2",
+  "control_root": "",
+  "v2_control_root": "",
+  "runtime_root": "",
+  "snapshot": "",
+  "container_config": "",
+  "warmup_panel": "",
+  "liquidity_root": "",
+  "exposure_vectors": "",
+  "docker_source_root": "",
+  "operational_lake_root": "",
+  "sidecar_root": "",
+  "source_config": "",
+  "export_config": "",
+  "export_root": "",
+  "developer_image": "quant-trading-forward:local",
+  "docker_executable": "docker"
+}

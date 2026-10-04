@@ -1,0 +1,77 @@
+{
+  "candidate_sha256": "bd0e83629c2c0b9eb8ecd89fa11f19f8051dd53287c28db3244d7377a4d6680f",
+  "choice_reason": "40% retains dominant, complete-weight proxies lost at 50%, while rejecting the seven additional low-purity industries admitted at 30%; ranking is 20-session amount then code, never historical NAV. Reporting-date stability is separately disclosed, not assumed.",
+  "chosen_proxy_threshold": 40,
+  "complete_weight_indices": 152,
+  "direct_industries": 3,
+  "evidence_date_range": [
+    "2026-08-31",
+    "2026-09-30"
+  ],
+  "exchange_catalogue_etfs": 1206,
+  "executable_industry_coverage": 22,
+  "frozen_at": "2026-10-04T05:15:14.386062+00:00",
+  "historical_profitability_used": false,
+  "indices_attempted": 352,
+  "latest_liquidity_date": "2026-09-30",
+  "limitations": [
+    "Coverage is a measured lower bound; unavailable complete official files remain unmapped.",
+    "Classification uses current observed CNEquity/SW assignments, not independent Tier-A PIT proof.",
+    "Complete weight snapshots are monthly; freshness is checked at every future signal.",
+    "Official disclosure references do not grant redistribution rights to raw constituents."
+  ],
+  "liquidity_admitted_etfs": 183,
+  "model_industries": 124,
+  "proxy_industries": 19,
+  "registry_candidate_etfs": 189,
+  "registry_sha256": "5d7eecab9a9f061fc34f2cedab314cc834e712b86f6dc3aa48d38bef9e423020",
+  "threshold_study": [
+    {
+      "candidate_etfs": 280,
+      "cross_industry_same_etf_collisions": 0,
+      "evidence_industry_coverage": 29,
+      "executable_industry_coverage": 29,
+      "largest_industry_stability_fraction": 1.0,
+      "liquidity_admitted_etfs": 273,
+      "median_index_target_purity": 45.67,
+      "median_report_date_exposure_change_pp": 0.6600000000000108,
+      "median_valid_20d_amount": 13118283.05,
+      "minimum_index_dominance_margin": 4.114000000000004,
+      "report_date_admission_losses": 0,
+      "report_date_comparable_indices": 25,
+      "threshold_percent": 30
+    },
+    {
+      "candidate_etfs": 189,
+      "cross_industry_same_etf_collisions": 0,
+      "evidence_industry_coverage": 22,
+      "executable_industry_coverage": 22,
+      "largest_industry_stability_fraction": 1.0,
+      "liquidity_admitted_etfs": 183,
+      "median_index_target_purity": 50.469,
+      "median_report_date_exposure_change_pp": 0.720000000000006,
+      "median_valid_20d_amount": 16549228.25,
+      "minimum_index_dominance_margin": 4.332999999999998,
+      "report_date_admission_losses": 0,
+      "report_date_comparable_indices": 16,
+      "threshold_percent": 40
+    },
+    {
+      "candidate_etfs": 100,
+      "cross_industry_same_etf_collisions": 0,
+      "evidence_industry_coverage": 16,
+      "executable_industry_coverage": 16,
+      "largest_industry_stability_fraction": 1.0,
+      "liquidity_admitted_etfs": 98,
+      "median_index_target_purity": 59.56000000000002,
+      "median_report_date_exposure_change_pp": 0.4150000000000027,
+      "median_valid_20d_amount": 21133925.85,
+      "minimum_index_dominance_margin": 23.304,
+      "report_date_admission_losses": 0,
+      "report_date_comparable_indices": 8,
+      "threshold_percent": 50
+    }
+  ],
+  "unmapped_industries": 102,
+  "v1_registry_changed": false
+}

@@ -11,5 +11,9 @@
   "pit_evidence": "",
   "pit_source_root": "",
   "model_reference_snapshot": "",
-  "docker_executable": "docker"
+  "docker_executable": "docker",
+  "strategy_version": "ETF_QUANT_V1",
+  "docker_source_root": "",
+  "operational_lake_root": "",
+  "developer_image": "quant-trading-forward:local"
 }

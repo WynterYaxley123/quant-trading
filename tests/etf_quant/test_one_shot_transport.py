@@ -11,6 +11,58 @@ import pytest
 REPO = Path(__file__).resolve().parents[2]
 
 
+def test_version_dispatch_rejects_unknown_version_without_business_state(tmp_path, runner):
+    with pytest.raises(runner.transport.GateError, match="UNKNOWN_STRATEGY_VERSION"):
+        runner.run_once({"strategy_version": "UNKNOWN", "control_root": str(tmp_path / "CONTROL")})
+    assert not (tmp_path / "FORMAL").exists()
+
+
+def test_v2_transport_denies_clock_override(tmp_path, runner):
+    with pytest.raises(runner.transport.GateError, match="CLOCK_OVERRIDE"):
+        runner.run_once(
+            {"strategy_version": "ETF_QUANT_V2", "control_root": str(tmp_path / "CONTROL")},
+            now=datetime.fromisoformat("2026-10-08T12:00:00+00:00"),
+        )
+
+
+def test_v2_cannot_use_legacy_integration_authority_before_merge(tmp_path, runner, monkeypatch):
+    monkeypatch.setattr(
+        runner.transport,
+        "call",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0, stdout="e" * 40),
+    )
+    with pytest.raises(runner.transport.GateError, match="V2_MERGED_MAIN_REQUIRED"):
+        runner.run_once(
+            {"strategy_version": "ETF_QUANT_V2", "control_root": str(tmp_path / "CONTROL")}
+        )
+
+
+def test_docker_refresh_uses_readonly_pin_and_owned_lake(tmp_path, runner):
+    from docker_refresh import refresh_command
+
+    cfg = {
+        k: str(tmp_path / k)
+        for k in ("docker_source_root", "sidecar_root", "export_root", "snapshot")
+    }
+    for path in cfg.values():
+        Path(path).mkdir()
+    for k in ("source_config", "export_config"):
+        p = tmp_path / (k + ".toml")
+        p.write_text("SYNTHETIC")
+        cfg[k] = str(p)
+    cfg["operational_lake_root"] = str(tmp_path / "forward-source-lake")
+    command = refresh_command(cfg, "2026-10-08", "2026-09-30")
+    assert (
+        "--docker-source" in command
+        and "/cnequity" in command
+        and "PYTHONPATH=/workspace:/cnequity/src" in command
+    )
+    assert any("/cnequity,readonly" in part for part in command)
+    cfg["operational_lake_root"] = str(tmp_path / "canonical-lake")
+    with pytest.raises(runner.transport.GateError, match="OWNED_FORWARD"):
+        refresh_command(cfg, "2026-10-08", "2026-09-30")
+
+
 @pytest.fixture
 def runner(monkeypatch):
     monkeypatch.syspath_prepend(str(REPO / "services/etf-quant-runner"))

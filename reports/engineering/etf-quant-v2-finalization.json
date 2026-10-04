@@ -1,0 +1,89 @@
+{
+  "base_sha": "ccaf47cbcefb9f78cc5530120b06bf66c824e061",
+  "contract": "ETF_QUANT_V2_FINALIZATION_LOCAL_ACCEPTANCE",
+  "final_oos_result_sha256": "130ab8c31b1c09a53ee25d4ca99332fc32f2b4fcf787bd87732ea4c41283f0bb",
+  "forward_release": {
+    "broker_enabled": false,
+    "formal_records_created_during_engineering": 0,
+    "independent_ledgers": true,
+    "initial_capital_cny": {
+      "V1": 10000,
+      "V2": 10000
+    },
+    "latest_operational_data_date": "2026-09-30",
+    "legacy_v1_shadow_files_unchanged": 6,
+    "next_announced_session": "2026-10-08",
+    "official_calendar_source": "https://www.sse.com.cn/disclosure/announcement/general/c/c_20260915_10832273.shtml",
+    "post_merge_action": "Run the shared one-shot entry with actual time from clean CI-validated merged main; launch only for a genuine eligible T, otherwise persist and verify arming with empty ledgers.",
+    "real_order_path": false
+  },
+  "freeze_at": "2026-10-04T04:55:36.362013+00:00",
+  "freeze_sha256": "65aaaa23402136d6a7b8c550efacbf320f37f4ab7a463811d32b0767d18b4105",
+  "limitations": [
+    "Final OOS contains only 60 overlapping H40 signals; registered dependence-aware confidence interval and ESS are null.",
+    "Tier A membership count is zero; reconstruction and current mapping do not prove independent historical PIT.",
+    "Frozen mapping covers 22/124 industries; cash is not counted as mapped coverage.",
+    "Monthly weights and current membership expire prospectively; missing evidence/liquidity fail to cash.",
+    "Source provider failures remain explicit waiting states; no fabricated finalized sessions or prices.",
+    "Forward Shadow has no observed performance before the first genuine future epoch."
+  ],
+  "local_acceptance": {
+    "etf_api_security": {
+      "passed": 133
+    },
+    "format": "PASS",
+    "frontend": {
+      "build": "PASS",
+      "lint": "PASS",
+      "passed": 132,
+      "skipped": 3,
+      "typecheck": "PASS"
+    },
+    "frozen_v1": {
+      "frozen_image_sha256": "57858238189364c652cf673d64917d365afd5508ee464ed9c142d5d4e1b002e5",
+      "network": "NONE",
+      "passed": 667,
+      "runtime_mount": "READONLY",
+      "skipped": 1
+    },
+    "mypy_touched": "PASS",
+    "new_mypy_diagnostics": 0,
+    "portable": {
+      "deselected": 99,
+      "passed": 1188,
+      "skipped": 2
+    },
+    "pre_commit": "PASS",
+    "research_api": {
+      "build": "PASS",
+      "passed": 63,
+      "skipped": 7,
+      "typecheck": "PASS"
+    },
+    "ruff": "PASS",
+    "staged_mypy_legacy_diagnostics": 168,
+    "synthetic_benchmark": "PASS",
+    "synthetic_demo": "PASS",
+    "synthetic_performance_regressions": 16,
+    "v2_research_mapping_lifecycle_tests": 67
+  },
+  "mapping_study_path": "reports/engineering/etf-quant-v2-mapping-study.json",
+  "model_retuned": false,
+  "open_count": 1,
+  "original_validation_status": "FAILED",
+  "preregistration_commit": "8a1fa2fa7756c812331582ebf0df085d751ab6f8",
+  "release_path": "strategies/etf_quant_v2/config/release.json",
+  "repository": {
+    "active_agent_named_files_after": 0,
+    "active_agent_named_files_before": 0,
+    "active_broken_links": 0,
+    "archived_byte_changes": 0,
+    "canonical_glossary": "PASS",
+    "history_rewritten": false,
+    "raw_data_committed": false,
+    "redundant_agent_docs_removed": 0,
+    "secret_candidates": 0
+  },
+  "scientific_status": "HISTORICALLY_VALIDATED_STRONG",
+  "unique_access_at": "2026-10-04T04:55:51.829694+00:00"
+}

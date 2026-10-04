@@ -1,4 +1,5 @@
 import { RotateCw } from 'lucide-react';
+import { useState } from 'react';
 import { useResource } from '@/hooks/useResource';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +17,7 @@ import { TradesSection } from './sections/Trades';
 import { BenchmarksSection } from './sections/Benchmarks';
 import { HealthSection } from './sections/Health';
 import { V2ResearchSection } from './sections/V2Research';
+import { V2ShadowSection } from './sections/V2Shadow';
 import type { EtfQuantSnapshot } from './contracts';
 
 export type EtfSection = 'overview' | 'readiness' | 'portfolio' | 'rankings' | 'factors' | 'mappings' | 'trades' | 'benchmarks' | 'health';
@@ -66,6 +68,7 @@ function SectionContent({ section, data }: { section: SnapshotSection; data: Etf
 }
 
 function SnapshotPage({ section }: { section: SnapshotSection }) {
+  const [version,setVersion]=useState<'V1'|'V2'>('V1');
   const port = getEtfQuantPort();
   const resource = useResource((signal) => port.getSnapshot(signal), [port, section]);
   const data = resource.data;
@@ -81,8 +84,12 @@ function SnapshotPage({ section }: { section: SnapshotSection }) {
           </Button>
         }
       />
+      <div className="flex gap-2" aria-label="策略版本">
+        <Button variant={version==='V1'?'default':'outline'} aria-pressed={version==='V1'} onClick={()=>setVersion('V1')}>ETF-Quant V1</Button>
+        <Button variant={version==='V2'?'default':'outline'} aria-pressed={version==='V2'} onClick={()=>setVersion('V2')}>ETF-Quant V2</Button>
+      </div>
       {section==='overview' && <V2ResearchSection />}
-      {resource.loading ? (
+      {version==='V2'?<V2ShadowSection v1={data??undefined} />:resource.loading ? (
         <LoadingState label="正在读取 ETF Quant 独立快照" />
       ) : resource.error ? (
         <Card>

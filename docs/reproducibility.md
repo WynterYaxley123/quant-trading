@@ -21,11 +21,18 @@ The historical V2 prerequisite transition is `reports/engineering/etf-quant-v2-i
 It appends the byte-pinned release-hotfix manifest, preserves the V1 candidate hash
 and records synthetic/maintainer regression evidence. Its research status explicitly
 records the former strict-PIT blocker; source integrity does not certify historical data.
-The current transition is `reports/engineering/etf-quant-v2-build-integrity.json`,
+The historical build transition is `reports/engineering/etf-quant-v2-build-integrity.json`,
 which appends that immutable certificate. It records actual evidence-tier experiments,
 one failed Validation, the authorized Development revision and V1 regression.
 Candidate/protocol/data/code hashes resolve independently of Git delivery metadata.
 Full private research artifacts and original freeze records remain externally hashed.
+
+The active transition is `reports/engineering/etf-quant-v2-finalization-integrity.json`.
+It appends the immutable build certificate, binds the preregistered Final-OOS freeze,
+single completed result, independent mapping/release manifests and versioned product
+code. The original candidate remains byte-identical. Forward fitting may consume
+already-opened V2 raw facts only after labels mature; no OOS performance drives
+parameters. Consumed factual prefixes are hash-bound against later revisions.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

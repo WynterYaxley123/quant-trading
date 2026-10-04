@@ -1,0 +1,12 @@
+# Supplements the independent developer image for pinned CNEquity public SDK routes.
+# Upstream source remains external/read-only, never installed into host Python.
+baostock==0.9.3
+cffi==2.1.1
+click==8.5.0
+curl_cffi==0.16.3
+duckdb==1.5.6
+et_xmlfile==2.0.0
+openpyxl==3.1.5
+pyarrow==25.0.1
+pycparser==3.0
+xlrd==2.0.2

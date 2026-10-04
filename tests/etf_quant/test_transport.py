@@ -154,13 +154,26 @@ def test_external_profile_required_and_safe_child_errors(tmp_path):
         transport.result_json(SimpleNamespace(stdout="D:/private/synthetic", returncode=1))
 
 
-def test_dirty_or_wrong_branch_blocks_transport(monkeypatch):
-    replies = iter(["main", "a" * 40, ""])
+@pytest.mark.parametrize(
+    "branch,status,main",
+    [("main", "", "b" * 40), ("main", " M file", "a" * 40), ("unmerged-feature", "", "a" * 40)],
+)
+def test_dirty_or_wrong_branch_blocks_transport(monkeypatch, branch, status, main):
+    replies = iter([branch, "a" * 40, status, main])
     monkeypatch.setattr(
         transport, "call", lambda *a, **kw: SimpleNamespace(returncode=0, stdout=next(replies))
     )
     with pytest.raises(s.GateError, match="CLEAN_COMMITTED"):
         transport.committed_code()
+
+
+@pytest.mark.parametrize("branch", ["main", "", "release/etf-quant-v2-finalization"])
+def test_clean_exact_fetched_main_allows_formal_delivery(monkeypatch, branch):
+    replies = iter([branch, "a" * 40, "", "a" * 40])
+    monkeypatch.setattr(
+        transport, "call", lambda *a, **kw: SimpleNamespace(returncode=0, stdout=next(replies))
+    )
+    assert transport.committed_code() == "a" * 40
 
 
 def test_source_identity_mismatch_before_market_parsing(tmp_path):

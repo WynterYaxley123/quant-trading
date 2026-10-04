@@ -39,6 +39,13 @@ container needs the Git common directory mounted read-only and GIT_DIR/GIT_WORK_
 pointing to its corresponding worktree metadata/checkout. Portable checks require
 no runtime mounts or private data. [Testing](testing.md) describes maintainer acceptance.
 
+For forward factual refresh, build the separate operational developer image:
+`docker build -f .devcontainer/Dockerfile.forward -t quant-trading-forward:local .`.
+It adds pinned public-SDK dependencies from `requirements-forward.lock.txt` and
+uses externally mounted read-only CNEquity source. No host quantitative environment,
+upstream edit or deployed-image modification is needed. Configure the shared
+[runner](../services/etf-quant-runner/README.md) with independent external roots.
+
 Copy `.env.example` to a private `.env` and set a nonempty `JUPYTER_TOKEN`
 before `docker compose config --quiet`. The empty template deliberately fails
 closed. Configuration validation does not start Jupyter.

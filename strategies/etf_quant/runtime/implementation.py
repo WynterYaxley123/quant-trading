@@ -12,7 +12,8 @@ V4_MANIFEST = "reports/engineering/v4-integrity.json"
 PARENT_MANIFEST = "reports/engineering/current-implementation-integrity.json"
 HOTFIX_MANIFEST = "reports/engineering/release-hotfix-integrity.json"
 V2_PREREQUISITE_MANIFEST = "reports/engineering/etf-quant-v2-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/etf-quant-v2-build-integrity.json"
+V2_BUILD_MANIFEST = "reports/engineering/etf-quant-v2-build-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/etf-quant-v2-finalization-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
@@ -85,6 +86,7 @@ def verify_implementation(root: Path) -> dict[str, str]:
         PARENT_MANIFEST,
         HOTFIX_MANIFEST,
         V2_PREREQUISITE_MANIFEST,
+        V2_BUILD_MANIFEST,
         ACTIVE_MANIFEST,
     ):
         current_bytes = (root / manifest_path).read_bytes()

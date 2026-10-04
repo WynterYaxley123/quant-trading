@@ -9,6 +9,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { aggregateCurrent, projectCurrent } from './current.mjs';
 import { allowedOrigins } from './origins.mjs';
 import { observeV2 } from './v2.mjs';
+import { observeV2Current } from './v2-current.mjs';
 
 export const strategy = JSON.parse(await readFile(new URL('./strategy.json', import.meta.url), 'utf8'));
 export const PREFIX = '/api/etf-quant/v1/';
@@ -281,7 +282,7 @@ export async function observeReadiness(root, now = Date.now()) {
   return doc;
 }
 
-export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.now(),origins=allowedOrigins()}={}) {
+export function createApi({runtimeRoot='',controlRoot='',v2RuntimeRoot='',v2ControlRoot='',repoRoot,now=()=>Date.now(),origins=allowedOrigins()}={}) {
   return http.createServer(async (req,res)=>{
     res.setHeader('Content-Type','application/json; charset=utf-8');
     res.setHeader('Cache-Control','no-store');
@@ -298,7 +299,12 @@ export function createApi({runtimeRoot='',controlRoot='',repoRoot,now=()=>Date.n
     if (!['GET','HEAD','OPTIONS'].includes(req.method)) {res.setHeader('Allow','GET, HEAD, OPTIONS');return respond(405,null,'READ_ONLY_API');}
     const url=req.url ?? '';
     if (url.includes('%') || url.includes('\\') || url.includes('..') || url.includes('//') || url.includes('?')
-      || !(url.startsWith(PREFIX) || url==='/api/etf-quant/v2/research')) return respond(400,null,'INVALID_RESOURCE');
+      || !(url.startsWith(PREFIX) || ['/api/etf-quant/v2/research','/api/etf-quant/v2/current'].includes(url))) return respond(400,null,'INVALID_RESOURCE');
+    if(url==='/api/etf-quant/v2/current') {
+      if(req.method==='OPTIONS') {res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return respond(204);}
+      try {const data=await observeV2Current({repoRoot,runtimeRoot:v2RuntimeRoot,controlRoot:v2ControlRoot});return respond(200,data,null,{runId:null,manifestSha256:data.release_sha256,etfQuant:true,version:2});}
+      catch {return respond(503,null,'V2_SHADOW_INTEGRITY_BLOCKER');}
+    }
     if(url==='/api/etf-quant/v2/research') {
       if(req.method==='OPTIONS') {res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return respond(204);}
       try {const data=await observeV2(repoRoot);return respond(200,data,null,{runId:null,manifestSha256:data.candidate_sha256,etfQuant:true,version:2});}
@@ -325,6 +331,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   const port=Number(process.env.ETF_QUANT_API_PORT || 3312);
   if (!Number.isInteger(port) || port<1024 || port>65535) throw new Error('INVALID_LOCAL_PORT');
   const server=createApi({runtimeRoot:process.env.ETF_QUANT_RUNTIME_ROOT || '',
-    controlRoot:process.env.ETF_QUANT_CONTROL_ROOT || ''});
+    controlRoot:process.env.ETF_QUANT_CONTROL_ROOT || '',v2RuntimeRoot:process.env.ETF_QUANT_V2_RUNTIME_ROOT || '',v2ControlRoot:process.env.ETF_QUANT_V2_CONTROL_ROOT || ''});
   server.listen(port,'127.0.0.1',()=>process.stdout.write(`ETF_QUANT_READ_ONLY_API 127.0.0.1:${port}\n`));
 }

@@ -1,0 +1,9 @@
+{
+  "strategy_version": "ETF_QUANT_V2",
+  "snapshot": "/snapshot",
+  "warmup_panel": "/warmup",
+  "liquidity_root": "/liquidity",
+  "exposure_vectors": "/vectors.json",
+  "runtime_root": "/shadow-v2",
+  "control_root": "/control-v2"
+}

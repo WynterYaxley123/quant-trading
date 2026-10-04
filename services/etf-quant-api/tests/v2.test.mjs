@@ -9,11 +9,13 @@ import {observeV2} from '../v2.mjs';
 import {createApi} from '../server.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
-test('V2 aggregates bind actual candidate, failed Validation and sealed OOS',async()=>{
+test('V2 aggregates bind frozen candidate, failed original Validation and single Final OOS',async()=>{
   const v=await observeV2(root);
   assert.equal(v.product,'ETF_QUANT_V2');assert.equal(v.specification.alpha,30);
-  assert.equal(v.validation_status,'FAILED');assert.equal(v.revision_independently_validated,false);
-  assert.equal(v.final_oos_opened,false);assert.equal(v.epoch_count,0);
+  assert.equal(v.validation_status,'FAILED');assert.equal(v.revision_independently_validated,true);
+  assert.equal(v.final_oos_opened,true);assert.equal(v.epoch_count,0);
+  assert.equal(v.final_oos.open_count,1);assert.equal(v.final_oos.model_retuned,false);
+  assert.equal(v.scientific_status,'HISTORICALLY_VALIDATED_STRONG');
   assert.equal(v.membership_tier_rows.A,0);assert.equal(v.broker_enabled,false);
 });
 test('V2 endpoint keeps local origin/read-only/path boundaries',async t=>{
@@ -27,8 +29,8 @@ test('V2 endpoint keeps local origin/read-only/path boundaries',async t=>{
 });
 test('forged report or tampered certified fit source fails closed',async t=>{
   const temp=await mkdtemp(path.join(os.tmpdir(),'SYNTHETIC-v2-integrity-'));t.after(()=>rm(temp,{recursive:true,force:true}));
-  const manifest=JSON.parse(await readFile(path.join(root,'reports/engineering/etf-quant-v2-build-integrity.json')));
-  const names=new Set([...Object.keys(manifest.implementation_integrity.files),'reports/engineering/etf-quant-v2-build-integrity.json','reports/engineering/etf-quant-v2-integrity.json']);
+  const manifest=JSON.parse(await readFile(path.join(root,'reports/engineering/etf-quant-v2-finalization-integrity.json')));
+  const names=new Set([...Object.keys(manifest.implementation_integrity.files),'reports/engineering/etf-quant-v2-finalization-integrity.json','reports/engineering/etf-quant-v2-build-integrity.json']);
   for(const name of names){await mkdir(path.dirname(path.join(temp,name)),{recursive:true});await writeFile(path.join(temp,name),await readFile(path.join(root,name)));}
   assert.equal((await observeV2(temp)).validation_status,'FAILED');
   await writeFile(path.join(temp,'research/etf_quant_v2/experiment.py'),'SYNTHETIC tamper');

@@ -95,13 +95,23 @@ def committed_code(repo=REPO):
     status = call(["git", "--no-optional-locks", "status", "--porcelain"], cwd=repo, timeout=30)
     if (
         any(r.returncode for r in (branch, head, status))
-        or branch.stdout.strip()
-        not in ("integration/etf-quant-v1", "integration/etf-quant-v1-shadow-autonomous-final")
+        or not formal_branch_allowed(branch.stdout.strip(), head.stdout.strip(), repo=repo)
         or status.stdout.strip()
         or not re.fullmatch(r"[0-9a-f]{40}", head.stdout.strip())
     ):
         raise GateError("CLEAN_COMMITTED_INTEGRATION_REQUIRED")
     return head.stdout.strip()
+
+
+def formal_branch_allowed(branch, head, *, repo=REPO):
+    if branch in ("integration/etf-quant-v1", "integration/etf-quant-v1-shadow-autonomous-final"):
+        return True
+    main = call(["git", "--no-optional-locks", "rev-parse", "origin/main"], cwd=repo, timeout=30)
+    return (
+        main.returncode == 0
+        and head == main.stdout.strip()
+        and (branch == "main" or branch == "" or branch.startswith("release/"))
+    )
 
 
 @contextmanager

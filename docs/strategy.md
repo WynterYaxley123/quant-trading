@@ -36,5 +36,5 @@ Historical Source-C membership is not silently upgraded to strict historical PIT
 Later mapping evidence cannot be backdated; missed T+1 is blocked. See [data and PIT](data-and-pit.md).
 
 V2 research does not change these rules. Its independent specification and current
-admission blocker are in the [V2 protocol](etf-quant-v2-protocol.md). The
+Final-OOS verdict and independent prospective mapping are in the [V2 protocol](etf-quant-v2-protocol.md). The
 [glossary](glossary.md) defines public terms and historical compatibility identifiers.
