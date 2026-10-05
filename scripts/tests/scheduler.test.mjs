@@ -35,3 +35,25 @@ test('Windows task definition quotes paths and enforces least privilege, retries
     assert.equal(task.interval,'PT15M');assert.equal(task.duration,'PT7H');
     assert.equal(task.retry,'3');assert.equal(task.loginDelay,'PT5M');
   });
+test('cold task discovery handles the actual Windows missing-task HRESULT and preserves other failures',
+  {skip:process.platform!=='win32'},()=>{
+    const script=`
+      $ErrorActionPreference='Stop';$tokens=$null;$errors=$null
+      $tree=[System.Management.Automation.Language.Parser]::ParseFile($env:QUANT_TASK_INSTALLER,[ref]$tokens,[ref]$errors)
+      $helper=$tree.Find({param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Get-ForwardShadowTask'},$true)
+      . ([ScriptBlock]::Create($helper.Extent.Text))
+      $service=New-Object -ComObject Schedule.Service;$service.Connect()
+      $missing=Get-ForwardShadowTask $service.GetFolder('\\') ('SYNTHETIC_NONEXISTENT_'+[Guid]::NewGuid().ToString('N'))
+      if($null -ne $missing){throw 'Unexpected task'}
+      $denied=New-Object PSObject
+      $denied | Add-Member ScriptMethod GetTask {param($name) throw [UnauthorizedAccessException]::new('SYNTHETIC_DENIED')}
+      $preserved=$false
+      try {Get-ForwardShadowTask $denied 'SYNTHETIC'} catch {$preserved=$true}
+      if(-not $preserved){throw 'Access failure was swallowed'}
+      Write-Output 'PASS'
+    `;
+    const result=spawnSync('pwsh',['-NoProfile','-NonInteractive','-Command',script],{
+      env:{...process.env,QUANT_TASK_INSTALLER:path.join(repo,'scripts/Install-ForwardShadowTask.ps1')},encoding:'utf8',timeout:30000,
+    });
+    assert.equal(result.status,0,result.stderr);assert.equal(result.stdout.trim(),'PASS');
+  });

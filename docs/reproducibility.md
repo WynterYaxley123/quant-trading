@@ -72,7 +72,7 @@ Frozen candidates, model specifications, mapping registry, release and Final-OOS
 artifact bytes remain unchanged. Synthetic regression proves rejection of wrong
 source/date/time/amount receipts and preserves T-close to actual T+1 accounting.
 
-The active transition is `reports/engineering/shadow-operations-integrity.json`.
+The operations transition is `reports/engineering/shadow-operations-integrity.json`.
 It preserves the forward certificate bytes and appends recoverable immutable
 publication, kernel account mutexes, atomic transport ownership, external host
 scheduling, bounded API reads and current documentation measurements. Its change
@@ -80,6 +80,12 @@ ledger binds before/after source hashes and synthetic crash/idempotency evidence
 Frozen candidates, numerical specifications, mapping registries and published
 Final-OOS artifacts remain byte-identical. The health page reports this checkout's
 actual runs; older test counts and research blockers belong to their dated records.
+
+The active transition is `reports/engineering/shadow-task-installation-integrity.json`.
+It preserves the operations certificate and corrects cold Windows task discovery:
+the native missing-file HRESULT may arrive as FileNotFoundException. Only that
+missing-task result permits creation; service/access failures still propagate.
+The regression queries Task Scheduler read-only and verifies other failures block.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata
