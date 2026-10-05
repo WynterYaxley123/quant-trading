@@ -9,6 +9,7 @@ import hashlib
 import json
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
+from typing import Any
 
 import run as transport
 from docker_mounts import MountInputError, bind_mount, reference_name
@@ -23,6 +24,21 @@ PIT_REGISTRY = REPO / "reports/etf_quant/production_pit_evidence_registry_v1.jso
 def checksum(path):
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def certified_implementation():
+    """Verify only standard-library certificate/hash code before any refresh."""
+    integrity_spec = transport.importlib.util.spec_from_file_location(
+        "etf_implementation", REPO / "strategies/etf_quant/runtime/implementation.py"
+    )
+    if integrity_spec is None or integrity_spec.loader is None:
+        raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER")
+    implementation = transport.importlib.util.module_from_spec(integrity_spec)
+    integrity_spec.loader.exec_module(implementation)
+    try:
+        return implementation.verify_implementation(REPO)
+    except ValueError as error:
+        raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER") from error
 
 
 def certified_inputs(config):
@@ -42,14 +58,7 @@ def certified_inputs(config):
     )
     if extension.get("candidate_sha256") != pins[CANDIDATE]:
         raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER")
-    integrity_spec = transport.importlib.util.spec_from_file_location(
-        "etf_implementation", REPO / "strategies/etf_quant/runtime/implementation.py"
-    )
-    if integrity_spec is None or integrity_spec.loader is None:
-        raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER")
-    implementation = transport.importlib.util.module_from_spec(integrity_spec)
-    integrity_spec.loader.exec_module(implementation)
-    for name, expected in implementation.verify_implementation(REPO).items():
+    for name, expected in certified_implementation().items():
         leaf = transport.storage.contained(REPO, name)
         if checksum(leaf) != expected:
             raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER")
@@ -88,6 +97,8 @@ def run_once(config, *, now=None):
         ):
             result = operation(config, control)
         result["shadow_runtime_armed"] = not result["status"].startswith("BLOCKED")
+        result.setdefault("strategy_version", version)
+        result["observed_at"] = datetime.now(timezone.utc).isoformat()
         result["shadow_start_gate"] = (
             "STARTED"
             if result["status"] in ("STARTED", "ALREADY_PROCESSED")
@@ -110,6 +121,42 @@ def _run_v2(config, control, *, now=None):
     )
     if merged.returncode or merged.stdout.strip() != commit:
         raise transport.GateError("V2_MERGED_MAIN_REQUIRED")
+    files = certified_implementation()
+    release_path = REPO / "strategies/etf_quant_v2/config/release.json"
+    if checksum(release_path) != files.get("strategies/etf_quant_v2/config/release.json"):
+        raise transport.GateError("FORMAL_IMPLEMENTATION_HASH_BLOCKER")
+    release = json.loads(release_path.read_bytes())
+    local = datetime.now(timezone.utc).astimezone(SHANGHAI)
+    runtime = transport.external_directory(config["runtime_root"])
+    if (runtime / "latest.json").exists():
+        pointer = json.loads(transport.storage.contained(runtime, "latest.json").read_bytes())
+        _, bodies = transport.storage.read_generation(runtime / "runs", pointer)
+        if set(bodies) != {"state.json", "view.json"}:
+            raise transport.GateError("V2_RUNTIME_INTEGRITY_BLOCKER")
+        state = json.loads(bodies["state.json"])
+        if (
+            state.get("strategy_version") != "ETF_QUANT_V2"
+            or state.get("mode") != "SIMULATION_ONLY"
+            or state.get("broker_enabled") is not False
+            or state.get("real_order_path") is not False
+            or state.get("portfolio", {}).get("initial_cash") != "10000"
+            or any(
+                state.get(k) != release[k]
+                for k in ("candidate_sha256", "registry_sha256", "release_sha256")
+            )
+        ):
+            raise transport.GateError("V2_RUNTIME_INTEGRITY_BLOCKER")
+        signal_day = state["signals"][-1]["signal_date"]
+        if signal_day > str(local.date()):
+            raise transport.GateError("FORWARD_MONOTONIC_SIGNAL_REQUIRED")
+        if signal_day == str(local.date()):
+            return {
+                "status": "ALREADY_PROCESSED",
+                "strategy_version": "ETF_QUANT_V2",
+                "code_commit": commit,
+                "run_id": pointer["run_id"],
+                "view": json.loads(bodies["view.json"]),
+            }
     snapshot = transport.external_directory(config["snapshot"])
     pointer_path = control / "latest_export.json"
     if pointer_path.exists():
@@ -120,13 +167,18 @@ def _run_v2(config, control, *, now=None):
         if checksum(snapshot / "manifest.json") != pointer["manifest_sha256"]:
             raise transport.GateError("EXPORT_HASH_BLOCKER")
     meta = transport.verify_snapshot_files(snapshot)
-    local = datetime.now(timezone.utc).astimezone(SHANGHAI)
     with (snapshot / "trading_calendar.csv").open(encoding="utf-8", newline="") as handle:
-        sessions = [
-            date.fromisoformat(r["trade_date"])
+        calendar = {
+            date.fromisoformat(r["trade_date"]): r["is_trading"] == "true"
             for r in csv.DictReader(handle)
-            if r["is_trading"] == "true"
-        ]
+        }
+    if local.date() not in calendar:
+        return {
+            "status": "BLOCKED_DATA_INTEGRITY",
+            "strategy_version": "ETF_QUANT_V2",
+            "reason_code": "OFFICIAL_CALENDAR_REQUIRED",
+        }
+    sessions = [d for d, trading in calendar.items() if trading]
     completed = [
         d for d in sessions if d < local.date() or d == local.date() and local.time() >= time(15, 5)
     ]
@@ -135,20 +187,26 @@ def _run_v2(config, control, *, now=None):
             refresh_command(config, max(completed), meta["data_cutoff"]), timeout=3600
         )
         refresh = transport.result_json(refresh_result)
-        finalized = refresh.get("latest_finalized")
+        finalized = refresh.get("latest_finalized") or (
+            refresh if refresh.get("status") == "REFRESH_EXPORTED" else None
+        )
         if finalized:
             snapshot = transport.storage.contained(
                 transport.external_directory(config["export_root"]), finalized["snapshot_id"]
             )
             if checksum(snapshot / "manifest.json") != finalized["manifest_sha256"]:
                 raise transport.GateError("EXPORT_HASH_BLOCKER")
-            transport.verify_snapshot_files(snapshot)
+            admitted_meta = transport.verify_snapshot_files(snapshot)
+            if not meta["data_cutoff"] <= admitted_meta["data_cutoff"] <= str(max(completed)):
+                raise transport.GateError("FINALIZATION_MONOTONICITY_BLOCKER")
+            meta = admitted_meta
             transport.storage.atomic_bytes(pointer_path, transport.storage.json_bytes(finalized))
         if refresh_result.returncode or refresh.get("status") != "REFRESH_EXPORTED":
             return {
                 "status": refresh.get("status", "WAITING_FOR_PROVIDER_DATA"),
                 "strategy_version": "ETF_QUANT_V2",
                 "reason_code": refresh.get("reason_code", "SOURCE_SESSION_INCOMPLETE"),
+                "data_cutoff": meta["data_cutoff"],
             }
     if local.date() in sessions and local.time() >= time(15, 5):
         refresh_v2_bars(config, snapshot)
@@ -156,6 +214,17 @@ def _run_v2(config, control, *, now=None):
     if image.startswith("quant-research"):
         raise transport.GateError("INDEPENDENT_V2_DEVELOPER_IMAGE_REQUIRED")
     config_file = transport.external_file(config["container_config"])
+    expected_config = {
+        "strategy_version": "ETF_QUANT_V2",
+        "snapshot": "/snapshot",
+        "warmup_panel": "/warmup",
+        "liquidity_root": "/liquidity",
+        "exposure_vectors": "/vectors.json",
+        "runtime_root": "/shadow-v2",
+        "control_root": "/control-v2",
+    }
+    if json.loads(config_file.read_bytes()) != expected_config:
+        raise transport.GateError("V2_CONTAINER_NAMESPACE_BINDING_REQUIRED")
     mounts = [(REPO, "/workspace", True), (config_file, "/config.json", True)]
     for field, target, readonly in (
         ("snapshot", "/snapshot", True),
@@ -354,7 +423,7 @@ def _run_once(config, control, *, now=None):
         (Path(config["pit_evidence"]), "/pit-book.json", True),
         (model_reference, "/model-reference/" + model_reference.name, True),
     ]
-    argv = [docker, "run", "--rm"]
+    argv = [docker, "run", "--rm", "--network", "none"]
     for src, dest, readonly in mounts:
         try:
             argv += bind_mount(src, dest, readonly=readonly)
@@ -405,12 +474,10 @@ def _run_once(config, control, *, now=None):
     return {**response, "refresh": refresh}
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=Path, required=True)
-    args = parser.parse_args()
+def observe_once(config: dict[str, Any]) -> dict[str, Any]:
+    """A failed version returns a bounded receipt without stopping its sibling."""
     try:
-        result = run_once(json.loads(transport.external_file(args.config).read_bytes()))
+        result = run_once(config)
     except transport.GateError as error:
         result = {
             "status": "BLOCKED_CODE_INTEGRITY"
@@ -430,6 +497,55 @@ def main():
         result = {
             "status": "BLOCKED_CODE_INTEGRITY",
             "reason_code": "FORMAL_TRANSPORT_INPUT_BLOCKER",
+            "exception_class": type(error).__name__,
+        }
+    result.setdefault("strategy_version", config.get("strategy_version", "ETF_QUANT_V1"))
+    return result
+
+
+def run_versions(configs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Sequential calls to the canonical runner, with disjoint account/control roots."""
+    versions: set[str] = set()
+    owned: list[Path] = []
+    for config in configs:
+        version = config.get("strategy_version", "ETF_QUANT_V1")
+        if version not in ("ETF_QUANT_V1", "ETF_QUANT_V2") or version in versions:
+            raise transport.GateError("DISTINCT_STRATEGY_VERSIONS_REQUIRED")
+        versions.add(version)
+        roots = [Path(config[k]).resolve() for k in ("control_root", "runtime_root")]
+        if any(not Path(config[k]).is_absolute() for k in ("control_root", "runtime_root")):
+            raise transport.GateError("EXPLICIT_EXTERNAL_PATH_REQUIRED")
+        if roots[0].is_relative_to(roots[1]) or roots[1].is_relative_to(roots[0]):
+            raise transport.GateError("CONTROL_AND_ACCOUNT_MUST_BE_DISJOINT")
+        if version == "ETF_QUANT_V2" and "v2_control_root" in config:
+            if not Path(config["v2_control_root"]).is_absolute():
+                raise transport.GateError("EXPLICIT_EXTERNAL_PATH_REQUIRED")
+            roots.append(Path(config["v2_control_root"]).resolve())
+        if any(a.is_relative_to(b) or b.is_relative_to(a) for a in roots for b in owned):
+            raise transport.GateError("V1_AND_V2_STATE_MUST_BE_DISJOINT")
+        owned.extend(roots)
+    results = [observe_once(config) for config in configs]
+    return {
+        "status": "BLOCKED_VERSION"
+        if any(r["status"].startswith("BLOCKED") for r in results)
+        else "VERSIONS_OBSERVED",
+        "results": results,
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=Path, required=True, action="append")
+    args = parser.parse_args()
+    try:
+        configs = [json.loads(transport.external_file(p).read_bytes()) for p in args.config]
+        result = observe_once(configs[0]) if len(configs) == 1 else run_versions(configs)
+    except Exception as error:
+        result = {
+            "status": "BLOCKED_CODE_INTEGRITY",
+            "reason_code": error.code
+            if isinstance(error, transport.GateError)
+            else "FORMAL_TRANSPORT_INPUT_BLOCKER",
             "exception_class": type(error).__name__,
         }
     print(transport.storage.json_bytes(result).decode())

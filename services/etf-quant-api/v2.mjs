@@ -8,9 +8,9 @@ import {repositoryFile,verifyCurrentCertificate} from '../etf-quant-runner/secur
 const defaultRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const CANDIDATE='strategies/etf_quant_v2/config/candidate.json';
 const REPORT='reports/engineering/etf-quant-v2-build-research.json';
-export const CURRENT_MANIFEST='reports/engineering/etf-quant-v2-console-integrity.json';
+export const CURRENT_MANIFEST='reports/engineering/forward-shadow-closure-integrity.json';
 const MANIFEST=CURRENT_MANIFEST;
-const PARENTS=['reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/engineering/etf-quant-v2-factual-refresh-integrity.json','reports/engineering/etf-quant-v2-observation-integrity.json',
+const PARENTS=['reports/engineering/etf-quant-v2-console-integrity.json','reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/engineering/etf-quant-v2-factual-refresh-integrity.json','reports/engineering/etf-quant-v2-observation-integrity.json',
   'reports/engineering/etf-quant-v2-finalization-integrity.json','reports/engineering/etf-quant-v2-build-integrity.json'];
 const FINAL='reports/engineering/etf-quant-v2-final-oos.json';
 const RELEASE='strategies/etf_quant_v2/config/release.json';

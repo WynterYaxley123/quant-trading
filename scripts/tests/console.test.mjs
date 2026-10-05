@@ -28,7 +28,7 @@ async function connected(port) {
     socket.once('error',()=>resolve(false));
   });
 }
-async function fixture() {
+async function fixture({v2=false}={}) {
   const root=await mkdtemp(path.join(tmpdir(),'quant-console-test-'));
   const configPath=path.join(root,'config.json');
   const controlRoot=path.join(root,'control');
@@ -48,7 +48,16 @@ async function fixture() {
   for(const name of ['manifest.json','trading_calendar.csv']) {
     await copyFile(path.join(official.control_root,exportName,name),path.join(controlRoot,exportName,name));
   }
-  await writeFile(configPath,JSON.stringify({runtime_root:runtimeRoot,control_root:controlRoot}));
+  const config={runtime_root:runtimeRoot,control_root:controlRoot};
+  if(v2) {
+    config.v2_runtime_root=path.join(root,'shadow-v2');config.v2_control_root=path.join(root,'control-v2');
+    await mkdir(config.v2_runtime_root);await mkdir(config.v2_control_root);
+    await writeFile(path.join(config.v2_control_root,'latest_observation.json'),JSON.stringify({
+      strategy_version:'ETF_QUANT_V2',status:'WAITING_FOR_PROVIDER_DATA',shadow_runtime_armed:true,
+      data_cutoff:'2026-09-30',reason_code:'SYNTHETIC_PROVIDER_WAIT',observed_at:new Date().toISOString(),
+    }));
+  }
+  await writeFile(configPath,JSON.stringify(config));
   const ports=[];
   while(ports.length<3) {const port=await freePort();if(!ports.includes(port))ports.push(port);}
   const args=['-Config',quote(configPath),
@@ -129,6 +138,24 @@ test('launcher starts all three healthy loopback services from another cwd, rest
       for(const method of ['POST','PUT','PATCH','DELETE']) {
         assert.equal((await fetch(`http://127.0.0.1:${f.ports[1]}/api/v1/health`,{method})).status,405);
       }
+    } finally {await f.cleanup();}
+  });
+
+test('configured V2 waiting state reaches the console API with an independent empty account',
+  {skip:!enabled,timeout:180000},async()=>{
+    const f=await fixture({v2:true});
+    try {
+      await f.launch();
+      const response=await fetch(`http://127.0.0.1:${f.ports[0]}/api/etf-quant/v2/current`);
+      assert.equal(response.status,200);
+      const {data,error}=await response.json();assert.equal(error,null);
+      assert.equal(data.strategy_version,'ETF_QUANT_V2');assert.equal(data.waiting_reason,'SYNTHETIC_PROVIDER_WAIT');
+      assert.equal(data.armed,true);assert.equal(data.initial_capital,'10000');
+      assert.equal(data.signal_count,0);assert.equal(data.intent_count,0);assert.equal(data.fill_count,0);
+      assert.equal(data.broker_enabled,false);assert.equal(data.real_order_path,false);
+      assert.equal((await fetch(`http://127.0.0.1:${f.ports[0]}/api/etf-quant/v2/current`,{method:'POST'})).status,405);
+      const before=await f.receipt();await f.launch();assert.deepEqual(await f.receipt(),before);
+      assert.equal(await readFile(path.join(f.runtimeRoot,'sentinel.txt'),'utf8'),'unchanged observation fixture');
     } finally {await f.cleanup();}
   });
 

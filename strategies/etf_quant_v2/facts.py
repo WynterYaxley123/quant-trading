@@ -22,7 +22,7 @@ from strategies.etf_quant.domain.industry_level import load_taxonomy
 from strategies.etf_quant.factors import compute_close_factors
 from strategies.etf_quant.runtime.storage import contained
 
-from .refresh import checksum, verified_snapshot
+from .refresh import PIN, checksum, verified_liquidity_receipt, verified_snapshot
 from .runtime import Observation
 
 Array = NDArray[np.float64]
@@ -249,11 +249,14 @@ def load_liquidity(root: Path, day: date) -> dict[str, float]:
     doc: dict[str, Any] = json.loads(path.read_bytes())
     if doc["data_cutoff"] != str(day):
         raise ValueError("CURRENT_LIQUIDITY_DATE_REQUIRED")
+    sessions = tuple(map(date.fromisoformat, doc["calendar"]))
+    if doc.get("source_commit") != PIN or doc["window"] != list(map(str, sessions[-20:])):
+        raise ValueError("LIQUIDITY_RECEIPT_CALENDAR_IDENTITY_ERROR")
     result = {}
     for row in doc["receipts"]:
         if row["liquidity_amount"] is not None:
             bars = contained(root, str(day) + "/" + row["symbol"] + ".parquet")
-            if checksum(bars) != row["bars_sha256"]:
-                raise ValueError("LIQUIDITY_RECEIPT_HASH_ERROR")
-            result[row["symbol"]] = float(row["liquidity_amount"])
+            if row["symbol"] in result:
+                raise ValueError("LIQUIDITY_RECEIPT_DUPLICATE_SYMBOL")
+            result[row["symbol"]] = verified_liquidity_receipt(row, bars, sessions, day)
     return result

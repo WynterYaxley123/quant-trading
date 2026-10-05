@@ -54,7 +54,7 @@ conversion occurs. Supplemental receipt hashes and source pins are separate
 columns; observed timestamps remain actual. Tests exercise the unchanged complete
 price, volume, calendar and finalized-time gates as well as the cell schema.
 
-The active transition is `reports/engineering/etf-quant-v2-console-integrity.json`.
+The historical console transition is `reports/engineering/etf-quant-v2-console-integrity.json`.
 The read-only V1 console derives its PowerShell command from the active checkout,
 control configuration and runtime, with an explicit `ETF_QUANT_TRANSPORT_PYTHON`
 standard-library transport interpreter. Each path is quoted literally; a mismatched
@@ -62,6 +62,15 @@ version or namespace rejects. Without this interpreter setting the command is nu
 so the immutable release's old command never points a new deployment at an old ledger.
 The original V1 API transition remains immutable; later source changes require the
 complete verified certificate chain. No console operation executes the command.
+
+The active transition is `reports/engineering/forward-shadow-closure-integrity.json`.
+It appends the byte-identical console certificate. It records same-date V2 transport
+idempotence before provider/model work, explicit double-version invocation, isolated
+control/account paths, network-disabled V1 numerical execution, complete dated
+20-session liquidity receipt revalidation and honest waiting-state observation.
+Frozen candidates, model specifications, mapping registry, release and Final-OOS
+artifact bytes remain unchanged. Synthetic regression proves rejection of wrong
+source/date/time/amount receipts and preserves T-close to actual T+1 accounting.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

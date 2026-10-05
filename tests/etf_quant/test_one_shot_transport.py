@@ -73,6 +73,13 @@ def runner(monkeypatch):
     spec.loader.exec_module(module)
     monkeypatch.setattr(module.transport, "committed_code", lambda: "d" * 40)
     monkeypatch.setattr(module, "certified_inputs", lambda c: {module.CANDIDATE: "a" * 64})
+    monkeypatch.setattr(
+        module,
+        "certified_implementation",
+        lambda: json.loads(
+            (REPO / "reports/engineering/etf-quant-v2-console-integrity.json").read_bytes()
+        )["implementation_integrity"]["files"],
+    )
     return module
 
 
@@ -233,6 +240,7 @@ def test_formal_docker_transport_preserves_immutable_snapshot_hash_directory(
     result = runner.run_once(cfg, now=datetime.fromisoformat("2026-09-30T14:00:00+00:00"))
     assert result["status"] == "STARTED" and result["shadow_start_gate"] == "STARTED"
     command = calls[-1]
+    assert command[command.index("--network") + 1] == "none"
     target = command[command.index("--snapshot") + 1]
     assert Path(target).name == snapshot.name and target == "/snapshot/" + snapshot.name
     assert any(
@@ -295,3 +303,82 @@ def test_partial_finalization_is_adopted_despite_next_session_failure_and_resume
     before = pointer.read_bytes()
     runner.run_once(cfg, now=datetime.fromisoformat("2026-09-30T12:01:00+00:00"))
     assert str(calls[-1][-1]) == "2026-09-28" and pointer.read_bytes() == before
+
+
+def test_v2_same_signal_returns_before_provider_or_model(tmp_path, runner, monkeypatch):
+    cfg = config(tmp_path, runner)
+    cfg["strategy_version"] = "ETF_QUANT_V2"
+    (Path(cfg["snapshot"]) / "trading_calendar.csv").write_text(
+        "trade_date,is_trading\n2026-09-30,true\n2026-10-08,true\n2026-10-09,true\n"
+    )
+    monkeypatch.setattr(runner, "refresh_command", lambda *a: ["SYNTHETIC_PROVIDER"])
+    release = json.loads((REPO / "strategies/etf_quant_v2/config/release.json").read_bytes())
+    state = {
+        "strategy_version": "ETF_QUANT_V2",
+        "mode": "SIMULATION_ONLY",
+        "broker_enabled": False,
+        "real_order_path": False,
+        "portfolio": {"initial_cash": "10000"},
+        "signals": [{"signal_date": "2026-10-08"}],
+        **{k: release[k] for k in ("candidate_sha256", "registry_sha256", "release_sha256")},
+    }
+    root = Path(cfg["runtime_root"])
+    pointer = runner.transport.storage.publish_generation(
+        root / "runs",
+        "SYNTHETIC_V2_001",
+        {
+            "state.json": runner.transport.storage.json_bytes(state),
+            "view.json": runner.transport.storage.json_bytes({"signal_count": 1}),
+        },
+        {"strategy_version": "ETF_QUANT_V2"},
+    )
+    (root / "latest.json").write_bytes(runner.transport.storage.json_bytes(pointer))
+    before = (root / "latest.json").read_bytes()
+
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime.fromisoformat("2026-10-08T08:00:00+00:00").astimezone(tz)
+
+    monkeypatch.setattr(runner, "datetime", Clock)
+
+    def call(argv, **kwargs):
+        if argv[0] == "git":
+            return SimpleNamespace(returncode=0, stdout="d" * 40)
+        pytest.fail("a committed V2 signal must not call a provider or model")
+
+    monkeypatch.setattr(runner.transport, "call", call)
+    result = runner.run_once(cfg)
+    assert result["status"] == "ALREADY_PROCESSED"
+    assert result["strategy_version"] == "ETF_QUANT_V2"
+    assert result["view"]["signal_count"] == 1
+    assert (root / "latest.json").read_bytes() == before
+
+
+def test_two_versions_continue_after_one_failure_and_reject_aliases(tmp_path, runner, monkeypatch):
+    configs = [
+        {
+            "strategy_version": version,
+            "control_root": str(tmp_path / version / "control"),
+            "runtime_root": str(tmp_path / version / "shadow"),
+        }
+        for version in ("ETF_QUANT_V1", "ETF_QUANT_V2")
+    ]
+    calls = []
+
+    def run(config):
+        calls.append(config["strategy_version"])
+        if config["strategy_version"] == "ETF_QUANT_V1":
+            raise runner.transport.GateError("SYNTHETIC_PROVIDER_BLOCKER")
+        return {"status": "ARMED_NON_TRADING_DAY"}
+
+    monkeypatch.setattr(runner, "run_once", run)
+    result = runner.run_versions(configs)
+    assert calls == ["ETF_QUANT_V1", "ETF_QUANT_V2"]
+    assert result["status"] == "BLOCKED_VERSION"
+    assert result["results"][1]["status"] == "ARMED_NON_TRADING_DAY"
+    configs[1]["runtime_root"] = configs[0]["runtime_root"]
+    calls.clear()
+    with pytest.raises(runner.transport.GateError, match="DISJOINT"):
+        runner.run_versions(configs)
+    assert calls == []

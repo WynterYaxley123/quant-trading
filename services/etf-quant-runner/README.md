@@ -12,12 +12,18 @@ is required. The console helper starts observation services only.
 Formal delivery requires a clean committed tree at fetched `origin/main`; historical
 integration branch compatibility remains available. Release branches only run formally
 after their HEAD equals main.
-Use `one_shot.py --config <external-one-shot-config.json>` with the **existing
-isolated CNEquity interpreter**, not Windows global Python. The separate
+Use `one_shot.py --config <external-one-shot-config.json>` with an explicit existing
+Python interpreter for **standard-library transport only**. The separate
 `one_shot.config.example.json` enumerates required paths; the deployment config
 is outside Git at `<runtime-root>`.
 Only file transport / calendar metadata execute on the host. Model, allocation,
 PIT admission and accounting run inside the existing frozen Docker image.
+
+For a joint invocation, repeat `--config` with the independent V1 and V2 external
+configs. The same entry checks namespace separation before running them sequentially.
+One blocked version does not suppress the other; structured per-version receipts
+remain independent. Scheduling/retries call this canonical entry, as described in
+[operations](../../docs/operations.md), with no clock override or historical replay.
 
 V2 and new portable operational configurations use an independent developer image
 for source refresh, never a host quantitative environment. Set `strategy_version`
@@ -47,7 +53,7 @@ It exports the real lake with the existing streaming exporter. No direct curated
 write, provider fallback, SDK upgrade or historical formal replay is used.
 Refresh receipts live in the separate metadata-only control root. No formal
 `shadow/` records are created for WAIT. Successful exports are reused by pinned
-manifest hash. A same-T committed signal returns `ALREADY_PROCESSED` **before**
+manifest hash. A same-T committed V1 or V2 signal returns `ALREADY_PROCESSED` **before**
 refresh, so it cannot generate another Epoch/signal/intent. The control lock
 serializes the entire operation; the account lock remains exclusive.
 
