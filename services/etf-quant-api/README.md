@@ -79,6 +79,13 @@ independent mapping inventory, and `/api/etf-quant/v2/current` for forward state
 Set `ETF_QUANT_V2_RUNTIME_ROOT` and `ETF_QUANT_V2_CONTROL_ROOT` to disjoint external
 V2 roots. The current DTO carries `strategy_version=ETF_QUANT_V2`, scientific
 classification, candidate/registry/release hashes and actual business counts.
+Current scientific authority is the separately certified overlay: provisional
+historical research candidate, direction STRONG_POSITIVE, independent statistics
+LIMITED, membership RECONSTRUCTED, historical ETF execution NOT_ESTABLISHED.
+The nested `final_oos` retains the original consumed report's immutable gate labels;
+it does not override the current `scientific_status` or `scientific_assessment`.
+The release hash still identifies the original frozen contract bytes; current
+epistemic labels are an overlay rather than a rewritten historical release.
 Control arming never implies an epoch or NAV. Verified runtime generations take
 precedence after start. V1 routes and frozen specification remain compatible.
 

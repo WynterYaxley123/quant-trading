@@ -111,6 +111,36 @@ def test_t1_accounting_references_same_immutable_t0_epoch(tmp_path):
     assert len(state["nav"]) == 1 and state["nav"][0]["timestamp"] == state["epoch"]["started_at"]
 
 
+def test_missed_t1_retires_old_epoch_without_fill_and_continues_current_signal(tmp_path):
+    p, reg, book, contract = setup(tmp_path)
+    root = tmp_path / "SYNTHETIC_MISSED_V1"
+    run(p, reg, book, contract, root)
+    _, old = read(root)
+    q = advance(advance(p))
+    import pandas as pd
+
+    for name in ("etf_bars", "trading_status"):
+        rows = p.tables[name].loc[p.tables[name].trade_date == p.cutoff].copy()
+        rows["trade_date"] = q.cutoff
+        q.tables[name] = pd.concat([q.tables[name], rows], ignore_index=True)
+    result = run(q, reg, book, contract, root)
+    assert result["status"] == "STARTED"
+    view, state = read(root)
+    assert state["recovery_events"][0]["original_intent"] == old["pending"]
+    assert state["terminal_epochs"][0]["epoch_id"] == old["shadow_epoch"]["epoch_id"]
+    assert state["terminal_epochs"][0]["fillable"] is False
+    assert state["shadow_epoch"]["epoch_id"].endswith("0002")
+    assert state["formal_signal"]["signal_date"] == str(q.cutoff)
+    # The synthetic evidence expires before this session: cash is the lawful
+    # next signal, rather than weakening its mapping gate to create an order.
+    assert state["pending"] is None
+    assert state["formal_signal"]["cash_weight"] == pytest.approx(1)
+    assert view["trades"] == view["nav"] == []
+    before = (root / "latest.json").read_bytes()
+    assert run(q, reg, book, contract, root)["status"] == "ALREADY_PROCESSED"
+    assert (root / "latest.json").read_bytes() == before
+
+
 @pytest.mark.parametrize(
     "mutation,status",
     [

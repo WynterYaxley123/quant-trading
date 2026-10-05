@@ -1,4 +1,4 @@
-"""Pure delayed T+1 paper accounting using unchanged V1 primitives."""
+"""Compatibility entry point onto production lot-rounded paper accounting."""
 
 from __future__ import annotations
 
@@ -8,16 +8,15 @@ from decimal import Decimal
 
 from strategies.etf_quant.domain import (
     PortfolioState,
-    Side,
     SimulatedFill,
-    SimulatedOrderIntent,
+    TargetPosition,
     TradingCalendar,
-    decimal_math,
 )
 from strategies.etf_quant.portfolio import RebalanceStatus
 from strategies.etf_quant.portfolio.partial import rebalance_decision_v2
 from strategies.etf_quant.portfolio.policy import POLICY_B40_WITH_CASH
-from strategies.etf_quant.simulation import apply_fill, mark_to_market, price_simulated_fill
+from strategies.etf_quant.simulation import mark_to_market
+from strategies.etf_quant.simulation.lots import rebalance_at_open
 
 from .runtime import SHANGHAI
 
@@ -63,48 +62,19 @@ def settle_t_plus_one(
     ):
         raise ValueError("COMPLETE_POSITIVE_RAW_PRICES_REQUIRED")
     fill_at = datetime.combine(execution, time(9, 30), SHANGHAI)
-    fills: list[SimulatedFill] = []
+    fills: tuple[SimulatedFill, ...] = ()
     decision = rebalance_decision_v2(previous, tuple(target), execution_policy=POLICY_B40_WITH_CASH)
     if decision is RebalanceStatus.REQUIRED:
-        # Preserve full sell/rebuild on executable member change. Fee/slippage
-        # assumptions are V1's 3/5bps, exact Decimal and no lot-rounding fiction.
-        for position in state.positions:
-            intent = SimulatedOrderIntent(
-                f"v2-{day}-sell-{position.asset_id}",
-                position.asset_id,
-                Side.SELL,
-                position.quantity,
-                day,
-                execution,
-            )
-            fill = price_simulated_fill(
-                intent,
-                calendar=calendar,
-                reference_open=raw_opens[position.asset_id],
-                executed_at=fill_at,
-                fill_id=intent.intent_id + "-fill",
-            )
-            state = apply_fill(state, fill, calendar=calendar)
-            fills.append(fill)
-        budget = state.cash
-        with decimal_math():
-            for asset, weight in sorted(target.items()):
-                quantity = (
-                    budget * weight / (raw_opens[asset] * Decimal("1.0005") * Decimal("1.0003"))
-                )
-                # Leave a sub-penny precision reserve for exact Decimal rounding.
-                quantity *= Decimal("0.99999999999999999999")
-                intent = SimulatedOrderIntent(
-                    f"v2-{day}-buy-{asset}", asset, Side.BUY, quantity, day, execution
-                )
-                fill = price_simulated_fill(
-                    intent,
-                    calendar=calendar,
-                    reference_open=raw_opens[asset],
-                    executed_at=fill_at,
-                    fill_id=intent.intent_id + "-fill",
-                )
-                state = apply_fill(state, fill, calendar=calendar)
-                fills.append(fill)
+        state, fills = rebalance_at_open(
+            state,
+            tuple(TargetPosition(asset, float(weight)) for asset, weight in target.items()),
+            dict(raw_opens),
+            signal_day=day,
+            execution_day=execution,
+            processed_at=fill_at,
+            calendar=calendar,
+            batch_id=f"v2-{day}",
+            lot_size=100,
+        )
     marks = {p.asset_id: raw_closes[p.asset_id] for p in state.positions}
     return mark_to_market(state, marks, as_of=processed_at), tuple(fills)

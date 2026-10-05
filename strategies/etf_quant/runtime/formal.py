@@ -52,6 +52,7 @@ def load_formal_contract(candidate_path, pit_registry_path, registry, book):
         or candidate.get("policy_approved") is not True
         or candidate.get("production_pit_evidence_ready") is not True
         or pit.get("availability_semantics") != "FORWARD_ONLY"
+        # Frozen serialized spelling: changing this key would invalidate evidence.
         or pit.get("cneqity_pin") != SOURCE_PIN
     ):
         raise GateError("FORMAL_CERTIFIED_INPUT_CONTRACT_BLOCKER")
@@ -101,7 +102,11 @@ def record_signal(ledger, view, selected, contract, *, now, code_commit, strateg
     signal_date = view["status"]["signal_date"]
     if ledger.get("formal_signal", {}).get("signal_date") == signal_date:
         raise GateError("DUPLICATE_FORMAL_SIGNAL_BLOCKER")
-    epoch_id = existing["epoch_id"] if existing else "ETF_QUANT_V1_SHADOW_EPOCH_0001"
+    epoch_id = (
+        existing["epoch_id"]
+        if existing
+        else (f"ETF_QUANT_V1_SHADOW_EPOCH_{len(ledger.get('terminal_epochs', [])) + 1:04d}")
+    )
     signal_id = (
         "SIGNAL_"
         + digest(
@@ -149,8 +154,10 @@ def record_signal(ledger, view, selected, contract, *, now, code_commit, strateg
             "initial_capital": "10000",
             "strategy_hash": strategy_hash,
             "first_model_hashes": signal["model_hashes"],
-            "initial_cash": "10000",
-            "initial_positions": [],
+            "initial_cash": ledger["portfolio"]["cash"] if ledger.get("portfolio") else "10000",
+            "initial_positions": ledger["portfolio"]["positions"]
+            if ledger.get("portfolio")
+            else [],
             "first_signal_date": signal_date,
             "first_signal_id": signal_id,
             "decision_at": now.isoformat(),

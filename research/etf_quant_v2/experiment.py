@@ -15,7 +15,7 @@ from numpy.typing import NDArray
 
 from .coverage import digest, external_directory, immutable_bytes, json_bytes
 from .diagnostics import dependence, feature_geometry, ridge_vs_ols
-from .protocol import Candidate, candidates, canonical_hash
+from .protocol import EVIDENCE_TIERED_PHASE_SESSIONS, Candidate, candidates, canonical_hash
 from .recovery import write_json
 
 Array = NDArray[np.float64]
@@ -46,7 +46,9 @@ class ExperimentSplit:
 
 def make_split(dates: list[str], universe_cutoff: str | None = None) -> ExperimentSplit:
     n = len(dates)
-    tail, final, validation, gap = 120, 60, 80, 120
+    tail, final, validation, gap = (
+        EVIDENCE_TIERED_PHASE_SESSIONS[key] for key in ("tail", "final", "validation", "gap")
+    )
     final_end = n - tail - 1
     final_start = final_end - final + 1
     validation_end = final_start - gap - 1

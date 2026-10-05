@@ -19,8 +19,8 @@ from strategies.etf_quant_v2.runtime import SHANGHAI, FrozenSpecification, prepa
 from strategies.etf_quant_v2.shadow import cycle, load_state, public_view, temporal_gate
 
 
-def synthetic_facts():
-    days = tuple(d.date() for d in pd.bdate_range("2023-01-02", "2026-10-12"))
+def synthetic_facts(end="2026-10-12"):
+    days = tuple(d.date() for d in pd.bdate_range("2023-01-02", end))
     rng = np.random.default_rng(651)
     changes = rng.normal(0.0003, 0.009, (len(days), 12))
     closes = 100 * np.exp(np.cumsum(changes, axis=0))

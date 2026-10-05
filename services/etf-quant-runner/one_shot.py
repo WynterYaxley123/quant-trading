@@ -180,6 +180,8 @@ def _run_v2(config, control, *, now=None):
             )
         ):
             raise transport.GateError("V2_RUNTIME_INTEGRITY_BLOCKER")
+        if not isinstance(state.get("signals"), list) or not state["signals"]:
+            raise transport.GateError("V2_EMPTY_SIGNAL_STATE_DENIED")
         signal_day = state["signals"][-1]["signal_date"]
         if signal_day > str(local.date()):
             raise transport.GateError("FORWARD_MONOTONIC_SIGNAL_REQUIRED")

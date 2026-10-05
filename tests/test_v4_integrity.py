@@ -195,6 +195,7 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
         ACTIVE_MANIFEST,
         FORWARD_CLOSURE_MANIFEST,
         HOTFIX_MANIFEST,
+        INSTALLATION_MANIFEST,
         PARENT_MANIFEST,
         SHADOW_OPERATIONS_MANIFEST,
         V2_BUILD_MANIFEST,
@@ -211,7 +212,7 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
     report = json.loads((ROOT / ACTIVE_MANIFEST).read_text())["implementation_integrity"]
     assert (
         report["parent_manifest_sha256"]
-        == sha256((ROOT / SHADOW_OPERATIONS_MANIFEST).read_bytes()).hexdigest()
+        == sha256((ROOT / INSTALLATION_MANIFEST).read_bytes()).hexdigest()
     )
     operations = json.loads((ROOT / SHADOW_OPERATIONS_MANIFEST).read_text())[
         "implementation_integrity"

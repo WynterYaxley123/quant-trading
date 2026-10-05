@@ -112,7 +112,8 @@ def prepare_signal(
         or (not spec.validated and not allow_unvalidated_research)
     ):
         raise ValueError("GENUINE_FINALIZED_FORWARD_DATE_REQUIRED")
-    index = sessions.index(day)
+    positions = {session: i for i, session in enumerate(sessions)}
+    index = positions[day]
     if index + 1 >= len(sessions):
         raise ValueError("OFFICIAL_T_PLUS_ONE_SESSION_REQUIRED")
     industries = sorted(current_factors)
@@ -149,9 +150,9 @@ def prepare_signal(
             and r.label_end[horizon] <= day
         ]
         for row in eligible:
-            if row.day not in sessions:
+            if row.day not in positions:
                 raise ValueError("UNKNOWN_TRAINING_SESSION")
-            maturity = sessions.index(row.day) + horizon
+            maturity = positions[row.day] + horizon
             if maturity >= len(sessions) or row.label_end[horizon] != sessions[maturity]:
                 raise ValueError("EXACT_HORIZON_MATURITY_REQUIRED")
             if (

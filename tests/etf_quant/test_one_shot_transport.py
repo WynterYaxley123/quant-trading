@@ -397,7 +397,8 @@ def test_partial_finalization_is_adopted_despite_next_session_failure_and_resume
     assert str(calls[-1][-1]) == "2026-09-28" and pointer.read_bytes() == before
 
 
-def test_v2_same_signal_returns_before_provider_or_model(tmp_path, runner, monkeypatch):
+@pytest.mark.parametrize("empty", [False, True])
+def test_v2_same_signal_returns_before_provider_or_model(tmp_path, runner, monkeypatch, empty):
     cfg = config(tmp_path, runner)
     cfg["strategy_version"] = "ETF_QUANT_V2"
     (Path(cfg["snapshot"]) / "trading_calendar.csv").write_text(
@@ -411,7 +412,7 @@ def test_v2_same_signal_returns_before_provider_or_model(tmp_path, runner, monke
         "broker_enabled": False,
         "real_order_path": False,
         "portfolio": {"initial_cash": "10000"},
-        "signals": [{"signal_date": "2026-10-08"}],
+        "signals": [] if empty else [{"signal_date": "2026-10-08"}],
         **{k: release[k] for k in ("candidate_sha256", "registry_sha256", "release_sha256")},
     }
     root = Path(cfg["runtime_root"])
@@ -440,6 +441,11 @@ def test_v2_same_signal_returns_before_provider_or_model(tmp_path, runner, monke
         pytest.fail("a committed V2 signal must not call a provider or model")
 
     monkeypatch.setattr(runner.transport, "call", call)
+    if empty:
+        with pytest.raises(runner.transport.GateError, match="EMPTY_SIGNAL"):
+            runner.run_once(cfg)
+        assert (root / "latest.json").read_bytes() == before
+        return
     result = runner.run_once(cfg)
     assert result["status"] == "ALREADY_PROCESSED"
     assert result["strategy_version"] == "ETF_QUANT_V2"

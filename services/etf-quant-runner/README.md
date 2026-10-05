@@ -133,7 +133,11 @@ python -B services/etf-quant-runner/run.py cycle --config <external-config.json>
 
 Requires clean committed integration/etf-quant-v1, a real existing lake, current
 finalized cutoff and next-session calendar. It exports the lake read-only and
-does not fix missing data. Non-trading days/missed T+1 block, no backdated signals,
+does not fix missing data. Non-trading days wait; a missed T+1 retires the original
+intent and epoch as ABANDONED_MISSED_T1 without filling it. The next genuinely
+current finalized cycle may start a new forward epoch with the preserved account.
+Recovery shares the account mutex and atomic journal, so duplicate wakes cannot
+repeat it. No operator ledger edit or historical-date override is supported. No backdated signals,
 historical replay, automatic Validation or invented market prices.
 
 Exclusive external transport lock is never stolen. Only ETF code, one immutable

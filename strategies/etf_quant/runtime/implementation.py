@@ -20,7 +20,8 @@ V2_FACTUAL_UNITS_MANIFEST = "reports/engineering/etf-quant-v2-factual-units-inte
 V2_CONSOLE_MANIFEST = "reports/engineering/etf-quant-v2-console-integrity.json"
 FORWARD_CLOSURE_MANIFEST = "reports/engineering/forward-shadow-closure-integrity.json"
 SHADOW_OPERATIONS_MANIFEST = "reports/engineering/shadow-operations-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/shadow-task-installation-integrity.json"
+INSTALLATION_MANIFEST = "reports/engineering/shadow-task-installation-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/v7-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
@@ -101,7 +102,7 @@ def verify_implementation(root: Path) -> dict[str, str]:
         V2_CONSOLE_MANIFEST,
         FORWARD_CLOSURE_MANIFEST,
         SHADOW_OPERATIONS_MANIFEST,
-        ACTIVE_MANIFEST,
+        INSTALLATION_MANIFEST,
     ):
         current_bytes = (root / manifest_path).read_bytes()
         current = json.loads(current_bytes)["implementation_integrity"]
@@ -124,7 +125,25 @@ def verify_implementation(root: Path) -> dict[str, str]:
             ):
                 raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
         parent, parent_bytes, parent_path = current, current_bytes, manifest_path
-    files: dict[str, str] = current["files"]
+    delta = json.loads((root / ACTIVE_MANIFEST).read_bytes())["implementation_integrity"]
+    if (
+        delta["identifier"] != "CURRENT_IMPLEMENTATION_DELTA"
+        or delta["canonicalization"] != "JSON_SORTED_KEYS_COMPACT_UTF8_V1"
+        or delta["parent_manifest_path"] != parent_path
+        or delta["parent_manifest_sha256"] != hashlib.sha256(parent_bytes).hexdigest()
+        or delta["certificate_sha256"] != certificate_hash(delta)
+    ):
+        raise ImplementationIntegrityError("IMPLEMENTATION_TRANSITION_BLOCKER")
+    changes = {item["path"]: item for item in delta["changes"]}
+    if len(changes) != len(delta["changes"]) or set(changes) != set(delta["files"]):
+        raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
+    for name, after in delta["files"].items():
+        if (
+            changes[name]["before_sha256"] != parent["files"].get(name)
+            or changes[name]["after_sha256"] != after
+        ):
+            raise ImplementationIntegrityError("IMPLEMENTATION_CHANGE_LEDGER_BLOCKER")
+    files: dict[str, str] = parent["files"] | delta["files"]
     for name, expected in files.items():
         target = (root / name).resolve(strict=True)
         if not target.is_relative_to(root.resolve()) or not target.is_file():

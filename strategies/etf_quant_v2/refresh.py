@@ -23,6 +23,12 @@ from .runtime import SHANGHAI
 PIN = "1650e384a3fd1f67a70144a489acc91432f1df27"
 
 
+def validated_symbol(value: object) -> str:
+    if not isinstance(value, str) or re.fullmatch(r"[0-9]{6}\.(SH|SZ)", value) is None:
+        raise ValueError("ETF_SYMBOL_CONTRACT_ERROR")
+    return value
+
+
 def checksum(path: Path) -> str:
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
@@ -88,6 +94,7 @@ def verified_liquidity_receipt(
 
 
 def refresh(symbols: list[str], day: date, output: Path, source: Path) -> dict[str, Any]:
+    symbols = [validated_symbol(symbol) for symbol in symbols]
     from cnequity.adapters.calendar.exchange_calendar import build_trading_calendar
     from cnequity.adapters.tdx_protocol.client import fetch_daily_bars
     from cnequity.config import Config
@@ -221,9 +228,10 @@ def with_current_etf_bars(
     receipt = refresh(symbols, day, output, source)
     frames = []
     for row in receipt["receipts"]:
+        symbol = validated_symbol(row.get("symbol"))
         if "bars_sha256" not in row:
             continue
-        file = contained(output, str(day) + "/" + row["symbol"] + ".parquet")
+        file = contained(output, str(day) + "/" + symbol + ".parquet")
         if checksum(file) != row["bars_sha256"]:
             raise ValueError("ETF_EXPORT_RECEIPT_HASH_ERROR")
         observed = datetime.fromisoformat(row["observed_at"])

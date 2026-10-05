@@ -30,6 +30,8 @@ def next_signal_session(
     """A waiting current T stays eligible until it is committed; never skip it."""
     today = now.astimezone(SHANGHAI).date()
     freeze = available_at.astimezone(SHANGHAI).date()
+    if state and not state.get("signals"):
+        raise ValueError("V2_EMPTY_SIGNAL_STATE_DENIED")
     last = date.fromisoformat(state["signals"][-1]["signal_date"]) if state else date.min
     eligible = [d for d in sessions[:-1] if d >= today and d > freeze and d > last]
     return str(eligible[0]) if eligible else None
@@ -71,11 +73,17 @@ def run_once(config: dict[str, Any], code_commit: str) -> dict[str, Any]:
         )
         if (
             state
+            and state["signals"]
             and facts.prefix_hash(date.fromisoformat(state["signals"][-1]["signal_date"]))
             != state["factual_prefix_sha256"]
         ):
             raise ValueError("CONSUMED_FACTUAL_PREFIX_REVISION_DENIED")
-        observations, current = facts.model_inputs(cutoff)
+        specification = candidate["specification"]
+        observations, current = facts.model_inputs(
+            cutoff,
+            training_months=specification["training_months"],
+            horizons=tuple(specification["horizons"]),
+        )
         liquidity = load_liquidity(Path(config["liquidity_root"]), cutoff)
         vector_path = Path(config["exposure_vectors"])
         if checksum(vector_path) != registry["exposure_vectors_sha256"]:

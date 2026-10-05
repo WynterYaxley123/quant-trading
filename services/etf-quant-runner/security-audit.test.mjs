@@ -9,6 +9,22 @@ import {secretKinds,canonicalJSON,certificateHash,repositoryFile,verifyCurrentCe
 test('private key marker requires review without printing its payload',()=>{
   const sample='-----BEGIN '+'PRIVATE KEY-----';assert.ok(secretKinds(sample).includes('PRIVATE_KEY'));
 });
+
+test('compact transition resolves inherited sources and rejects forged change ancestry',()=>{
+  const parent={candidate_sha256:'frozen',files:{'preserved.py':'old','changed.py':'before'}};
+  const bytes=Buffer.from(JSON.stringify(parent)),parentPath='reports/parent.json';
+  const current={identifier:'CURRENT_IMPLEMENTATION_DELTA',canonicalization:'JSON_SORTED_KEYS_COMPACT_UTF8_V1',
+    parent_manifest_path:parentPath,parent_manifest_sha256:createHash('sha256').update(bytes).digest('hex'),
+    files:{'changed.py':'after','new.py':'new'},changes:[
+      {path:'changed.py',before_sha256:'before',after_sha256:'after'},
+      {path:'new.py',before_sha256:null,after_sha256:'new'}]};
+  current.certificate_sha256=certificateHash(current);
+  const resolved=verifyCurrentCertificate(current,parent,bytes,parentPath);
+  assert.deepEqual(resolved.files,{'preserved.py':'old','changed.py':'after','new.py':'new'});
+  assert.equal(resolved.candidate_sha256,'frozen');
+  current.changes[0].before_sha256='forged';current.certificate_sha256=certificateHash(current);
+  assert.throws(()=>verifyCurrentCertificate(current,parent,bytes,parentPath),/TRANSITION/);
+});
 test('empty template and synthetic references are not credential values',()=>{
   assert.deepEqual(secretKinds('API_TOKEN=\npassword=SYNTHETIC_NOT_A_REAL_PASSWORD\napi_key=process.env.API_KEY'),[]);
 });

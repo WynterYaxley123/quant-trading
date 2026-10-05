@@ -66,8 +66,8 @@ research files directly. See [dashboard architecture](docs/architecture.md) for 
 
 ## Installation
 
-Node.js ≥ 24 and pnpm 11.25 are required for the unified console (the dashboard is an independent Node project; it does not
-touch the frozen quant Docker environment).
+Node.js ≥ 24 and pnpm 11.25 are required for the unified console. The dashboard
+is an independent Node project and does not touch the frozen quant Docker environment.
 
 ```bash
 cd dashboard

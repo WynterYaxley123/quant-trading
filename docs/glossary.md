@@ -35,7 +35,7 @@ the runner, APIs and dashboard. Serialized historical identifiers remain compati
 | Direct tracking ETF | An ETF with admitted direct industry-tracking evidence; historical mapping category `Strict` is retained. This does not by itself certify historical data PIT. |
 | Industry-exposure proxy ETF | An ETF admitted through complete official weights, target exposure, dominance, PIT and liquidity evidence. |
 | Cash fallback | Preserve the original unexecutable slot's weight as unallocated capacity; do not redistribute it or treat cash as an ETF. |
-| Strong / weak historical support | `PASS_STRONG` / `PASS_WEAK` under the frozen multi-metric gate; neither proves profitable ETF execution or removes dependence/PIT limitations. |
+| Historical gate identifier | `PASS_STRONG` / `PASS_WEAK` are immutable original gate decisions, not current statistical validation claims. Current V2 is provisional: direction STRONG_POSITIVE, statistics LIMITED, membership RECONSTRUCTED, historical ETF execution NOT_ESTABLISHED. |
 | Forward experimental Shadow | `EXPERIMENTAL_UNVALIDATED_RESEARCH_SHADOW`: the required public label after Final-OOS failure; still simulation only. |
 | Armed launch | Persisted configuration and readiness for the next eligible date, with no manufactured epoch, intent or NAV. |
 

@@ -16,6 +16,7 @@ CANDIDATE = "strategies/etf_quant_v2/config/candidate.json"
 REGISTRY = "strategies/etf_quant_v2/config/mapping-registry.json"
 FINAL = "reports/engineering/etf-quant-v2-final-oos.json"
 FREEZE = "config/research/etf-quant-v2-final-oos-freeze.json"
+ASSESSMENT = "config/research/etf-quant-v2-scientific-status.json"
 STATUSES = {
     "PASS_STRONG": "HISTORICALLY_VALIDATED_STRONG",
     "PASS_WEAK": "HISTORICALLY_VALIDATED_WEAK",
@@ -25,7 +26,7 @@ STATUSES = {
 
 def load_release(repository: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     files = verify_implementation(repository)
-    for name in (RELEASE, CANDIDATE, REGISTRY, FINAL, FREEZE):
+    for name in (RELEASE, CANDIDATE, REGISTRY, FINAL, FREEZE, ASSESSMENT):
         if files.get(name) != checksum(repository / name):
             raise ValueError("CERTIFIED_V2_RELEASE_REQUIRED")
     release, candidate, registry, final, freeze = [
@@ -55,4 +56,16 @@ def load_release(repository: Path) -> tuple[dict[str, Any], dict[str, Any], dict
         or release["lot_size"] != 100
     ):
         raise ValueError("V2_FINALIZATION_CONTRACT_ERROR")
-    return release, candidate, registry
+    assessment = json.loads((repository / ASSESSMENT).read_bytes())
+    if (
+        assessment["candidate_sha256"] != candidate["candidate_sha256"]
+        or assessment["final_oos_sha256"] != release["final_oos_sha256"]
+        or assessment["original_final_oos_sessions"] != final["metrics"]["signals"]
+        or assessment["original_final_oos_consumed"] is not True
+        or assessment["original_final_oos_resealed"] is not False
+        or assessment["post_oos_extension"] is not None
+    ):
+        raise ValueError("V2_SCIENTIFIC_OVERLAY_IDENTITY_ERROR")
+    # The release digest still identifies the immutable original model/runtime
+    # contract. Current epistemic labels are a separately certified overlay.
+    return release | assessment["labels"], candidate, registry

@@ -145,6 +145,7 @@ def training_rows(
 
 
 def model_readiness_reference(series, provider, *, config=None):
+    # Test-only parity reference; production uses the indexed training assembly.
     """Shared production inputs, nonformal math only; never writes runtime.
 
     The historical cutoff labels this reference, not a backdated decision or

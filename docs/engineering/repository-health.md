@@ -1,9 +1,9 @@
 # Repository engineering health
 
 This page describes the implementation based on official main
-`46b632599a39548ef54c5fa9be06e5e81b862020`, measured on 2026-10-05.
-The [active integrity transition](../../reports/engineering/shadow-task-installation-integrity.json)
-appends the immutable forward-operation certificate. Earlier measurements in
+`b5ac584a7f6339e7ae089286fa6ec939b082ff33`, measured on 2026-10-05.
+The [active integrity transition](../../reports/engineering/v7-integrity.json)
+appends the immutable installation certificate as a compact delta. Earlier measurements in
 [historical health metadata](../../reports/engineering/repository-health.json)
 retain their original scope and dates; they are not current test counts or status.
 Repository certificates establish local byte consistency, without an external signer.
@@ -12,7 +12,7 @@ Repository certificates establish local byte consistency, without an external si
 
 V1 remains the frozen baseline. V2 remains Ridge alpha 30, RAW features, a
 12-calendar-month window, H10/H40/H120 and fusion 0.25/0.50/0.25. Its published
-scientific status is HISTORICALLY_VALIDATED_STRONG, with the original failed
+scientific status is PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE, with the original failed
 Validation and overlapping Final-OOS observations disclosed in the
 [V2 protocol](../etf-quant-v2-protocol.md). No research gate was reopened or model
 retuned. Mapping admits 3 direct and 19 verified-proxy industries out of 124;
@@ -24,7 +24,8 @@ The [operations guide](../operations.md) defines the external Windows task,
 canonical dual-version runner, permanent merged-main checkout, logs and retry
 behavior. Synthetic crash tests cover T signals and T+1 accounting before/after
 pointer publication. Recovery promotes only already-persisted, hash-verified
-bytes with their original timestamps. Corrupted evidence and missed T+1 fail closed.
+bytes with their original timestamps. Corrupt evidence fails closed. Missed T+1
+retires the original intent/epoch without any fill and permits a new legal forward epoch.
 Host operation requires the logged-in user's Docker Desktop runtime and provider
 availability. The dashboard/API display factual waiting states and separate ledgers.
 
@@ -39,12 +40,12 @@ private filesystem paths; real paths beside URLs remain counted.
 
 | Measure | Current run |
 | --- | ---: |
-| Python files / LOC including blanks and comments | 282 / 60025 |
-| Functions / fully annotated signatures | 2299 / 736 |
-| Function docstrings | 605 |
+| Python files / LOC including blanks and comments | 286 / 60719 |
+| Functions / fully annotated signatures | 2318 / 744 |
+| Function docstrings | 607 |
 | Raw Mypy diagnostics / affected files | 168 / 22 |
 | Active production/touched Mypy diagnostics | 0 |
-| Tracked / active / historical Markdown | 73 / 56 / 17 |
+| Tracked / active / historical Markdown | 74 / 57 / 17 |
 | Broken active links and plain paths / unclassified Markdown | 0 / 0 |
 | Private machine path lines in active docs / source | 0 / 0 |
 | Active config private-path compatibility default | 1 |
@@ -56,7 +57,7 @@ Annotations and docstrings remain partial. Mypy debt is unchanged and reviewed;
 no baseline was enlarged. The single config path is the labelled legacy Windows
 runtime fallback. `AGENTS.md` is the required repository instruction file; the
 12 vendor-named historical provenance artifacts remain byte-pinned. No current
-vendor handoff file exists. Markdown count did not grow.
+vendor handoff file exists. One concise V7 findings inventory was added.
 
 ## Validation
 
@@ -68,19 +69,19 @@ GitHub PR/main metadata, not a fabricated self-referential merge SHA.
 
 | Check | Result |
 | --- | --- |
-| Portable pytest | 1233 passed, 2 optional tests skipped, 99 external tests deselected |
-| Full V1 frozen-image acceptance | 699 passed, 1 optional fixture skipped; network disabled, maintainer evidence read-only |
-| Final focused runner/scheduler, V2 Shadow and integrity regressions | 47 passed |
+| Portable pytest | 1259 passed, 2 optional tests skipped, 99 external tests deselected |
+| Full V1 frozen-image acceptance | 701 passed, 1 optional test skipped; network disabled, maintainer evidence read-only |
+| Focused accounting/recovery/locks and canonical runner/scheduler | 105 passed |
 | Ruff / format / staged Mypy / pre-commit | Passed; 168 unchanged legacy diagnostics, active production 0 |
 | Dashboard | 132 passed, 3 optional live tests skipped; types/lint/build passed |
 | Research API | 63 passed, 7 optional external tests skipped; types/build passed |
-| ETF API/security | 138 passed on Windows and Linux |
-| Windows launcher/task-definition and bounded-read checks | 8 passed, including actual cold task discovery |
+| ETF API/security | 140 passed on Linux and 140 passed on Windows |
+| Windows launcher/task-definition | 6 passed, including actual cold task discovery |
 | Synthetic performance regressions | 16 passed |
 
-The cold task-discovery correction leaves the 699-pass frozen numerical/account
-implementation unchanged. Final source-certificate verification runs separately;
-the portable suite includes the appended immutable-parent integrity regression.
+The [V7 inventory](v7-remediation.md) records corrected findings and compatibility
+constraints. Final source-certificate verification runs separately after documentation
+updates. Historical model/candidate/release/OOS bytes remain unchanged.
 
 The built-in source/history scanner reports identifiers and counts, omits sealed
 payloads and checks forbidden data paths and certificate bytes. Its result is
@@ -98,3 +99,8 @@ licensing. Optional external/live test tiers require separately configured evide
 Legacy Mypy debt, partial annotations and larger cohesive modules remain. Host
 sleep/logout, unavailable Docker or incomplete providers may prevent a legal
 forward opportunity; retries never authorize retroactive signals or prices.
+Full ledger snapshots retain cumulative archive growth and a bounded read ceiling;
+future rollover needs a separately verified schema transition. Membership views
+preserve latest dated row identities, cache unchanged membership and reduce in
+canonical symbol order to prevent random floating mean bytes. No unsafe incremental
+hash or changed historical membership selection was introduced.

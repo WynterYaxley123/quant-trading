@@ -3,7 +3,24 @@ import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,mkdir,open,rm,symlink} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {boundedLeaf} from '../bounded.mjs';
+import {boundedLeaf,containedExists} from '../bounded.mjs';
+
+test('existence rejects symlink escapes and accepts only contained regular leaves',async t=>{
+  const root=await mkdtemp(path.join(os.tmpdir(),'quant-exists-'));
+  t.after(()=>rm(root,{recursive:true,force:true}));
+  await mkdir(path.join(root,'inside'));await mkdir(path.join(root,'outside'));
+  await writeFile(path.join(root,'outside/private.json'),'{}');
+  await writeFile(path.join(root,'inside/valid.json'),'{}');
+  assert.equal(await containedExists(path.join(root,'inside'),'absent.json'),false);
+  assert.equal(await containedExists(path.join(root,'inside'),'valid.json'),true);
+  await symlink(path.join(root,'outside'),path.join(root,'inside/link'),process.platform==='win32'?'junction':'dir');
+  await assert.rejects(containedExists(path.join(root,'inside'),'link/private.json'));
+  if(process.platform!=='win32') {
+    await symlink(path.join(root,'outside/private.json'),path.join(root,'inside/escape.json'));
+    await assert.rejects(containedExists(path.join(root,'inside'),'escape.json'));
+  }
+  await assert.rejects(containedExists(path.join(root,'inside'),'../outside/private.json'));
+});
 
 test('reads enforce the byte ceiling even when a regular file grows after stat',async t=>{
   const root=await mkdtemp(path.join(os.tmpdir(),'quant-bounded-'));
