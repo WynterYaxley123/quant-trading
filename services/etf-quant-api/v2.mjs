@@ -1,16 +1,17 @@
 /** Bounded, read-only V2 aggregates. No market rows, fit or runtime creation. */
-import {readFile,realpath,stat} from 'node:fs/promises';
+import {realpath} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {repositoryFile,verifyCurrentCertificate} from '../etf-quant-runner/security-audit.mjs';
+import {boundedLeaf} from './bounded.mjs';
 
 const defaultRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const CANDIDATE='strategies/etf_quant_v2/config/candidate.json';
 const REPORT='reports/engineering/etf-quant-v2-build-research.json';
-export const CURRENT_MANIFEST='reports/engineering/forward-shadow-closure-integrity.json';
+export const CURRENT_MANIFEST='reports/engineering/shadow-operations-integrity.json';
 const MANIFEST=CURRENT_MANIFEST;
-const PARENTS=['reports/engineering/etf-quant-v2-console-integrity.json','reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/engineering/etf-quant-v2-factual-refresh-integrity.json','reports/engineering/etf-quant-v2-observation-integrity.json',
+const PARENTS=['reports/engineering/forward-shadow-closure-integrity.json','reports/engineering/etf-quant-v2-console-integrity.json','reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/engineering/etf-quant-v2-factual-refresh-integrity.json','reports/engineering/etf-quant-v2-observation-integrity.json',
   'reports/engineering/etf-quant-v2-finalization-integrity.json','reports/engineering/etf-quant-v2-build-integrity.json'];
 const FINAL='reports/engineering/etf-quant-v2-final-oos.json';
 const RELEASE='strategies/etf_quant_v2/config/release.json';
@@ -20,9 +21,8 @@ const sha=b=>createHash('sha256').update(b).digest('hex');
 const requireValue=v=>{if(!v)throw new Error('V2_RESEARCH_INTEGRITY_BLOCKER');};
 
 async function bounded(root,name) {
-  const file=repositoryFile(root,name),s=await stat(file);
-  requireValue(s.size<=512*1024);
-  return readFile(file);
+  repositoryFile(root,name);
+  return (await boundedLeaf(root,name,512*1024)).raw;
 }
 export async function observeV2(root=defaultRoot) {
   const real=await realpath(root);
@@ -34,7 +34,7 @@ export async function observeV2(root=defaultRoot) {
     verifyCurrentCertificate(child,parent,parentBytes[i],PARENTS[i]);child=parent;
   }
   // Verify every certified source, not merely report self-consistency.
-  for(const [name,expected] of Object.entries(manifest.files))requireValue(sha(await readFile(repositoryFile(real,name)))===expected);
+  for(const [name,expected] of Object.entries(manifest.files))requireValue(sha(await bounded(real,name))===expected);
   // Python's frozen identity preserves 30.0; JS JSON normalizes it to 30.
   // The transition binds exact candidate/report bytes instead of reserializing.
   requireValue(candidate.product==='ETF_QUANT_V2' && /^[a-f0-9]{64}$/.test(candidate.candidate_sha256)

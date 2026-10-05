@@ -896,6 +896,158 @@
       "occurrence": 0,
       "category": "TEST_OUTPUT",
       "reason": "Import smoke test PASS/FAIL and summary"
+    },
+    {
+      "path": "research/etf_quant_v2/assessment.py",
+      "context": "main",
+      "ast_sha256": "f514d08d983123cca4ef974b126ad7c918a35606cd61a5bdeaaf13e03c101956",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit assessment CLI receipt with selected candidate identity and output size."
+    },
+    {
+      "path": "research/etf_quant_v2/checkpoint.py",
+      "context": "main",
+      "ast_sha256": "08b1b1b63f9e2df15cf45c834a5a02b16ead0efe6023acfc829d86b366a238ff",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Panel checkpoint CLI prints completeness status and data identity."
+    },
+    {
+      "path": "research/etf_quant_v2/experiment.py",
+      "context": "run_grid",
+      "ast_sha256": "bdaa8ee2b5d4783e8a782c5ae59dcba8d41399548bca185bb95f859b4dc559e0",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Intentional long-running grid stage summary with candidate and admission counts."
+    },
+    {
+      "path": "research/etf_quant_v2/experiment.py",
+      "context": "main",
+      "ast_sha256": "465f286ba9c062633ff0a1d49bbfd8b05c56dbb2718822e8f4ce36ef93a0849f",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit research CLI selection/gate outcome; not incidental debug output."
+    },
+    {
+      "path": "research/etf_quant_v2/experiment.py",
+      "context": "main",
+      "ast_sha256": "f78f192695e64321ffe27d2fe8b0338844d2ea1a563aa573c17f2caf50c3a063",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit research CLI selection/gate outcome; not incidental debug output."
+    },
+    {
+      "path": "research/etf_quant_v2/finalization.py",
+      "context": "main",
+      "ast_sha256": "c4a4592496741296af9f9edc4cbb27431f2863f7c206c827549d7bf10a37ebac",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Authorized-only finalization CLI serializes freeze/open result; review does not execute it."
+    },
+    {
+      "path": "research/etf_quant_v2/focused.py",
+      "context": "main",
+      "ast_sha256": "9bf72880444d760cb53411189a6656622fcecffc12c06fd961494fc6e8905d0e",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit focused research selection or no-candidate outcome."
+    },
+    {
+      "path": "research/etf_quant_v2/focused.py",
+      "context": "main",
+      "ast_sha256": "ba54dccdb464e9132e80fad8cb5c03b7ed86ae8f0487bc030f4462a7f7f75d06",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit focused research selection or no-candidate outcome."
+    },
+    {
+      "path": "research/etf_quant_v2/mapping_evidence.py",
+      "context": "main",
+      "ast_sha256": "3754721e9bbaa0773e4fd5f3aa9b2fb53fd7011ebbc2a6b025032c7724a548df",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mapping evidence CLI summarizes discovery without listing raw candidate payloads."
+    },
+    {
+      "path": "research/etf_quant_v2/mapping_registry.py",
+      "context": "main",
+      "ast_sha256": "5943e39250e79a45cdd4788b304f3861b55c5a15e399fbdb20262a06c0821a94",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Mapping registry CLI emits its evidence-admission report."
+    },
+    {
+      "path": "research/etf_quant_v2/panel.py",
+      "context": "build_panel",
+      "ast_sha256": "e819c05d1e432006ac0d4bef297c5334482d6494721707e2086239f4070f9aca",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Intentional yearly factual reconstruction progress with coverage row count."
+    },
+    {
+      "path": "research/etf_quant_v2/panel.py",
+      "context": "main",
+      "ast_sha256": "03e7d33ab652cb197077135f987437263d4688c16687b7c0c08a20f014279c60",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit reconstruction CLI summary omits dates and source-file inventory."
+    },
+    {
+      "path": "research/etf_quant_v2/recovery.py",
+      "context": "recover",
+      "ast_sha256": "beff84c6a4d6167f21912e436dc21afb673f379d5d92b8e553297d40baf39991",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Intentional bounded batch progress for authorized factual recovery."
+    },
+    {
+      "path": "research/etf_quant_v2/recovery.py",
+      "context": "main",
+      "ast_sha256": "55661165cfc7ab0927ae2b0a9acd4fb1a0ae96ac8b67b07860862e8ecff9245e",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Factual recovery CLI summary excludes detailed file receipts."
+    },
+    {
+      "path": "research/etf_quant_v2/revision.py",
+      "context": "main",
+      "ast_sha256": "8dbb577fbe7ec869b24f7bdc5f7b6e3ced01331175c851a2204d286003f3ca2d",
+      "occurrence": 0,
+      "category": "REPORT_OUTPUT",
+      "reason": "Explicit selected revision/gate summary; no research execution during review."
+    },
+    {
+      "path": "services/etf-quant-runner/versioned.py",
+      "context": "main",
+      "ast_sha256": "e1144da0e8c9269ebbc380b4d2525e3f2171089c06b96ddf7092c4b2641a2894",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Canonical host transport consumes the versioned Docker adapter JSON receipt."
+    },
+    {
+      "path": "strategies/etf_quant_v2/refresh.py",
+      "context": "main",
+      "ast_sha256": "f68ef69d8f1e951aceb591cb4ca3b5ca6a6562f664c35d57166c704288aabd16",
+      "occurrence": 0,
+      "category": "MACHINE_READABLE_OUTPUT",
+      "reason": "Canonical refresh transport consumes a compact factual refresh receipt."
+    },
+    {
+      "path": "strategies/etf_quant_v2/runtime.py",
+      "context": "main",
+      "ast_sha256": "2785a6e9b7e1b8c687e60ba84cf1cca4d5ad9794ee4b4ed402eb683862ac738e",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit forward preparation/plan publication CLI outcome, with simulation identity."
+    },
+    {
+      "path": "strategies/etf_quant_v2/runtime.py",
+      "context": "main",
+      "ast_sha256": "d2d615fb4136253be8fe131af98afbe57534cca0d67b042e8bb11549bdd549e6",
+      "occurrence": 0,
+      "category": "CLI_OUTPUT",
+      "reason": "Explicit forward preparation/plan publication CLI outcome, with simulation identity."
     }
   ]
 }

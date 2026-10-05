@@ -107,6 +107,22 @@ def test_private_path_pattern_does_not_confuse_http_urls_with_windows_drives():
     assert MACHINE_PATH.search(r"D:\private\runtime") is not None
 
 
+def test_inventory_url_paths_and_colocated_tests_do_not_mask_real_paths(tmp_path):
+    for name, content in {
+        "README.md": "https://example.invalid/home/legal/ and Z:/private/runtime",
+        "service/check.test.mjs": 'const fixture = "Z:/synthetic";',
+        "pyproject.toml": "[tool.ruff]\n",
+        "config/engineering/mypy-baseline.json": "{}",
+        "reports/etf_quant/autonomous_code_integrity_v1.json": '{"files":{}}',
+    }.items():
+        leaf = tmp_path / name
+        leaf.parent.mkdir(parents=True, exist_ok=True)
+        leaf.write_text(content)
+    result = measure(tmp_path, ["README.md", "service/check.test.mjs"])
+    assert result["machine_path_counts"] == {"ACTIVE_DOC": 1, "TEST_FIXTURE": 1}
+    assert result["active_source_private_path_references"] == []
+
+
 def test_inventory_definitions_count_complete_signatures_and_all_path_scopes(tmp_path):
     for name, text in {
         "library.py": 'def complete(x: int, *, y: int = 1) -> int:\n    """Sum."""\n    return x+y\ndef incomplete(x: int, y) -> int:\n    return x+y\n# Z:/source\n',

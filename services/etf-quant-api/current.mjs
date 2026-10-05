@@ -1,13 +1,14 @@
 /** Read-only projection of certified release metadata and the actual control receipt.
  * No model, mapping, accounting, source refresh or runtime mutation lives here.
  */
-import { readFile, realpath, stat, access } from 'node:fs/promises';
+import { realpath, stat, access } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { observeV2, CURRENT_MANIFEST } from './v2.mjs';
+import { boundedLeaf as leaf } from './bounded.mjs';
 
 export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const HASH = /^[a-f0-9]{64}$/;
@@ -23,14 +24,6 @@ async function external(root) {
     if(path.dirname(p)===p) break;
   }
   return resolved;
-}
-async function leaf(root, relative, limit=1024*1024) {
-  const file=await realpath(path.join(root,relative));
-  const remaining=path.relative(root,file);
-  check(remaining && !remaining.startsWith('..') && !path.isAbsolute(remaining));
-  const info=await stat(file);
-  check(info.isFile() && info.size<=limit);
-  return {raw:await readFile(file),mtime:info.mtime.toISOString()};
 }
 const json = item => JSON.parse(item.raw);
 export async function operationalOneShot({controlRoot,repoRoot=REPO,transportPython,runtimeRoot}) {

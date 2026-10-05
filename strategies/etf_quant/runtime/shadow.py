@@ -2,8 +2,6 @@
 
 import json
 import math
-import os
-from contextlib import contextmanager
 from datetime import datetime, time
 from decimal import Decimal
 from pathlib import Path
@@ -34,32 +32,16 @@ from .prediction import current_predictions
 from .prefix import source_prefix
 from .storage import (
     GateError,
+    account_lock,
     atomic_bytes,
     digest,
     external_root,
     json_bytes,
+    publish_account_generation,
     publish_generation,
     read_generation,
 )
 from .view import empty_view, public_strategy
-
-
-@contextmanager
-def runtime_lock(root):
-    """No stale-lock stealing: ambiguous interrupted work requires review."""
-    path = root / ".cycle.lock"
-    try:
-        handle = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-    except FileExistsError as error:
-        raise GateError("CONCURRENT_OR_INTERRUPTED_RUN_BLOCKER") from error
-    try:
-        with os.fdopen(handle, "wb") as stream:
-            stream.write(json_bytes({"pid": os.getpid()}))
-            stream.flush()
-            os.fsync(stream.fileno())
-        yield
-    finally:
-        path.unlink(missing_ok=True)
 
 
 def _portfolio(doc):
@@ -272,7 +254,7 @@ def daily_cycle(
     ):
         raise GateError("IMPLEMENTATION_COMMIT_REQUIRED")
     run_id = now.strftime("%Y%m%dT%H%M%S") + "_" + uuid4().hex[:12]
-    with runtime_lock(root):
+    with account_lock(root):
         try:
             with decimal_math():
                 return _daily(
@@ -816,8 +798,8 @@ def _daily(
         "validation_opened": False,
         "final_oos_read": False,
     }
-    pointer = publish_generation(
-        root / "runs",
+    pointer = publish_account_generation(
+        root,
         run_id,
         {
             "view.json": json_bytes(view),
@@ -825,8 +807,8 @@ def _daily(
             "prefix.json": json_bytes(prefix),
         },
         manifest,
+        publisher=publish_generation,
     )
-    atomic_bytes(latest, json_bytes(pointer))
     return {
         "status": phase,
         **pointer,

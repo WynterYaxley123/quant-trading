@@ -11,13 +11,12 @@ from typing import Any
 from strategies.etf_quant.domain import PortfolioState, Position, TargetPosition, TradingCalendar
 from strategies.etf_quant.portfolio import RebalanceStatus
 from strategies.etf_quant.portfolio.partial import rebalance_decision_v2
-from strategies.etf_quant.runtime.shadow import runtime_lock
 from strategies.etf_quant.runtime.storage import (
-    atomic_bytes,
+    account_lock,
     contained,
     external_root,
     json_bytes,
-    publish_generation,
+    publish_account_generation,
     read_generation,
 )
 from strategies.etf_quant.schemas import to_primitive
@@ -198,7 +197,7 @@ def cycle(
     ):
         raise ValueError("V1_AND_V2_STATE_MUST_BE_DISJOINT")
     root = external_root(root)
-    with runtime_lock(root):
+    with account_lock(root):
         state = load_state(root)
         if state and any(
             state[k] != release[k]
@@ -358,8 +357,8 @@ def cycle(
         state["factual_prefix_sha256"] = factual_prefix_sha256
         view = public_view(state, release, latest_data_date=str(day), armed=True)
         identifier = "v2_" + now.strftime("%Y%m%dT%H%M%S%f") + "_" + content_hash(state)[:12]
-        pointer = publish_generation(
-            root / "runs",
+        pointer = publish_account_generation(
+            root,
             identifier,
             {"state.json": json_bytes(state), "view.json": json_bytes(view)},
             {
@@ -368,5 +367,4 @@ def cycle(
                 "created_at": now.isoformat(),
             },
         )
-        atomic_bytes(root / "latest.json", json_bytes(pointer))
         return {"status": "STARTED", "view": view, "pointer": pointer}

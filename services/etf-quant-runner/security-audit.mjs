@@ -184,8 +184,12 @@ export function audit() {
   const consoleBytes=readFileSync(repositoryFile(repo,consolePath));
   const consoleCertificate=JSON.parse(consoleBytes).implementation_integrity;
   verifyCurrentCertificate(consoleCertificate,units,unitsBytes,unitsPath);
-  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/forward-shadow-closure-integrity.json'))).implementation_integrity;
-  verifyCurrentCertificate(current,consoleCertificate,consoleBytes,consolePath);
+  const closurePath='reports/engineering/forward-shadow-closure-integrity.json';
+  const closureBytes=readFileSync(repositoryFile(repo,closurePath));
+  const closure=JSON.parse(closureBytes).implementation_integrity;
+  verifyCurrentCertificate(closure,consoleCertificate,consoleBytes,consolePath);
+  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/shadow-operations-integrity.json'))).implementation_integrity;
+  verifyCurrentCertificate(current,closure,closureBytes,closurePath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected
   ).map(([name])=>name);

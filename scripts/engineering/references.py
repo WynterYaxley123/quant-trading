@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 import posixpath
+import re
+import subprocess
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -13,6 +15,11 @@ from markdown_it.common.utils import normalizeReference
 from markdown_it.rules_inline.state_inline import StateInline
 
 ROOT = Path(__file__).resolve().parents[2]
+REPOSITORY_PATH = re.compile(
+    r"(?<![\w/])(?:docs|services|strategies|scripts|tests|reports|config|src|research|dashboard|"
+    r"examples|quant_primitives|\.devcontainer|\.github)/[A-Za-z0-9_./-]+"
+    r"\.(?:md|py|json|toml|ya?ml|ps1|mjs|tsx?|sh)(?![\w/])"
+)
 
 
 def unresolved_reference(state: StateInline, silent: bool) -> bool:
@@ -62,7 +69,7 @@ def markdown_links(text: str) -> tuple[list[str], list[str]]:
     return targets, undefined
 
 
-def audit(root: Path = ROOT) -> dict[str, object]:
+def audit(root: Path = ROOT, names: list[str] | None = None) -> dict[str, object]:
     """Check local references without requesting remote pages or private files."""
     mapping = json.loads((root / "config/engineering/documentation-map.json").read_text())
     documents = mapping["documents"]
@@ -71,6 +78,7 @@ def audit(root: Path = ROOT) -> dict[str, object]:
     changed: list[str] = []
     checked = 0
     historical_alias_references = 0
+    plain_checked = 0
     for item in documents:
         source = root / item["path"]
         if item.get("removed_from_tree"):
@@ -79,7 +87,8 @@ def audit(root: Path = ROOT) -> dict[str, object]:
             changed.append(item["path"])
         if not item["class"].startswith("ACTIVE_"):
             continue
-        targets, undefined = markdown_links(source.read_text(encoding="utf-8-sig"))
+        source_text = source.read_text(encoding="utf-8-sig")
+        targets, undefined = markdown_links(source_text)
         broken.extend(
             {"document": item["path"], "target": "UNDEFINED_REFERENCE:" + label}
             for label in undefined
@@ -98,9 +107,29 @@ def audit(root: Path = ROOT) -> dict[str, object]:
             resolved = (root / target).resolve()
             if not resolved.is_relative_to(root.resolve()) or not resolved.exists():
                 broken.append({"document": item["path"], "target": target})
+        # Displayed repository paths are root-relative. Inspect prose and inline
+        # code; fenced commands/templates remain instructions, not literal paths.
+        for block in MarkdownIt("commonmark").parse(source_text):
+            for token in block.children or []:
+                if token.type not in {"text", "code_inline"}:
+                    continue
+                for match in REPOSITORY_PATH.finditer(token.content):
+                    target = match.group()
+                    plain_checked += 1
+                    resolved = (root / target).resolve()
+                    if not resolved.is_relative_to(root.resolve()) or not resolved.exists():
+                        finding = {"document": item["path"], "target": target}
+                        if finding not in broken:
+                            broken.append(finding)
+    mapped = {item["path"] for item in documents if not item.get("removed_from_tree")}
+    unclassified = sorted(
+        name for name in names or [] if name.endswith(".md") and name not in mapped
+    )
     return {
-        "status": "PASS" if not broken and not changed else "FAIL",
+        "status": "PASS" if not broken and not changed and not unclassified else "FAIL",
         "active_local_links_checked": checked,
+        "active_plain_paths_checked": plain_checked,
+        "unclassified_markdown": unclassified,
         "broken_active_links": broken,
         "changed_archived_bytes": changed,
         "historical_path_aliases": len(moved),
@@ -110,7 +139,15 @@ def audit(root: Path = ROOT) -> dict[str, object]:
 
 def main() -> None:
     """Emit counts and paths; no archived payloads or local machine paths."""
-    result = audit()
+    names = (
+        subprocess.check_output(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT
+        )
+        .decode()
+        .strip("\0")
+        .split("\0")
+    )
+    result = audit(names=names)
     print(json.dumps(result, indent=2))
     if result["status"] != "PASS":
         raise SystemExit(1)

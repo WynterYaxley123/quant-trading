@@ -79,6 +79,37 @@ def certified_inputs(config):
     return pins
 
 
+def recover_runtime(config):
+    """Complete persisted publication in the Linux account-lock domain only."""
+    runtime = Path(config["runtime_root"]) if config.get("runtime_root") else None
+    if runtime is None or not (runtime / ".publication.json").exists():
+        return
+    transport.committed_code()
+    certified_implementation()
+    runtime = transport.external_directory(runtime)
+    image = config.get("developer_image", "quant-trading-forward:local")
+    if image.startswith("quant-research"):
+        raise transport.GateError("INDEPENDENT_RECOVERY_IMAGE_REQUIRED")
+    argv = [config.get("docker_executable", "docker"), "run", "--rm", "--network", "none"]
+    for source, target, readonly in ((REPO, "/workspace", True), (runtime, "/shadow", False)):
+        try:
+            argv += bind_mount(source, target, readonly=readonly)
+        except MountInputError as error:
+            raise transport.GateError("DOCKER_MOUNT_INPUT_BLOCKER") from error
+    # Import only filesystem utilities, without package/quantitative imports.
+    worker = (
+        "import importlib.util; from pathlib import Path; "
+        "spec=importlib.util.spec_from_file_location('storage',"
+        "'/workspace/strategies/etf_quant/runtime/storage.py'); "
+        "storage=importlib.util.module_from_spec(spec); spec.loader.exec_module(storage); "
+        "lock=storage.account_lock(Path('/shadow')); "
+        "lock.__enter__(); lock.__exit__(None,None,None)"
+    )
+    argv += ["-e", "PYTHONDONTWRITEBYTECODE=1", image, "python", "-B", "-c", worker]
+    if transport.call(argv, timeout=120).returncode:
+        raise transport.GateError("RUNTIME_PUBLICATION_RECOVERY_BLOCKER")
+
+
 def run_once(config, *, now=None):
     # A separate metadata-only control root serializes refresh and initialization.
     control = transport.external_directory(config["control_root"])
@@ -86,6 +117,9 @@ def run_once(config, *, now=None):
         version = config.get("strategy_version", "ETF_QUANT_V1")
         if version not in ("ETF_QUANT_V1", "ETF_QUANT_V2"):
             raise transport.GateError("UNKNOWN_STRATEGY_VERSION")
+        # Recovery preserves prior bytes/times before holiday/duplicate gates.
+        # Host Windows byte locks do not coordinate with Docker Linux flock.
+        recover_runtime(config)
         operation = _run_v2 if version == "ETF_QUANT_V2" else _run_once
         result = operation(config, control, now=now)
         # A real refresh can cross the closing boundary. Recheck once, never
@@ -471,7 +505,7 @@ def _run_once(config, control, *, now=None):
         raise transport.GateError("EXISTING_DOCKER_TRANSPORT_BLOCKER")
     if response.get("status") == "BLOCKED":
         response["status"] = "BLOCKED_INTEGRITY"
-    return {**response, "refresh": refresh}
+    return {**response, "data_cutoff": meta["data_cutoff"], "refresh": refresh}
 
 
 def observe_once(config: dict[str, Any]) -> dict[str, Any]:
@@ -520,7 +554,14 @@ def run_versions(configs: list[dict[str, Any]]) -> dict[str, Any]:
         if version == "ETF_QUANT_V2" and "v2_control_root" in config:
             if not Path(config["v2_control_root"]).is_absolute():
                 raise transport.GateError("EXPLICIT_EXTERNAL_PATH_REQUIRED")
-            roots.append(Path(config["v2_control_root"]).resolve())
+            v2_control = Path(config["v2_control_root"]).resolve()
+            if v2_control.is_relative_to(roots[1]) or roots[1].is_relative_to(v2_control):
+                raise transport.GateError("CONTROL_AND_ACCOUNT_MUST_BE_DISJOINT")
+            if v2_control != roots[0] and (
+                v2_control.is_relative_to(roots[0]) or roots[0].is_relative_to(v2_control)
+            ):
+                raise transport.GateError("CONTROL_NAMESPACES_MUST_BE_DISJOINT_OR_IDENTICAL")
+            roots.append(v2_control)
         if any(a.is_relative_to(b) or b.is_relative_to(a) for a in roots for b in owned):
             raise transport.GateError("V1_AND_V2_STATE_MUST_BE_DISJOINT")
         owned.extend(roots)

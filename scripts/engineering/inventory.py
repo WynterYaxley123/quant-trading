@@ -23,6 +23,7 @@ from scripts.engineering.typecheck import diagnostics  # noqa: E402 -- Standalon
 MACHINE_PATH = re.compile(
     r"(?<![A-Za-z0-9])[A-Z]:[/\\]|/mnt/[a-z]/|QuantForge|/home/|/Users/|\.codex[/\\]worktrees", re.I
 )
+HTTP_URL = re.compile(r"https?://[^\s<>`\"']+", re.I)
 TEXT_SUFFIXES = {
     ".py",
     ".md",
@@ -113,7 +114,12 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
                             else len(content.splitlines()[row - 1]),
                         )
         for line, value in enumerate(content.splitlines(), 1):
-            matches = list(MACHINE_PATH.finditer(value))
+            urls = list(HTTP_URL.finditer(value))
+            matches = [
+                match
+                for match in MACHINE_PATH.finditer(value)
+                if not any(url.start() <= match.start() < url.end() for url in urls)
+            ]
             if matches:
                 span = pattern_spans.get(line)
                 only_pattern = span is not None and all(
@@ -124,7 +130,9 @@ def measure(root: Path, names: list[str]) -> dict[str, object]:
                 ) or name.startswith("docs/archive/")
                 category = (
                     "TEST_FIXTURE"
-                    if "/tests/" in name or name.startswith("tests/")
+                    if "/tests/" in name
+                    or name.startswith("tests/")
+                    or re.search(r"\.(?:test|spec)\.[^.]+$", name)
                     else "HISTORICAL"
                     if historical or name.startswith("reports/etf_quant/")
                     else "ACTIVE_DOC"

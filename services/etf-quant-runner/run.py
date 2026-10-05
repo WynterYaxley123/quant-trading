@@ -210,15 +210,12 @@ def transport_lock(root):
                 ),
             )
             path.unlink()
-        handle = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    try:
-        with os.fdopen(handle, "wb") as stream:
-            stream.write(payload)
-            stream.flush()
-            os.fsync(stream.fileno())
-        yield
-    finally:
-        with lock_guard(root):
+        # Hold the kernel guard throughout the invocation. Publish ownership
+        # atomically so process death cannot leave an empty, unrecoverable lock.
+        storage.atomic_bytes(path, payload)
+        try:
+            yield
+        finally:
             if path.exists() and path.read_bytes() == payload:
                 path.unlink()
 

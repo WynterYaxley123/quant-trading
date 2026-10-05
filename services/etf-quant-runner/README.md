@@ -16,6 +16,11 @@ Use `one_shot.py --config <external-one-shot-config.json>` with an explicit exis
 Python interpreter for **standard-library transport only**. The separate
 `one_shot.config.example.json` enumerates required paths; the deployment config
 is outside Git at `<runtime-root>`.
+The permanent Windows task calls `scheduled_wake.py`, an external standard-library
+wake wrapper, which fast-forwards only its owned operational checkout and invokes
+this same entry with both version configs. Install from merged main with
+`scripts/Install-ForwardShadowTask.ps1`; see the [operations guide](../../docs/operations.md)
+for deployment, retries, logging and the Docker Desktop login requirement.
 Only file transport / calendar metadata execute on the host. Model, allocation,
 PIT admission and accounting run inside the existing frozen Docker image.
 

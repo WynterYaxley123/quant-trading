@@ -1,16 +1,14 @@
 /** Versioned live Shadow projection from bounded, hash-verified generations. */
-import {readFile,realpath,stat} from 'node:fs/promises';
+import {stat} from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {observeV2} from './v2.mjs';
+import {boundedLeaf} from './bounded.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const requireValue=v=>{if(!v)throw new Error('V2_SHADOW_INTEGRITY_BLOCKER');};
 async function read(root,name,limit=1024*1024) {
-  const base=await realpath(root),file=await realpath(path.join(base,name)),relative=path.relative(base,file);
-  requireValue(relative && !relative.startsWith('..') && !path.isAbsolute(relative));
-  const metadata=await stat(file);requireValue(metadata.isFile() && metadata.size<=limit);
-  return readFile(file);
+  return (await boundedLeaf(root,name,limit)).raw;
 }
 async function exists(root,name) {
   try {await stat(path.join(root,name));return true;} catch(error) {if(error.code==='ENOENT')return false;throw error;}
