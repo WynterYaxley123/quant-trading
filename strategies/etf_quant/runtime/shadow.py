@@ -420,6 +420,24 @@ def _daily(
         if execution_policy == "STRICT_TOP5"
         else select_pit_mappings(registry, fused.rankings, provider, pit_evidence, signal_at=now)
     )
+    from .recovery import abandon_missed_t1
+
+    prior_intent = ledger["pending"]
+    if prior_intent is not None:
+        if (
+            prior_intent["mapping_hash"] != mapping_hash
+            or prior_intent["strategy_hash"] != strategy_hash
+            or prior_intent.get("execution_policy", "STRICT_TOP5") != execution_policy
+        ):
+            raise GateError("PERSISTED_T0_INTENT_INTEGRITY_BLOCKER")
+        if formal_contract and (
+            prior_intent.get("epoch_id") != ledger["shadow_epoch"]["epoch_id"]
+            or prior_intent.get("candidate_hash") != formal_contract.candidate_hash
+        ):
+            raise GateError("FORMAL_T1_INTENT_REFERENCE_BLOCKER")
+    abandon_missed_t1(
+        ledger, day=provider.cutoff, now=now.astimezone(SHANGHAI), epoch_key="shadow_epoch"
+    )
     pending = ledger["pending"]
     if pending is not None:
         if formal_contract:

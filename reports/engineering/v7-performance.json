@@ -1,0 +1,32 @@
+{
+  "synthetic_only": true,
+  "session_lookup": {
+    "rows": 37200,
+    "before_seconds": 0.3166168230236508,
+    "after_seconds": 0.0014064209535717964
+  },
+  "membership_5_dates_seconds": 0.039726998016703874,
+  "membership_index": {
+    "after_seconds": 0.022450751974247396,
+    "equivalence_check_seconds": 0.07115169800817966,
+    "view_builds": 1,
+    "rows_equal": true,
+    "canonical_symbol_order": true,
+    "prior_mean_hashes_on_identical_inputs": 9,
+    "current_mean_hashes_on_identical_inputs": 1,
+    "prior_repetitions": 30
+  },
+  "stock_rows": {
+    "rows": 100000,
+    "before_seconds": 0.09115110099082813,
+    "after_seconds": 0.08245144900865853,
+    "removed_full_intermediate_list": true
+  },
+  "state_json": {
+    "bytes": 206013,
+    "before_seconds": 0.0076714460155926645,
+    "after_seconds": 0.0030381500255316496
+  },
+  "exact_output_equivalence": true,
+  "timing_is_not_a_gate": true
+}

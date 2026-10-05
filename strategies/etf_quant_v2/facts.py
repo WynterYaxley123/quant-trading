@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -22,10 +23,64 @@ from strategies.etf_quant.domain.industry_level import load_taxonomy
 from strategies.etf_quant.factors import compute_close_factors
 from strategies.etf_quant.runtime.storage import contained
 
-from .refresh import PIN, checksum, verified_liquidity_receipt, verified_snapshot
+from .refresh import PIN, checksum, validated_symbol, verified_liquidity_receipt, verified_snapshot
 from .runtime import Observation
 
 Array = NDArray[np.float64]
+
+
+class MembershipLookup:
+    """Latest dated membership with deterministic reduction order and one cached view.
+
+    Polars unique without ordered output randomizes symbol iteration, which can
+    change floating mean bytes and falsely fail consumed factual-prefix hashes.
+    Stable symbol order is an execution determinism repair, not a universe change.
+    """
+
+    def __init__(self, frame: pl.DataFrame) -> None:
+        self.ordered = frame.drop_nulls("as_of_date").sort("as_of_date", maintain_order=True)
+        self.dates: tuple[date, ...] = tuple(sorted(set(self.ordered["as_of_date"].to_list())))
+        self.position: int | None = None
+        self.cached = self.ordered.head(0)
+        self.builds = 0
+
+    def visible(self, day: date) -> pl.DataFrame:
+        position = bisect_right(self.dates, day) - 1
+        if position != self.position:
+            self.cached = (
+                self.ordered.filter(pl.col("as_of_date") <= self.dates[position])
+                .unique("symbol", keep="last", maintain_order=True)
+                .sort("symbol")
+                if position >= 0
+                else self.ordered.head(0)
+            )
+            self.position = position
+            self.builds += 1
+        return self.cached
+
+
+def history_window(
+    dates: tuple[date, ...], signal_day: date, training_months: int, horizons: tuple[int, ...]
+) -> date:
+    """Full mature-label calendar window, plus 120-session factor warmup and 20 margin."""
+    if (
+        training_months not in (6, 9, 12, 18, 24)
+        or not horizons
+        or any(h not in (10, 40, 80, 120) for h in horizons)
+    ):
+        raise ValueError("UNSUPPORTED_FORWARD_HISTORY_SPECIFICATION")
+    positions = {day: i for i, day in enumerate(dates)}
+    t = positions[signal_day]
+    if t < max(horizons):
+        raise ValueError("FULL_FORWARD_HISTORY_REQUIRED")
+    earliest = (
+        pd.Timestamp(dates[t - max(horizons)]) - pd.DateOffset(months=training_months)
+    ).date()
+    # Calendar months cannot be approximated by a fixed number of sessions.
+    first = bisect_left(dates, earliest)
+    if dates[0] > earliest or first < 140:
+        raise ValueError("FULL_FORWARD_HISTORY_WITH_FACTOR_WARMUP_REQUIRED")
+    return earliest
 
 
 @dataclass(frozen=True)
@@ -50,7 +105,11 @@ class ForwardFacts:
         return digest.hexdigest()
 
     def model_inputs(
-        self, signal_day: date
+        self,
+        signal_day: date,
+        *,
+        training_months: int = 12,
+        horizons: tuple[int, ...] = (10, 40, 120),
     ) -> tuple[list[Observation], dict[str, tuple[float, ...]]]:
         t = self.dates.index(signal_day)
         if t != len(self.dates) - 1:
@@ -61,10 +120,12 @@ class ForwardFacts:
             if np.isfinite(self.features[t, j]).all()
         }
         eligible = np.asarray(np.isfinite(self.features).all(axis=2), dtype=np.bool_)
+        earliest = history_window(self.dates, signal_day, training_months, horizons)
+        first = bisect_left(self.dates, earliest)
         returns: dict[int, Array] = {}
-        for h in (10, 40, 120):
+        for h in horizons:
             y = np.full(self.closes.shape, np.nan)
-            for i in range(max(0, t - h + 1)):
+            for i in range(first, max(0, t - h + 1)):
                 active = eligible[i]
                 if active.sum() < 12:
                     continue
@@ -73,8 +134,6 @@ class ForwardFacts:
                 if good[active].all():
                     y[i, active] = raw[active]
             returns[h] = y
-        # H120 cutoff minus 12 months is the earliest possible training row.
-        earliest = (pd.Timestamp(signal_day) - pd.DateOffset(months=20)).date()
         records = []
         for i, day in enumerate(self.dates):
             if not earliest <= day <= signal_day:
@@ -153,20 +212,17 @@ def append_snapshot(warmup: Path, snapshot: Path, *, expected_panel_sha256: str)
             try_parse_dates=True,
         )
         instruments = pl.read_csv(contained(snapshot, "instruments.csv"), try_parse_dates=True)
+        memberships = MembershipLookup(membership)
         active_stocks = {
             r["symbol"]: r for r in instruments.filter(pl.col("asset_type") == "stock").to_dicts()
         }
-        records = {(r["symbol"], r["trade_date"]): r for r in stock.to_dicts()}
+        records = {(r["symbol"], r["trade_date"]): r for r in stock.iter_rows(named=True)}
         taxonomy = load_taxonomy().level3_to_level2
         extra: list[Array] = []
         extra_segments: list[NDArray[np.int64]] = []
         previous_day = dates[-1]
         for day in extension:
-            current_members = (
-                membership.filter(pl.col("as_of_date") <= day)
-                .sort("as_of_date")
-                .unique("symbol", keep="last")
-            )
+            current_members = memberships.visible(day)
             groups: dict[str, list[str]] = {}
             for r in current_members.to_dicts():
                 instrument = active_stocks.get(r["symbol"])
@@ -254,6 +310,7 @@ def load_liquidity(root: Path, day: date) -> dict[str, float]:
         raise ValueError("LIQUIDITY_RECEIPT_CALENDAR_IDENTITY_ERROR")
     result = {}
     for row in doc["receipts"]:
+        validated_symbol(row.get("symbol"))
         if row["liquidity_amount"] is not None:
             bars = contained(root, str(day) + "/" + row["symbol"] + ".parquet")
             if row["symbol"] in result:

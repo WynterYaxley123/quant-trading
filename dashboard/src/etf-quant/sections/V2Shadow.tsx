@@ -13,7 +13,8 @@ export function V2ShadowSection({v1}:{v1?:EtfQuantSnapshot}) {
   const failed=data.historical_classification==='FAIL';
   const dates=[...new Set([...(v1?.nav.map(r=>r.trade_date)??[]),...data.nav.map(r=>r.date)])].sort().slice(-30);
   return <Card><CardHeader><CardTitle>ETF-Quant V2 · 前向 Shadow</CardTitle></CardHeader><CardContent className="space-y-5">
-    <p className={failed?'font-semibold text-destructive':'font-semibold'}>{failed?'Experimental / Final-OOS failed / Forward Shadow evaluation':`Final OOS ${data.historical_classification} · ${data.scientific_status}`}</p>
+    <p className={failed?'font-semibold text-destructive':'font-semibold'}>{failed?'Experimental / Final-OOS failed / Forward Shadow evaluation':`Final OOS 方向 STRONG_POSITIVE · ${data.scientific_status}`}</p>
+    <p className="text-sm">独立统计信心 LIMITED · 历史成员证据 RECONSTRUCTED · 历史 ETF 执行验证 NOT_ESTABLISHED。冻结模型：α=30、RAW、12 个月、H10/40/120，融合 0.25/0.50/0.25。</p>
     <div className="grid gap-4 text-sm sm:grid-cols-3">
       <p>独立初始预算<br/><strong>CNY 10,000</strong></p>
       <p>当前余额<br/><strong>CNY {Number(data.balance).toLocaleString('zh-CN',{maximumFractionDigits:2})}</strong></p>

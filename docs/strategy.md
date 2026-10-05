@@ -33,7 +33,15 @@ Positive liquidity amount never multiplies alpha weights. Mapping selection owns
 strict precedence, collisions and deterministic fallback; the evaluator takes selected inputs.
 
 Historical Source-C membership is not silently upgraded to strict historical PIT.
-Later mapping evidence cannot be backdated; missed T+1 is blocked. See [data and PIT](data-and-pit.md).
+Later mapping evidence cannot be backdated. A missed T+1 retires the original intent
+and its epoch as ABANDONED_MISSED_T1, without a retroactive fill. A new current-date
+epoch may continue the preserved account. See [data and PIT](data-and-pit.md).
+
+`STRATEGY_FREEZE != RUNTIME_CODE_IMMUTABILITY`: frozen factors, fitted-method
+specifications, ranking/fusion, mapping/cash, sizing, costs and T/T+1 semantics are
+economic contracts. Storage, lock recovery, version isolation and observation may
+receive verified maintenance with an explicit source transition and regression
+evidence. The infrastructure changes in `e69c6d7` are governed by this distinction.
 
 V2 research does not change these rules. Its independent specification and current
 Final-OOS verdict and independent prospective mapping are in the [V2 protocol](etf-quant-v2-protocol.md). The

@@ -40,6 +40,18 @@ export function repositoryFile(root,name) {
   return resolved;
 }
 export function verifyCurrentCertificate(current,parent,parentBytes,parentPath='reports/engineering/v4-integrity.json') {
+  if(current.identifier==='CURRENT_IMPLEMENTATION_DELTA') {
+    if(current.canonicalization!=='JSON_SORTED_KEYS_COMPACT_UTF8_V1'
+      || current.parent_manifest_path!==parentPath
+      || current.parent_manifest_sha256!==createHash('sha256').update(parentBytes).digest('hex')
+      || current.certificate_sha256!==certificateHash(current)
+      || new Set(current.changes.map(c=>c.path)).size!==current.changes.length
+      || current.changes.length!==Object.keys(current.files).length
+      || Object.entries(current.files).some(([name,after])=>!current.changes.some(c=>c.path===name
+        && c.before_sha256===(parent.files[name]??null) && c.after_sha256===after)))
+      throw new Error('CERTIFICATE_TRANSITION_BLOCKER');
+    return {...parent,...current,files:{...parent.files,...current.files}};
+  }
   if(current.identifier!=='CURRENT_IMPLEMENTATION_INTEGRITY'
     || current.canonicalization!=='JSON_SORTED_KEYS_COMPACT_UTF8_V1'
     || current.parent_manifest_path!==parentPath
@@ -50,6 +62,7 @@ export function verifyCurrentCertificate(current,parent,parentBytes,parentPath='
     || Object.entries(parent.files).some(([name,before])=>before!==current.files[name] && !current.changes.some(change=>
       change.path===name && change.before_sha256===before && change.after_sha256===current.files[name]))
     || current.certificate_sha256!==certificateHash(current))throw new Error('CERTIFICATE_TRANSITION_BLOCKER');
+  return current;
 }
 function git(args,input,encoding='utf8') {
   const r=spawnSync('git',['--no-optional-locks',...args],{cwd:repo,input,encoding,maxBuffer:512*1024*1024});
@@ -192,8 +205,12 @@ export function audit() {
   const operationsBytes=readFileSync(repositoryFile(repo,operationsPath));
   const operations=JSON.parse(operationsBytes).implementation_integrity;
   verifyCurrentCertificate(operations,closure,closureBytes,closurePath);
-  const current=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/shadow-task-installation-integrity.json'))).implementation_integrity;
-  verifyCurrentCertificate(current,operations,operationsBytes,operationsPath);
+  const installationPath='reports/engineering/shadow-task-installation-integrity.json';
+  const installationBytes=readFileSync(repositoryFile(repo,installationPath));
+  const installation=JSON.parse(installationBytes).implementation_integrity;
+  verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/v7-integrity.json'))).implementation_integrity;
+  const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected
   ).map(([name])=>name);

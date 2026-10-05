@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -57,9 +58,14 @@ def classify(
         and metrics["all_fitted_coefficients_finite"]
     )
     directional = ic is not None and spread is not None and ic > 0 and spread > 0
+    ratio = (
+        ic / development_ic
+        if ic is not None and math.isfinite(development_ic) and development_ic > 0
+        else None
+    )
     secondary = {
         "concentration": concentration is not None and concentration <= 0.70,
-        "development_direction_retention": ic is not None and ic / development_ic >= 0.10,
+        "development_direction_retention": ratio is not None and ratio >= 0.10,
     }
     weak = sum(not value for value in secondary.values())
     classification = (
@@ -80,7 +86,7 @@ def classify(
         "numerical_stability": numerical,
         "secondary": secondary,
         "positive_block_ic_concentration": concentration,
-        "development_to_oos_rank_ic_ratio": ic / development_ic if ic is not None else None,
+        "development_to_oos_rank_ic_ratio": ratio,
     }
 
 

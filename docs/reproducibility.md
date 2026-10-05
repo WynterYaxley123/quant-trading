@@ -81,11 +81,22 @@ Frozen candidates, numerical specifications, mapping registries and published
 Final-OOS artifacts remain byte-identical. The health page reports this checkout's
 actual runs; older test counts and research blockers belong to their dated records.
 
-The active transition is `reports/engineering/shadow-task-installation-integrity.json`.
+The historical installation transition is `reports/engineering/shadow-task-installation-integrity.json`.
 It preserves the operations certificate and corrects cold Windows task discovery:
 the native missing-file HRESULT may arrive as FileNotFoundException. Only that
 missing-task result permits creation; service/access failures still propagate.
 The regression queries Task Scheduler read-only and verifies other failures block.
+
+The active transition is `reports/engineering/v7-integrity.json`, a compact
+`CURRENT_IMPLEMENTATION_DELTA` containing only changed/new file hashes and their
+before/after ledger. It pins the complete immutable parent bytes; verification
+resolves the parent inventory and applies the delta, then hashes every current file.
+Existing full certificates retain their original schema and bytes. The generator
+`scripts/engineering/integrity_delta.py` rejects modifications of existing reports,
+research freezes, strategy configurations and archives. It does not create evidence
+of passing tests. The [V7 inventory](engineering/v7-remediation.md) records findings,
+regression gates and nonblocking limits. The current scientific overlay binds the
+unchanged consumed original 60-session result independently of runtime integrity.
 
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata

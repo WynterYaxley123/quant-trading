@@ -4,8 +4,10 @@ The project contains historical Shenwan sector-rotation research, frozen ETF-Qua
 independent ETF-Quant V2 Research, shared data/runner/API infrastructure and the observation
 dashboard. V2 primitives reuse the frozen numerical solver and factor vocabulary; V1
 does not import V2. V2 has a separate candidate/forward package and state namespace.
-Its original Validation failed; the frozen Development revision passed its single
-preregistered Final OOS. Evidence limitations remain visible.
+Its original Validation failed; the frozen Validation-informed revision has positive
+Final-OOS direction but remains a provisional historical research candidate. Limited
+statistical confidence, reconstructed membership and absent historical ETF execution
+validation remain visible.
 See the [V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary.md).
 
 External pinned CNEquity produces normalized immutable factual exports. This repository

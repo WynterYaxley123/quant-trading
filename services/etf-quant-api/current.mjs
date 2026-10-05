@@ -99,6 +99,8 @@ export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.n
       await observeV2(repoRoot); // Verify the complete current certificate and its immutable parent.
       transition=json(await leaf(repoRoot,'reports/engineering/etf-quant-v2-observation-integrity.json')).implementation_integrity;
       active=json(await leaf(repoRoot,CURRENT_MANIFEST)).implementation_integrity;
+      const installation=json(await leaf(repoRoot,'reports/engineering/shadow-task-installation-integrity.json')).implementation_integrity;
+      active={...active,files:{...installation.files,...active.files}};
       check(transition.v1_observation_transition.release_manifest_sha256===digest(releaseFile.raw));
     }
     const change=transition.v1_observation_transition.files[name];

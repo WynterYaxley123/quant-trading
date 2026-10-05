@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "contract": "CURRENT_SCIENTIFIC_LABELING_OVERLAY",
+  "candidate_sha256": "bd0e83629c2c0b9eb8ecd89fa11f19f8051dd53287c28db3244d7377a4d6680f",
+  "final_oos_sha256": "130ab8c31b1c09a53ee25d4ca99332fc32f2b4fcf787bd87732ea4c41283f0bb",
+  "original_final_oos_sessions": 60,
+  "original_final_oos_consumed": true,
+  "original_final_oos_resealed": false,
+  "post_oos_extension": null,
+  "protocol_deviation": {
+    "strict_pit_proposal_validation_sessions": 120,
+    "strict_pit_proposal_final_sessions": 120,
+    "actual_evidence_tiered_validation_sessions": 80,
+    "actual_evidence_tiered_final_sessions": 60,
+    "purge_sessions_each": 120,
+    "label_maturity_tail_sessions": 120,
+    "reason": "The later reconstructed-membership experiment used a shorter evaluation chronology; it did not satisfy the original strict-PIT proposal. The opened 60 sessions cannot be enlarged or presented as unseen."
+  },
+  "labels": {
+    "scientific_status": "PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE",
+    "product_status": "PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE",
+    "final_oos_directional_label": "STRONG_POSITIVE",
+    "independent_statistical_confidence": "LIMITED",
+    "historical_membership_confidence": "RECONSTRUCTED",
+    "etf_execution_historical_validation": "NOT_ESTABLISHED"
+  },
+  "limitations": [
+    "60 overlapping Final-OOS observations; dependence-aware confidence interval and effective sample size are null.",
+    "Tier A membership evidence has zero admitted rows; the historical universe is reconstructed.",
+    "Original Validation failed and the selected revision was Validation-informed.",
+    "Industry forecast diagnostics are not a historical tradable ETF backtest; current forward mapping covers 22 of 124 industries."
+  ]
+}

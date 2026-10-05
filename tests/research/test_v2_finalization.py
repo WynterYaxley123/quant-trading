@@ -28,7 +28,9 @@ def test_published_result_is_bound_to_the_preaccess_frozen_gate_and_unchanged_mo
     assert result["gate_sha256"] == freeze["gate_sha256"]
     assert (
         freeze["evaluation_code_sha256"]
-        == hashlib.sha256((root / "research/etf_quant_v2/finalization.py").read_bytes()).hexdigest()
+        == json.loads(
+            (root / "reports/engineering/shadow-task-installation-integrity.json").read_bytes()
+        )["implementation_integrity"]["files"]["research/etf_quant_v2/finalization.py"]
     )
     assert datetime.fromisoformat(freeze["frozen_at"]) < datetime.fromisoformat(
         result["completed_at"]
@@ -36,6 +38,16 @@ def test_published_result_is_bound_to_the_preaccess_frozen_gate_and_unchanged_mo
     assert result["decision"] == classify(
         result["metrics"], freeze["gate"], freeze["development_rank_ic"]
     )
+
+
+@pytest.mark.parametrize("development_ic", [0.0, -0.1, float("nan"), float("inf")])
+def test_missing_positive_development_direction_has_null_ratio(development_ic):
+    result = classify(
+        metrics(), {"minimum_block_observations": 10, "minimum_observations": 40}, development_ic
+    )
+    assert result["development_to_oos_rank_ic_ratio"] is None
+    assert result["secondary"]["development_direction_retention"] is False
+    assert result["classification"] != "PASS_STRONG"
 
 
 def test_target_equation_matches_frozen_research():

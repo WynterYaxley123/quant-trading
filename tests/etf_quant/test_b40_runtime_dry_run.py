@@ -424,10 +424,6 @@ def test_no_t2_substitute_and_missing_t1_bar_does_not_advance_state(tmp_path):
     _run(p, reg, book, root)
     latest = (root / "latest.json").read_bytes()
     q = advance(p)
-    r = advance(q)
-    with pytest.raises(GateError, match="PERSISTED_T0_INTENT"):
-        _run(r, reg, book, root)
-    assert (root / "latest.json").read_bytes() == latest
     q.tables["etf_bars"].drop(
         q.tables["etf_bars"].index[
             (q.tables["etf_bars"].symbol == "510001.SH")
@@ -438,6 +434,13 @@ def test_no_t2_substitute_and_missing_t1_bar_does_not_advance_state(tmp_path):
     with pytest.raises(GateError, match="T1_EXECUTION_BAR"):
         _run(q, reg, book, root)
     assert (root / "latest.json").read_bytes() == latest
+    r = advance(q)
+    _run(r, reg, book, root)
+    view, state = read(root)
+    assert state["recovery_events"][0]["status"] == "ABANDONED_MISSED_T1"
+    assert state["recovery_events"][0]["retroactive_fill_allowed"] is False
+    assert view["trades"] == []
+    assert not state["pending"] or state["pending"]["signal_date"] == str(r.cutoff)
 
 
 def test_liquidity_window_never_reads_future_bar(tmp_path):

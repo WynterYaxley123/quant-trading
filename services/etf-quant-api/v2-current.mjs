@@ -1,31 +1,29 @@
 /** Versioned live Shadow projection from bounded, hash-verified generations. */
-import {stat} from 'node:fs/promises';
-import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {observeV2} from './v2.mjs';
-import {boundedLeaf} from './bounded.mjs';
+import {boundedLeaf,containedExists} from './bounded.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const requireValue=v=>{if(!v)throw new Error('V2_SHADOW_INTEGRITY_BLOCKER');};
 async function read(root,name,limit=1024*1024) {
   return (await boundedLeaf(root,name,limit)).raw;
 }
-async function exists(root,name) {
-  try {await stat(path.join(root,name));return true;} catch(error) {if(error.code==='ENOENT')return false;throw error;}
-}
+const exists=containedExists;
 function verifyView(v,release) {
   requireValue(v.strategy_version==='ETF_QUANT_V2' && v.mode==='SIMULATION_ONLY'
     && v.broker_enabled===false && v.real_order_path===false && v.initial_capital==='10000'
     && v.candidate_sha256===release.candidate_sha256 && v.registry_sha256===release.registry_sha256
-    && v.release_sha256===release.release_sha256 && v.scientific_status===release.scientific_status
-    && v.historical_classification===release.classification && v.product_status===release.product_status
+    && v.release_sha256===release.release_sha256
+    && [release.scientific_status,'HISTORICALLY_VALIDATED_STRONG'].includes(v.scientific_status)
+    && v.historical_classification===release.classification
+    && [release.product_status,'HISTORICALLY_VALIDATED_RESEARCH_CANDIDATE'].includes(v.product_status)
     && ['epoch_count','signal_count','intent_count','fill_count'].every(k=>Number.isSafeInteger(v[k]) && v[k]>=0)
     && Array.isArray(v.nav) && Array.isArray(v.slots) && Number.isFinite(v.cash_weight) && v.cash_weight>=0 && v.cash_weight<=1);
   requireValue(typeof v.started==='boolean' && typeof v.armed==='boolean'
     && /^[0-9]+(?:\.[0-9]+)?$/.test(v.cash) && Number(v.cash)>=0
     && /^[0-9]+(?:\.[0-9]+)?$/.test(v.balance) && Number(v.balance)>0
     && (v.started || [v.epoch_count,v.signal_count,v.intent_count,v.fill_count,v.nav.length].every(n=>n===0)));
-  return v;
+  return {...v,scientific_status:release.scientific_status,product_status:release.product_status};
 }
 export async function observeV2Current({repoRoot,runtimeRoot='',controlRoot=''}={}) {
   const research=await observeV2(repoRoot),release=research.release;
@@ -71,7 +69,7 @@ export async function observeV2Current({repoRoot,runtimeRoot='',controlRoot=''}=
         waiting_reason:transportWait.reason_code??transportWait.status};
     }
   }
-  return {...view,final_oos:research.final_oos,mapping_summary:research.mapping,
+  return {...view,scientific_assessment:research.scientific_assessment,final_oos:research.final_oos,mapping_summary:research.mapping,
     mapping_inventory:research.mapping_inventory,candidate_etfs:research.registry_entries.filter(r=>view.top5.some(t=>t[0]===r.industry_code)),
     simulation_costs:{commission_bps:3,slippage_bps_per_side:5,stamp_duty_bps:0,minimum_commission:'0',lot_size:100}};
 }

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import date, datetime, time
 from decimal import Decimal
@@ -11,6 +12,7 @@ from typing import Any
 from strategies.etf_quant.domain import PortfolioState, Position, TargetPosition, TradingCalendar
 from strategies.etf_quant.portfolio import RebalanceStatus
 from strategies.etf_quant.portfolio.partial import rebalance_decision_v2
+from strategies.etf_quant.runtime.recovery import abandon_missed_t1
 from strategies.etf_quant.runtime.storage import (
     account_lock,
     contained,
@@ -54,6 +56,8 @@ def load_state(root: Path) -> dict[str, Any] | None:
         or state.get("real_order_path") is not False
     ):
         raise ValueError("V2_INDEPENDENT_LEDGER_REQUIRED")
+    if not isinstance(state.get("signals"), list) or not state["signals"]:
+        raise ValueError("V2_EMPTY_SIGNAL_STATE_DENIED")
     return state
 
 
@@ -128,7 +132,7 @@ def public_view(
         "armed": armed,
         "started": state is not None,
         "waiting_reason": waiting_reason,
-        "epoch_count": 1 if state else 0,
+        "epoch_count": 1 + len(state.get("terminal_epochs", [])) if state else 0,
         "signal_count": len(state["signals"]) if state else 0,
         "intent_count": len(state["intents"]) if state else 0,
         "fill_count": len(state["fills"]) if state else 0,
@@ -240,6 +244,31 @@ def cycle(
             }
         else:
             portfolio = portfolio_from_json(state["portfolio"])
+            prior_intent = state["pending"]
+            if prior_intent:
+                prior_signal_day = date.fromisoformat(prior_intent["signal_date"])
+                due = date.fromisoformat(prior_intent["execution_date"])
+                if (
+                    prior_intent not in state["intents"]
+                    or prior_intent.get("fillable") is False
+                    or prior_intent.get("epoch_id", state["epoch"]["epoch_id"])
+                    != state["epoch"]["epoch_id"]
+                    or prior_intent["candidate_sha256"] != release["candidate_sha256"]
+                    or due != calendar.sessions[calendar.sessions.index(prior_signal_day) + 1]
+                    or datetime.fromisoformat(prior_intent["created_at"])
+                    >= datetime.combine(due, time(9, 30), SHANGHAI)
+                ):
+                    raise ValueError("PERSISTED_V2_INTENT_INTEGRITY_REQUIRED")
+            if abandon_missed_t1(state, day=day, now=now.astimezone(SHANGHAI), epoch_key="epoch"):
+                state["epoch"] = {
+                    "epoch_id": f"ETF_QUANT_V2_SHADOW_EPOCH_{len(state['terminal_epochs']) + 1:04d}",
+                    "created_at": now.isoformat(),
+                    "first_signal_date": str(day),
+                    "initial_capital": "10000",
+                    "code_commit": code_commit,
+                    "opening_portfolio": to_primitive(portfolio),
+                    "continuation": "PRESERVED_ACCOUNT_AFTER_TERMINAL_MISSED_T1",
+                }
             pending = state["pending"]
             if pending:
                 execution = date.fromisoformat(pending["execution_date"])
@@ -349,6 +378,7 @@ def cycle(
                 "rule": "TARGET_WEIGHTS_AT_T_CLOSE;LOT_ROUNDED_COST_AWARE_T_PLUS_ONE_OPEN",
                 "simulation_only": True,
                 "candidate_sha256": release["candidate_sha256"],
+                "epoch_id": state["epoch"]["epoch_id"],
             }
             state["intents"].append(intent)
             state["pending"] = intent
@@ -356,11 +386,17 @@ def cycle(
         state["snapshot_observed_at"] = snapshot_observed_at.isoformat()
         state["factual_prefix_sha256"] = factual_prefix_sha256
         view = public_view(state, release, latest_data_date=str(day), armed=True)
-        identifier = "v2_" + now.strftime("%Y%m%dT%H%M%S%f") + "_" + content_hash(state)[:12]
+        state_bytes = json_bytes(state)
+        identifier = (
+            "v2_"
+            + now.strftime("%Y%m%dT%H%M%S%f")
+            + "_"
+            + hashlib.sha256(state_bytes).hexdigest()[:12]
+        )
         pointer = publish_account_generation(
             root,
             identifier,
-            {"state.json": json_bytes(state), "view.json": json_bytes(view)},
+            {"state.json": state_bytes, "view.json": json_bytes(view)},
             {
                 "strategy_version": "ETF_QUANT_V2",
                 "release_sha256": release["release_sha256"],

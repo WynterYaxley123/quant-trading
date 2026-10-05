@@ -62,7 +62,8 @@ The [Final-OOS freeze](../config/research/etf-quant-v2-final-oos-freeze.json) wa
 before access. Ridge alpha 30, raw features, 12 calendar months, H10/H40/H120,
 0.25/0.50/0.25 fusion and 5/19/19 factors are unchanged. Four fixed 15-session
 blocks test direction, chronology, concentration, degradation and numerical stability.
-The [single result](../reports/engineering/etf-quant-v2-final-oos.json) is PASS_STRONG:
+The [single result](../reports/engineering/etf-quant-v2-final-oos.json) retains its
+historical gate identifier PASS_STRONG. Current directional label is STRONG_POSITIVE:
 60 signals, mean RankIC 0.133704, mean H40 industry spread 0.056796, all four blocks
 positive. This is industry-model evidence, not an ETF backtest. Sixty overlapping
 H40 observations cannot support the registered 120-session block uncertainty estimate;
@@ -95,8 +96,20 @@ The public read-only `/api/etf-quant/v2/research` exposes final science and mapp
 `/api/etf-quant/v2/current` exposes the independent bounded/hash-verified live ledger.
 The dashboard version selector shows Top5, mappings, cash, intent state, NAV, CSI 300,
 turnover and V1/V2 date-aligned observations. Unstarted ledgers have empty NAV and zero
-business counts. PASS_STRONG maps to HISTORICALLY_VALIDATED_STRONG, PASS_WEAK to
-HISTORICALLY_VALIDATED_WEAK; FAIL must stay visibly experimental even in Shadow.
+business counts. The current [scientific overlay](../config/research/etf-quant-v2-scientific-status.json)
+replaces the original strong umbrella with PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE:
+direction STRONG_POSITIVE, independent statistics LIMITED, membership RECONSTRUCTED,
+historical ETF execution NOT_ESTABLISHED. The original report/release identifiers
+remain immutable historical evidence. FAIL must stay visibly experimental in Shadow.
+
+The original strict-PIT date utility proposed 120-session Validation and Final OOS.
+The later evidence-tiered experiment actually used 80 and 60, respectively, with
+120-session purges and maturity tail. This is a documented deviation, not compliance
+with the original proposal. Current experiment code shares the actual 80/60 constants;
+the strict-PIT utility remains separately named and gated. The opened original 60
+sessions are consumed and cannot become an unseen 120-session test. No clean untouched
+extension was established or preregistered, so the extension is null and no new
+evaluation or tuning occurs.
 
 Formal launch uses merged CI-validated main. If the current date is ineligible,
 the same entry persists arming metadata and the next eligible announced session,

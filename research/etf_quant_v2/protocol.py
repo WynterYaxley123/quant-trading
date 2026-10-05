@@ -27,6 +27,10 @@ FAMILIES = (
 # Conservative exclusion from the first V1 sealed signal onward. This also
 # protects unknown future ordinal boundaries without reading result payloads.
 V1_SEALED_FROM = date.fromisoformat(FROZEN_BOUNDARY_DATES[221])
+# The later evidence-tiered experiment used these phases. The strict-PIT Split
+# below remains the original 120-session proposal, never a description of the
+# consumed 60-session Final OOS. This is a documented protocol deviation.
+EVIDENCE_TIERED_PHASE_SESSIONS = {"tail": 120, "final": 60, "validation": 80, "gap": 120}
 
 
 def canonical_hash(value: object) -> str:

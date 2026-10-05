@@ -1,0 +1,14 @@
+{
+  "certified_files": 257,
+  "before": {
+    "seconds": 1.9661127569999999,
+    "digest": "bd205a33abc8299cc5b71b4fa00e757e5f056e4a29c4e478e1277119cea1a5fe"
+  },
+  "after": {
+    "seconds": 0.5706067909999999,
+    "digest": "bd205a33abc8299cc5b71b4fa00e757e5f056e4a29c4e478e1277119cea1a5fe"
+  },
+  "exact_hash_equivalence": true,
+  "full_verification": true,
+  "timing_is_not_a_gate": true
+}
