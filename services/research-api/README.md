@@ -7,7 +7,7 @@ Read-only Hono/TypeScript adapter for formal Shenwan sector-index Development ar
 Normal operation starts this API with ETF Quant API and Dashboard using
 `scripts/Start-EtfQuantConsole.ps1` from the repository root. See the
 [unified console guide](../../docs/operations.md). No separate terminal is
-needed. The launcher uses the existing `node --import tsx src/index.ts` entry
+needed. The launcher uses the existing `node --import tsx services/research-api/src/index.ts` from the repository root entry
 point without installing or upgrading dependencies. Manual commands below are
 for component development.
 
@@ -53,4 +53,4 @@ No lint script is configured; `pnpm typecheck`, tests and the production build a
 | `PORT` | `8787` | Listen port. |
 | `DASHBOARD_ORIGINS` | `http://127.0.0.1:5173,http://localhost:5173` | Exact allowed browser origins, comma-separated; wildcard rejected. |
 
-See [artifact audit](docs/artifact-audit.md), [contract and security rules](docs/api-contract.md), [reference review](docs/reference-review.md) and [OpenAPI 3.1](openapi/research-dashboard-api-v1.openapi.yaml).
+See [contract and security rules](docs/api-contract.md), [reference review](docs/reference-review.md) and [OpenAPI 3.1](openapi/research-dashboard-api-v1.openapi.yaml).

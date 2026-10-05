@@ -32,7 +32,7 @@
 - **license**: Apache License 2.0
 - **what was adapted**: 仅信息架构思想（dashboard 分层、filter 置顶、explore 与 presentation 分离、行下钻 detail 面板）。未复制任何源码、样式或素材。
 
-以下项目未复制、未改编任何内容，仅作架构研究记录（见 `docs/reference-review.md`）：
+以下项目未复制、未改编任何内容，仅作架构研究记录（见 [reference review](docs/reference-review.md)）：
 
 - TanStack/table（MIT License）— 以 npm 依赖形式使用
 - perspective-dev/perspective（Apache License 2.0）— 未使用、未复制

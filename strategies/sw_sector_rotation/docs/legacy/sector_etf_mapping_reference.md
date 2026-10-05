@@ -11,7 +11,7 @@
 > **不得**直接用于实盘或作为正式组合配置。
 > **不联网更新**本文件。重新验证后另建生产配置。
 
-来源: `scripts/quant/predict.py::load_etf_mapping` (legacy v5)
+来源: Git 历史中的 legacy v5 `load_etf_mapping`；该旧脚本已从当前树移除。
 
 ## relation 语义
 

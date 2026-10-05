@@ -160,6 +160,18 @@ def test_facts_factors_ridge_mapping_intent_delayed_lots_nav_and_view(tmp_path):
         "raw_closes": {"510001.SH": Decimal(11), "510002.SH": Decimal(11)},
         "benchmark_close": 101.0,
     }
+    initial = load_state(root)
+    with pytest.raises(ValueError, match="FINALIZED_T_PLUS_ONE_OPENS_REQUIRED"):
+        cycle(
+            root,
+            release(),
+            next_plan,
+            now=later,
+            snapshot_observed_at=later,
+            factual_prefix_sha256=next_prefix.prefix_hash(later.date()),
+            **(second_options | {"raw_opens": {}}),
+        )
+    assert load_state(root) == initial
     second = cycle(
         root,
         release(),
@@ -235,6 +247,82 @@ def test_holiday_arming_is_empty_and_no_retroactive_epoch(tmp_path):
         )
         == "ARMED_WAITING_FOR_MARKET_CLOSE"
     )
+
+
+@pytest.mark.parametrize("phase", ["signal", "fill"])
+@pytest.mark.parametrize("after_pointer", [False, True])
+def test_v2_publication_crash_restarts_with_identical_business_counts(
+    tmp_path, monkeypatch, phase, after_pointer
+):
+    from strategies.etf_quant.runtime import storage
+
+    facts = synthetic_facts()
+    reg = registry(facts.industries)
+    now, prefix, plan = make_plan(facts, date(2026, 10, 8), reg)
+    root = tmp_path / "etf-quant-v2"
+    options = dict(
+        calendar=TradingCalendar(facts.dates),
+        code_commit="f" * 40,
+        registry_entries=reg["entries"],
+        raw_opens={},
+        raw_closes={},
+        benchmark_close=100.0,
+    )
+    if phase == "fill":
+        cycle(
+            root,
+            release(),
+            plan,
+            now=now,
+            snapshot_observed_at=now,
+            factual_prefix_sha256=prefix.prefix_hash(now.date()),
+            **options,
+        )
+        now, prefix, plan = make_plan(facts, date(2026, 10, 9), reg)
+        options.update(
+            raw_opens={"510001.SH": Decimal(10), "510002.SH": Decimal(10)},
+            raw_closes={"510001.SH": Decimal(11), "510002.SH": Decimal(11)},
+        )
+    original = storage.atomic_bytes
+
+    def crash(path, body, **kwargs):
+        if path == root / "latest.json":
+            if after_pointer:
+                original(path, body, **kwargs)
+            raise SystemExit("SYNTHETIC_PROCESS_DEATH")
+        return original(path, body, **kwargs)
+
+    monkeypatch.setattr(storage, "atomic_bytes", crash)
+    with pytest.raises(SystemExit, match="PROCESS_DEATH"):
+        cycle(
+            root,
+            release(),
+            plan,
+            now=now,
+            snapshot_observed_at=now,
+            factual_prefix_sha256=prefix.prefix_hash(now.date()),
+            **options,
+        )
+    monkeypatch.setattr(storage, "atomic_bytes", original)
+    for _ in range(2):
+        repeated = cycle(
+            root,
+            release(),
+            plan,
+            now=now,
+            snapshot_observed_at=now,
+            factual_prefix_sha256=prefix.prefix_hash(now.date()),
+            **options,
+        )
+        assert repeated["status"] == "ALREADY_PROCESSED"
+    state = load_state(root)
+    assert state is not None
+    assert len(state["signals"]) == (2 if phase == "fill" else 1)
+    assert len(state["intents"]) == 1
+    assert len(state["fills"]) == (2 if phase == "fill" else 0)
+    assert len(state["nav"]) == (1 if phase == "fill" else 0)
+    assert len(list((root / "runs").iterdir())) == len(state["signals"])
+    assert not (root / ".publication.json").exists()
 
 
 def test_next_signal_includes_waiting_today_but_excludes_committed_or_unexecutable_day():

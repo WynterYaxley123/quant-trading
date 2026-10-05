@@ -1,103 +1,96 @@
 # Repository engineering health
 
-V3 addresses the reproduced engineering findings against base `1e2ffbd4f75120df2511472662dcf7dcd308b0d6`. Detailed finding classifications, measurement locations, synthetic scales and source hashes are in the [health manifest](../../reports/engineering/repository-health.json). Status: IMPLEMENTATION_ACCEPTED_DELIVERY_VIA_PR_METADATA.
+This page describes the implementation based on official main
+`46b632599a39548ef54c5fa9be06e5e81b862020`, measured on 2026-10-05.
+The [active integrity transition](../../reports/engineering/shadow-operations-integrity.json)
+appends the immutable forward-operation certificate. Earlier measurements in
+[historical health metadata](../../reports/engineering/repository-health.json)
+retain their original scope and dates; they are not current test counts or status.
+Repository certificates establish local byte consistency, without an external signer.
 
-The [current integrity transition](../../reports/engineering/release-hotfix-integrity.json) preserves historical V1/V2/V3/V4 and the prior current manifest bytes. Its digest binds every field inside `implementation_integrity` except `certificate_sha256`: source hashes, change ledger, identifiers, canonicalization and transition/provenance metadata. Serialization recursively sorts object keys by Unicode code point, preserves array order, and uses compact UTF-8 JSON without ASCII escaping. The current payload contains no floating-point values. Top-level review/validation summaries are outside this digest. This is a repository-local consistency anchor with no external signer or transparency log.
+## Product and operation
 
-The V2 prerequisite transition preserves the release-hotfix bytes in
-`reports/engineering/etf-quant-v2-integrity.json`. Its research admission is blocked,
-independently of these engineering health results; see [V2 status](../etf-quant-v2-development.md).
+V1 remains the frozen baseline. V2 remains Ridge alpha 30, RAW features, a
+12-calendar-month window, H10/H40/H120 and fusion 0.25/0.50/0.25. Its published
+scientific status is HISTORICALLY_VALIDATED_STRONG, with the original failed
+Validation and overlapping Final-OOS observations disclosed in the
+[V2 protocol](../etf-quant-v2-protocol.md). No research gate was reopened or model
+retuned. Mapping admits 3 direct and 19 verified-proxy industries out of 124;
+102 remain unmapped, retaining their original slot weights as CASH.
+Both versions have independent CNY 10,000 accounts. Forward epochs remain zero
+until a legitimate finalized post-freeze session; no profitability claim is made.
 
-## Baseline and measured state
+The [operations guide](../operations.md) defines the external Windows task,
+canonical dual-version runner, permanent merged-main checkout, logs and retry
+behavior. Synthetic crash tests cover T signals and T+1 accounting before/after
+pointer publication. Recovery promotes only already-persisted, hash-verified
+bytes with their original timestamps. Corrupted evidence and missed T+1 fail closed.
+Host operation requires the logged-in user's Docker Desktop runtime and provider
+availability. The dashboard/API display factual waiting states and separate ledgers.
 
-| Measure | V3 baseline | V3 acceptance |
-|---|---:|---:|
-| Python files / LOC (comments and blanks included) | 222 / 49138 | 239 / 50999 |
-| Functions / complete annotated signatures | 1963 / 572 (29.14%) | 2032 / 595 (29.28%) |
-| Function docstrings | 550 (28.02%) | 561 (27.61%) |
-| Raw Mypy diagnostics / affected files | 411 / 29 | 168 / 22 |
-| Tracked / historical Markdown | 160 / 107 | 70 / 17 |
-| Literal broken active links | 5 | 0 |
-| Active docs / source / config private path lines | Earlier docs-only metric was incomplete | 0 / 0 / 1 |
+## Current measurements
 
-Complete signatures include arguments, variadic arguments and return annotations, excluding `self`/`cls`; private and nested functions count. Annotation and docstring coverage remain partial. Mypy uses the unchanged configured scope; active `src`, ETF runtime and sidecar/runner scope has 0 diagnostics. Every touched production module has 0. The reviewed baseline only shrank. Ruff lint/format pass across active Python with 0 production format exclusions and 0 active Python BOM/CRLF files.
+`scripts/engineering/inventory.py` measures the Git path manifest and ASTs;
+`scripts/engineering/references.py` measures rendered links, plain repository
+paths, classification coverage and retained archive hashes. No historical alias
+rescues a broken active path. The stdout ledger reviews exact calls, including
+19 previously unclassified V2 report/CLI/transport outputs. URL paths are not
+private filesystem paths; real paths beside URLs remain counted.
 
-## Correctness, security and finding decisions
+| Measure | Current run |
+| --- | ---: |
+| Python files / LOC including blanks and comments | 282 / 60014 |
+| Functions / fully annotated signatures | 2299 / 736 |
+| Function docstrings | 605 |
+| Raw Mypy diagnostics / affected files | 168 / 22 |
+| Active production/touched Mypy diagnostics | 0 |
+| Tracked / active / historical Markdown | 73 / 56 / 17 |
+| Broken active links and plain paths / unclassified Markdown | 0 / 0 |
+| Private machine path lines in active docs / source | 0 / 0 |
+| Active config private-path compatibility default | 1 |
+| Debug / accidental / unclassified print calls | 0 / 0 / 0 |
+| Active Python BOM / CRLF files | 0 / 0 |
 
-All 39 V2 claims have reproduced evidence, classifications, before/after decisions and test references in the JSON ledger. Liquidity selection now requires PASS plus a finite positive numeric amount, returns no candidate when admission empties the pool, and preserves strict precedence. PIT provenance binds the exact selected candidate even when an ETF has multiple benchmark records. T+1 selects the minimum later session. Partial research assignment now respects the documented exposure/margin priorities.
+Complete signatures count arguments and return annotations, excluding self/cls.
+Annotations and docstrings remain partial. Mypy debt is unchanged and reviewed;
+no baseline was enlarged. The single config path is the labelled legacy Windows
+runtime fallback. `AGENTS.md` is the required repository instruction file; the
+12 vendor-named historical provenance artifacts remain byte-pinned. No current
+vendor handoff file exists. Markdown count did not grow.
 
-Fidelity remains **actual minus nominal**; the 35% cap still redistributes remaining capacity. Comments were corrected without changing either formula. V4 removed unused largest-non-target aliases; serialized `second_largest` fields retain legacy naming debt and mean the largest non-target industry. The historical readiness date is named and retained. Dead parsing/weight collection and duplicate text checks were removed. The A40 naming claim is a false positive; its helper was already explicit. Weight parsers intentionally have different accepted input domains, now documented and tested.
+## Validation
 
-The environment template uses mandatory external `JUPYTER_TOKEN`; missing/empty credentials fail closed, and a configured synthetic token passes Compose validation. Both APIs share adversarial Origin cases and enforce exact HTTP(S) origins, DNS/IP and port grammar without wildcard, userinfo, path, query or fragment. Pip TLS bypass was removed in source; only an independent developer image was built. Two confirmed security hardening findings are closed. Existing bounded-read, schema, method/host/path/mount and tamper tests remain. The built-in pattern/path audit reports no secret candidates, raw/runtime data, sealed paths, oversized blobs or credential-bearing remote URLs in the current tree or reachable history; it is not a third-party vulnerability certification.
-
-## Synthetic performance evidence
-
-Run `python -m benchmarks.core` in the independent Docker developer image. V3 measurements use three paired repetitions; the prefix rows below use five cold-path repetitions from the immutable [V4 manifest](../../reports/engineering/v4-integrity.json). CI checks correctness and structural work, without machine-speed thresholds. No market data or performance periods are used. Full scales, asymptotic work and memory notes are in JSON.
-
-| Hotspot / scale | Before seconds | After seconds | Observed ratio |
-|---|---:|---:|---:|
-| industry (days=50, industries=20, constituents=6) | 0.032044 | 0.024728 | 1.30x |
-| industry (days=50, industries=100, constituents=6) | 0.191510 | 0.111363 | 1.72x |
-| liquidity (etfs=8, bars=320, window=20) | 0.136636 | 0.003210 | 42.56x |
-| liquidity (etfs=40, bars=1600, window=20) | 0.928394 | 0.014317 | 64.84x |
-| prediction (days=420, sectors=8, horizons=3) | 0.640514 | 0.020304 | 31.55x |
-| prediction (days=420, sectors=24, horizons=3) | 1.647258 | 0.050582 | 32.57x |
-| research_rolling (sectors=6, signal_dates=20, visible_days=351) | 1.469354 | 0.822001 | 1.79x |
-| shadow_prefix_cold (stock_rows=900, industries=5, days=30) | 0.005888 | 0.005381 | 1.09x |
-| shadow_prefix_cold (stock_rows=36000, industries=50, days=120) | 0.299029 | 0.200180 | 1.49x |
-| training_dates (sectors=6, frame_days=600, train_days=121) | 0.005846 | 0.001101 | 5.31x |
-| training_assembly (sectors=6, frame_days=600, train_days=121, features=19) | 0.009143 | 0.006383 | 1.43x |
-| lake_fingerprint (files=12, bytes=3145728) | 0.002605 | 0.002480 | 1.05x |
-
-Industry snapshots use industry membership indexes; liquidity uses one call-scoped symbol/date lookup; prediction shares immutable input arrays across horizons; Development rolling factors are precomputed only through the last visible signal and reinstate warmup/maturity masks; training uses eligible date/label projections and preserves the original Pandas matrix layout. Exact row identities, coefficients, order, duplicates, missing data, exclusions and tight factor equality are tested.
-
-Shadow hashing authenticates all economic bytes in one pass, retaining output row-hash dictionaries and temporary per-row JSON bytes. V4 removed the process cache because production daily-cycle processes call it once; there is no warm-cache reuse. Both cold scales improved with exactly equivalent output hashes. No formal-cycle benchmark was run. Lake hashing is **NO_CHANGE_WITH_REASON**: mutable files have no authenticated immutable child identity. Full byte checks are retained; the observed same-function timing ratio is noise, not an improvement. Same-size restored-mtime mutation, additions, deletion, ordering, caller poisoning and future/fetched metadata tests guard integrity.
-
-## Architecture, metrics, docs and portability
-
-Metadata discovery lives in `src/application/backtesting.py`; concrete strategy loading is injected by the CLI. Neither application discovery nor `src.backtesting` imports strategy packages. OHLC validation has one shared implementation in `quant_primitives.ohlc`; `src/data/ohlc.py` re-exports it for compatibility. Strategy production code and tests respect this import direction. Prefix hashing and causal research panels are cohesive extracted seams. ETF external root logic remains inside its self-contained configuration package, consumed by support-script facades; the ETF import firewall remains intact. Existing larger policy/evidence modules remain cohesive.
-
-Every print call is reviewed by path, lexical context, normalized call AST and occurrence, with an explicit reason. Moving, changing or duplicating a call fails classification until reviewed. The old directory metric was invalid: one internal status helper was converted to logging. Current 112 calls classify as 20 CLI, 13 machine-readable, 59 report, 4 example and 16 test outputs; debug, accidental and unclassified counts are each 0. Literal links never use historical alias exemptions. Source/config/docs paths are separate, with test, historical and scanner-pattern scopes explicit; URL false positives are tested.
-
-The current tree removes 91 redundant process Markdown records, retains 16 essential historical contracts/provenance plus archived V2, and has 53 active Markdown files. Recovery commit/path/SHA256 mappings remain in `config/engineering/documentation-map.json`; retained archives and previous certificates preserve bytes. The old `82e6f09` migration had **102 exact Git renames**, plus four copied originals (`AGENTS.md`, docs README, architecture, ETF README) whose active paths were rewritten; it was not 106 exact renames. Git history is unchanged. README explains industry ranking before executable ETF mapping, frozen model specification with causal coefficient refits, and approved Development artifacts served by the Research API.
-
-Public synthetic checks require no private drive, credentials or external framework. Environment root overrides and generic data-home defaults replace scattered private paths; Docker resolves through PATH. `config/legacy-runtime.json` contains the single labelled Windows fallback for existing maintainer deployments. KData integration remains a separate explicitly authorized maintainer capability, not engineering permission to run a market backtest.
-
-## Review of 702e432
-
-Qualified AST comparisons cover relocated methods and duplicate function names; whitespace-insensitive diffs also cover Compose, API and schema changes. The JSON lists every differing/new function reviewed. Actual behavior groups:
-
-- Intended fixes: A40 admission/no-survivor handling while retaining dominance exemption and B40 cash; canonical NumPy boolean CSV encoding.
-- Valid hardening: positive integer constituent-count validation; closed Docker mount/reference grammar; bounded regular-file artifact reads including concurrent growth; strict artifact hash keys; configurable explicit ETF Origin allowlist; mandatory Jupyter authentication; current source-certificate transition.
-- Equivalent changes: lazy catalogue probing and per-symbol date collection; casts, renames, dictionary splits, valid-domain `or 0` sorting, `.eq`/`.ne`, list column projection, tuple serialization, invariant assertions and moved facades. The coverage None guard was already entailed by `is_valid`. Pinned JobEngine imports `steps.common`, which initializes registration, so removal of the redundant explicit steps import does not unregister steps.
-- Engineering-only changes: measurement category/manifest overrides, typing/format/line-ending configuration, dependency locks and test adaptations. V3 corrects the unreliable prior measurement claims. No accidental supported-domain strategy behavior was found; prior history was not rewritten.
-
-## Verification, Shadow and frozen strategy
-
-Current release-hotfix validation uses the independent developer image. Portable command:
-`python -m pytest -q -m "not external_runtime"`. Focused command:
-`python -m pytest -q tests/test_reference_validation.py tests/test_measurement_contracts.py tests/test_repository_contracts.py tests/test_v4_integrity.py`.
+All numerical validation runs in the independent developer or unchanged frozen
+Docker image, using synthetic inputs or permitted read-only evidence. The
+[testing guide](../testing.md) defines the commands and explicit optional skips.
+Current completed runs are recorded below; delivery and hosted CI authority are
+GitHub PR/main metadata, not a fabricated self-referential merge SHA.
 
 | Check | Result |
-|---|---|
-| Docker portable suite | 1112 passed, 2 skipped, 99 deselected external/integration cases |
-| Focused documentation/measurement/certificate/import regressions | 52 passed |
-| Dashboard | 127 passed, 3 skipped; typecheck/lint/build pass |
-| Research API | 63 passed, 7 skipped; typecheck/build pass |
-| ETF API/security / Windows launcher | 126 passed / 2 passed in hosted Windows CI |
-| Synthetic demo / existing scale benchmark | pass |
-| Ruff / staged Mypy / pre-commit / inline and reference links | pass |
-| Frozen image ETF acceptance | 659 passed, 1 skipped |
-| GitHub Actions | Six checks passed for the validated implementation; final PR/main state is verified through GitHub metadata |
+| --- | --- |
+| Portable pytest | 1233 passed, 2 optional tests skipped, 99 external tests deselected |
+| Full V1 frozen-image acceptance | 699 passed, 1 optional fixture skipped; network disabled, maintainer evidence read-only |
+| Final focused runner/scheduler, V2 Shadow and integrity regressions | 47 passed |
+| Ruff / format / staged Mypy / pre-commit | Passed; 168 unchanged legacy diagnostics, active production 0 |
+| Dashboard | 132 passed, 3 optional live tests skipped; types/lint/build passed |
+| Research API | 63 passed, 7 optional external tests skipped; types/build passed |
+| ETF API/security | 138 passed on Windows and Linux |
+| Windows launcher/task-definition and bounded-read checks | 7 passed |
+| Synthetic performance regressions | 16 passed |
 
-External Shadow comparison inspects filenames, sizes and SHA256 only: 6 files unchanged; epoch/signal/intent/fill deltas are all 0. The frozen image content ID is unchanged. Start-time samples refer to different container identities and cannot establish lifecycle stability; this task issued no lifecycle commands to deployed services. Frozen factors, model/Ridge specification, ranking, H10/H40/H120 fusion, sizing, B40 cash, PIT and T/T+1 contracts remain unchanged. CNEquity stays pinned; no upstream edits, formal one-shot, market-data backtest, broker, real order, leverage, short or sealed performance read occurred. Absent quantitative metrics remain null.
+The built-in source/history scanner reports identifiers and counts, omits sealed
+payloads and checks forbidden data paths and certificate bytes. Its result is
+repository-native auditing, not dependency or external scientific certification.
+No raw market data, private credentials, brokers or real-order implementation is
+introduced. CNEquity remains external, clean and pinned; its upstream files and
+the deployed research image are unchanged.
 
-## Residual debt and GitHub identity
+## Remaining limitations
 
-No known correctness/security blocker remains after local checks. Residual debt is the 168 reviewed legacy Mypy diagnostics across 22 files, partial signature/docstring coverage, larger cohesive legacy modules, mandatory full lake byte hashing, legacy serialized naming and one labelled Windows path compatibility default. These are reported without claiming repository-wide strict typing or formal runtime speedups.
-
-GitHub PR metadata is delivery authority. The tracked report records base and the explicitly validated implementation commit, plus PR number/URL when created. A metadata-only report commit can follow without changing validated source. The actual final main SHA is emitted after normal merge only in the console/untracked delivery state; this file cannot name its own containing merge commit.
-
-V3 validated implementation: `ff0dc8c3abdc678306b11892d145778a898004d6`.
-
-V3 PR: [8](https://github.com/WynterYaxley123/quant-trading/pull/8). Current delivery identity is verified through PR/main metadata.
+Historical membership Tier A coverage is zero; dependence-aware uncertainty for
+V2's 60 overlapping Final-OOS signals is unavailable. Executable mapping coverage
+remains 22/124 and historical/source data rights are not inferred from MIT source
+licensing. Optional external/live test tiers require separately configured evidence.
+Legacy Mypy debt, partial annotations and larger cohesive modules remain. Host
+sleep/logout, unavailable Docker or incomplete providers may prevent a legal
+forward opportunity; retries never authorize retroactive signals or prices.

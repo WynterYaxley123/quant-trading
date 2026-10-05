@@ -3,7 +3,7 @@
 状态：**STRATEGY SPEC V1 DRAFT - USER DECISIONS REQUIRED**
 
 更新：用户已批准本文件第 20 节所列 LEVEL B 研究规则；**当前阻塞为 DATA NOT READY**。
-第 20 节及 `config/sw_sector_rotation_level_b_research.yaml` 是新增批准记录的权威补充。
+第 20 节及 `strategies/sw_sector_rotation/config/sw_sector_rotation_level_b_research.yaml` 是新增批准记录的权威补充。
 第 1–19 节保留原草稿作为决策来历，其中“未批准”描述若与第 20 节冲突，以第 20 节为准。
 批准研究方案不代表数据合格、实现完成或 OOS 已锁定。
 

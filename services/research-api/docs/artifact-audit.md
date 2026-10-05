@@ -1,4 +1,4 @@
-# Formal artifact audit — Research Dashboard API v1
+# Development artifact provenance — Research Dashboard API v1
 
 Audited the actual local files on 2026-09-25 before implementing the adapter. Base Git HEAD: `9c16c787eb3d638ee8683f2644ad01c0cfa21e39`. The API branch uses a separate worktree; Git-ignored formal reports remain in the source worktree and are supplied through `RESEARCH_REPORT_ROOT`.
 
@@ -7,7 +7,7 @@ Audited the actual local files on 2026-09-25 before implementing the adapter. Ba
 - `EXISTING_DASHBOARD_API: NO`
 - `EXISTING_DASHBOARD_CONTRACT: NO`
 - No tracked React Dashboard, HTTP server, FastAPI, Flask, Express, Hono, Fastify, Node package, artifact HTTP adapter, or catalog/manifest service existed at BASE_HEAD.
-- `docs/future_quant_api.md` is an older planning document, not an implementation or contract. This explicitly requested, read-only Dashboard API is narrower than that document's future Quant API/MCP concept.
+- The [current API contract](api-contract.md) defines the implemented read-only adapter; older planning documents are retained in Git history.
 - `metadata.json` already contains a per-file `content_sha256` map. It is the official artifact integrity manifest, not an API-maintained index.
 
 ## Real run identity and layout

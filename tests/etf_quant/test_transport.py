@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -15,6 +16,29 @@ spec = importlib.util.spec_from_file_location(
 transport = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(transport)
 s = transport.storage
+
+
+def test_real_transport_process_death_releases_guard_and_recovers_owned_lock(tmp_path):
+    code = """
+import os, sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+import run as transport
+with transport.transport_lock(Path(sys.argv[2])):
+    os._exit(86)
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", code, str(REPO / "services/etf-quant-runner"), str(tmp_path)],
+        check=False,
+    )
+    assert result.returncode == 86
+    assert (tmp_path / ".transport.lock").exists()
+    with transport.transport_lock(tmp_path):
+        assert (
+            json.loads((tmp_path / "last_lock_recovery.json").read_bytes())["reason_code"]
+            == "OS_PROVEN_DEAD_OWNER"
+        )
+    assert not (tmp_path / ".transport.lock").exists()
 
 
 def test_mixed_native_stderr_does_not_destroy_structured_receipt():

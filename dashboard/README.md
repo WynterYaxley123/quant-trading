@@ -49,8 +49,8 @@ Quant Research (Hikyuu / Docker)  →  Research Artifacts  →  Research Data AP
 
 **Research artifacts are the source of truth.** The dashboard renders what the API reports;
 it never re-derives metrics, promotion status, or protocol facts, and it never reads
-research files directly. See `docs/architecture.md` for the full design and
-`docs/reference-review.md` for the upstream-project study behind it.
+research files directly. See [dashboard architecture](docs/architecture.md) for the full design and
+[reference review](docs/reference-review.md) for the upstream-project study behind it.
 
 ## Technology
 
@@ -164,8 +164,8 @@ and [strategy contract](../docs/strategy.md).
 
 | File | Content |
 |------|---------|
-| `docs/architecture.md` | Architecture, data flow, future extensions |
-| `docs/api-integration.md` | API v1 contract usage, adapters, env switching |
+| [dashboard architecture](docs/architecture.md) | Architecture, data flow, future extensions |
+| [API integration](docs/api-integration.md) | API v1 contract usage, adapters, env switching |
 | [Repository health](../docs/engineering/repository-health.md) | Synthetic validation and engineering integrity evidence |
-| `docs/reference-review.md` | GitHub reference-project study and decisions |
+| [reference review](docs/reference-review.md) | GitHub reference-project study and decisions |
 | `THIRD_PARTY_NOTICES.md` | Licenses and adapted upstream code |

@@ -193,6 +193,7 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
 
     from strategies.etf_quant.runtime.implementation import (
         ACTIVE_MANIFEST,
+        FORWARD_CLOSURE_MANIFEST,
         HOTFIX_MANIFEST,
         PARENT_MANIFEST,
         V2_BUILD_MANIFEST,
@@ -209,8 +210,14 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
     report = json.loads((ROOT / ACTIVE_MANIFEST).read_text())["implementation_integrity"]
     assert (
         report["parent_manifest_sha256"]
+        == sha256((ROOT / FORWARD_CLOSURE_MANIFEST).read_bytes()).hexdigest()
+    )
+    closure = json.loads((ROOT / FORWARD_CLOSURE_MANIFEST).read_bytes())["implementation_integrity"]
+    assert (
+        closure["parent_manifest_sha256"]
         == sha256((ROOT / V2_CONSOLE_MANIFEST).read_bytes()).hexdigest()
     )
+    assert FORWARD_CLOSURE_MANIFEST in verify_implementation(ROOT)
     assert PARENT_MANIFEST in verify_implementation(ROOT)
     assert HOTFIX_MANIFEST in verify_implementation(ROOT)
     assert V2_PREREQUISITE_MANIFEST in verify_implementation(ROOT)

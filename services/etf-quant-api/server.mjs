@@ -2,7 +2,7 @@
 import http from 'node:http';
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { readFile, realpath, stat, access } from 'node:fs/promises';
+import { readFile, realpath, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
@@ -10,6 +10,7 @@ import { aggregateCurrent, projectCurrent } from './current.mjs';
 import { allowedOrigins } from './origins.mjs';
 import { observeV2 } from './v2.mjs';
 import { observeV2Current } from './v2-current.mjs';
+import { boundedLeaf } from './bounded.mjs';
 
 export const strategy = JSON.parse(await readFile(new URL('./strategy.json', import.meta.url), 'utf8'));
 export const PREFIX = '/api/etf-quant/v1/';
@@ -56,9 +57,7 @@ async function contained(root, relative) {
   return resolved;
 }
 async function readSmall(file, limit = 32 * 1024 * 1024) {
-  const info = await stat(file);
-  invariant(info.isFile() && info.size <= limit);
-  return readFile(file);
+  return (await boundedLeaf(path.dirname(file),path.basename(file),limit)).raw;
 }
 async function fileHash(file) {
   const hash = createHash('sha256');

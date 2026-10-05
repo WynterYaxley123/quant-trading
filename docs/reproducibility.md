@@ -63,7 +63,7 @@ so the immutable release's old command never points a new deployment at an old l
 The original V1 API transition remains immutable; later source changes require the
 complete verified certificate chain. No console operation executes the command.
 
-The active transition is `reports/engineering/forward-shadow-closure-integrity.json`.
+The historical forward transition is `reports/engineering/forward-shadow-closure-integrity.json`.
 It appends the byte-identical console certificate. It records same-date V2 transport
 idempotence before provider/model work, explicit double-version invocation, isolated
 control/account paths, network-disabled V1 numerical execution, complete dated
@@ -72,6 +72,15 @@ Frozen candidates, model specifications, mapping registry, release and Final-OOS
 artifact bytes remain unchanged. Synthetic regression proves rejection of wrong
 source/date/time/amount receipts and preserves T-close to actual T+1 accounting.
 
+The active transition is `reports/engineering/shadow-operations-integrity.json`.
+It preserves the forward certificate bytes and appends recoverable immutable
+publication, kernel account mutexes, atomic transport ownership, external host
+scheduling, bounded API reads and current documentation measurements. Its change
+ledger binds before/after source hashes and synthetic crash/idempotency evidence.
+Frozen candidates, numerical specifications, mapping registries and published
+Final-OOS artifacts remain byte-identical. The health page reports this checkout's
+actual runs; older test counts and research blockers belong to their dated records.
+
 `config/engineering/documentation-map.json` classifies every Markdown file and maps
 archived old paths to new locations with original hashes. Resolve historical metadata
 through it without altering immutable artifacts. Archived instructions are historical.
@@ -79,4 +88,4 @@ The audit verifies active source and archive byte integrity.
 
 Security scans omit sealed performance content and publish finding identifiers/counts.
 Shadow checks use real namespace path/size/hash metadata before/after, without creating
-business records. See the [remediation report](engineering/repository-health.md).
+business records. See the [engineering health](engineering/repository-health.md).

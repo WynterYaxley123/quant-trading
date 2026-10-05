@@ -47,3 +47,12 @@ independent mapping, collisions/cash, T-close intent, delayed T+1 lot/cost accou
 idempotence and NAV/public view. API/frontend tests verify empty arming, scientific
 failure labels, version selection and date-aligned ledgers. Post-merge operational
 arming/launch is explicitly authorized and remains outside engineering acceptance.
+
+`tests/etf_quant/test_publication_recovery.py` and the V2 Shadow suite inject crashes
+before/after latest-pointer publication for both T signals and T+1 fills. A killed
+subprocess proves OS mutex release; tampered journals, ancestor changes and escapes
+fail closed. Scheduler tests verify literal dual-config commands, WAIT/retry/NOOP,
+dirty-checkout preservation, fast-forward and private-payload exclusion. Hosted
+Windows CI evaluates the actual task-definition builder, including quoting,
+least privilege, login trigger, retry window and single-instance policy.
+API bounded-read tests include files growing after descriptor stat.

@@ -115,3 +115,20 @@ def test_active_status_and_named_obsolete_paths_stay_consistent():
             ):
                 assert obsolete not in text, item["path"]
     assert "frozen models" not in (root / "services/etf-quant-runner/README.md").read_text()
+
+
+def test_plain_repository_paths_are_checked_without_alias_rescue(documentation):
+    current = documentation / "docs/current.md"
+    current.write_text("See `docs/valid.md` and docs/missing.md.\n")
+    result = audit(documentation)
+    assert result["active_plain_paths_checked"] == 2
+    assert result["broken_active_links"] == [
+        {"document": "docs/current.md", "target": "docs/missing.md"}
+    ]
+
+
+def test_unclassified_tracked_markdown_cannot_hide_from_link_metric(documentation):
+    (documentation / "docs/current.md").write_text("current")
+    result = audit(documentation, names=["docs/current.md", "docs/unreviewed.md"])
+    assert result["status"] == "FAIL"
+    assert result["unclassified_markdown"] == ["docs/unreviewed.md"]

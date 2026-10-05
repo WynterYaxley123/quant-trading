@@ -2,6 +2,8 @@
 
 import importlib.util
 import json
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -96,6 +98,96 @@ def config(tmp_path, module, cutoff="2026-09-30"):
         "control_root": str(tmp_path / "CONTROL"),
         "sidecar_root": str(tmp_path / "SIDECAR"),
     }
+
+
+@pytest.mark.parametrize("version", ["ETF_QUANT_V1", "ETF_QUANT_V2"])
+def test_restart_recovers_in_docker_before_holiday_without_host_account_lock(
+    tmp_path, runner, monkeypatch, version
+):
+    cfg = config(tmp_path, runner)
+    cfg.update(strategy_version=version, developer_image="synthetic-recovery-image")
+    root = Path(cfg["runtime_root"])
+    root.mkdir()
+    storage = runner.transport.storage
+    original_atomic = storage.atomic_bytes
+
+    def crash(path, raw):
+        if path.name == "latest.json":
+            raise RuntimeError("synthetic crash after generation")
+        original_atomic(path, raw)
+
+    monkeypatch.setattr(storage, "atomic_bytes", crash)
+    with pytest.raises(RuntimeError, match="synthetic crash"):
+        storage.publish_account_generation(
+            root, "SYNTHETIC_RECOVERY", {"state.json": b'{"signals":1}'}, {}
+        )
+    monkeypatch.setattr(storage, "atomic_bytes", original_atomic)
+    expected = json.loads((root / ".publication.json").read_bytes())["pointer"]
+    monkeypatch.setattr(
+        storage, "account_lock", lambda *args: pytest.fail("host account lock is unsafe")
+    )
+    calls = []
+
+    def call(argv, **kwargs):
+        calls.append(argv)
+        assert argv[:6] == ["docker", "run", "--rm", "--network", "none", "--mount"]
+        assert any("target=/workspace,readonly" in arg for arg in argv)
+        assert any("target=/shadow" in arg and "readonly" not in arg for arg in argv)
+        assert argv[-5:-1] == ["synthetic-recovery-image", "python", "-B", "-c"]
+        # Exercise the exact stdlib worker with synthetic mounts in this Linux
+        # test container. No provider, model or formal runner is invoked.
+        worker = argv[-1].replace("/workspace", REPO.as_posix()).replace("/shadow", root.as_posix())
+        return subprocess.run([sys.executable, "-B", "-c", worker], check=False)
+
+    def holiday(*args, **kwargs):
+        assert not (root / ".publication.json").exists()
+        assert json.loads((root / "latest.json").read_bytes()) == expected
+        return {"status": "ARMED_NON_TRADING_DAY"}
+
+    monkeypatch.setattr(runner.transport, "call", call)
+    monkeypatch.setattr(runner, "_run_once", holiday)
+    monkeypatch.setattr(runner, "_run_v2", holiday)
+    runner.run_once(cfg)
+    before = (root / "latest.json").read_bytes()
+    runner.run_once(cfg)
+    assert len(calls) == 1 and (root / "latest.json").read_bytes() == before
+    assert len(list((root / "runs").iterdir())) == 1
+
+
+def test_recovery_failure_does_not_reach_signal_or_fill_decisions(tmp_path, runner, monkeypatch):
+    cfg = config(tmp_path, runner)
+    root = Path(cfg["runtime_root"])
+    root.mkdir()
+    (root / ".publication.json").write_text("SYNTHETIC_BAD_JOURNAL")
+    monkeypatch.setattr(
+        runner.transport, "call", lambda *args, **kwargs: SimpleNamespace(returncode=1)
+    )
+    monkeypatch.setattr(runner, "_run_once", lambda *args, **kwargs: pytest.fail("unsafe decision"))
+    with pytest.raises(runner.transport.GateError, match="PUBLICATION_RECOVERY_BLOCKER"):
+        runner.run_once(cfg)
+    assert not (root / "latest.json").exists()
+    assert (root / ".publication.json").read_text() == "SYNTHETIC_BAD_JOURNAL"
+
+
+def test_recovery_worker_respects_linux_account_publication_mutex(tmp_path, runner, monkeypatch):
+    cfg = config(tmp_path, runner)
+    root = Path(cfg["runtime_root"])
+    root.mkdir()
+    (root / ".publication.json").write_text("SYNTHETIC_PENDING")
+
+    def call(argv, **kwargs):
+        worker = argv[-1].replace("/workspace", REPO.as_posix()).replace("/shadow", root.as_posix())
+        result = subprocess.run(
+            [sys.executable, "-B", "-c", worker], capture_output=True, check=False
+        )
+        assert b"CONCURRENT_OR_INTERRUPTED_RUN_BLOCKER" in result.stderr
+        return result
+
+    monkeypatch.setattr(runner.transport, "call", call)
+    with runner.transport.storage.process_lock(root / ".cycle.guard"):
+        with pytest.raises(runner.transport.GateError, match="PUBLICATION_RECOVERY_BLOCKER"):
+            runner.recover_runtime(cfg)
+    assert (root / ".publication.json").read_text() == "SYNTHETIC_PENDING"
 
 
 @pytest.mark.parametrize(
@@ -382,3 +474,25 @@ def test_two_versions_continue_after_one_failure_and_reject_aliases(tmp_path, ru
     with pytest.raises(runner.transport.GateError, match="DISJOINT"):
         runner.run_versions(configs)
     assert calls == []
+
+
+@pytest.mark.parametrize("namespace", ["runtime_root", "nested_control"])
+def test_v2_container_control_cannot_alias_account_or_nested_host_control(
+    tmp_path, runner, monkeypatch, namespace
+):
+    configs = [
+        {
+            "strategy_version": version,
+            "control_root": str(tmp_path / version / "control"),
+            "runtime_root": str(tmp_path / version / "account"),
+        }
+        for version in ("ETF_QUANT_V1", "ETF_QUANT_V2")
+    ]
+    configs[1]["v2_control_root"] = (
+        configs[1]["runtime_root"]
+        if namespace == "runtime_root"
+        else str(Path(configs[1]["control_root"]) / "nested")
+    )
+    monkeypatch.setattr(runner, "observe_once", lambda *args: pytest.fail("unsafe roots invoked"))
+    with pytest.raises(runner.transport.GateError, match="DISJOINT"):
+        runner.run_versions(configs)

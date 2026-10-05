@@ -15,10 +15,10 @@ VITE_RESEARCH_API_BASE_URL=http://127.0.0.1:8787/api/v1
 | `api` (default) | `real-api.ts` calls the Research Data API. If unreachable → **“研究数据接口未连接”** with retry. **No silent fallback to mock.** |
 | `mock` (explicit) | `mock-api.ts` serves synthetic fixtures; a global **模拟数据 / MOCK DATA** banner marks every page. |
 
-The API and dashboard are integrated on `integration/research-dashboard-v1`.
+The API and dashboard are integrated in main.
 For isolated-worktree verification, point `RESEARCH_REPORT_ROOT` on the API process to
-the original project's read-only `reports/research` directory. `tests/real-api.test.ts`
-checks contract-shaped HTTP fixtures; `tests/real-artifacts-integration.test.ts` runs
+the original project's read-only `reports/research` directory. `dashboard/tests/real-api.test.ts`
+checks contract-shaped HTTP fixtures; `dashboard/tests/real-artifacts-integration.test.ts` runs
 against the live API when `RESEARCH_DASHBOARD_REAL_API_BASE_URL` and
 `RESEARCH_REPORT_ROOT` are set.
 
@@ -36,8 +36,8 @@ Error:
 { "schemaVersion": "1.0.0", "error": { "code": "RUN_NOT_FOUND", "message": "..." } }
 ```
 
-The client (`src/api/client.ts`) unwraps the envelope, validates `data` with zod schemas
-declared in `src/api/contracts.ts`, and throws typed `ResearchApiError`s. The UI never shows
+The client (`dashboard/src/api/client.ts`) unwraps the envelope, validates `data` with zod schemas
+declared in `dashboard/src/api/contracts.ts`, and throws typed `ResearchApiError`s. The UI never shows
 stack traces — only `userMessage` (human-readable) plus the error code.
 
 ## 3. Endpoints used
@@ -101,11 +101,11 @@ this dashboard's `contracts.ts` encodes the interpretation below so both sides c
 
 ## 7. Testing the integration
 
-- `tests/real-api.test.ts` — mocked `fetch` covering every endpoint's parsing, envelope
+- `dashboard/tests/real-api.test.ts` — mocked `fetch` covering every endpoint's parsing, envelope
   errors, network failure → “API disconnected”, invalid shapes → `INVALID_RESPONSE`, and
   query encoding. This is the "real API readiness" suite.
-- `tests/mock-adapter.test.ts` — validates mock fixtures against the same zod schemas
+- `dashboard/tests/mock-adapter.test.ts` — validates mock fixtures against the same zod schemas
   (contract regression + synthetic-data guard).
-- `tests/real-artifacts-integration.test.ts` — optional live API test using only existing
+- `dashboard/tests/real-artifacts-integration.test.ts` — optional live API test using only existing
   Development artifacts; checks D0–D3 comparison/integrity and 3 dates × 2 candidates
   × 3 horizons through the dashboard adapter. Run with the two env vars noted above.
