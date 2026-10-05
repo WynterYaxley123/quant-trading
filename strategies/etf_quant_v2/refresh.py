@@ -5,8 +5,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
-from collections.abc import Callable
+from collections.abc import Callable, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
@@ -36,6 +37,54 @@ def verify_source(source: Path) -> None:
         ).strip()
     ):
         raise ValueError("PINNED_CNEQUITY_SOURCE_REQUIRED")
+
+
+def verified_liquidity_receipt(
+    row: Mapping[str, Any], bars_path: Path, sessions: Sequence[date], day: date
+) -> float:
+    """Recheck the dated public receipt and its exact 20-session amount ranking."""
+    try:
+        observed = datetime.fromisoformat(row["observed_at"])
+        symbol = row["symbol"]
+        if (
+            not isinstance(symbol, str)
+            or re.fullmatch(r"[0-9]{6}\.(SH|SZ)", symbol) is None
+            or row["source_commit"] != PIN
+            or row["data_cutoff"] != str(day)
+            or row.get("status") != "ADMITTED"
+            or observed.tzinfo is None
+            or observed > datetime.now(SHANGHAI)
+            or observed.astimezone(SHANGHAI).date() < day
+            or observed.astimezone(SHANGHAI).date() == day
+            and observed.astimezone(SHANGHAI).time() < time(15, 5)
+            or not bars_path.is_file()
+            or checksum(bars_path) != row["bars_sha256"]
+            or tuple(sessions) != tuple(sorted(set(sessions)))
+            or not sessions
+            or sessions[-1] != day
+        ):
+            raise ValueError("LIQUIDITY_RECEIPT_IDENTITY_ERROR")
+        frame = pl.read_parquet(bars_path)
+        if (
+            set(frame["symbol"].unique()) != {symbol}
+            or frame.select("trade_date").is_duplicated().any()
+            or frame.height != row["rows"]
+        ):
+            raise ValueError("LIQUIDITY_RECEIPT_BAR_IDENTITY_ERROR")
+        rows = [
+            {**r, "trade_date": str(r["trade_date"]), "finalized": r["trade_date"] <= day}
+            for r in frame.to_dicts()
+        ]
+        amount = liquidity_amount(rows, sessions, day)
+        if (
+            amount is None
+            or isinstance(row["liquidity_amount"], bool)
+            or amount != row["liquidity_amount"]
+        ):
+            raise ValueError("LIQUIDITY_RECEIPT_AMOUNT_ERROR")
+        return amount
+    except (KeyError, TypeError, OSError) as error:
+        raise ValueError("LIQUIDITY_RECEIPT_IDENTITY_ERROR") from error
 
 
 def refresh(symbols: list[str], day: date, output: Path, source: Path) -> dict[str, Any]:
@@ -72,6 +121,7 @@ def refresh(symbols: list[str], day: date, output: Path, source: Path) -> dict[s
             if bars_path.exists() and checksum(bars_path) != value["bars_sha256"]:
                 raise ValueError("OPERATIONAL_BAR_CACHE_HASH_ERROR")
             if value.get("liquidity_amount") is not None:
+                verified_liquidity_receipt(value, bars_path, sessions, day)
                 return value
         frame = None
         for _ in range(2):

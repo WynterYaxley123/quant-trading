@@ -7,6 +7,7 @@ import json
 from datetime import date, datetime, timezone
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 
 import polars as pl
 
@@ -23,7 +24,18 @@ from strategies.etf_quant_v2.shadow import cycle, load_state, public_view, tempo
 REPO = Path(__file__).resolve().parents[2]
 
 
-def run_once(config, code_commit):
+def next_signal_session(
+    sessions: tuple[date, ...], now: datetime, available_at: datetime, state: dict[str, Any] | None
+) -> str | None:
+    """A waiting current T stays eligible until it is committed; never skip it."""
+    today = now.astimezone(SHANGHAI).date()
+    freeze = available_at.astimezone(SHANGHAI).date()
+    last = date.fromisoformat(state["signals"][-1]["signal_date"]) if state else date.min
+    eligible = [d for d in sessions[:-1] if d >= today and d > freeze and d > last]
+    return str(eligible[0]) if eligible else None
+
+
+def run_once(config: dict[str, Any], code_commit: str) -> dict[str, Any]:
     release, candidate, registry = load_release(REPO)
     now = datetime.now(timezone.utc)
     snapshot = Path(config["snapshot"])
@@ -39,16 +51,9 @@ def run_once(config, code_commit):
             state, release, latest_data_date=str(cutoff), armed=True, waiting_reason=gate
         )
         view["latest_data_time"] = manifest["created_at"]
-        next_sessions = [
-            d
-            for d in sessions
-            if d
-            > max(
-                now.astimezone(SHANGHAI).date(),
-                datetime.fromisoformat(release["available_at"]).astimezone(SHANGHAI).date(),
-            )
-        ]
-        view["next_eligible_signal_date"] = str(next_sessions[0]) if next_sessions else None
+        view["next_eligible_signal_date"] = next_signal_session(
+            sessions, now, datetime.fromisoformat(release["available_at"]), state
+        )
         result = {
             "status": gate,
             "strategy_version": "ETF_QUANT_V2",

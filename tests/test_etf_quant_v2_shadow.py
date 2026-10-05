@@ -235,3 +235,22 @@ def test_holiday_arming_is_empty_and_no_retroactive_epoch(tmp_path):
         )
         == "ARMED_WAITING_FOR_MARKET_CLOSE"
     )
+
+
+def test_next_signal_includes_waiting_today_but_excludes_committed_or_unexecutable_day():
+    import importlib.util
+
+    path = Path(__file__).resolve().parents[1] / "services/etf-quant-runner/versioned.py"
+    spec = importlib.util.spec_from_file_location("synthetic_versioned", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    sessions = (date(2026, 10, 8), date(2026, 10, 9), date(2026, 10, 12))
+    available = datetime(2026, 10, 4, tzinfo=SHANGHAI)
+    now = datetime(2026, 10, 8, 14, tzinfo=SHANGHAI)
+    assert module.next_signal_session(sessions, now, available, None) == "2026-10-08"
+    now = now.replace(hour=16)
+    assert module.next_signal_session(sessions, now, available, None) == "2026-10-08"
+    state = {"signals": [{"signal_date": "2026-10-08"}]}
+    assert module.next_signal_session(sessions, now, available, state) == "2026-10-09"
+    assert module.next_signal_session(sessions[:1], now, available, None) is None

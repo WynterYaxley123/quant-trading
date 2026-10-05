@@ -1,6 +1,6 @@
 # scripts/automation
 
-自动化脚本目录，**由 Hermes 维护**。
+报告 schema 模板目录。
 
 ## 当前内容
 
@@ -21,8 +21,8 @@ report_schema/
 ## 规则
 
 1. 模板中所有值制空或为 `null`，**禁止填入虚构数据**
-2. 本目录属于 Hermes 可维护范围（基础设施）
-3. 未来自动化脚本（调度、报告生成、通知触发）放于此
+2. 修改遵循仓库工程规则；没有常驻代理所有权
+3. ETF-Quant 正式运行使用现有 `services/etf-quant-runner/one_shot.py`，调度与重试见 [运行说明](../../docs/operations.md)
 4. **不得**在此目录实现策略或因子逻辑
 
 ## 未来规划

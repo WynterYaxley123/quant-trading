@@ -31,6 +31,7 @@ function verifyView(v,release) {
 }
 export async function observeV2Current({repoRoot,runtimeRoot='',controlRoot=''}={}) {
   const research=await observeV2(repoRoot),release=research.release;
+  let transportWait=null;
   let view={strategy_version:'ETF_QUANT_V2',mode:'SIMULATION_ONLY',scientific_status:release.scientific_status,
     historical_classification:release.classification,product_status:release.product_status,candidate_sha256:release.candidate_sha256,
     registry_sha256:release.registry_sha256,release_sha256:release.release_sha256,initial_capital:'10000',armed:false,started:false,
@@ -39,8 +40,18 @@ export async function observeV2Current({repoRoot,runtimeRoot='',controlRoot=''}=
     benchmark:{identity:'CSI_300',points:[]},turnover:null,latest_data_date:null,latest_data_time:null,broker_enabled:false,real_order_path:false};
   if(controlRoot && await exists(controlRoot,'latest_observation.json')) {
     const control=JSON.parse(await read(controlRoot,'latest_observation.json'));
-    requireValue(control.strategy_version==='ETF_QUANT_V2' && control.view);
-    view=verifyView(control.view,release);
+    requireValue(control.strategy_version==='ETF_QUANT_V2');
+    if(control.view) view=verifyView(control.view,release);
+    else {
+      // Source waits have transport metadata, while the account remains empty.
+      requireValue(typeof control.status==='string' && /^[A-Z0-9_]+$/.test(control.status)
+        && typeof control.shadow_runtime_armed==='boolean'
+        && (!control.data_cutoff || /^\d{4}-\d{2}-\d{2}$/.test(control.data_cutoff))
+        && (!control.reason_code || /^[A-Z0-9_]+$/.test(control.reason_code)));
+      view={...view,armed:control.shadow_runtime_armed,waiting_reason:control.reason_code??control.status,
+        latest_data_date:control.data_cutoff??null};
+      transportWait=control;
+    }
   }
   if(runtimeRoot && await exists(runtimeRoot,'latest.json')) {
     const pointer=JSON.parse(await read(runtimeRoot,'latest.json',4096));
@@ -55,6 +66,12 @@ export async function observeV2Current({repoRoot,runtimeRoot='',controlRoot=''}=
     }
     const bytes=await read(runtimeRoot,`runs/${pointer.run_id}/view.json`,4*1024*1024);
     view=verifyView(JSON.parse(bytes),release);
+    if(transportWait && Number.isFinite(Date.parse(transportWait.observed_at))
+      && Date.parse(transportWait.observed_at)>Date.parse(manifest.created_at)) {
+      // Keep the verified account/NAV; only a newer transport wait can update health.
+      view={...view,armed:transportWait.shadow_runtime_armed,
+        waiting_reason:transportWait.reason_code??transportWait.status};
+    }
   }
   return {...view,final_oos:research.final_oos,mapping_summary:research.mapping,
     mapping_inventory:research.mapping_inventory,candidate_etfs:research.registry_entries.filter(r=>view.top5.some(t=>t[0]===r.industry_code)),

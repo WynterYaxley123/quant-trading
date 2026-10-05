@@ -1,6 +1,7 @@
 """Synthetic verified ETF supplement and closed factual boundary tests."""
 
 import json
+from copy import deepcopy
 from datetime import date, datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -105,3 +106,74 @@ def test_factual_snapshot_rejects_unregistered_file_set_before_reading_content(t
     (tmp_path / "manifest.json").write_text(json.dumps(doc))
     with pytest.raises(ValueError, match="CLOSED_FACTUAL_EXPORT"):
         module.verified_snapshot(tmp_path)
+
+
+@pytest.fixture
+def liquidity_receipt(tmp_path):
+    from datetime import timedelta
+
+    day = date(2026, 9, 30)
+    sessions = sorted(
+        day - timedelta(days=i) for i in range(28) if (day - timedelta(days=i)).weekday() < 5
+    )[-20:]
+    directory = tmp_path / str(day)
+    directory.mkdir()
+    symbol = "510001.SH"
+    bars = pl.DataFrame(
+        {
+            "symbol": [symbol] * 20,
+            "trade_date": sessions,
+            "open": [10.0] * 20,
+            "high": [11.0] * 20,
+            "low": [9.0] * 20,
+            "close": [10.0] * 20,
+            "volume": [1000.0] * 20,
+            "amount": [10000.0] * 20,
+        }
+    )
+    file = directory / (symbol + ".parquet")
+    bars.write_parquet(file)
+    row = {
+        "symbol": symbol,
+        "data_cutoff": str(day),
+        "source_commit": module.PIN,
+        "observed_at": "2026-09-30T08:00:00+00:00",
+        "bars_sha256": module.checksum(file),
+        "liquidity_amount": 10000.0,
+        "status": "ADMITTED",
+        "rows": 20,
+    }
+    summary = {
+        "source_commit": module.PIN,
+        "data_cutoff": str(day),
+        "calendar": list(map(str, sessions)),
+        "window": list(map(str, sessions)),
+        "receipts": [row],
+    }
+    return day, directory, summary
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("source_commit", "0" * 40),
+        ("data_cutoff", "2026-09-29"),
+        ("observed_at", "2099-01-01T08:00:00+00:00"),
+        ("observed_at", "2026-09-30T08:00:00"),
+        ("observed_at", "2026-09-30T05:00:00+00:00"),
+        ("liquidity_amount", 999999.0),
+    ],
+)
+def test_liquidity_admission_rechecks_actual_receipt_and_amount(
+    tmp_path, liquidity_receipt, field, value
+):
+    from strategies.etf_quant_v2.facts import load_liquidity
+
+    day, directory, summary = liquidity_receipt
+    (directory / "summary.json").write_text(json.dumps(summary))
+    assert load_liquidity(tmp_path, day) == {"510001.SH": 10000.0}
+    changed = deepcopy(summary)
+    changed["receipts"][0][field] = value
+    (directory / "summary.json").write_text(json.dumps(changed))
+    with pytest.raises(ValueError, match="LIQUIDITY_RECEIPT"):
+        load_liquidity(tmp_path, day)
