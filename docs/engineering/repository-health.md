@@ -2,7 +2,7 @@
 
 This page describes the implementation based on official main
 `46b632599a39548ef54c5fa9be06e5e81b862020`, measured on 2026-10-05.
-The [active integrity transition](../../reports/engineering/shadow-operations-integrity.json)
+The [active integrity transition](../../reports/engineering/shadow-task-installation-integrity.json)
 appends the immutable forward-operation certificate. Earlier measurements in
 [historical health metadata](../../reports/engineering/repository-health.json)
 retain their original scope and dates; they are not current test counts or status.
@@ -39,7 +39,7 @@ private filesystem paths; real paths beside URLs remain counted.
 
 | Measure | Current run |
 | --- | ---: |
-| Python files / LOC including blanks and comments | 282 / 60014 |
+| Python files / LOC including blanks and comments | 282 / 60025 |
 | Functions / fully annotated signatures | 2299 / 736 |
 | Function docstrings | 605 |
 | Raw Mypy diagnostics / affected files | 168 / 22 |
@@ -75,8 +75,12 @@ GitHub PR/main metadata, not a fabricated self-referential merge SHA.
 | Dashboard | 132 passed, 3 optional live tests skipped; types/lint/build passed |
 | Research API | 63 passed, 7 optional external tests skipped; types/build passed |
 | ETF API/security | 138 passed on Windows and Linux |
-| Windows launcher/task-definition and bounded-read checks | 7 passed |
+| Windows launcher/task-definition and bounded-read checks | 8 passed, including actual cold task discovery |
 | Synthetic performance regressions | 16 passed |
+
+The cold task-discovery correction leaves the 699-pass frozen numerical/account
+implementation unchanged. Final source-certificate verification runs separately;
+the portable suite includes the appended immutable-parent integrity regression.
 
 The built-in source/history scanner reports identifiers and counts, omits sealed
 payloads and checks forbidden data paths and certificate bytes. Its result is

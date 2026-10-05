@@ -19,7 +19,8 @@ V2_FACTUAL_REFRESH_MANIFEST = "reports/engineering/etf-quant-v2-factual-refresh-
 V2_FACTUAL_UNITS_MANIFEST = "reports/engineering/etf-quant-v2-factual-units-integrity.json"
 V2_CONSOLE_MANIFEST = "reports/engineering/etf-quant-v2-console-integrity.json"
 FORWARD_CLOSURE_MANIFEST = "reports/engineering/forward-shadow-closure-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/shadow-operations-integrity.json"
+SHADOW_OPERATIONS_MANIFEST = "reports/engineering/shadow-operations-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/shadow-task-installation-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 
@@ -99,6 +100,7 @@ def verify_implementation(root: Path) -> dict[str, str]:
         V2_FACTUAL_UNITS_MANIFEST,
         V2_CONSOLE_MANIFEST,
         FORWARD_CLOSURE_MANIFEST,
+        SHADOW_OPERATIONS_MANIFEST,
         ACTIVE_MANIFEST,
     ):
         current_bytes = (root / manifest_path).read_bytes()

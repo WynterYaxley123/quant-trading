@@ -196,6 +196,7 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
         FORWARD_CLOSURE_MANIFEST,
         HOTFIX_MANIFEST,
         PARENT_MANIFEST,
+        SHADOW_OPERATIONS_MANIFEST,
         V2_BUILD_MANIFEST,
         V2_CONSOLE_MANIFEST,
         V2_FACTUAL_REFRESH_MANIFEST,
@@ -210,6 +211,13 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
     report = json.loads((ROOT / ACTIVE_MANIFEST).read_text())["implementation_integrity"]
     assert (
         report["parent_manifest_sha256"]
+        == sha256((ROOT / SHADOW_OPERATIONS_MANIFEST).read_bytes()).hexdigest()
+    )
+    operations = json.loads((ROOT / SHADOW_OPERATIONS_MANIFEST).read_text())[
+        "implementation_integrity"
+    ]
+    assert (
+        operations["parent_manifest_sha256"]
         == sha256((ROOT / FORWARD_CLOSURE_MANIFEST).read_bytes()).hexdigest()
     )
     closure = json.loads((ROOT / FORWARD_CLOSURE_MANIFEST).read_bytes())["implementation_integrity"]
@@ -218,6 +226,7 @@ def test_historical_parent_manifest_remains_byte_pinned_in_current_certificate()
         == sha256((ROOT / V2_CONSOLE_MANIFEST).read_bytes()).hexdigest()
     )
     assert FORWARD_CLOSURE_MANIFEST in verify_implementation(ROOT)
+    assert SHADOW_OPERATIONS_MANIFEST in verify_implementation(ROOT)
     assert PARENT_MANIFEST in verify_implementation(ROOT)
     assert HOTFIX_MANIFEST in verify_implementation(ROOT)
     assert V2_PREREQUISITE_MANIFEST in verify_implementation(ROOT)

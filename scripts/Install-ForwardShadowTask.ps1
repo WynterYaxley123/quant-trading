@@ -32,6 +32,15 @@ function New-ForwardShadowTaskXml([string]$Checkout,[string]$Python,[string]$Con
 </Task>
 "@
 }
+function Get-ForwardShadowTask($Folder,[string]$Name) {
+    try { return $Folder.GetTask($Name) }
+    catch {
+        # COM interop maps FILE_NOT_FOUND to FileNotFoundException on Windows.
+        # Match the native HRESULT; access/service failures still propagate.
+        if ($_.Exception.HResult -ne -2147024894) { throw }
+        return $null
+    }
+}
 $taskIdentity = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
 # Convert the operational Shanghai close window to the host's local wall clock.
 $shanghaiStart = [DateTimeOffset]::Parse(([DateTime]::UtcNow.ToString('yyyy-MM-dd') + 'T15:05:00+08:00'))
@@ -41,11 +50,7 @@ if ($PSCmdlet.ShouldProcess($TaskName,'Install current-user forward Shadow wake 
     $taskService = New-Object -ComObject 'Schedule.Service'
     $taskService.Connect()
     $taskFolder = $taskService.GetFolder('\')
-    $existing = $null
-    try { $existing = $taskFolder.GetTask($TaskName) }
-    catch [Runtime.InteropServices.COMException] {
-        if ($_.Exception.HResult -ne -2147024894) { throw }
-    }
+    $existing = Get-ForwardShadowTask $taskFolder $TaskName
     if ($existing -and $existing.Definition.RegistrationInfo.Description -ne 'ETF_QUANT_CANONICAL_FORWARD_WAKE_V1') {
         throw 'An unrelated task has this name; it was not changed.'
     }
