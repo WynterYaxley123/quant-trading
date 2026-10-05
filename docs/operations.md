@@ -46,6 +46,10 @@ refreshing data or initializing a formal epoch. Supply machine-local configurati
 outside Git via ETF_QUANT_CONSOLE_CONFIG or -Config. Runtime/control roots are absolute
 paths outside the checkout. Legacy deployment defaults are compatibility examples,
 not contributor requirements.
+For a joint console, add absolute `v2_runtime_root` and `v2_control_root` to the
+external console config (or explicitly set the matching `ETF_QUANT_V2_*` variables).
+Supply both; all account/control roots must be disjoint. The launcher binds both
+versions, includes both roots in process reuse identity, and checks V2 readiness.
 
 The launcher supports configurable ports and shares DASHBOARD_ORIGINS with both APIs.
 Standalone ETF API defaults to localhost/127.0.0.1 on 5173/4173. Configure

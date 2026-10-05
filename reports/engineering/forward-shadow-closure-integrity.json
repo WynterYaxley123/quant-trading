@@ -4,145 +4,166 @@
     "base_commit": "adcb28b457f8dde708c6c4c4bb8a2cf423420bee",
     "candidate_sha256": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89",
     "canonicalization": "JSON_SORTED_KEYS_COMPACT_UTF8_V1",
-    "certificate_sha256": "4ec8ba9c05ff558c8d8d7e61d739bfaaf7a81c11341b6d53b729eb8f459d40e6",
+    "certificate_sha256": "87b2021382f6f251897a786cfa6e8d934d052fcee24291cace0266a0463dae46",
     "changes": [
       {
-        "after_sha256": "46cb70a3af1e6b506345d033a9ca063a8bbc341117dd7713c7662e4b57de6419",
+        "after_sha256": "5ae14bbf1e4435191baf7a52c02f40a775678133a8d9356bdfc5f9805bc9f1f5",
         "before_sha256": null,
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "docs/operations.md",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "85f7dc8d487fe8df7b42d7eb3c41521d6f921e9de64e0db486e083a077ae6643",
         "before_sha256": "282da237cd24bde6901affca23f0298c90ff4475a94c4474190cc275076c9054",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "docs/reproducibility.md",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "186fa37983f41f44defc20d8cb77702d661ca4f24cb0d83e7bd388e17bcfe3ca",
         "before_sha256": null,
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "reports/engineering/etf-quant-v2-console-integrity.json",
+        "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
+      },
+      {
+        "after_sha256": "50a0de79e53abd2c6a71b2c72432b8b84a7dc63bb68d1afbde50627ee99007b1",
+        "before_sha256": "94fd661dbb0bc83546598441600f47362d1ebb87ca1ed7816aadd4cac83b11fb",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "path": "scripts/Start-EtfQuantConsole.ps1",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "96cf8535bc24486d32d14af5d725f692f0ae75eae9e1eaa7586de4392b254733",
         "before_sha256": null,
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "scripts/automation/README.md",
+        "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
+      },
+      {
+        "after_sha256": "ae40b5b3ccbce0da5493e198dd67cb652856dc4ab0251ab1c4dea67db801cb86",
+        "before_sha256": null,
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "path": "scripts/tests/console.test.mjs",
+        "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
+      },
+      {
+        "after_sha256": "70012bc782376a72a4064ebfc146707c7d4e70593e46f920c0eb5d8100f707d7",
+        "before_sha256": null,
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "path": "scripts/tests/launcher-unit.test.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "7e8cd3a4dda93e8dbf1aa03373fd80b68188c4d9a613a6a487a41132a21abe5b",
         "before_sha256": "a04dcdf57a57b8938e6ee6cc755504f5115a99d8b74378c43209e842dc83b0a7",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-api/tests/current.test.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "8dfd2e5bc1984849dab285aca6a629c9ae6790a72e58936e790aac5989c181ac",
         "before_sha256": "33afd8e8260fe3a11b13725f8b2739dec4e40308e9c16525293181492aaea3a5",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-api/tests/v2-current.test.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "84a67d93dc2c1490ba16ae400c3414817cf96aacc13494025b14c148595c9d25",
         "before_sha256": "ea45fda7c3f27ae8302d6605f9fcf302d0daa06bf7063bc261d6121e46ede0a2",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-api/tests/v2.test.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "4f84d9283ab5453e86bff14483c36eadaf170837e4282f761b2fa56508268daa",
         "before_sha256": "1582e4832417d8b0a6a7bda2bebb78dbcd0d358dfe273c69d569b4636069b52c",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-api/v2-current.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "5280b98b952f4c0cae51d98c85c0500c703b101b7e16bf035ff7c90188407ba0",
         "before_sha256": "8fa59e926aec6e210b8a517daf8afd53113fd2853dcc6fa962d3d02cdca04b8c",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-api/v2.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "b419e713e8000c1eb40ba345fe86e648d849e56a060cdafcd2ef7001ea69f1b2",
         "before_sha256": "b828340ac1b144eda4de1e3a9e1c86c7fa38fbfb29b622fc63393cc8f2ca79f0",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-runner/README.md",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "6d73f23be884b49df61f6a3037a72c6edebef7c60526d06dd100bb9cc4f5bf02",
         "before_sha256": "ffce808584d2c8bf1ce94bb980be5091ed9bd73a1f61ee47c9f9a01997839733",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-runner/one_shot.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "8314c36a7944496a97f295277434c172f1410364846a854eace9789e0c3e4d1c",
         "before_sha256": "a9a4d226d29dfc0192061e411cc64391c7239c39e4b52807ac6392f13f936bf5",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-runner/security-audit.mjs",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "f8afc6b2509c5939658b050b34ce6d4e006da9f30563650347ec929e3dd770cb",
         "before_sha256": "4f6de6a91b239a564b17653f2f2c8f6dffb8a44009531d9b4484ee1097576952",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "services/etf-quant-runner/versioned.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "11006a7c83c1929e7f7c9fc5b5ad024581ed55b76b3bdca5d4194206be4383fc",
         "before_sha256": "96a324f6b6a18638b5e541510dfe18a152d9da2c547cdf25283068c314f9c4b8",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "strategies/etf_quant/runtime/implementation.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "6589a68e1dc3511b22b4e01975ffe1cc06478c9e5ec319b4fee93af136091ffc",
         "before_sha256": "6ebd33f788a67f8c4398216166153882edb3c5109dd63f741879af63ee73a477",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "strategies/etf_quant_v2/facts.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "06236f915a0da2cee41d5862a0921b2cad3cbab08a74c53f0fd7b91a48d3a109",
         "before_sha256": "31837ca217e10cdd573f84782be13560fd2aba4049b5a11e8bb63f1f62104dd4",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "strategies/etf_quant_v2/refresh.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "549a8b82c719a53fea4e932d42f51a1975b801f864be708bcf9e3969e46e3201",
         "before_sha256": "f5b76a03b011e5eca186f09c93f4672ba20b8607fee80afa603d45c17aa43f01",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "tests/etf_quant/test_one_shot_transport.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "574434c5a7f02b72390fad436d8dce85cdaa40343609855c40792c24e8e7826b",
         "before_sha256": "9f1a9e7c173e41c8837fc9c7c64c4a6397363e443d3ba77f459ee0d84177a3b7",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "tests/test_etf_quant_v2_refresh.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "a76621a6a47f035a310040a4e8aa44dbcca51f45583be9471463dd4723491aa9",
         "before_sha256": "ed3a6e13f0ff675823d3a3f28d419aab35aadb695005eab4b4c08e70ac202cda",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "tests/test_etf_quant_v2_shadow.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       },
       {
         "after_sha256": "bcc677a287524d46c2457aac0bb51f54aaae0866eeba0fc0b034c82176bebf9b",
         "before_sha256": "bb1cb526a874207dfb52202f3be024fd55a24c2e7d77dd32e874d60548caaeae",
-        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
+        "behavior_impact": "Before-refresh V2 idempotence; isolated sequential V1/V2 invocation; network-disabled numerical V1 transport; dated exact-20-session liquidity revalidation; honest waiting date/status; explicit isolated V2 console root binding and process identity. No frozen numerical, candidate, mapping, release or Final-OOS artifact changes.",
         "path": "tests/test_v4_integrity.py",
         "reason": "Close proven forward transport/receipt/observation defects using the canonical versioned one-shot; frozen research and execution policy remain unchanged."
       }
@@ -186,7 +207,7 @@
       "docs/etf-quant-v2-protocol.md": "01090da3b79ac66475ca54bc226d81bdc92f5b6fee9ea8a3aef61fae773bde72",
       "docs/glossary.md": "7ad58abdf789ab68570acf4fab64ceca178e2792e0e5379f9bdf845485986f7f",
       "docs/index.md": "a1e7d352ec64a5b8a17b72d3344df9b899e6cb2c605ae8fdc05ee7daa68ed1a9",
-      "docs/operations.md": "46cb70a3af1e6b506345d033a9ca063a8bbc341117dd7713c7662e4b57de6419",
+      "docs/operations.md": "5ae14bbf1e4435191baf7a52c02f40a775678133a8d9356bdfc5f9805bc9f1f5",
       "docs/reproducibility.md": "85f7dc8d487fe8df7b42d7eb3c41521d6f921e9de64e0db486e083a077ae6643",
       "docs/research-status.md": "72b3f790adf973695e853e9144a58b1bbf1bf4b3abcb8551694fee1d4a51e386",
       "docs/strategy.md": "51fbb601e4cc39ee9e897969b9621bf62d89080cb78129e456bfab7221da47ec",
@@ -229,7 +250,7 @@
       "research/etf_quant_v2/recovery.py": "f262b74a462bbbae0cf5bfb97d7ddc3e417f4738ba32a12c3c0ef2f3049f3188",
       "research/etf_quant_v2/revision.py": "ba3ae3b37ebfeda96609ae8e0a4be691237c59465ffa85545b7b7badafe86767",
       "research/sector_development_baseline.py": "06c9011f6eb3a526fd56863155b7334504724f0126fdbfb943070cdf13d76b22",
-      "scripts/Start-EtfQuantConsole.ps1": "94fd661dbb0bc83546598441600f47362d1ebb87ca1ed7816aadd4cac83b11fb",
+      "scripts/Start-EtfQuantConsole.ps1": "50a0de79e53abd2c6a71b2c72432b8b84a7dc63bb68d1afbde50627ee99007b1",
       "scripts/automation/README.md": "96cf8535bc24486d32d14af5d725f692f0ae75eae9e1eaa7586de4392b254733",
       "scripts/data/init_hikyuu_data.py": "87568b15f38812546a73f55fe41193ff4ab43c0c6614738adca660bb92d003d0",
       "scripts/engineering/inventory.py": "b92c512ff2067866b6b2525dd40a73662e3cdf49aff5436d14fd6a5c3b6f45ec",
@@ -244,6 +265,8 @@
       "scripts/etf_quant/production_pit_settings.py": "f1e79d2fe1da87d3a600e62d39ab58c00c6867991dcf5f676ef82676d4c92d59",
       "scripts/etf_quant/runtime_paths.py": "ffdbf421bc97c511627d23f76342888fa7632d02c72f37f3c513e27bace90704",
       "scripts/quant.py": "64bf2e057ede31288b8f3980af9566b9bc85dff934421a12bd1d4a0df5c5ea48",
+      "scripts/tests/console.test.mjs": "ae40b5b3ccbce0da5493e198dd67cb652856dc4ab0251ab1c4dea67db801cb86",
+      "scripts/tests/launcher-unit.test.mjs": "70012bc782376a72a4064ebfc146707c7d4e70593e46f920c0eb5d8100f707d7",
       "scripts/verify_hikyuu_execution_smoke.py": "5dd02c2a896676173ca38cdca8d2181f33fc6cc39f45c14e7cf0c8fda09e6fba",
       "services/cnequity-sidecar/bj_historical_routing.py": "2080020d523529c2921135386b09f1bd7f1b4e6945d4cd1b5675be99f849c87e",
       "services/cnequity-sidecar/bj_quote_partition.py": "f626c4378efc7f28ad3a82ab487849373e3cb556e2a95dcf4b8f2eb3c0e13495",
@@ -435,13 +458,17 @@
     "regression_evidence": {
       "baseline_failure_count": 8,
       "final_oos_artifact_unchanged": true,
+      "focused_pass_count": 34,
       "initial_focused_pass_count": 22,
+      "launcher_baseline_failure_count": 2,
       "quantitative_research_reopened": false,
       "regression_tests": [
         "tests/etf_quant/test_one_shot_transport.py",
         "tests/test_etf_quant_v2_refresh.py",
         "tests/test_etf_quant_v2_shadow.py",
-        "services/etf-quant-api/tests/v2-current.test.mjs"
+        "services/etf-quant-api/tests/v2-current.test.mjs",
+        "scripts/tests/launcher-unit.test.mjs",
+        "scripts/tests/console.test.mjs"
       ],
       "synthetic_only": true
     },

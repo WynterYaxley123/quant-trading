@@ -25,13 +25,31 @@ if ([int]((& $consoleNode --version).Trim().TrimStart('v').Split('.')[0]) -lt 24
 if (@(@($EtfApiPort,$ResearchApiPort,$DashboardPort) | Select-Object -Unique).Count -ne 3) {
     throw 'Console services require three distinct ports.'
 }
-foreach ($name in @('runtime_root','control_root')) {
-    if (-not $consoleConfig.$name -or -not [IO.Path]::IsPathRooted($consoleConfig.$name)) {
+$v2RuntimeRoot = if ($consoleConfig.v2_runtime_root) { $consoleConfig.v2_runtime_root } else { $env:ETF_QUANT_V2_RUNTIME_ROOT }
+$v2ControlRoot = if ($consoleConfig.v2_control_root) { $consoleConfig.v2_control_root } else { $env:ETF_QUANT_V2_CONTROL_ROOT }
+if ([bool]$v2RuntimeRoot -ne [bool]$v2ControlRoot) { throw 'Both V2 runtime and control roots are required.' }
+$observationRoots = @{runtime_root=$consoleConfig.runtime_root;control_root=$consoleConfig.control_root}
+if ($v2RuntimeRoot) { $observationRoots.v2_runtime_root=$v2RuntimeRoot; $observationRoots.v2_control_root=$v2ControlRoot }
+foreach ($name in $observationRoots.Keys) {
+    if (-not $observationRoots[$name] -or -not [IO.Path]::IsPathRooted($observationRoots[$name])) {
         throw "Config requires an absolute $name outside Git."
     }
-    $target = [IO.Path]::GetFullPath($consoleConfig.$name)
+    $target = [IO.Path]::GetFullPath($observationRoots[$name])
     if ($target.TrimEnd('\','/') -eq $consoleRepo -or $target.StartsWith($consoleRepo + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) {
         throw "Config $name must be outside this checkout."
+    }
+}
+if ($v2RuntimeRoot) {
+    $resolvedRoots = @($observationRoots.Values | ForEach-Object { [IO.Path]::GetFullPath($_).TrimEnd('\','/') })
+    for ($i=0; $i -lt $resolvedRoots.Count; $i++) {
+        for ($j=$i+1; $j -lt $resolvedRoots.Count; $j++) {
+            $a=$resolvedRoots[$i]; $b=$resolvedRoots[$j]
+            if ($a.Equals($b,[StringComparison]::OrdinalIgnoreCase) `
+                -or $a.StartsWith($b + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) `
+                -or $b.StartsWith($a + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) {
+                throw 'V1 and V2 observation roots must be disjoint.'
+            }
+        }
     }
 }
 if ($PSBoundParameters.ContainsKey('ResearchReportRoot') -and -not $ResearchReportRoot) { throw 'An explicit ResearchReportRoot must not be empty.' }
@@ -60,7 +78,7 @@ foreach ($entry in @($viteEntry,(Join-Path $consoleRepo 'services/research-api/n
         throw "Existing locked dependencies are missing: $entry. Restore the frozen environment separately; the launcher installs nothing."
     }
 }
-$settings = @($consoleRepo,$consoleNode,$consoleConfig.runtime_root,$consoleConfig.control_root,$ResearchReportRoot,$researchWorkspaceConfig,$researchConfigHash,$researchApprovalHash,$env:RESEARCH_ARTIFACT_ID,$EtfApiPort,$ResearchApiPort,$DashboardPort) -join "`n"
+$settings = @($consoleRepo,$consoleNode,$consoleConfig.runtime_root,$consoleConfig.control_root,$v2RuntimeRoot,$v2ControlRoot,$ResearchReportRoot,$researchWorkspaceConfig,$researchConfigHash,$researchApprovalHash,$env:RESEARCH_ARTIFACT_ID,$EtfApiPort,$ResearchApiPort,$DashboardPort) -join "`n"
 $hasher = [Security.Cryptography.SHA256]::Create()
 try { $settingsHash = ([BitConverter]::ToString($hasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($settings)))).Replace('-','').ToLowerInvariant() }
 finally { $hasher.Dispose() }
@@ -91,6 +109,11 @@ function Test-ServiceHealth($Service) {
     }
     $health = Invoke-RestMethod -Uri ($Service.url + '/api/etf-quant/v1/health') -TimeoutSec 2
     $current = Invoke-RestMethod -Uri ($Service.url + '/api/etf-quant/v1/current') -TimeoutSec 2
+    if ($v2RuntimeRoot) {
+        $v2 = Invoke-RestMethod -Uri ($Service.url + '/api/etf-quant/v2/current') -TimeoutSec 2
+        if ($v2.error -or $v2.data.strategy_version -ne 'ETF_QUANT_V2' -or $v2.data.initial_capital -ne '10000' `
+            -or $v2.data.broker_enabled -ne $false -or $v2.data.real_order_path -ne $false) { return $false }
+    }
     return $health.schemaVersion -eq '1.0.0' -and -not $health.error `
         -and $current.data.contract -eq 'CURRENT_ETF_QUANT_STATUS_V1' `
         -and $current.data.broker_enabled -eq $false -and $current.data.real_order_path -eq $false
@@ -130,6 +153,7 @@ foreach ($service in $services) {
 $savedConsoleEnv = @{}
 $childEnvironment = @{
     ETF_QUANT_RUNTIME_ROOT=$consoleConfig.runtime_root; ETF_QUANT_CONTROL_ROOT=$consoleConfig.control_root; ETF_QUANT_API_PORT="$EtfApiPort"
+    ETF_QUANT_V2_RUNTIME_ROOT=$v2RuntimeRoot; ETF_QUANT_V2_CONTROL_ROOT=$v2ControlRoot
     RESEARCH_REPORT_ROOT=$ResearchReportRoot; RESEARCH_WORKSPACE_CONFIG=$researchWorkspaceConfig
     RESEARCH_ARTIFACT_ID=$env:RESEARCH_ARTIFACT_ID; HOST='127.0.0.1'; PORT="$ResearchApiPort"
     DASHBOARD_ORIGINS="http://127.0.0.1:$DashboardPort,http://localhost:$DashboardPort"
