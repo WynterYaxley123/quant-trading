@@ -1,3 +1,5 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](industry-forecast.md).
+
 # Development
 
 Tested toolchain: Python 3.12.11, Node 24.19.0, pnpm 11.25.0. The developer image pins
@@ -53,3 +55,17 @@ closed. Configuration validation does not start Jupyter.
 On Docker Desktop, keeping installed Node dependencies inside the container avoids
 slow Windows bind-mount I/O. Run the same lockfile and commands against a complete
 source copy; dashboard fixtures also read `services/etf-quant-api/strategy.json`.
+
+## Current industry gates
+
+```sh
+python -m examples.industry_forecast_demo
+python -m pytest -q tests/test_swl2_forecast.py
+node --test services/industry-forecast-api/tests/*.test.mjs
+pnpm --dir services/industry-forecast-api install --frozen-lockfile
+pnpm --dir services/industry-forecast-api typecheck
+pnpm --dir services/industry-forecast-api build
+```
+
+Legacy writer tests use an explicit pytest temporary replay namespace. Production
+entry points never inherit that gate. No real runtime is mounted for these checks.

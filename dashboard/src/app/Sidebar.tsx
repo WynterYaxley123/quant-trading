@@ -16,15 +16,15 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { capabilities, status } = useAppData();
   const location = useLocation();
   const {etfQuant} = useEtfQuantCapability();
-  const groups = visibleNavGroups(capabilities,etfQuant);
+  const groups = visibleNavGroups(capabilities,etfQuant && location.pathname.startsWith('/etf-quant/'));
 
   return (
     <div className="flex h-full flex-col gap-6 p-4">
       <div className="flex items-start gap-2 px-2">
         <Activity aria-hidden="true" className="mt-0.5 h-5 w-5 text-primary" />
         <div>
-          <p className="text-sm font-semibold leading-tight">Quant Trading / ETF-Quant</p>
-          <p className="text-xs text-muted-foreground">Research · Shadow 只读观察</p>
+          <p className="text-sm font-semibold leading-tight">Quant Trading / Industry Forecast</p>
+          <p className="text-xs text-muted-foreground">SWL2 Ridge · 只读行业预测研究</p>
         </div>
       </div>
 

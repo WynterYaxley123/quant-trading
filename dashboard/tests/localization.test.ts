@@ -13,7 +13,7 @@ describe('Chinese presentation without changing machine contracts', () => {
   it('keeps the research-only navigation in Chinese while preserving route paths', () => {
     expect(NAV_GROUPS.flatMap((group) => group.items.map((item) => [item.to, item.label])))
       .toEqual([
-        ['/', '概览'], ['/candidates', '候选方案对比'],
+        ['/', 'Industry Forecast'], ['/research', '概览'], ['/candidates', '候选方案对比'],
         ['/development', 'Development 探索'], ['/sectors', '行业探索'],
         ['/diagnostics', '诊断'], ['/integrity', '研究完整性'],
       ]);

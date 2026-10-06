@@ -1,3 +1,5 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](industry-forecast.md).
+
 # ETF-Quant V1 contract
 
 The frozen candidate uses a 40% industry-exposure proxy policy with cash fallback

@@ -1,3 +1,5 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](industry-forecast.md).
+
 # Project glossary
 
 This is the canonical terminology reference for research, ETF-Quant V1, V2 research,
@@ -53,3 +55,13 @@ the runner, APIs and dashboard. Serialized historical identifiers remain compati
 
 The two older Python constant imports remain aliases. Required historical files keep
 their original names and bytes; the naming gate permits only exact pinned exceptions.
+
+## Current industry terminology
+
+- SCIENTIFIC_TARGET: exact H-session industry return minus its same-date frozen-universe mean.
+- VISUAL_TREND_DIAGNOSTIC: separate normalized realized path, never model score or tradable NAV.
+- RECONSTRUCTED_SWL2_EQUAL_WEIGHT: admitted adjusted constituent-return reconstruction; not official index bars.
+- COMMON_FORWARD_WINDOW: genuinely published shared dates with identical matured horizon.
+- COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC: additional intersection-universe comparison; frozen primary metrics stay separate.
+- Research budget: experiment/phase constraints. Monetary budget, sizing and costs are retired.
+- HISTORICAL_PRODUCTIZATION_RESULT: preserved ETF evidence, not current forecast capability.

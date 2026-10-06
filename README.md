@@ -2,145 +2,153 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-## Overview
+quant-trading studies **Shenwan Level-2 industry forecasts** with frozen multi-horizon
+Ridge models, point-in-time facts and immutable forward observations. Its current
+families are **SWL2-Ridge-V1** (frozen baseline) and **SWL2-Ridge-V2** (provisional
+historical research candidate). Both have role `INDUSTRY_FORECAST_RESEARCH`.
+ETF productization is `RETIRED`. SWL1-Ridge-V1 is reserved, `NOT_YET_RESEARCHED`.
 
-quant-trading is a quantitative research and simulation software project for Chinese equities and ETFs. It ranks industries first, maps eligible industries to evidenced ETF exposures, and observes future paper accounting through a forward Shadow runtime. Its priorities are reproducibility, point-in-time (PIT) boundaries and research integrity.
+## Current research status
 
-It provides research tools and engineering contracts, not live trading, broker execution, investment advice or a profitability guarantee. Execution remains `SIMULATION_ONLY`, with `broker_enabled = false` and `real_order_path = false`.
+The [canonical registry](config/research/swl2-ridge-families.json) binds names,
+legacy identities, actual admitted universes and frozen model hashes. V1 emits all
+**107** admitted industries; V2 emits all **124** from its byte-pinned warmup.
+Expanding V1 would alter its training and target centering, so it retains 107.
+There are no forward forecasts or matured observations created by this delivery.
+Missing quantitative metrics are **null**, with honest empty dashboard states.
 
-## Why this project exists
+V1 Validation and Final OOS remain sealed. V2 is
+`PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE`: the original Validation failed and
+the Validation-informed revision consumed its one original Final OOS.
+Historical directional Final OOS is `STRONG_POSITIVE`; independent statistical
+confidence is `LIMITED`, membership is `RECONSTRUCTED`, and historical ETF
+execution validation is `NOT_ESTABLISHED`. Consumed OOS cannot be resealed into
+unseen evidence. Historical classifications and bytes remain intact.
 
-Historical industry predictions, reconstructed membership and tradable ETF results are different evidence. The project separates those layers and makes source availability, label maturity, mapping evidence, realistic timing and immutable publication explicit. Engineering readiness and scientific conclusions can therefore be assessed independently.
+## Frozen scientific contracts
 
-## Current status
-
-V1 has completed engineering preparation. Its first formal Shadow epoch has not been created; no first-epoch performance is claimed. V1 Validation and Final OOS remain sealed.
-
-V2 is a `PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE`. Original Validation failed; the Validation-informed revision consumed its single original Final OOS. A directional Final-OOS result is **not independent statistical proof**. Current independent statistical confidence is **LIMITED**, historical membership confidence **RECONSTRUCTED**, and historical ETF execution validation **NOT_ESTABLISHED**. Historical gate classifications remain separate from this scientific overlay. There is no new unseen extension or resealing.
-
-Both versions have forward Shadow engineering. Actual readiness depends on an operator's external evidence, frozen release and current calendar gates. See [research status](docs/research-status.md) and the [scientific assessment](config/research/etf-quant-v2-scientific-status.json).
-
-## V1 and V2
-
-These values come from the [V1 specification](services/etf-quant-api/strategy.json) and [frozen V2 candidate](strategies/etf_quant_v2/config/candidate.json).
-
-| Contract | V1 | V2 |
+| Contract | SWL2-Ridge-V1 | SWL2-Ridge-V2 |
 | --- | --- | --- |
-| Purpose | Frozen industry-first forward baseline | Evidence-tier research candidate and independent paper account |
-| Model | Ridge, raw features | NumPy Ridge, raw features; S2A-RAW-m12-a30 |
-| Alpha | 0.01 | 30.0 |
-| Training window | 6 months; per-horizon mature-label cutoff | 12 months; mature labels and complete required history |
-| Horizons | 10 / 40 / 120 sessions | 10 / 40 / 120 sessions |
-| Fusion | 0.25 / 0.50 / 0.25; population z-scores | 0.25 / 0.50 / 0.25; population z-scores |
-| Features | H10: d10, p5, align, vc, dd20; H40/H120: frozen 19-factor registry | Same five-factor H10 and frozen 19-factor H40/H120 sets |
-| Research status | Engineering prepared; Validation/Final OOS sealed | Provisional historical candidate; consumed Final OOS; limited confidence |
-| Mapping | Industry first, verified proxy, cash fallback | Same policy, independent frozen registry |
-| Forward status | First formal epoch not created | Future post-freeze sessions only; no historical backfill |
+| Admitted universe | 107 | 124 |
+| Ridge alpha / window | 0.01 / 6 months | 30.0 / 12 months |
+| Features | Frozen 5 for H10; 19 for H40/H120 | Same frozen factor sets |
+| Input mode | Raw X | S2A-RAW-m12-a30 |
+| Horizons | H10 / H40 / H120 trading sessions | H10 / H40 / H120 trading sessions |
+| Fusion | Population z-score, 0.25 / 0.50 / 0.25 | Population z-score, 0.25 / 0.50 / 0.25 |
+| Role | Frozen baseline industry research | Provisional historical industry candidate |
 
-Frozen specifications govern rolling fits; coefficients are refit using eligible observations after labels mature. See the [strategy contract](docs/strategy.md) for formulas and sizing.
+Rolling coefficients use only mature eligible labels. This transition performs no
+model search, retuning, new Validation or OOS evaluation. The scientific target
+remains each exact H-session industry return minus that date's frozen-universe
+mean. Research budget means an experiment/phase budget; money and account sizing
+are absent from the active industry path.
 
-## Research integrity
+## Forward observations and evaluation
 
-Development supports research choices. Validation and Final OOS have separate admission and consumption rules. Consumed OOS remains historical evidence and cannot become unseen through a new filename or longer interval. This engineering workflow authorizes no post-hoc retuning. Forward evidence comes only from genuinely future eligible sessions.
+The actual merge identity is resolved from main; a separate immutable runtime
+binding freezes source, model and activation time. The first eligible forecast is
+on an official session strictly after both merge and activation dates, using
+current finalized facts observed after 15:05 Shanghai time. Missing sessions
+cannot be backfilled. Preflight and dry-run never write or freeze anything.
 
-PIT availability is distinct from observation time. Reconstructed membership carries different confidence from contemporaneous records. Overlapping horizons introduce dependence; directional diagnostics cannot substitute for dependence-aware statistical confidence or historical ETF execution. The scientific overlay preserves these limits without rewriting frozen artifacts. See [data/PIT](docs/data-and-pit.md) and [reproducibility](docs/reproducibility.md).
+Each immutable publication stores the entire admitted cross-section: industry
+name/code, raw H10/H40/H120 prediction, z-score, horizon rank, fused score/rank,
+data cutoff, source commit, model hash and provenance. Duplicate retries skip
+refitting; atomic generations, OS mutexes and verified journals recover crashes.
 
-## Strategy overview
+Horizon evaluation stays `PENDING` until the exact exchange-session maturity and
+all required points finalize. No provisional close, gap bridge or future value
+is used. Descriptive diagnostics include Spearman RankIC, horizon Top5/Bottom5
+returns and spread, actual Top5 overlap, rank errors, rolling 20-date means and
+the worst 20-date spread interval. Empty metrics are null. Overlapping horizons
+receive no statistical winner or significance claim.
 
-Three independent multi-horizon Ridge fits produce cross-sectional industry scores. Population z-scores are fused; the original Top5 industries receive capped softmax weights. Mapping follows ranking. An unexecutable slot keeps its original weight as cash rather than being replaced by a lower-ranked industry. Collision handling and the 35% target-weight cap remain frozen contracts.
+`COMMON_FORWARD_WINDOW` matches real common dates and matured horizons. Because
+universes differ, its additional `COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC`
+recomputes diagnostics on the industry intersection with equal realized returns;
+each family's primary frozen-universe metrics remain separate.
 
-## ETF mapping
+## Realized series and visual diagnostics
 
-Direct industry tracking takes precedence. Verified proxies require complete official exposure evidence, at least 40% target-industry exposure, dominance, PIT availability and a complete 20-session liquidity window. Missing evidence never authorizes a proxy or substituted liquidity amount. Collisions are explicit; unmapped or non-executable slots become CASH.
+Current admitted Source-C facts reconstruct exact-adjusted constituent industry
+returns using existing dated membership/coverage rules. The explicit type is
+`RECONSTRUCTED_SWL2_EQUAL_WEIGHT`. Official taxonomy provenance does not make these
+official index bars. No authorized official SWL2 index-bar source is established
+in the admitted adapters. Local evidence does not grant redistribution rights.
 
-The current independent V2 registry covers **22 of 124 industries**, as recorded in [research status](docs/research-status.md). Registry coverage does not mean every ETF is executable on every date. Actual eligibility still passes date-specific admission. See the [registry](strategies/etf_quant_v2/config/mapping-registry.json).
+The dashboard defaults to Industry Forecast: complete rankings, Top5, signal
+history, maturity, predicted/realized comparisons and common-window diagnostics.
+Matured paths start at 1.0 and are `VISUAL_TREND_DIAGNOSTIC`,
+`NORMALIZED_RESEARCH_INDEX`, `NON_TRADABLE_RESEARCH_DIAGNOSTIC`. They are independent
+signal outcomes, with a SWL2 universe equal-weight baseline, never a chained
+tradable NAV. Scores and realized trend paths have separate views.
 
-## Execution semantics
+## Historical ETF productization
 
-```text
-T finalized close → signal → future legal T+1 actual raw open → simulated accounting
-```
+ETF availability, exposure purity and execution evidence proved insufficient for
+reliable Level-2 product coverage. That is a `HISTORICAL_PRODUCTIZATION_RESULT`.
+Current industry forecasts require no ETF mappings, portfolio targets, cash slots,
+initial capital, position caps, lots, costs, fills or account events.
 
-Delayed accounting retains actual evidence and chronology. No retroactive signal or fill is created. A missed T+1 becomes `ABANDONED_MISSED_T1`; its record remains and future legal epochs may continue. Idempotence and crash recovery prevent duplicate publication.
+Historical `ETF_QUANT_V1` / `ETF_QUANT_V2` configs, mappings, releases, Shadow
+artifacts, reports, certificates and ledgers retain their identities and hashes.
+Legacy APIs/pages remain read-only audit views with retirement metadata. Writer
+commands fail closed; legacy writer regression requires an isolated synthetic
+temporary namespace. No real orders, brokers, leverage or shorting are enabled.
 
-## Architecture
+## Architecture and layout
 
 ```mermaid
-flowchart TD
- P[External pinned provider] --> F[Factual exports and PIT admission]
- F --> M[Research and frozen model contracts]
- M --> I[Industry ranking]
- I --> E[Verified ETF mapping and cash]
- E --> S[Forward Shadow runtime]
- S --> A[Read-only ETF API]
- A --> D[Dashboard]
- F --> R[Approved Development artifacts]
- R --> RA[Research API: separate trust boundary]
- RA --> D
+flowchart LR
+ F[External pinned PIT facts] --> M[Frozen Ridge industry adapters]
+ M --> L[Immutable full forecast ledger]
+ F --> E[Exact mature industry outcomes]
+ L --> E
+ E --> A[Read-only Industry Forecast API]
+ L --> A
+ A --> D[Industry Forecast Dashboard]
 ```
-
-Research API serves approved Development artifacts; ETF API serves verified runtime observations. Neither observation API starts model search or a formal cycle. See [architecture](docs/architecture.md).
-
-## Repository layout
 
 | Path | Purpose |
 | --- | --- |
-| strategies/ | Self-contained V1, V2 and earlier strategy packages |
-| research/ | Research lineage and evidence-tier reconstruction |
-| src/ | Data/provider and notification infrastructure |
-| services/ | Source transport, canonical runner and read-only APIs |
-| dashboard/ | Research and Shadow observation UI |
-| scripts/ | Deployment, operations, evidence admission and engineering checks |
-| config/ | Public contracts, templates and dependency metadata |
-| docs/ | User, developer, deployment and operations guides |
-| tests/ | Synthetic tests and marked maintainer integrations |
-| reports/ | Public-safe provenance and engineering certificates; no market datasets |
-| examples/ | Data-free contributor demo |
+| strategies/swl2_ridge/ | Registry, adapters, ledger, maturity and descriptive metrics |
+| services/industry-forecast-runner/ | Docker-only forward runner and disabled scheduler template |
+| services/industry-forecast-api/ | Bounded read-only API |
+| dashboard/ | Default industry research UI; historical audit routes |
+| config/research/ | Canonical family and transition contracts |
+| docs/industry-forecast.md | Scientific, factual and operational contracts |
+| tests/ | Portable synthetic regression and marked external integrations |
+| reports/ | Public-safe immutable evidence and chained source certificates |
+| docs/archive/ | Byte-preserved historical documents |
 
 ## Data-free quick start
 
-Docker is the portable Python entry point. Its developer image is independent of the deployed research image. From a fresh clone, these commands need no private data or credentials:
+Use the independent developer image, never the deployed image or host quant Python.
 
 ```sh
-git clone https://github.com/WynterYaxley123/quant-trading.git
-cd quant-trading
 docker build -f .devcontainer/Dockerfile -t quant-trading-dev:local .
-docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m examples.minimal_demo
+docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m examples.industry_forecast_demo
 docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m pytest -q -m "not external_runtime"
 ```
 
-Use a POSIX shell or PowerShell with Docker Desktop; `${PWD}` names the checkout. The deterministic synthetic demo creates no formal Shadow state. Frontend/API setup is in [development](docs/development.md). Full factual/provider setup is a separate [deployment workflow](docs/deployment.md).
+Inside the developer container, use `pnpm --dir dashboard install --frozen-lockfile`,
+then test/typecheck/lint/build. `node services/industry-forecast-api/server.mjs`
+serves an honest empty state without runtime configuration. The runner requires
+clean merged source and explicit external read-only facts; engineering does not
+invoke it against live facts. The scheduler template is disabled; this delivery
+promotes no live deployment and creates no business events.
 
-## Development
+## Documentation and contribution
 
-The pinned toolchain uses Python 3.12.11, Node 24.19.0 and pnpm 11.25.0. Numerical Python work runs in Docker. Quality gates include Ruff lint/format, staged Mypy enforcement, pre-commit, references, integrity and source/history security auditing, plus API, runner, scheduler and frontend tests/types/lint/build. See [development](docs/development.md).
+Start with [industry forecast](docs/industry-forecast.md), [documentation index](docs/index.md),
+[development](docs/development.md), [testing](docs/testing.md),
+[data/PIT](docs/data-and-pit.md), [deployment](docs/deployment.md),
+[operations](docs/operations.md), [reproducibility](docs/reproducibility.md),
+[research status](docs/research-status.md) and [contributing](CONTRIBUTING.md).
+The [historical strategy contract](docs/strategy.md) remains auditable.
 
-## Testing
-
-Portable tests use synthetic inputs. `external_runtime` and private-data integrations require explicit maintainer evidence; framework/provider integration has separate environment requirements. SKIPPED, deselected and NOT_TESTED are not PASS. See [testing](docs/testing.md).
-
-## Deployment model
-
-The GitHub repository is the `SOURCE_OF_TRUTH_REPOSITORY`: it stores how to rebuild, verify and operate the software. A `LOCAL_DEPLOYMENT_ROOT` holds mutable facts, accounts, control metadata, logs, private configuration and external dependencies.
-
-The maintainer reference layout uses a root such as `D:\QuantForge`. This is an implementation detail, not a required public path. Users may choose any suitable external root. See [deployment](docs/deployment.md) and [operations](docs/operations.md) ([中文](docs/operations.zh-CN.md)).
-
-## Data and reproducibility
-
-Market data is not distributed. Data redistribution rights are separate from source licensing. Complete deployment requires authorized external factual data and provider setup; see the [data-rights policy](docs/data/market_data_policy.md).
-
-The public engineering workflow is reproducible. Fresh clone does not replicate the maintainer's factual lake, private evidence, historical ledger or live Shadow state. Synthetic fixtures cannot initialize a real account. See [reproducibility](docs/reproducibility.md).
-
-## Security and contributing
-
-Secrets stay outside Git. Bounded reads, resolved path containment, state isolation and hash checks define service boundaries. Operations tools fail closed and provide read-only diagnostics. See [security](SECURITY.md).
-
-Fork/branch → PR → CI → review is the recommended contribution workflow, not a claim that GitHub branch protection is enforced. Preserve frozen contracts and keep private/market/runtime data outside Git. See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Documentation
-
-[Architecture](docs/architecture.md) · [Research status](docs/research-status.md) · [Data/PIT](docs/data-and-pit.md) · [Deployment](docs/deployment.md) · [Operations](docs/operations.md) · [Reproducibility](docs/reproducibility.md) · [Testing](docs/testing.md) · [Security](SECURITY.md) · [Index](docs/index.md)
-
-## License and disclaimer
-
-Repository-owned source and documentation use [MIT](LICENSE); [third-party notices](THIRD_PARTY_NOTICES.md) apply to external software. Market-data rights remain separate. Research and simulation only; not investment advice and no profitability guarantee.
+SWL1-Ridge-V1 needs an independent universe, preregistered protocol, Development,
+Validation and unopened Final OOS. This task trains no SWL1 model and does not
+repurpose SWL2 consumed evidence for it. Source is [MIT licensed](LICENSE);
+[third-party notices](THIRD_PARTY_NOTICES.md) and [data-rights policy](docs/data/market_data_policy.md)
+apply independently. See [security reporting](SECURITY.md).

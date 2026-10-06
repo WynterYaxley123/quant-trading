@@ -10,7 +10,7 @@ const OverviewPage = lazy(() =>
 
 export const overviewRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: '/research',
   validateSearch: parseExplorerSearch,
   component: () => (
     <Suspense fallback={<LoadingState label="正在加载页面" />}>

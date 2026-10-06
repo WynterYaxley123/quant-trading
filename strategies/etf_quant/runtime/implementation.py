@@ -21,7 +21,7 @@ V2_CONSOLE_MANIFEST = "reports/engineering/etf-quant-v2-console-integrity.json"
 FORWARD_CLOSURE_MANIFEST = "reports/engineering/forward-shadow-closure-integrity.json"
 SHADOW_OPERATIONS_MANIFEST = "reports/engineering/shadow-operations-integrity.json"
 INSTALLATION_MANIFEST = "reports/engineering/shadow-task-installation-integrity.json"
-ACTIVE_MANIFEST = "reports/engineering/deployment-source-integrity.json"
+ACTIVE_MANIFEST = "reports/engineering/swl2-industry-forecast-integrity.json"
 PREVIOUS_MANIFEST = "reports/etf_quant/autonomous_code_integrity_v1.json"
 PREVIOUS_TRANSITION = "docs/archive/engineering/public_repo_adversarial_remediation_v2.json"
 

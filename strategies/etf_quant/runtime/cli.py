@@ -35,6 +35,8 @@ def main():
     parser.add_argument("--pit-registry", type=Path)
     parser.add_argument("--model-reference-snapshot", type=Path)
     args = parser.parse_args()
+    if args.command in ("cycle", "one-shot"):
+        raise GateError("SWL2_ETF_PRODUCTIZATION_RETIRED_LEGACY_READ_ONLY")
     if args.command == "describe":
         print(json_bytes(public_strategy()).decode())
         return 0

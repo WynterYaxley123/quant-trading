@@ -1,0 +1,9 @@
+{
+  "task_name": "QuantTrading-SWL2-Forecast",
+  "enabled": false,
+  "live_scheduler_enabled": false,
+  "single_instance": true,
+  "execution_environment": "INDEPENDENT_DOCKER_DEVELOPER_IMAGE",
+  "command": "python services/industry-forecast-runner/run_forecast.py --all-swl2 --config /control/industry-forecast.json",
+  "installation_status": "TEMPLATE_ONLY_EXPLICIT_LATER_OPERATIONAL_AUTHORIZATION_REQUIRED"
+}

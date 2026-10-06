@@ -222,7 +222,7 @@ def export_snapshot(
 
 
 class ExportProvider:
-    def __init__(self, path: Path, *, expected_identity: dict, now: datetime):
+    def __init__(self, path: Path, *, expected_identity: dict, now: datetime, industry_only=False):
         try:
             self.path = path.resolve(strict=True)
             self.manifest = json.loads(contained(self.path, "manifest.json").read_bytes())
@@ -256,7 +256,12 @@ class ExportProvider:
                 and self.created_at.astimezone(SHANGHAI).time() < time(15, 5)
             ):
                 raise GateError("CNE_SNAPSHOT_TIME_BLOCKER")
-            self.tables = {name: self._read(name) for name in SCHEMAS}
+            selected = (
+                ("trading_calendar", "stock_bars", "industry_membership", "instruments")
+                if industry_only
+                else tuple(SCHEMAS)
+            )
+            self.tables = {name: self._read(name) for name in selected}
             self._validate()
             if (
                 type(m.get("adjustment_exact_rows")) is not int
@@ -346,5 +351,7 @@ class ExportProvider:
             raise GateError("CNE_CALENDAR_BLOCKER")
         session_set = set(self.sessions)
         for name in ("stock_bars", "etf_bars", "trading_status", "benchmark_csi300"):
+            if name not in self.tables:
+                continue
             if any(day not in session_set for day in self.tables[name].trade_date):
                 raise GateError("CNE_CALENDAR_BLOCKER")

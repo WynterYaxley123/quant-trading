@@ -1,0 +1,13 @@
+{
+  "runtime_root": "/runtime/industry-forecast",
+  "families": {
+    "swl2_ridge_v1": {
+      "snapshot": "/facts/finalized-snapshot",
+      "model_reference_snapshot": "/reference/admitted-membership-snapshot"
+    },
+    "swl2_ridge_v2": {
+      "snapshot": "/facts/finalized-snapshot",
+      "warmup": "/reference/frozen-warmup"
+    }
+  }
+}

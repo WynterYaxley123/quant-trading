@@ -4,12 +4,13 @@ import { getEtfQuantPort, EtfQuantDataError } from './data-port';
 import type { EtfQuantStatus } from './contracts';
 
 const Context=createContext<{etfQuant:boolean;status:EtfQuantStatus|null;loading:boolean;error:Error|null}>({etfQuant:false,status:null,loading:true,error:null});
-export function EtfQuantProvider({children}:{children:ReactNode}) {
+export function EtfQuantProvider({children,enabled=true}:{children:ReactNode;enabled?:boolean}) {
   const port=getEtfQuantPort();
   const status=useResource(async signal=>{
+    if(!enabled) return {value:null,error:null};
     try { return {value:await port.getStatus(signal),error:null}; }
     catch(error) { return {value:null,error:error instanceof Error ? error : new Error('ETF status failed')}; }
-  },[port]);
+  },[port,enabled]);
   return <Context.Provider value={{etfQuant:!!status.data?.value,status:status.data?.value ?? null,loading:status.loading,error:status.data?.error ?? status.error}}>{children}</Context.Provider>;
 }
 export function useEtfQuantCapability(){return useContext(Context);}

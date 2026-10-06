@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "contract": "SWL2_INDUSTRY_FORECAST_TRANSITION",
+  "effective_source_commit": null,
+  "merge_identity": "RESOLVE_FROM_FIRST_PARENT_MAIN_ADDITION_AT_RUNTIME",
+  "base_sha": "b28c24518de36fb0045a5f4313916e65d4ac3b54",
+  "families": [
+    {
+      "family_id": "swl2_ridge_v1",
+      "display_name": "SWL2-Ridge-V1",
+      "legacy_identity": "ETF_QUANT_V1",
+      "current_role": "INDUSTRY_FORECAST_RESEARCH",
+      "etf_productization_status": "RETIRED"
+    },
+    {
+      "family_id": "swl2_ridge_v2",
+      "display_name": "SWL2-Ridge-V2",
+      "legacy_identity": "ETF_QUANT_V2",
+      "current_role": "INDUSTRY_FORECAST_RESEARCH",
+      "etf_productization_status": "RETIRED"
+    }
+  ],
+  "historical_artifacts_preserved": true,
+  "model_semantics_unchanged": true,
+  "final_oos_reopened": false,
+  "etf_backfill": false,
+  "forward_only_start_rule": "FIRST_OFFICIAL_SESSION_STRICTLY_AFTER_BOTH_MERGE_AND_RUNTIME_FREEZE_DATE_WITH_GENUINE_CURRENT_FINALIZED_FACTS",
+  "live_scheduler_enabled": false,
+  "live_deployment_promoted": false,
+  "realized_series_type": "RECONSTRUCTED_SWL2_EQUAL_WEIGHT",
+  "official_swl2_series_available": false,
+  "realized_source_audit": "Existing admitted Source-C adjusted constituent returns and dated membership. Taxonomy is official; price series is reconstructed. No authorized official SWL2 bar source is established in the admitted adapters.",
+  "frozen_universe_counts": {
+    "swl2_ridge_v1": 107,
+    "swl2_ridge_v2": 124
+  },
+  "universe_resolution": "USER_APPROVED_PRESERVE_FROZEN_UNIVERSES_AND_REPORT_ACTUAL_COUNTS"
+}

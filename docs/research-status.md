@@ -1,23 +1,29 @@
-# Research and Shadow status
+# Current research status
 
-ETF-Quant V1 has completed engineering preparation. The first formal Shadow epoch
-has not yet been created. Readiness describes admission/engineering checks, not
-realized investment returns. There is no first-epoch performance report.
+| Family | Current role | Scientific status | Actual frozen universe |
+| --- | --- | --- | --- |
+| SWL2-Ridge-V1 | INDUSTRY_FORECAST_RESEARCH | FROZEN_BASELINE; Validation / Final OOS SEALED | 107 |
+| SWL2-Ridge-V2 | INDUSTRY_FORECAST_RESEARCH | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | 124 |
+| SWL1-Ridge-V1 | RESERVED | NOT_YET_RESEARCHED | null |
 
-Historical Shenwan/F1 Development analysis is research lineage, preserved with its
-original scope/budget/limits under the archive. V1 Validation and Final OOS remain sealed.
+ETF productization is RETIRED. V1's first formal Shadow epoch was never created;
+this engineering delivery creates neither ETF events nor real forward forecasts.
+Forward metrics are null until genuinely future publications mature.
 
-Forward-only PIT availability and genuine future finalized T/T+1 processing govern
-later cycles. Synthetic fixtures and engineering portfolios are not formal history.
-Absent result metrics remain null, without substituted zeros or estimates.
+V2 historical directional Final OOS is STRONG_POSITIVE, independent statistical
+confidence LIMITED, membership RECONSTRUCTED and ETF execution NOT_ESTABLISHED.
+Original Validation failed; its informed revision consumed the original Final OOS.
+Those historical facts authorize no retuning, unseen-extension claim or resealing.
+See the immutable [scientific overlay](../config/research/etf-quant-v2-scientific-status.json).
 
-ETF-Quant V2 completed actual evidence-tier Development research and one Validation.
-Original Validation failed. The Validation-informed revision's single Final OOS has
-STRONG_POSITIVE observed direction. Current overall status is
-PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE; independent statistical confidence is
-LIMITED, historical membership RECONSTRUCTED, historical ETF execution NOT_ESTABLISHED.
-The 60 overlapping signals have no dependence-aware confidence interval; Tier A is zero.
-The independent 40% proxy registry covers 22/124 industries; remaining slots retain cash.
-Versioned Shadow engineering is complete. The October 4 release waits for the next
-post-freeze finalized trading session without backfilling September 30 signals.
-See the [measured V2 status](etf-quant-v2-development.md).
+Historical V2 mapping covered 22 of 124 identities; this is a productization
+result, not model forecasting accuracy or date-specific executability. Mapping
+registries, releases and results retain bytes. No expansion or active Shadow
+is part of current research. The source transition verifies historical hashes
+without opening V1 sealed performance or rerunning consumed V2 evaluation.
+
+Current outcomes are reconstructed Source-C industry returns, explicitly
+RECONSTRUCTED_SWL2_EQUAL_WEIGHT; official SWL2 index bars are not established by
+admitted adapters. Shared-date comparison additionally uses the industry
+intersection, with identical realized returns required, and remains descriptive.
+See [industry forecast](industry-forecast.md) and [reproducibility](reproducibility.md).

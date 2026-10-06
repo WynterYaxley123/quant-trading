@@ -288,7 +288,8 @@ export function createApi({runtimeRoot='',controlRoot='',v2RuntimeRoot='',v2Cont
     res.setHeader('X-Content-Type-Options','nosniff');
     const respond = (status,data=null,code=null,meta={}) => {
       res.statusCode=status;
-      const payload=JSON.stringify({schemaVersion:'1.0.0',data,error:code?{code,message:code}:null,meta});
+      if(data?.contract==='CURRENT_ETF_QUANT_STATUS_V1') data={...data,historical_shadow_runtime_armed:data.shadow_runtime_armed,shadow_runtime_armed:false,production_usable:false,one_shot_command:null,etf_productization_status:'RETIRED',runner:data.runner?{...data.runner,next_action:'HISTORICAL_READ_ONLY'}:null};
+      const payload=JSON.stringify({schemaVersion:'1.0.0',data,error:code?{code,message:code}:null,meta:{...meta,current_role:'INDUSTRY_FORECAST_RESEARCH',etf_productization_status:'RETIRED',historical_scope:'HISTORICAL_PRODUCTIZATION_RESULT',active_etf_shadow:false}});
       res.end(req.method==='HEAD'?undefined:payload);
     };
     if (!/^(127\.0\.0\.1|localhost)(:[0-9]+)?$/.test(req.headers.host ?? '')) return respond(403,null,'LOCAL_HOST_REQUIRED');

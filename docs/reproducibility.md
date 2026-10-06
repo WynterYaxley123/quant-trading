@@ -1,3 +1,5 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](industry-forecast.md).
+
 # Reproducibility and provenance
 
 `scripts/engineering/inventory.py` is the canonical measurement tool. It reads a Git
@@ -108,3 +110,11 @@ Shadow checks use real namespace path/size/hash metadata before/after, without c
 business records. See the [engineering health](engineering/repository-health.md).
 
 The active deployment-source transition is `reports/engineering/deployment-source-integrity.json`. It uses the same verified full parent and retains the V8 delta bytes as a hashed source. Reusable diagnostics, templates and public documentation change; models, mapping and historical certificates do not. Regression evidence is in [the source-boundary record](engineering/deployment-source-boundary.md).
+
+## Current source authority
+
+The active source transition is `reports/engineering/swl2-industry-forecast-integrity.json`.
+It carries every prior deployment delta and binds the unchanged installation parent,
+superseded deployment certificate, changed source, new registry and regression
+record. Historical certificates are never regenerated. Merged source identity is
+resolved dynamically; no runtime binding or forecast is pre-created.

@@ -1,0 +1,10 @@
+{
+  "name": "industry-forecast-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "node --check server.mjs",
+    "build": "node --check server.mjs"
+  }
+}

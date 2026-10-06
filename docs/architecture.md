@@ -1,40 +1,37 @@
 # Architecture
 
-This repository is the `SOURCE_OF_TRUTH_REPOSITORY`; mutable state belongs to a
-`LOCAL_DEPLOYMENT_ROOT`. Operational checkouts are deployed copies of Git, not
-independent source authorities. See [deployment](deployment.md) for pins, templates
-and root selection, and [operations](operations.md) for runtime recovery.
+Current families share a naming registry, factual provenance, immutable forecast
+storage and descriptive evaluation. Their frozen numerical implementations stay
+self-contained; adapters remove the ETF execution boundary without changing fits.
 
-The project contains historical Shenwan sector-rotation research, frozen ETF-Quant V1,
-independent ETF-Quant V2 Research, shared data/runner/API infrastructure and the observation
-dashboard. V2 primitives reuse the frozen numerical solver and factor vocabulary; V1
-does not import V2. V2 has a separate candidate/forward package and state namespace.
-Its original Validation failed; the frozen Validation-informed revision has positive
-Final-OOS direction but remains a provisional historical research candidate. Limited
-statistical confidence, reconstructed membership and absent historical ETF execution
-validation remain visible.
-See the [V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary.md).
+```mermaid
+flowchart TD
+ C[External pinned CNEquity exports: read only] --> F[Admitted industry facts / PIT]
+ F --> V1[SWL2-Ridge-V1 frozen 107-industry fit]
+ F --> V2[SWL2-Ridge-V2 frozen 124-industry fit]
+ V1 --> L[Independent immutable full forecast namespaces]
+ V2 --> L
+ F --> E[Exact session maturity / finalized outcomes]
+ L --> E
+ E --> A[Bounded read-only Industry Forecast API]
+ L --> A
+ A --> D[Default Industry Forecast dashboard]
+ H[Preserved ETF evidence and ledgers] --> HA[Historical read-only API / pages]
+```
 
-External pinned CNEquity produces normalized immutable factual exports. This repository
-owns evidence admission, research/model logic, ETF-Quant policy/runtime, two read-only
-APIs and the dashboard. The README contains the compact data-flow diagram.
+No ETF facts, mappings, execution availability, target allocations, costs, capital,
+account balance or NAV belong to active model prediction or evaluation. Legacy
+transport/publication primitives supply hashes, OS locking, atomic generations and
+crash recovery. They do not turn forecasts into portfolio accounting.
 
-`strategies/etf_quant/` is the self-contained frozen V1 product. Evidence separates sources,
-weight completeness, classifications and derived exposure; `evidence/schema.py` keeps
-the public facade. Runtime owns forward lifecycle and artifact integrity. `src/` supplies
-data/provider infrastructure; `research/` and `sw_sector_rotation` preserve research lineage.
+`strategies/swl2_ridge/registry.py` owns canonical identity. Adapters invoke frozen
+prediction; facts validate PIT and reconstruction; ledger separates original
+FORECAST from appended EVALUATION; engine enforces dates and maturity; metrics
+report scientific and shared-universe diagnostics. The runner requires clean merged
+source and external roots. The API verifies parent-bound source integrity and
+bounded runtime generations; the frontend performs no fitting or data import.
 
-CNEquity sidecar is external transport/adaptation. Runner validates input and builds
-Docker argv; quantitative implementation executes in Docker. The developer image is
-independent of deployed services. No cleanup requires restarting the frozen runtime.
-
-Research API requires approval of exact Development artifact hashes and excludes sealed
-phases. ETF API verifies immutable runtime generations and public-view integrity. These
-distinct trust contracts justify two services. Both are local and read-only; dashboard
-and launcher observe them without invoking a formal cycle. The bounded V2 research
-endpoint exposes certified aggregate Final-OOS metadata and failed original Validation,
-without market rows or evaluation/runner routes. The versioned current endpoint and
-dashboard compare independently persisted V1/V2 forward ledgers.
-
-`reports/etf_quant/` retains historical metadata; active source integrity is versioned
-separately. See [reproducibility](reproducibility.md) and [data and PIT](data-and-pit.md).
+Historical Research API remains separate at `/research`; legacy ETF routes retain
+audit access with retirement metadata. Default `/` never accesses old account APIs.
+See [industry contracts](industry-forecast.md), [deployment](deployment.md) and
+[source transition evidence](engineering/swl2-industry-forecast-transition.md).

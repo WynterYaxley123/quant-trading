@@ -18,6 +18,10 @@ function readEnvValue(key: string): string | undefined {
   return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
+export function industryForecastBaseUrl(): string {
+  return readEnvValue('VITE_INDUSTRY_FORECAST_API_BASE_URL') ?? 'http://127.0.0.1:3313/api/industry-forecast';
+}
+
 export function getAppEnv(): AppEnv {
   const rawMode = readEnvValue('VITE_DATA_MODE');
   // Normal/default mode is the real API. Mock is opt-in only (never a silent fallback).

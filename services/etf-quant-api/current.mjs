@@ -26,20 +26,9 @@ async function external(root) {
   return resolved;
 }
 const json = item => JSON.parse(item.raw);
-export async function operationalOneShot({controlRoot,repoRoot=REPO,transportPython,runtimeRoot}) {
-  // Never copy a historical release command into a different active namespace.
-  if(!transportPython) return null;
-  check(path.isAbsolute(transportPython));
-  const python=await realpath(transportPython),info=await stat(python);
-  check(info.isFile());
-  const root=await external(controlRoot),config=json(await leaf(root,'config.json',128*1024));
-  check(config.strategy_version==='ETF_QUANT_V1' && path.isAbsolute(config.control_root)
-    && await realpath(config.control_root)===root && path.isAbsolute(config.runtime_root)
-    && runtimeRoot && await realpath(config.runtime_root)===await realpath(runtimeRoot));
-  const entry=await realpath(path.join(repoRoot,'services/etf-quant-runner/one_shot.py'));
-  check((await stat(entry)).isFile());
-  const quote=value=>{check(!/[\r\n\0]/.test(value));return `'${value.replaceAll("'","''")}'`;};
-  return `& ${quote(python)} -B ${quote(entry)} --config ${quote(path.join(root,'config.json'))}`;
+export async function operationalOneShot() {
+  // Operational ETF writing is retired; historical commands are never projected.
+  return null;
 }
 export function calendarState(raw, now) {
   // Calendar CSV dates and booleans occupy the first schema columns, before
@@ -154,7 +143,7 @@ export async function aggregateCurrent({controlRoot,view,pointer=null,now=Date.n
       count_scope:'CURRENT_COMMITTED_FORMAL_VIEW'},
     provenance:{code_sha:codeSha,release_code_sha:release.code_sha,candidate_hash:release.candidate_hash,
       pit_registry_hash:release.pit_registry_hash,strict_registry_hash:release.strict_registry_hash,cnequity_pin:release.cnequity_pin},
-    evidence:release.evidence,one_shot_command:await operationalOneShot({controlRoot:root,repoRoot,transportPython,runtimeRoot}),
+    evidence:release.evidence,one_shot_command:await operationalOneShot(),
     historical_status:superseded?{
       status:'SUPERSEDED / HISTORICAL',reason_code:view.health.blockers[0]??null,
       processed_at:view.health.last_attempt_at??null}:null};

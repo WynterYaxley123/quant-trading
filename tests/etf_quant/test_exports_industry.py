@@ -116,6 +116,22 @@ def test_snapshot_roundtrip_provenance_calendar_and_nulls(tmp_path):
         make_export(tmp_path)
 
 
+def test_industry_forecast_reads_no_etf_or_benchmark_payload(tmp_path):
+    path, _ = make_export(tmp_path)
+    for name in ("etf_bars.csv", "trading_status.csv", "benchmark_csi300.csv"):
+        (path / name).unlink()
+    provider = ExportProvider(path, expected_identity=IDENTITY, now=NOW, industry_only=True)
+    assert set(provider.tables) == {
+        "trading_calendar",
+        "stock_bars",
+        "industry_membership",
+        "instruments",
+    }
+    assert len(provider.tables["stock_bars"]) == 1
+    with pytest.raises((GateError, FileNotFoundError)):
+        ExportProvider(path, expected_identity=IDENTITY, now=NOW)
+
+
 @pytest.mark.parametrize(
     "change,code",
     [
