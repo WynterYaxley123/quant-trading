@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 const metrics = z.object({ signals: z.number().int().nonnegative(), mean_rank_ic: z.number().finite(), mean_spread: z.number().finite() });
+// The original gate output is historical only; a current status inside the decision is rejected.
+const finalDecision = z.object({ classification: z.enum(['PASS_STRONG','PASS_WEAK','FAIL']),
+  historical_scientific_status: z.enum(['HISTORICALLY_VALIDATED_STRONG','HISTORICALLY_VALIDATED_WEAK','FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT']),
+  scientific_status: z.never().optional(), product_status: z.never().optional() });
 export const v2ResearchSchema = z.object({
   product: z.literal('ETF_QUANT_V2'), research_status: z.enum(['VALIDATION_INFORMED_NOT_INDEPENDENTLY_VALIDATED','PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE','FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT']),
   candidate_sha256: z.string().regex(/^[a-f0-9]{64}$/), evidence_mode: z.enum(['HIGH_CONFIDENCE','EXTENDED_HISTORY']),
@@ -14,7 +18,7 @@ export const v2ResearchSchema = z.object({
   epoch_count: z.literal(0), signal_count: z.literal(0), intent_count: z.literal(0), fill_count: z.literal(0),
   broker_enabled: z.literal(false), real_order_path: z.literal(false), limitations: z.array(z.string()),
   final_oos:z.object({open_count:z.literal(1),model_retuned:z.literal(false),metrics,
-    decision:z.object({classification:z.enum(['PASS_STRONG','PASS_WEAK','FAIL']),scientific_status:z.string()})}).optional(),
+    decision:finalDecision}).optional(),
 }).superRefine((v,ctx)=>{
   if(v.specification.horizons.length!==v.specification.fusion.length || Math.abs(v.specification.fusion.reduce((a,b)=>a+b,0)-1)>1e-9)
     ctx.addIssue({code:z.ZodIssueCode.custom,message:'Invalid frozen fusion'});
@@ -40,7 +44,7 @@ export const v2CurrentSchema=z.object({
   benchmark:z.object({identity:z.literal('CSI_300'),points:z.array(z.object({date:z.string(),normalized_nav:z.number().positive()}))}),
   turnover:z.number().finite().nonnegative().nullable(),latest_data_date:z.string().nullable(),latest_data_time:z.string().nullable(),next_eligible_signal_date:z.string().nullable().optional(),
   broker_enabled:z.literal(false),real_order_path:z.literal(false),
-  final_oos:z.object({open_count:z.literal(1),model_retuned:z.literal(false),metrics,decision:z.object({classification:z.enum(['PASS_STRONG','PASS_WEAK','FAIL']),scientific_status:z.string()})}),
+  final_oos:z.object({open_count:z.literal(1),model_retuned:z.literal(false),metrics,decision:finalDecision}),
   mapping_summary:z.object({model_industries:z.literal(124),direct_industries:z.number().int().nonnegative(),proxy_industries:z.number().int().nonnegative(),executable_industry_coverage:z.number().int().nonnegative(),unmapped_industries:z.number().int().nonnegative(),chosen_proxy_threshold:z.literal(40),latest_liquidity_date:z.string()}),
 }).superRefine((v,ctx)=>{
   const statuses={PASS_STRONG:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE',PASS_WEAK:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE',FAIL:'FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT'};

@@ -209,7 +209,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/v7-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/v8-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

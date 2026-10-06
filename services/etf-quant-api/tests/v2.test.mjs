@@ -18,6 +18,17 @@ test('V2 aggregates bind frozen candidate, failed original Validation and single
   assert.equal(v.scientific_status,'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE');
   assert.equal(v.membership_tier_rows.A,0);assert.equal(v.broker_enabled,false);
 });
+test('V2 aggregates expose the original gate decision only under historical names',async()=>{
+  const v=await observeV2(root);
+  assert.equal(v.release.scientific_status,'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE');
+  assert.equal(Object.hasOwn(v.release,'classification'),false);
+  assert.equal(v.release.historical_classification,'PASS_STRONG');
+  assert.equal(Object.hasOwn(v.final_oos.decision,'scientific_status'),false);
+  assert.equal(Object.hasOwn(v.final_oos.decision,'product_status'),false);
+  assert.equal(v.final_oos.decision.historical_scientific_status,'HISTORICALLY_VALIDATED_STRONG');
+  const current=JSON.stringify({...v,final_oos:{...v.final_oos,decision:{}},release:{...v.release,historical_classification:null}});
+  assert.equal(/HISTORICALLY_VALIDATED_STRONG|"PASS_STRONG"/.test(current),false);
+});
 test('V2 endpoint keeps local origin/read-only/path boundaries',async t=>{
   const server=createApi({repoRoot:root});server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>server.close());
   const base=`http://127.0.0.1:${server.address().port}/api/etf-quant/v2/research`;
@@ -30,8 +41,8 @@ test('V2 endpoint keeps local origin/read-only/path boundaries',async t=>{
 test('forged report or tampered certified fit source fails closed',async t=>{
   const temp=await mkdtemp(path.join(os.tmpdir(),'SYNTHETIC-v2-integrity-'));t.after(()=>rm(temp,{recursive:true,force:true}));
   const manifest=JSON.parse(await readFile(path.join(root,'reports/engineering/shadow-task-installation-integrity.json')));
-  const delta=JSON.parse(await readFile(path.join(root,'reports/engineering/v7-integrity.json')));
-  const names=new Set([...Object.keys(manifest.implementation_integrity.files),...Object.keys(delta.implementation_integrity.files),'reports/engineering/shadow-task-installation-integrity.json','reports/engineering/v7-integrity.json']);
+  const delta=JSON.parse(await readFile(path.join(root,'reports/engineering/v8-integrity.json')));
+  const names=new Set([...Object.keys(manifest.implementation_integrity.files),...Object.keys(delta.implementation_integrity.files),'reports/engineering/shadow-task-installation-integrity.json','reports/engineering/v8-integrity.json']);
   for(const name of names){await mkdir(path.dirname(path.join(temp,name)),{recursive:true});await writeFile(path.join(temp,name),await readFile(path.join(root,name)));}
   assert.equal((await observeV2(temp)).validation_status,'FAILED');
   await writeFile(path.join(temp,'research/etf_quant_v2/experiment.py'),'SYNTHETIC tamper');

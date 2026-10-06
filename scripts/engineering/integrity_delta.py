@@ -14,11 +14,26 @@ from strategies.etf_quant.runtime.implementation import certificate_hash
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def build(root: Path, parent_path: str, output_path: str, base_sha: str) -> dict[str, Any]:
+def build(
+    root: Path,
+    parent_path: str,
+    output_path: str,
+    base_sha: str,
+    label: str,
+    evidence: str,
+    previous_path: str | None = None,
+) -> dict[str, Any]:
     parent_bytes = (root / parent_path).read_bytes()
     parent = json.loads(parent_bytes)["implementation_integrity"]
     if parent["identifier"] != "CURRENT_IMPLEMENTATION_INTEGRITY":
         raise ValueError("FULL_VERIFIED_PARENT_REQUIRED")
+    # A superseded delta on the same parent keeps its recorded reasons for unchanged files.
+    previous: dict[str, dict[str, Any]] = {}
+    if previous_path:
+        prior = json.loads((root / previous_path).read_bytes())["implementation_integrity"]
+        if prior["parent_manifest_sha256"] != hashlib.sha256(parent_bytes).hexdigest():
+            raise ValueError("PREVIOUS_DELTA_PARENT_MISMATCH")
+        previous = {change["path"]: change for change in prior["changes"]}
     changed = subprocess.check_output(
         ["git", "diff", "--name-only", "-z", base_sha, "--"], cwd=root
     )
@@ -50,7 +65,9 @@ def build(root: Path, parent_path: str, output_path: str, base_sha: str) -> dict
                 "path": name,
                 "before_sha256": before,
                 "after_sha256": after,
-                "reason": "V7 verified research labeling, runtime recovery and engineering correction",
+                "reason": previous[name]["reason"]
+                if previous.get(name, {}).get("after_sha256") == after
+                else f"{label} verified remediation",
             }
         )
     integrity = {
@@ -59,10 +76,10 @@ def build(root: Path, parent_path: str, output_path: str, base_sha: str) -> dict
         "parent_manifest_path": parent_path,
         "parent_manifest_sha256": hashlib.sha256(parent_bytes).hexdigest(),
         "parent_sha": base_sha,
-        "transition_reason": "V7 remediation; historical evidence stays byte-pinned by the parent chain",
+        "transition_reason": f"{label} remediation; historical evidence stays byte-pinned by the parent chain",
         "files": files,
         "changes": changes,
-        "regression_evidence": "docs/engineering/v7-remediation.md",
+        "regression_evidence": evidence,
     }
     integrity["certificate_sha256"] = certificate_hash(integrity)
     return {"schema_version": 1, "implementation_integrity": integrity}
@@ -73,12 +90,27 @@ def main() -> None:
     parser.add_argument("--parent", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--base-sha", required=True)
+    parser.add_argument("--label", required=True, help="Transition label, for example V8")
+    parser.add_argument("--evidence", required=True, help="Repository regression record")
+    parser.add_argument("--previous", help="Superseded delta on the same parent")
     args = parser.parse_args()
     output = ROOT / args.output
     if not output.resolve().is_relative_to(ROOT):
         raise ValueError("REPOSITORY_OUTPUT_REQUIRED")
     output.write_text(
-        json.dumps(build(ROOT, args.parent, args.output, args.base_sha), indent=2) + "\n"
+        json.dumps(
+            build(
+                ROOT,
+                args.parent,
+                args.output,
+                args.base_sha,
+                args.label,
+                args.evidence,
+                args.previous,
+            ),
+            indent=2,
+        )
+        + "\n"
     )
 
 

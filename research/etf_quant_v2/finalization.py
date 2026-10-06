@@ -24,6 +24,9 @@ STATUSES = {
     "PASS_WEAK": "HISTORICALLY_VALIDATED_WEAK",
     "FAIL": "FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT",
 }
+# Declared by every new freeze. The consumed V2 gate predates it and keeps its
+# original decision; it is never re-evaluated under this stricter rule.
+STRONG_EVIDENCE = "DEPENDENCE_AWARE_UNCERTAINTY_AND_INDEPENDENT_TIER_A_REQUIRED"
 
 
 def exclusive_json(path: Path, value: dict[str, Any]) -> None:
@@ -75,7 +78,18 @@ def classify(
         if weak
         else "PASS_STRONG"
     )
-    return {
+    evidence = {}
+    if gate.get("strong_evidence") == STRONG_EVIDENCE:
+        # Overlapping labels without a dependence-aware interval, or a universe
+        # without independent Tier A membership, cannot support a strong claim.
+        uncertainty = metrics.get("uncertainty") or {}
+        evidence = {
+            "dependence_aware_uncertainty": uncertainty.get("bootstrap_ess") is not None,
+            "independent_membership_evidence": gate.get("independent_membership_rows", 0) > 0,
+        }
+        if classification == "PASS_STRONG" and not all(evidence.values()):
+            classification = "PASS_WEAK"
+    decision = {
         "classification": classification,
         "scientific_status": STATUSES[classification],
         "product_status": "EXPERIMENTAL_UNVALIDATED_RESEARCH_SHADOW"
@@ -88,6 +102,9 @@ def classify(
         "positive_block_ic_concentration": concentration,
         "development_to_oos_rank_ic_ratio": ratio,
     }
+    if evidence:
+        decision["strong_evidence"] = evidence
+    return decision
 
 
 def freeze(
@@ -143,6 +160,8 @@ def freeze(
         "numerical": "EACH_HORIZON_FIT_FRACTION_GE_0.95;NORM_CV_LE_1;FINITE_COEFFICIENTS",
         "classification": "CORE_OR_TEMPORAL_OR_NUMERICAL_FAILURE_FAIL;ONE_SECONDARY_WEAK_PASS_WEAK;ALL_PASS_PASS_STRONG;TWO_SECONDARY_FAILURES_FAIL",
         "uncertainty": "120_SESSION_BLOCK_BOOTSTRAP_ONLY_IF_AT_LEAST_240_CALENDAR_AND_160_OBSERVATIONS;OTHERWISE_NULL",
+        "strong_evidence": STRONG_EVIDENCE,
+        "independent_membership_rows": int(metadata["membership_tier_rows"]["A"]),
     }
     frozen = {
         "schema_version": 1,

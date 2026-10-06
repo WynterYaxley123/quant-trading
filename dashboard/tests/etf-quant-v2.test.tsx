@@ -35,7 +35,7 @@ it('V2 adapter uses the independent read-only endpoint and fails on malformed ev
   expect(requested).toEqual(['http://127.0.0.1:3312/api/etf-quant/v2/research']);
 });
 
-const final={open_count:1,model_retuned:false,metrics:{signals:60,mean_rank_ic:.13,mean_spread:.05},decision:{classification:'PASS_STRONG',scientific_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE'}};
+const final={open_count:1,model_retuned:false,metrics:{signals:60,mean_rank_ic:.13,mean_spread:.05},decision:{classification:'PASS_STRONG',historical_scientific_status:'HISTORICALLY_VALIDATED_STRONG'}};
 function current(patch={}){
   return v2CurrentSchema.parse({strategy_version:'ETF_QUANT_V2',mode:'SIMULATION_ONLY',scientific_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE',historical_classification:'PASS_STRONG',
     product_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE',candidate_sha256:'a'.repeat(64),registry_sha256:'b'.repeat(64),release_sha256:'c'.repeat(64),initial_capital:'10000',
@@ -56,8 +56,13 @@ it('version selector renders honest armed budget, coverage, scientific result an
 });
 it('failed Final OOS stays experimental and cannot claim historical validation',()=>{
   const failed=current({scientific_status:'FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT',historical_classification:'FAIL',product_status:'EXPERIMENTAL_UNVALIDATED_RESEARCH_SHADOW',
-    final_oos:{...final,decision:{classification:'FAIL',scientific_status:'FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT'}}});
+    final_oos:{...final,decision:{classification:'FAIL',historical_scientific_status:'FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT'}}});
   expect(failed.product_status).toBe('EXPERIMENTAL_UNVALIDATED_RESEARCH_SHADOW');
   expect(v2CurrentSchema.safeParse({...failed,scientific_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE'}).success).toBe(false);
   expect(v2CurrentSchema.safeParse({...current(),fill_count:1}).success).toBe(false);
+});
+it('Final OOS decision cannot carry a current scientific status',()=>{
+  const leaked={...final,decision:{...final.decision,scientific_status:'HISTORICALLY_VALIDATED_STRONG'}};
+  expect(v2CurrentSchema.safeParse({...current(),final_oos:leaked}).success).toBe(false);
+  expect(v2ResearchSchema.safeParse({...synthetic,research_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE',final_oos_opened:true,final_oos:leaked}).success).toBe(false);
 });

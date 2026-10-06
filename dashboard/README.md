@@ -144,8 +144,8 @@ Every page says SIMULATION_ONLY, shows cutoff/source/code/mapping/strategy
 hashes and epoch/processing time. Unknowns are “—”; before a genuine forward
 epoch account metrics are null and holdings/trades/NAV empty. Test fixtures never
 populate production models or assets. Rankings have four tabs, Top20/show-all/
-Top5; factors have frozen5/19/19 names and signed coefficients. Mapping needs
-official evidence and20 real-amount sessions, no guessed ETFs. Portfolio/trades
+Top5; factors have frozen 5/19/19 names and signed coefficients. Mapping needs
+official evidence and 20 real-amount sessions, no guessed ETFs. Portfolio/trades
 show lot-rounded simulated fills/costs/cash impact and actual processing time
 separate from T+1 market open. Historical warmup is not account performance.
 

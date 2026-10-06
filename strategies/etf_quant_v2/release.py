@@ -1,4 +1,7 @@
-"""Certified final scientific status, separate from immutable research freezes."""
+"""Current certified scientific labels over the immutable historical release.
+
+The original gate decision is exposed only as ``historical_classification``.
+"""
 
 from __future__ import annotations
 
@@ -22,6 +25,25 @@ STATUSES = {
     "PASS_WEAK": "HISTORICALLY_VALIDATED_WEAK",
     "FAIL": "FINAL_OOS_FAILED_FORWARD_SHADOW_EXPERIMENT",
 }
+OVERLAY_LABELS = frozenset(
+    {
+        "scientific_status",
+        "product_status",
+        "final_oos_directional_label",
+        "independent_statistical_confidence",
+        "historical_membership_confidence",
+        "etf_execution_historical_validation",
+    }
+)
+
+
+def current_release(release: dict[str, Any], labels: dict[str, Any]) -> dict[str, Any]:
+    """Overlay current labels; the original gate decision keeps a historical name."""
+    if set(labels) != OVERLAY_LABELS:
+        raise ValueError("V2_SCIENTIFIC_OVERLAY_IDENTITY_ERROR")
+    current = {k: v for k, v in release.items() if k != "classification"}
+    current["historical_classification"] = release["classification"]
+    return current | labels
 
 
 def load_release(repository: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -68,4 +90,4 @@ def load_release(repository: Path) -> tuple[dict[str, Any], dict[str, Any], dict
         raise ValueError("V2_SCIENTIFIC_OVERLAY_IDENTITY_ERROR")
     # The release digest still identifies the immutable original model/runtime
     # contract. Current epistemic labels are a separately certified overlay.
-    return release | assessment["labels"], candidate, registry
+    return current_release(release, assessment["labels"]), candidate, registry
