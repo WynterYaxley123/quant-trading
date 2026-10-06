@@ -1,0 +1,11 @@
+{
+  "mode": "SIMULATION_ONLY",
+  "broker_enabled": false,
+  "real_order_path": false,
+  "source_repository": "${SOURCE_REPOSITORY}",
+  "deployment_root": "${DEPLOYMENT_ROOT}",
+  "data_root": "${DEPLOYMENT_ROOT}/etf-lake",
+  "runtime_root": "${DEPLOYMENT_ROOT}/runtime/accounts/v1",
+  "control_root": "${DEPLOYMENT_ROOT}/runtime/control/v1",
+  "provider_source_root": "${DEPLOYMENT_ROOT}/external/cnequity/source"
+}

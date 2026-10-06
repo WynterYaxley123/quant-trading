@@ -1353,6 +1353,22 @@
     {
       "path": "docs/etf-quant-v2-development.md",
       "class": "ACTIVE_RESEARCH_PROTOCOL"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/deployment.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/operations.zh-CN.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/engineering/deployment-source-boundary.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }

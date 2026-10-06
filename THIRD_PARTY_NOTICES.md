@@ -4,6 +4,9 @@
   1650e384a3fd1f67a70144a489acc91432f1df27 (0.11.0), Apache-2.0 software.
   Source/dependencies stay in the external sidecar, never vendored here.
   Preserve upstream notices with that external source.
+  Machine-readable identity: [CNEquity pin](config/deployment/cnequity.pin.json).
+  Bootstrap and verification: [deployment](docs/deployment.md). This metadata does
+  not redistribute upstream code, installed dependencies or provider data.
 - Dashboard adaptations/licenses: dashboard/THIRD_PARTY_NOTICES.md. Existing
   direct dependency versions are unchanged.
 - Scientific/framework notices remain in unchanged Docker distributions.

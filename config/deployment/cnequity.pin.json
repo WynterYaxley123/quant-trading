@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "project": "CNEquity",
+  "upstream": "https://github.com/rootSunc/CNEquity.git",
+  "commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "version": "0.11.0",
+  "license": "Apache-2.0",
+  "distribution": "EXTERNAL_CHECKOUT_ONLY",
+  "interface": "services/cnequity-sidecar/export.py",
+  "data_rights": "SEPARATE_REVIEW_REQUIRED"
+}

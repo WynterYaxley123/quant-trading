@@ -41,7 +41,10 @@ def build(
         ["git", "ls-files", "--others", "--exclude-standard", "-z"], cwd=root
     )
     names = set((changed + added).decode().strip("\0").split("\0")) - {""}
+    names.update(previous)  # A new transition must carry every earlier delta change.
     names.add(parent_path)  # The verifier's closed copy fixture includes its parent.
+    if previous_path:
+        names.add(previous_path)  # Preserve and verify the superseded certificate's bytes.
     files, changes = {}, []
     for name in sorted(set(names) | set(parent["files"])):
         if name == output_path:

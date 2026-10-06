@@ -87,7 +87,7 @@ the native missing-file HRESULT may arrive as FileNotFoundException. Only that
 missing-task result permits creation; service/access failures still propagate.
 The regression queries Task Scheduler read-only and verifies other failures block.
 
-The active transition is `reports/engineering/v8-integrity.json`, a compact
+The historical V8 transition is `reports/engineering/v8-integrity.json`, a compact
 `CURRENT_IMPLEMENTATION_DELTA` containing only changed/new file hashes and their
 before/after ledger. It pins the complete immutable parent bytes; verification
 resolves the parent inventory and applies the delta, then hashes every current file.
@@ -106,3 +106,5 @@ The audit verifies active source and archive byte integrity.
 Security scans omit sealed performance content and publish finding identifiers/counts.
 Shadow checks use real namespace path/size/hash metadata before/after, without creating
 business records. See the [engineering health](engineering/repository-health.md).
+
+The active deployment-source transition is `reports/engineering/deployment-source-integrity.json`. It uses the same verified full parent and retains the V8 delta bytes as a hashed source. Reusable diagnostics, templates and public documentation change; models, mapping and historical certificates do not. Regression evidence is in [the source-boundary record](engineering/deployment-source-boundary.md).

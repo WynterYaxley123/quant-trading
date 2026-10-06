@@ -9,7 +9,9 @@ Start with the [README](../README.md), then choose the guide for your task.
 | [Development](development.md) | Data-free contributor workflow |
 | [Testing](testing.md) | Portable, maintainer and security checks |
 | [Data and PIT](data-and-pit.md) | Source boundaries and admission |
+| [Deployment](deployment.md) | Fresh clone, external roots, pins and safe preflight |
 | [Operations](operations.md) | Unattended Shadow, observation and secure Jupyter |
+| [中文运维](operations.zh-CN.md) | 部署后运行、恢复与安全边界 |
 | [Reproducibility](reproducibility.md) | Metrics, certificates and archive references |
 | [Research status](research-status.md) | Current status and result limitations |
 
