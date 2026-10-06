@@ -123,7 +123,7 @@ def public_view(
         "strategy_version": "ETF_QUANT_V2",
         "mode": "SIMULATION_ONLY",
         "scientific_status": release["scientific_status"],
-        "historical_classification": release["classification"],
+        "historical_classification": release["historical_classification"],
         "product_status": release["product_status"],
         "candidate_sha256": release["candidate_sha256"],
         "registry_sha256": release["registry_sha256"],

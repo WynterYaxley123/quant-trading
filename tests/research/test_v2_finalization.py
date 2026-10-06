@@ -9,7 +9,12 @@ import numpy as np
 import pytest
 
 from research.etf_quant_v2.experiment import ExperimentSplit, targets
-from research.etf_quant_v2.finalization import classify, exclusive_json, final_targets
+from research.etf_quant_v2.finalization import (
+    STRONG_EVIDENCE,
+    classify,
+    exclusive_json,
+    final_targets,
+)
 
 
 def test_published_result_is_bound_to_the_preaccess_frozen_gate_and_unchanged_model():
@@ -111,3 +116,36 @@ def test_predeclared_scientific_classification(case, expected):
     assert result["classification"] == expected
     if expected == "FAIL":
         assert result["product_status"] == "EXPERIMENTAL_UNVALIDATED_RESEARCH_SHADOW"
+
+
+@pytest.mark.parametrize(
+    "ess,tier_a,expected",
+    [
+        (None, 0, "PASS_WEAK"),
+        (None, 5, "PASS_WEAK"),
+        (24.0, 0, "PASS_WEAK"),
+        (24.0, 5, "PASS_STRONG"),
+    ],
+)
+def test_new_gates_require_dependence_aware_and_independent_evidence_for_strong(
+    ess, tier_a, expected
+):
+    values = metrics() | {"uncertainty": {"bootstrap_ess": ess}}
+    gate = {
+        "minimum_block_observations": 10,
+        "minimum_observations": 40,
+        "strong_evidence": STRONG_EVIDENCE,
+        "independent_membership_rows": tier_a,
+    }
+    result = classify(values, gate, 0.14)
+    assert result["classification"] == expected
+    assert result["strong_evidence"] == {
+        "dependence_aware_uncertainty": ess is not None,
+        "independent_membership_evidence": tier_a > 0,
+    }
+
+
+def test_consumed_gate_predates_strong_evidence_rule():
+    root = Path(__file__).resolve().parents[2]
+    freeze = json.loads((root / "config/research/etf-quant-v2-final-oos-freeze.json").read_bytes())
+    assert "strong_evidence" not in freeze["gate"]

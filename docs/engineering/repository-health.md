@@ -2,7 +2,7 @@
 
 This page describes the implementation based on official main
 `b5ac584a7f6339e7ae089286fa6ec939b082ff33`, measured on 2026-10-05.
-The [active integrity transition](../../reports/engineering/v7-integrity.json)
+The [active integrity transition](../../reports/engineering/v8-integrity.json)
 appends the immutable installation certificate as a compact delta. Earlier measurements in
 [historical health metadata](../../reports/engineering/repository-health.json)
 retain their original scope and dates; they are not current test counts or status.

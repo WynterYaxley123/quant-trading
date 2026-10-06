@@ -15,6 +15,7 @@ import pytest
 from strategies.etf_quant.domain import TradingCalendar
 from strategies.etf_quant_v2.facts import ForwardFacts, factors_from_closes
 from strategies.etf_quant_v2.mapping import candidate_pools
+from strategies.etf_quant_v2.release import current_release
 from strategies.etf_quant_v2.runtime import SHANGHAI, FrozenSpecification, prepare_signal
 from strategies.etf_quant_v2.shadow import cycle, load_state, public_view, temporal_gate
 
@@ -38,10 +39,12 @@ def synthetic_facts(end="2026-10-12"):
 
 def release():
     # Public release identity only; all prices/industries/runtime are synthetic.
-    return json.loads(
-        (
-            Path(__file__).resolve().parents[1] / "strategies/etf_quant_v2/config/release.json"
-        ).read_bytes()
+    root = Path(__file__).resolve().parents[1]
+    return current_release(
+        json.loads((root / "strategies/etf_quant_v2/config/release.json").read_bytes()),
+        json.loads((root / "config/research/etf-quant-v2-scientific-status.json").read_bytes())[
+            "labels"
+        ],
     )
 
 

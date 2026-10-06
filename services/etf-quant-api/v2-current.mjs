@@ -15,7 +15,7 @@ function verifyView(v,release) {
     && v.candidate_sha256===release.candidate_sha256 && v.registry_sha256===release.registry_sha256
     && v.release_sha256===release.release_sha256
     && [release.scientific_status,'HISTORICALLY_VALIDATED_STRONG'].includes(v.scientific_status)
-    && v.historical_classification===release.classification
+    && v.historical_classification===release.historical_classification
     && [release.product_status,'HISTORICALLY_VALIDATED_RESEARCH_CANDIDATE'].includes(v.product_status)
     && ['epoch_count','signal_count','intent_count','fill_count'].every(k=>Number.isSafeInteger(v[k]) && v[k]>=0)
     && Array.isArray(v.nav) && Array.isArray(v.slots) && Number.isFinite(v.cash_weight) && v.cash_weight>=0 && v.cash_weight<=1);
@@ -29,7 +29,7 @@ export async function observeV2Current({repoRoot,runtimeRoot='',controlRoot=''}=
   const research=await observeV2(repoRoot),release=research.release;
   let transportWait=null;
   let view={strategy_version:'ETF_QUANT_V2',mode:'SIMULATION_ONLY',scientific_status:release.scientific_status,
-    historical_classification:release.classification,product_status:release.product_status,candidate_sha256:release.candidate_sha256,
+    historical_classification:release.historical_classification,product_status:release.product_status,candidate_sha256:release.candidate_sha256,
     registry_sha256:release.registry_sha256,release_sha256:release.release_sha256,initial_capital:'10000',armed:false,started:false,
     waiting_reason:'NOT_ARMED',epoch_count:0,signal_count:0,intent_count:0,fill_count:0,signal_date:null,top5:[],slots:[],
     cash_weight:1,next_accounting_state:'NOT_STARTED',execution_date:null,balance:'10000',cash:'10000',holdings:[],nav:[],

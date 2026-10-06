@@ -1339,6 +1339,10 @@
       "class": "ACTIVE_DEVELOPER_DOC"
     },
     {
+      "path": "docs/engineering/v8-remediation.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
       "path": "docs/glossary.md",
       "class": "ACTIVE_RESEARCH_PROTOCOL"
     },

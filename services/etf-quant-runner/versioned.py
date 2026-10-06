@@ -104,7 +104,7 @@ def run_once(config: dict[str, Any], code_commit: str) -> dict[str, Any]:
             datetime.fromisoformat(release["available_at"]),
             date.fromisoformat(candidate["final_oos_start"]),
             date.fromisoformat(candidate["final_oos_end"]),
-            release["classification"] != "FAIL",
+            release["historical_classification"] != "FAIL",
             final_oos_authorized=True,
         )
         plan = prepare_signal(
@@ -118,7 +118,7 @@ def run_once(config: dict[str, Any], code_commit: str) -> dict[str, Any]:
             mapping_pools=candidate_pools(registry, liquidity, now.astimezone(SHANGHAI)),
             exposure_vectors=vectors,
             mapping_available_at=datetime.fromisoformat(registry["available_at"]),
-            allow_unvalidated_research=release["classification"] == "FAIL",
+            allow_unvalidated_research=release["historical_classification"] == "FAIL",
         )
         required = {r["etf_code"] for r in plan["allocation"]["executed"]}
         if state:
