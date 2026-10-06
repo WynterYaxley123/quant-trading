@@ -157,7 +157,7 @@ def invoke(
     base = Path(config["runtime_root"])
     if not base.is_absolute() or base.name != "industry-forecast":
         raise ValueError("EXPLICIT_INDUSTRY_FORECAST_ROOT_REQUIRED")
-    namespace = external_root(base / family["family_id"])
+    namespace = external_root(ledger.checked_namespace(base / family["family_id"]))
     with process_lock(namespace / ".runner.guard"):
         return _invoke(family, config, **arguments)
 
@@ -192,7 +192,7 @@ def main() -> int:
         ]
         print(json.dumps({"results": result}, allow_nan=False))
         return 0
-    except (ValueError, OSError, KeyError) as error:
+    except (ValueError, OSError, KeyError, TypeError) as error:
         print(
             json.dumps(
                 {

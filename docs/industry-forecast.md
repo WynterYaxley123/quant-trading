@@ -43,8 +43,11 @@ model hash. They are immutable original publications, distinct from later
 evaluation events. Duplicate runner retries skip fitting/publication and return
 `NOOP_ALREADY_PUBLISHED`. Journal recovery restores the original byte-verified
 publication after a crash. Independent `industry-forecast/<family_id>` namespaces
-reuse atomic generations, OS mutexes, containment and hash checks. No old ETF
-ledger is migrated. A source/model binding mismatch fails closed and requires a
+reuse atomic generations, OS mutexes, containment and hash checks. Event bodies are immutable content-hashed objects (each at most 512 KiB);
+generations contain only binding plus hash-linked references. The bounded index
+allows 10,000 events / 16 MiB and never duplicates full bodies into every generation.
+Reaching a hard limit blocks without deleting history. Namespace/ancestor symlink
+escapes fail before reads, locks or writes. No old ETF ledger is migrated. A source/model binding mismatch fails closed and requires a
 separately reviewed operational source transition.
 
 H10/H40/H120 count exchange sessions, not calendar days. Outcomes remain `PENDING`

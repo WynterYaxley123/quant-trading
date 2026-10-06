@@ -61,13 +61,13 @@
       "docs/engineering/README.md": "033efa4ab9da8c04f80c9a7bfbdffea0dcc326aa3874d44a4aa253b6f653d172",
       "docs/engineering/deployment-source-boundary.md": "d2207b647fdd27b364f950c9b4585c85566e3e15579af70b1e66eb2b5d272e07",
       "docs/engineering/repository-health.md": "8c219ec9714c208ee4ca8e6c98d699b44850313331d64fc2e2f49a1f3b422033",
-      "docs/engineering/swl2-industry-forecast-transition.md": "543d44b79a31a56726bb4dc8bcb622b8e484a128bc5a1cf242d94a8a09638d13",
+      "docs/engineering/swl2-industry-forecast-transition.md": "5c97c6067a9cb2fe558fbd165972b1130fee41fd39f818996c844330525667af",
       "docs/engineering/v7-remediation.md": "1480f458e39cb1ef44825f1a7df32ced27dea0060704bac35cbe45aed4ad202b",
       "docs/engineering/v8-remediation.md": "9a9330bb19e745ae708facd78418f2b91b61dcb4ab51e16d5f1e25ff4bb8c27d",
       "docs/etf-quant-v2-protocol.md": "0c18dc2cef03cd40904466478af60fee2acc68bc82942b2d9f862b5b8c700ad0",
       "docs/glossary.md": "809515b8683dc75ee6bd07be67fe40c4b16301050e96dd1cfb23ec13ae15a96d",
       "docs/index.md": "8c0542000af7110dde7ee7f02573dfaa15cfc94bfac4efe0ddd55c38963da9ea",
-      "docs/industry-forecast.md": "4d0b7c39fe9760c5e14fd88be9fcf0225b49be4c62471b3e98cc706fca22f42b",
+      "docs/industry-forecast.md": "8f28d7d586517b2249852603eda01dc05f8abb11ddda6492fa9317e01b290d56",
       "docs/operations.md": "759f9dcfddcf2360e68066a9ca4258f5786a2694d5ec66e071abea75e81d28e2",
       "docs/operations.zh-CN.md": "6fbb6dd0421517004c96e941c3ca3bb8cb2717bea9e23c0aea504fddd8b70d85",
       "docs/reproducibility.md": "a4edd9e60801217353737d0e2e7e8c7266e6c93f7550fd653231423dd5af8785",
@@ -110,11 +110,11 @@
       "services/industry-forecast-api/README.md": "4ceb0231f43d129a43878ec09819453a2f4450e784b0412f9afb87704ff21ec5",
       "services/industry-forecast-api/package.json": "1f799794d4baf8c089b17af14419fa2d51a213ea40eea8001772a1be82d5dd7f",
       "services/industry-forecast-api/pnpm-lock.yaml": "17c814b167307942d3609c7b9d916ceddb85839573ab39baa114e30edb132a1a",
-      "services/industry-forecast-api/server.mjs": "cab0c983c15051416c31a4e2ff09fd0bc7fcff41d7c002458d3c4c0ca49ca030",
-      "services/industry-forecast-api/tests/server.test.mjs": "1ad09289f9a838d1524f454f19795d944f4faf944f6b864781ecdd40b7612d7c",
+      "services/industry-forecast-api/server.mjs": "cf7bd6d5effb2f55acdbad9bc7eb6ef8ccc34815c514840027f2de25cc68d8ad",
+      "services/industry-forecast-api/tests/server.test.mjs": "1bbb621afeca87e22e8ab24ff9f652be620458994352db21cf3f444de990443d",
       "services/industry-forecast-runner/README.md": "3624b8719824d9b99a57466531dfcfd71a48203f79967763a09927e4d0c40cbb",
       "services/industry-forecast-runner/config.example.json": "5a04fd0e922e9fa03b7631d3ebc92f58982c19815ca5a49b8e4ed27a07a3f153",
-      "services/industry-forecast-runner/run_forecast.py": "a6ceff7470e19e7b6bc8576157d0f2a434f0e6947001ad32ba4369516f4d1174",
+      "services/industry-forecast-runner/run_forecast.py": "a2898abe8972e74e0a1b704cc0d092b5eaafcceb3f8193587c3f1bec8ca4a3f7",
       "services/industry-forecast-runner/scheduler.template.json": "8781adb2b8dc68e814c7d8c18448922a9e2aedeca86e1fc2028158d395388914",
       "strategies/README.md": "635f2255fb450118d5de93b7a0712c3d683cd053f1de8035488531c87fa04dfd",
       "strategies/etf_quant/runtime/cli.py": "01617698e74499c9bb37e5f68ab52f0d80fcc7ed22909e1bda3da2ee096eebf5",
@@ -135,7 +135,7 @@
       "strategies/swl2_ridge/adapter.py": "78d7f7ae2b46eeb7f8b64929c03965c76038605afdd21ec13854f3b4e362a0da",
       "strategies/swl2_ridge/engine.py": "611b5df08ad570454c81d6b2fe29ed841ed48cd22a63e73fc7a914a764949e96",
       "strategies/swl2_ridge/facts.py": "9c90ba289002ba83b32388596f6883c1126f9c97fbdf914c95511f3a531aedf3",
-      "strategies/swl2_ridge/ledger.py": "a4d51d5f6e8130de2fed87fdb30df4a6b1eb9e0b37a7f69d467149ac3ff5a294",
+      "strategies/swl2_ridge/ledger.py": "b6fe3a31ef2552159fe42e25e5333012a12196f1a2ffe38953728a839593098b",
       "strategies/swl2_ridge/metrics.py": "40059d1bfe23ddacbdac0a8329eab1e019a2c728828ed0496d3131768f39a7c0",
       "strategies/swl2_ridge/registry.py": "619db2f3d7c1ebe16d9521b7ba09e7743cc7c68c39c279c1fd17cc99c56bd749",
       "strategies/swl2_ridge/retirement.py": "e7888e0652ff976dad65f7d90368324da87a44b7872736a801d442de0827c3cf",
@@ -147,7 +147,7 @@
       "tests/research/test_v2_finalization.py": "2f4c3b3e32e6185a270352e2f8bc1616d10a7f6bfd5676ccddf95bc46e54cbfa",
       "tests/test_deployment_boundaries.py": "cf922c1fe9fd770304d03c7a2ecc4b13ba6299ccede3612c1fb808cd227a3013",
       "tests/test_etf_quant_v2_shadow.py": "2f04a1d7e82aeb8b18a3940a0b882d48d12bffb70fb3bb99ba38d3904db73960",
-      "tests/test_swl2_forecast.py": "3d44287291398c58347a1645e2e869104bcf32bc68888c1955f38b959fa06641",
+      "tests/test_swl2_forecast.py": "3eca09ebc93f4c741ebcfce24a20ba33dad081ca091ba2b5a5ce1401a1fd6074",
       "tests/test_v4_integrity.py": "76a698f0aa7e7e2b34f938b19923ac7afffc6d307e0fa1e8c448890f9ac24199",
       "tests/test_v7_runtime.py": "8fc0c1718513c0343246c8e89f9ea2ab85a1b592e5be14966a21bc26dee4c868",
       "tests/test_v8_scientific_labels.py": "573e30dda090806513f0b7eb9582738613fdbf6bb58ee28ebe3d5a993e8d0eb5"
@@ -474,7 +474,7 @@
       {
         "path": "docs/engineering/swl2-industry-forecast-transition.md",
         "before_sha256": null,
-        "after_sha256": "543d44b79a31a56726bb4dc8bcb622b8e484a128bc5a1cf242d94a8a09638d13",
+        "after_sha256": "5c97c6067a9cb2fe558fbd165972b1130fee41fd39f818996c844330525667af",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
@@ -510,7 +510,7 @@
       {
         "path": "docs/industry-forecast.md",
         "before_sha256": null,
-        "after_sha256": "4d0b7c39fe9760c5e14fd88be9fcf0225b49be4c62471b3e98cc706fca22f42b",
+        "after_sha256": "8f28d7d586517b2249852603eda01dc05f8abb11ddda6492fa9317e01b290d56",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
@@ -768,13 +768,13 @@
       {
         "path": "services/industry-forecast-api/server.mjs",
         "before_sha256": null,
-        "after_sha256": "cab0c983c15051416c31a4e2ff09fd0bc7fcff41d7c002458d3c4c0ca49ca030",
+        "after_sha256": "cf7bd6d5effb2f55acdbad9bc7eb6ef8ccc34815c514840027f2de25cc68d8ad",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
         "path": "services/industry-forecast-api/tests/server.test.mjs",
         "before_sha256": null,
-        "after_sha256": "1ad09289f9a838d1524f454f19795d944f4faf944f6b864781ecdd40b7612d7c",
+        "after_sha256": "1bbb621afeca87e22e8ab24ff9f652be620458994352db21cf3f444de990443d",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
@@ -792,7 +792,7 @@
       {
         "path": "services/industry-forecast-runner/run_forecast.py",
         "before_sha256": null,
-        "after_sha256": "a6ceff7470e19e7b6bc8576157d0f2a434f0e6947001ad32ba4369516f4d1174",
+        "after_sha256": "a2898abe8972e74e0a1b704cc0d092b5eaafcceb3f8193587c3f1bec8ca4a3f7",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
@@ -918,7 +918,7 @@
       {
         "path": "strategies/swl2_ridge/ledger.py",
         "before_sha256": null,
-        "after_sha256": "a4d51d5f6e8130de2fed87fdb30df4a6b1eb9e0b37a7f69d467149ac3ff5a294",
+        "after_sha256": "b6fe3a31ef2552159fe42e25e5333012a12196f1a2ffe38953728a839593098b",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
@@ -990,7 +990,7 @@
       {
         "path": "tests/test_swl2_forecast.py",
         "before_sha256": null,
-        "after_sha256": "3d44287291398c58347a1645e2e869104bcf32bc68888c1955f38b959fa06641",
+        "after_sha256": "3eca09ebc93f4c741ebcfce24a20ba33dad081ca091ba2b5a5ce1401a1fd6074",
         "reason": "SWL2-industry-forecast verified remediation"
       },
       {
@@ -1013,6 +1013,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl2-industry-forecast-transition.md",
-    "certificate_sha256": "22f92648a30941444df2da193ae06b7af3a328ccde25cd450b259a09f3c1143d"
+    "certificate_sha256": "91a6bc7859fbcecc8cf8ec6d3ea0f4566ebee6cbdbe2283310688aa55f533c57"
   }
 }

@@ -9,6 +9,7 @@ from typing import Any
 from uuid import uuid4
 
 from strategies.etf_quant.runtime.storage import (
+    atomic_bytes,
     contained,
     digest,
     external_root,
@@ -18,9 +19,24 @@ from strategies.etf_quant.runtime.storage import (
     read_generation,
     recover_publication,
 )
+from strategies.swl2_ridge.registry import SWL2_RIDGE_V1, SWL2_RIDGE_V2
 
 MAX_EVENTS = 10000
 MAX_BODY = 16 * 1024 * 1024
+MAX_EVENT_BODY = 512 * 1024
+
+
+def checked_namespace(root: Path) -> Path:
+    """Reject namespace/ancestor symlink aliases before any read, lock or mkdir."""
+    if (
+        not root.is_absolute()
+        or root.name not in (SWL2_RIDGE_V1, SWL2_RIDGE_V2)
+        or root.parent.name != "industry-forecast"
+        or root.resolve() != root.absolute()
+        or any((p / ".git").exists() for p in (root, *root.parents))
+    ):
+        raise ValueError("FORECAST_NAMESPACE_PATH_BLOCKER")
+    return root
 
 
 def event_hash(event: dict[str, Any]) -> str:
@@ -29,12 +45,14 @@ def event_hash(event: dict[str, Any]) -> str:
 
 def recover(root: Path) -> None:
     """Recover before model/provider work on a genuine live retry, under the same mutex."""
+    root = checked_namespace(root)
     if root.exists():
         with process_lock(root / ".forecast.guard"):
             recover_publication(root)
 
 
 def initialize(root: Path, binding: dict[str, Any]) -> dict[str, Any]:
+    root = checked_namespace(root)
     if root.name != binding["family_id"] or root.parent.name != "industry-forecast":
         raise ValueError("INDEPENDENT_FORECAST_NAMESPACE_REQUIRED")
     root = external_root(root)
@@ -62,6 +80,7 @@ def bounded_json(root: Path, name: str, limit: int = MAX_BODY) -> dict[str, Any]
 
 
 def read(root: Path) -> dict[str, Any] | None:
+    root = checked_namespace(root)
     if not root.exists() or not (root / "latest.json").exists():
         return None
     pointer = bounded_json(root, "latest.json", 4096)
@@ -73,10 +92,26 @@ def read(root: Path) -> dict[str, Any] | None:
     for name in manifest["files"]:
         bounded_json(run, name)
     _, bodies = read_generation(contained(root, "runs"), pointer)
-    events = json.loads(bodies["events.json"])["events"]
+    references = json.loads(bodies["events.json"])["events"]
     binding = json.loads(bodies["binding.json"])
-    if len(events) > MAX_EVENTS:
+    if not isinstance(references, list) or len(references) > MAX_EVENTS:
         raise ValueError("FORECAST_EVENT_COUNT_LIMIT")
+    events = []
+    for reference in references:
+        if set(reference) != {"event_id", "body_hash", "previous_hash"}:
+            raise ValueError("CLOSED_FORECAST_EVENT_REFERENCE_REQUIRED")
+        body_hash = reference["body_hash"]
+        if (
+            not isinstance(body_hash, str)
+            or len(body_hash) != 64
+            or any(c not in "0123456789abcdef" for c in body_hash)
+        ):
+            raise ValueError("FORECAST_OBJECT_HASH_REQUIRED")
+        with contained(root, "objects/" + body_hash + ".json").open("rb") as handle:
+            raw = handle.read(MAX_EVENT_BODY + 1)
+        if len(raw) > MAX_EVENT_BODY or digest(raw) != body_hash:
+            raise ValueError("FORECAST_OBJECT_HASH_MISMATCH")
+        events.append({**reference, "body": json.loads(raw), "body_json": raw.decode()})
     previous: str | None = None
     ids: set[str] = set()
     publications: dict[str, dict[str, Any]] = {}
@@ -118,6 +153,7 @@ def append(
     *,
     after_publish: Callable[[], None] | None = None,
 ) -> str:
+    root = checked_namespace(root)
     if root.name != binding["family_id"] or root.parent.name != "industry-forecast":
         raise ValueError("INDEPENDENT_FORECAST_NAMESPACE_REQUIRED")
     root = external_root(root)
@@ -145,14 +181,34 @@ def append(
             raise ValueError("EVALUATION_FORECAST_HASH_MISMATCH")
         if len(events) >= MAX_EVENTS:
             raise ValueError("FORECAST_EVENT_COUNT_LIMIT")
-        event = {
+        event: dict[str, Any] = {
             "event_id": event_id,
             "body": body,
             "body_json": json_bytes(body).decode(),
             "body_hash": digest(json_bytes(body)),
             "previous_hash": event_hash(events[-1]) if events else None,
         }
-        payload = json_bytes({"events": [*events, event]})
+        raw = event["body_json"].encode()
+        if len(raw) > MAX_EVENT_BODY:
+            raise ValueError("FORECAST_EVENT_SIZE_LIMIT")
+        objects = contained(root, "objects", exists=False)
+        objects.mkdir(exist_ok=True)
+        target = contained(objects, event["body_hash"] + ".json", exists=False)
+        if target.exists():
+            with target.open("rb") as handle:
+                existing_body = handle.read(MAX_EVENT_BODY + 1)
+            if existing_body != raw:
+                raise ValueError("FORECAST_OBJECT_HASH_MISMATCH")
+        else:
+            atomic_bytes(target, raw)
+        payload = json_bytes(
+            {
+                "events": [
+                    {k: e[k] for k in ("event_id", "body_hash", "previous_hash")}
+                    for e in [*events, event]
+                ]
+            }
+        )
         if len(payload) > MAX_BODY:
             raise ValueError("FORECAST_READ_SIZE_LIMIT")
         # This generic publisher's historical name does not introduce account state.

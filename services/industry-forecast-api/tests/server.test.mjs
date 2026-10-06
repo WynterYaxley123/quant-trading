@@ -25,7 +25,10 @@ async function temp(t) {
 }
 async function generation(root,events=[event(forecast())]) {
   const namespace=path.join(root,family.family_id),run=path.join(namespace,'runs','synthetic_run');await mkdir(run,{recursive:true});
-  const bodies={'binding.json':JSON.stringify(binding),'events.json':JSON.stringify({events})};
+  const objects=path.join(namespace,'objects');await mkdir(objects,{recursive:true});
+  for(const e of events)await writeFile(path.join(objects,`${e.body_hash}.json`),e.body_json);
+  const references=events.map(e=>Object.fromEntries(['event_id','body_hash','previous_hash'].map(k=>[k,e[k]])));
+  const bodies={'binding.json':JSON.stringify(binding),'events.json':JSON.stringify({events:references})};
   for(const [n,b] of Object.entries(bodies))await writeFile(path.join(run,n),b);
   const manifest=JSON.stringify({run_id:'synthetic_run',schema_version:'1.0.0',contract:'FORWARD_INDUSTRY_FORECAST_LEDGER',files:Object.fromEntries(Object.entries(bodies).map(([n,b])=>[n,sha(b)]))});await writeFile(path.join(run,'manifest.json'),manifest);
   await writeFile(path.join(namespace,'latest.json'),JSON.stringify({run_id:'synthetic_run',manifest_sha256:sha(manifest)}));return run;
@@ -36,6 +39,7 @@ test('canonical naming, actual frozen universes and null empty metrics',async()=
 });
 test('reads full immutable generation without state creation',async t=>{
   const root=await temp(t);await generation(root);const view=await observe(root,family,now);assert.equal(view.current.cross_section.length,107);assert.equal(view.current.provenance.realized_series_type,'RECONSTRUCTED_SWL2_EQUAL_WEIGHT');assert.equal(view.evaluations.length,0);assert.equal(view.metrics[0].mean_rank_ic,null);
+  await writeFile(path.join(root,family.family_id,'objects',`${event(forecast()).body_hash}.json`),'tampered');await assert.rejects(observe(root,family,now));
 });
 test('tampered generation hash and path escape fail closed',async t=>{
   const root=await temp(t),run=await generation(root);await writeFile(path.join(run,'events.json'),'{}');await assert.rejects(observe(root,family,now));
@@ -44,6 +48,13 @@ test('tampered generation hash and path escape fail closed',async t=>{
 test('symlink escape rejected',async t=>{
   if(process.platform==='win32'){t.skip('Unprivileged Windows symlink creation unavailable');return;}
   const root=await temp(t),outside=await temp(t),run=await generation(root);await rm(path.join(run,'events.json'));await writeFile(path.join(outside,'events.json'),'{}');await symlink(path.join(outside,'events.json'),path.join(run,'events.json'));await assert.rejects(observe(root,family,now));
+});
+
+test('family namespace symlink cannot escape the configured runtime root',async t=>{
+  if(process.platform==='win32'){t.skip('Unprivileged Windows symlink unavailable');return;}
+  const root=await temp(t),outside=await temp(t);await generation(outside);
+  await symlink(path.join(outside,family.family_id),path.join(root,family.family_id),'dir');
+  await assert.rejects(observe(root,family,now));
 });
 for(const mutation of ['source','model','future','partial','duplicate','official','account','chain','pretransition'])test(`rejects ${mutation} event`,()=>{
   const b=forecast(),bind={...binding};let events;

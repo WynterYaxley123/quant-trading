@@ -404,6 +404,37 @@ def test_python_generation_is_readable_by_node_api(tmp_path, synthetic):
         assert observed["top5_bottom5_spread"] == pytest.approx(reference["top5_bottom5_spread"])
 
 
+def test_namespace_symlink_rejected_before_read_or_write(tmp_path, synthetic):
+    root, bind, inputs, predicted = publish_synthetic(tmp_path / "outside", synthetic)
+    alias = tmp_path / "industry-forecast" / synthetic[0]["family_id"]
+    alias.parent.mkdir()
+    alias.symlink_to(root, target_is_directory=True)
+    before = ledger.read(root)
+    with pytest.raises(ValueError, match="NAMESPACE_PATH"):
+        ledger.read(alias)
+    with pytest.raises(ValueError, match="NAMESPACE_PATH"):
+        publish(alias, synthetic[0], bind, inputs, predicted, synthetic[2])
+    assert ledger.read(root) == before
+
+
+def test_full_body_storage_does_not_consume_cumulative_index_budget(
+    tmp_path, synthetic, monkeypatch
+):
+    monkeypatch.setattr(ledger, "MAX_BODY", 4096)
+    root, _, _, _ = publish_synthetic(tmp_path, synthetic)
+    _, days, _, index, _ = synthetic
+    inputs, now = inputs_at(synthetic, days[index + 120])
+    assert len(mature(root, inputs, now)) == 3
+    state = ledger.read(root)
+    run = root / "runs" / state["pointer"]["run_id"]
+    assert (run / "events.json").stat().st_size < 4096
+    assert sum(p.stat().st_size for p in (root / "objects").glob("*.json")) > 4096
+    object_path = next((root / "objects").glob("*.json"))
+    object_path.write_bytes(b"tampered immutable object")
+    with pytest.raises(ValueError, match="OBJECT_HASH"):
+        ledger.read(root)
+
+
 def test_metrics_math_nulls_ties_and_common_window(synthetic):
     family = synthetic[0]
     rows = synthetic_prediction(family)["cross_section"]

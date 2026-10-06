@@ -33,6 +33,10 @@ observation after close, no retrospective/future/partial publication, complete
 admitted rows, immutable original scores, same-day retry without refitting,
 source/model mismatch, stale mutex metadata, before-pointer journal recovery,
 concurrent runner exclusion before factual loading and tampered generation rejection.
+Namespace symlink escapes block before IO. Event bodies use content-addressed immutable
+objects with a compact hash-chain index; a full H120 outcome regression passes with
+a 4 KiB index budget even though bodies exceed that budget. Each body is read with
+a 512 KiB bound, independent of the 16 MiB / 10,000-event index bound.
 H10/H40/H120 use exact sessions and finalized complete paths; missing middle
 sessions, NaN closes, changed signal facts and segment gaps cannot become outcomes.
 Python-created full forecast/evaluation generations are read unchanged by Node.
@@ -52,11 +56,11 @@ GIT_DIR/GIT_WORK_TREE into test-created repositories.
 
 | Gate | Observed result |
 | --- | --- |
-| Full portable Python | 1297 passed, 2 skipped, 99 external-runtime deselected |
-| Focused forecast/runner | 23 passed, including Python → Node generation parity |
-| Forecast plus export-reader regression | 40 passed |
-| Industry API | 15 passed, no skips |
-| Combined legacy/industry API, scheduler, launcher/security tests | 161 passed, 6 Linux platform skips |
+| Full portable Python | 1299 passed, 2 skipped, 99 external-runtime deselected |
+| Focused forecast/runner | 25 passed, including Python → Node generation parity |
+| Forecast plus export-reader regression | 42 passed |
+| Industry API | 16 passed, no skips |
+| Combined legacy/industry API, scheduler, launcher/security tests | 162 passed, 6 Linux platform skips |
 | Historical Research API | 63 passed, 7 optional integration skips |
 | Frontend full suite | 138 passed, 3 optional real-artifact integration skips |
 | Frontend typecheck/lint/production build | PASS; existing-size warning for bundled index |

@@ -109,14 +109,22 @@ export async function observe(runtimeRoot,family,now=Date.now()) {
   let forecasts=[],evaluations=[];
   if(runtimeRoot) {
     const base=await externalRoot(runtimeRoot),root=path.join(base,family.family_id);
-    if(await containedExists(root,'latest.json')) {
+    if(await containedExists(base,`${family.family_id}/latest.json`)) {
       const pointer=json(await read(root,'latest.json',4096));
       check(/^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$/.test(pointer.run_id) && HASH.test(pointer.manifest_sha256));
       const run=`runs/${pointer.run_id}`;
       const raw=await read(root,`${run}/manifest.json`,4096);check(sha(raw)===pointer.manifest_sha256);
       const manifest=json(raw);check(manifest.run_id===pointer.run_id && manifest.schema_version==='1.0.0' && manifest.contract==='FORWARD_INDUSTRY_FORECAST_LEDGER' && Object.keys(manifest.files).sort().join('|')==='binding.json|events.json');
       const bodies={};for(const [name,hash] of Object.entries(manifest.files)){bodies[name]=await read(root,`${run}/${name}`,16*1024*1024);check(sha(bodies[name])===hash);}
-      const events=json(bodies['events.json']).events,binding=json(bodies['binding.json']);validateEvents(events,binding,family,now);
+      const references=json(bodies['events.json']).events,binding=json(bodies['binding.json']);
+      check(Array.isArray(references) && references.length<=10000);
+      const events=[];
+      for(const ref of references){
+        check(Object.keys(ref).sort().join('|')==='body_hash|event_id|previous_hash' && HASH.test(ref.body_hash));
+        const raw=await read(root,`objects/${ref.body_hash}.json`,512*1024);check(sha(raw)===ref.body_hash);
+        events.push({...ref,body:json(raw),body_json:raw.toString()});
+      }
+      validateEvents(events,binding,family,now);
       forecasts=events.filter(e=>e.body.kind==='FORECAST').map(e=>e.body);evaluations=events.filter(e=>e.body.kind==='EVALUATION').map(e=>e.body);
     }
   }
