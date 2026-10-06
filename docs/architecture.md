@@ -1,5 +1,10 @@
 # Architecture
 
+This repository is the `SOURCE_OF_TRUTH_REPOSITORY`; mutable state belongs to a
+`LOCAL_DEPLOYMENT_ROOT`. Operational checkouts are deployed copies of Git, not
+independent source authorities. See [deployment](deployment.md) for pins, templates
+and root selection, and [operations](operations.md) for runtime recovery.
+
 The project contains historical Shenwan sector-rotation research, frozen ETF-Quant V1,
 independent ETF-Quant V2 Research, shared data/runner/API infrastructure and the observation
 dashboard. V2 primitives reuse the frozen numerical solver and factor vocabulary; V1

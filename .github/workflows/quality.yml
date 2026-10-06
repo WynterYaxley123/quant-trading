@@ -87,7 +87,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.19.0'
-      - run: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/security-audit.test.mjs
+      - run: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/security-audit.test.mjs scripts/tests/operations.test.mjs
 
   windows-launcher:
     runs-on: windows-latest
@@ -96,4 +96,4 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24.19.0'
-      - run: node --test scripts/tests/launcher-unit.test.mjs scripts/tests/scheduler.test.mjs
+      - run: node --test scripts/tests/launcher-unit.test.mjs scripts/tests/scheduler.test.mjs scripts/tests/operations.test.mjs

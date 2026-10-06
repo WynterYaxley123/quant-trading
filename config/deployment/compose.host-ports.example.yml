@@ -1,0 +1,7 @@
+# Host publication only. Container ports and deployed image remain unchanged.
+# Choose available ports with scripts/operations/host-ports.mjs first.
+services:
+  quant-research:
+    ports: !override
+      - "127.0.0.1:${QUANT_SERVICE_HOST_PORT:?Choose an available host port}:9200"
+      - "127.0.0.1:${QUANT_AUX_HOST_PORT:?Choose a second available host port}:9201"
