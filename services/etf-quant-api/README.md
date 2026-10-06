@@ -1,3 +1,5 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](../../docs/industry-forecast.md).
+
 # ETF Quant read-only Data API V1
 
 ## Current operations console

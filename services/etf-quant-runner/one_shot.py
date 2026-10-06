@@ -111,6 +111,10 @@ def recover_runtime(config):
 
 
 def run_once(config, *, now=None):
+    from strategies.swl2_ridge.retirement import guard_legacy_write
+
+    guard_legacy_write(Path(config["runtime_root"]))
+
     # A separate metadata-only control root serializes refresh and initialization.
     control = transport.external_directory(config["control_root"])
     with transport.transport_lock(control):
@@ -577,6 +581,9 @@ def run_versions(configs: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def main():
+    print(json.dumps({"status": "SWL2_ETF_PRODUCTIZATION_RETIRED", "role": "LEGACY_READ_ONLY"}))
+    return 2
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True, action="append")
     args = parser.parse_args()

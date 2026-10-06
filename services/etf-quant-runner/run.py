@@ -500,6 +500,9 @@ def _cycle(config, runtime, commit):
 
 
 def main():
+    print(json.dumps({"status": "SWL2_ETF_PRODUCTIZATION_RETIRED", "role": "LEGACY_READ_ONLY"}))
+    return 2
+
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("cycle", "record-smoke-blocker"))
     parser.add_argument("--config", type=Path)

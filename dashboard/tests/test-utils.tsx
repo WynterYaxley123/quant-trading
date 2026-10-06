@@ -15,7 +15,7 @@ export async function renderApp(
   port: ResearchDataPort = createMockApiAdapter(),
 ): Promise<AppRouter> {
   setResearchApiForTesting(port);
-  const router = createAppRouter(createMemoryHistory({ initialEntries: [initialPath] }));
+  const router = createAppRouter(createMemoryHistory({ initialEntries: [initialPath === '/' || initialPath.startsWith('/?') ? '/research' + initialPath.slice(1) : initialPath] }));
   // Settle React effects with the controlled asynchronous port before callers
   // make synchronous assertions. router.load() alone does not flush effects.
   await act(async () => {

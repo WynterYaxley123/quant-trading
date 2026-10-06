@@ -1369,6 +1369,78 @@
     {
       "path": "docs/engineering/deployment-source-boundary.md",
       "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/archive/productization/docs--architecture.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "docs/architecture.md",
+      "sha256": "576a140f96297cae4238c1911fcdd2751d8584b09f2d41158bf0217e10a3664e",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/docs--deployment.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "docs/deployment.md",
+      "sha256": "4620d89205a2ce153a26c98c856a6b3d8fc9652bdc0cb44e2d835311a08bd8d3",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/docs--index.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "docs/index.md",
+      "sha256": "75528cf414bea2cdb7d522bf6738f2e8cc4a5d145be2ca43127144ea2b7c683d",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/docs--operations.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "docs/operations.md",
+      "sha256": "75ca513b91a03d0207766f6db830a143df83478c6d93a9d5b9c81829775a3fa9",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/docs--operations.zh-CN.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "docs/operations.zh-CN.md",
+      "sha256": "d4a5054e9338cfb254e303018159c9186fbfa305048d85fe0939b1681d2f7bd8",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/docs--research-status.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "docs/research-status.md",
+      "sha256": "7ee4702ad77378554e37c2c512243134878bbd8c1d63587bad1730ad35f52126",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/README.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "README.md",
+      "sha256": "defbd132bab335f9400bd9da7c4104f666d7bb0e79db2275a818e6ebcc88a91e",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/archive/productization/README.zh-CN.md",
+      "class": "HISTORICAL_PRODUCTIZATION_RESULT",
+      "original_path": "README.zh-CN.md",
+      "sha256": "6f482ad62bba2d9b2e49536b3e6a68377953e7f902adadbea1271560d71284f8",
+      "original_source_commit": "b28c24518de36fb0045a5f4313916e65d4ac3b54"
+    },
+    {
+      "path": "docs/industry-forecast.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/engineering/swl2-industry-forecast-transition.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "services/industry-forecast-api/README.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "services/industry-forecast-runner/README.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }

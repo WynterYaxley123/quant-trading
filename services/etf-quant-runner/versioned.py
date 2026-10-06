@@ -38,6 +38,10 @@ def next_signal_session(
 
 
 def run_once(config: dict[str, Any], code_commit: str) -> dict[str, Any]:
+    from strategies.swl2_ridge.retirement import guard_legacy_write
+
+    guard_legacy_write(Path(config["runtime_root"]))
+
     release, candidate, registry = load_release(REPO)
     now = datetime.now(timezone.utc)
     snapshot = Path(config["snapshot"])
@@ -167,6 +171,9 @@ def run_once(config: dict[str, Any], code_commit: str) -> dict[str, Any]:
 
 
 def main():
+    print(json.dumps({"status": "SWL2_ETF_PRODUCTIZATION_RETIRED", "role": "LEGACY_READ_ONLY"}))
+    return 2
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--commit", required=True)

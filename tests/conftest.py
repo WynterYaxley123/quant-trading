@@ -41,3 +41,14 @@ def pytest_ignore_collect(collection_path: Path, config: pytest.Config) -> bool 
         if collection_path in {_ROOT / "tests" / "framework", _ROOT / "tests" / "integration"}:
             return True
     return None
+
+
+@pytest.fixture(autouse=True)
+def isolated_legacy_replay(
+    request: pytest.FixtureRequest,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path_factory: pytest.TempPathFactory,
+) -> None:
+    """Historical writer regressions use only pytest's isolated synthetic namespace."""
+    if "external_runtime" not in request.keywords and "integration" not in request.keywords:
+        monkeypatch.setenv("SWL2_LEGACY_SYNTHETIC_REPLAY_ROOT", str(tmp_path_factory.getbasetemp()))

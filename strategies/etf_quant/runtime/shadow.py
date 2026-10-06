@@ -223,6 +223,9 @@ def daily_cycle(
     processing time. market_execution_at is disclosed separately. No epoch NAV
     precedes the actual start. A missed T+1 is blocked, never replayed later.
     """
+    from strategies.swl2_ridge.retirement import guard_legacy_write
+
+    guard_legacy_write(runtime_root)
     config = StrategyConfig() if config is None else config
     if execution_policy not in ("STRICT_TOP5", POLICY_B40_WITH_CASH):
         raise GateError("UNKNOWN_EXECUTION_POLICY_BLOCKER")

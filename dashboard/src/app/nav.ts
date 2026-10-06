@@ -20,7 +20,7 @@ export interface NavGroup {
 export const NAV_GROUPS: NavGroup[] = [
   {
     label: '概览',
-    items: [{ to: '/', label: '概览' }],
+    items: [{ to: '/', label: 'Industry Forecast' }, { to: '/research', label: '概览' }],
   },
   {
     label: '研究',
@@ -41,7 +41,7 @@ export const NAV_GROUPS: NavGroup[] = [
 ];
 
 export const ETF_QUANT_NAV_GROUP: NavGroup = {
-  label: 'ETF Quant',
+  label: '历史 ETF 产品化',
   items: [
     {to:'/etf-quant/overview',label:'总览',capability:'etfQuant'},
     {to:'/etf-quant/readiness',label:'Shadow 准备',capability:'etfQuant'},

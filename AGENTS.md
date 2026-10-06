@@ -1,7 +1,9 @@
 # Repository engineering rules
 
-Read this file before repository work. ETF-Quant V1 has completed engineering preparation;
-its first formal Shadow epoch has not been created.
+Read this file before repository work. SWL2-Ridge-V1 and SWL2-Ridge-V2 currently
+perform INDUSTRY_FORECAST_RESEARCH; ETF productization is RETIRED. Historical
+ETF-Quant V1 completed engineering preparation without creating its first formal
+Shadow epoch. See docs/industry-forecast.md for current contracts.
 
 - Preserve frozen factors, models, ranking, fusion, sizing, PIT and T/T+1 contracts.
   Change a strategy behavior only when existing evidence proves a contract bug.

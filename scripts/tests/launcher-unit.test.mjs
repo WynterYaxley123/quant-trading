@@ -25,6 +25,18 @@ test('PowerShell launcher parses without starting services',{skip:process.platfo
   assert.equal(result.status,0,result.stderr);
 });
 
+test('industry launcher has an independent read-only service boundary',()=>{
+  const text=readFileSync(path.join(repo,'scripts/Start-IndustryForecastConsole.ps1'),'utf8');
+  assert.match(text,/services\/industry-forecast-api\/server\.mjs/);
+  assert.match(text,/VITE_INDUSTRY_FORECAST_API_BASE_URL/);
+  assert.doesNotMatch(text,/one_shot\.py|run_forecast\.py|RegisterTask|ETF_QUANT_CONSOLE_CONFIG/);
+});
+
+test('industry PowerShell launcher parses without starting services',{skip:process.platform!=='win32'},()=>{
+  const result=spawnSync('pwsh',['-NoProfile','-NonInteractive','-Command',"$tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile($env:HARDENING_LAUNCHER,[ref]$tokens,[ref]$errors) | Out-Null; if ($errors.Count) { exit 1 }"],{env:{...process.env,HARDENING_LAUNCHER:path.join(repo,'scripts/Start-IndustryForecastConsole.ps1')},encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr);
+});
+
 for(const [name,v2,reason] of [
   ['partial V2 roots',{v2_runtime_root:'shadow-v2'},'Both V2 runtime and control roots are required'],
   ['overlapping V1/V2 roots',{v2_runtime_root:'shadow',v2_control_root:'control-v2'},'V1 and V2 observation roots must be disjoint'],

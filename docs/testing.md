@@ -1,3 +1,5 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](industry-forecast.md).
+
 # Testing and quality
 
 `python -m pytest -q -m "not external_runtime"` runs portable numerical contracts,
@@ -56,3 +58,13 @@ dirty-checkout preservation, fast-forward and private-payload exclusion. Hosted
 Windows CI evaluates the actual task-definition builder, including quoting,
 least privilege, login trigger, retry window and single-instance policy.
 API bounded-read tests include files growing after descriptor stat.
+
+## SWL2 transition regression
+
+Synthetic checks cover pre-transition numerical parity, full 107/124 outputs,
+zero ETF/account calls, dynamic first-session publication, no historical backfill,
+exact H10/H40/H120 finalization, gap/revision blocking, immutable retries, journal
+recovery, cross-language body hashes, malformed/path-escape reads, null metrics,
+honest UI maturity and shared-universe descriptive comparison. The new source
+certificate preserves historical report/config/archive hashes. No sealed
+performance is opened by this test workflow.

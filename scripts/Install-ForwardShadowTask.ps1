@@ -4,6 +4,7 @@ param(
     [ValidatePattern('^[A-Za-z0-9 _-]{1,80}$')][string]$TaskName = 'ETF-Quant Forward Shadow'
 )
 $ErrorActionPreference = 'Stop'
+throw 'SWL2_ETF_PRODUCTIZATION_RETIRED: historical task installation is disabled.'
 $schedulerRepo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $deploymentPath = (Resolve-Path -LiteralPath $Deployment).Path
 $settings = Get-Content -LiteralPath $deploymentPath -Raw | ConvertFrom-Json

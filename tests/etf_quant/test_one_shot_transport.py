@@ -15,14 +15,24 @@ REPO = Path(__file__).resolve().parents[2]
 
 def test_version_dispatch_rejects_unknown_version_without_business_state(tmp_path, runner):
     with pytest.raises(runner.transport.GateError, match="UNKNOWN_STRATEGY_VERSION"):
-        runner.run_once({"strategy_version": "UNKNOWN", "control_root": str(tmp_path / "CONTROL")})
+        runner.run_once(
+            {
+                "strategy_version": "UNKNOWN",
+                "control_root": str(tmp_path / "CONTROL"),
+                "runtime_root": str(tmp_path / "FORMAL"),
+            }
+        )
     assert not (tmp_path / "FORMAL").exists()
 
 
 def test_v2_transport_denies_clock_override(tmp_path, runner):
     with pytest.raises(runner.transport.GateError, match="CLOCK_OVERRIDE"):
         runner.run_once(
-            {"strategy_version": "ETF_QUANT_V2", "control_root": str(tmp_path / "CONTROL")},
+            {
+                "strategy_version": "ETF_QUANT_V2",
+                "control_root": str(tmp_path / "CONTROL"),
+                "runtime_root": str(tmp_path / "FORMAL"),
+            },
             now=datetime.fromisoformat("2026-10-08T12:00:00+00:00"),
         )
 
@@ -35,7 +45,11 @@ def test_v2_cannot_use_legacy_integration_authority_before_merge(tmp_path, runne
     )
     with pytest.raises(runner.transport.GateError, match="V2_MERGED_MAIN_REQUIRED"):
         runner.run_once(
-            {"strategy_version": "ETF_QUANT_V2", "control_root": str(tmp_path / "CONTROL")}
+            {
+                "strategy_version": "ETF_QUANT_V2",
+                "control_root": str(tmp_path / "CONTROL"),
+                "runtime_root": str(tmp_path / "FORMAL"),
+            }
         )
 
 

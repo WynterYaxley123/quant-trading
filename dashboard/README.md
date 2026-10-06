@@ -1,3 +1,13 @@
+> Current role: INDUSTRY_FORECAST_RESEARCH (SWL2-Ridge-V1 / SWL2-Ridge-V2). ETF productization is RETIRED. Historical ETF formulas, commands and observations below are audit context; writer entry points fail closed. See [current industry contracts](../docs/industry-forecast.md).
+
+Default `/` and `/industry-forecast` use the canonical Industry Forecast API on
+loopback 3313; set `VITE_INDUSTRY_FORECAST_API_BASE_URL` explicitly when needed.
+The [industry console launcher](../scripts/Start-IndustryForecastConsole.ps1)
+starts only this API and UI. Historical Research moved to `/research`, and legacy
+ETF routes carry retirement banners. The default page reads no ETF account API
+and injects no mock forecasts. Missing forward history and immature horizons stay
+empty/null/PENDING. Full rankings use the actual frozen 107/124 universes.
+
 # Quant Trading / ETF-Quant Dashboard
 
 ## ETF-Quant V1 current operations console

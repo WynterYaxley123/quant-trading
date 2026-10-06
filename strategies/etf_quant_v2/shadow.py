@@ -175,6 +175,9 @@ def cycle(
     factual_prefix_sha256: str,
 ) -> dict[str, Any]:
     """The target intent is persisted at T; T+1 quantities only execute that intent."""
+    from strategies.swl2_ridge.retirement import guard_legacy_write
+
+    guard_legacy_write(root)
     if now.tzinfo is None or snapshot_observed_at.tzinfo is None or snapshot_observed_at > now:
         raise ValueError("FINALIZED_SNAPSHOT_OBSERVATION_REQUIRED")
     day = now.astimezone(SHANGHAI).date()

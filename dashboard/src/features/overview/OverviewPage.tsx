@@ -21,7 +21,7 @@ import { classificationLabel, horizonLabel, phaseLabel, yesNo } from '@/lib/labe
 export function OverviewPage() {
   const { status, runs, loading: shellLoading } = useAppData();
   const search = useSearch({ strict: false }) as {run?:string};
-  const navigate = useNavigate({from:'/'});
+  const navigate = useNavigate({from:'/research'});
   const api = getResearchApi();
   const currentRun = search.run ? runs.find((run) => run.runId === search.run) ?? null : runs[0] ?? null;
 

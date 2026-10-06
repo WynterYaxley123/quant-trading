@@ -27,8 +27,8 @@ describe('ETF Quant independent product',()=>{
     const nav=screen.getByRole('navigation',{name:'研究页面导航'});
     expect(within(nav).getByRole('link',{name:'总览'})).toBeInTheDocument();
     expect(within(nav).getByRole('link',{name:'Shadow 准备'})).toBeInTheDocument();
-    const groups=within(nav).getAllByText(/^(研究|ETF Quant|诊断)$/).filter(g=>g.tagName==='P');
-    expect(groups.map(g=>g.textContent)).toEqual(['研究','ETF Quant','诊断']);
+    const groups=within(nav).getAllByText(/^(研究|历史 ETF 产品化|诊断)$/).filter(g=>g.tagName==='P');
+    expect(groups.map(g=>g.textContent)).toEqual(['研究','历史 ETF 产品化','诊断']);
   });
   it('Research API disconnected does not block ETF route',async()=>{
     const port=createMockApiAdapter();

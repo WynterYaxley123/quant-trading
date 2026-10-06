@@ -27,11 +27,11 @@ export interface AppData {
 
 const AppDataContext = createContext<AppData | null>(null);
 
-export function AppDataProvider({ children, enabled=true }: { children: ReactNode; enabled?:boolean }) {
+export function AppDataProvider({ children, enabled=true, observeHealth=true }: { children: ReactNode; enabled?:boolean; observeHealth?:boolean }) {
   const env = useMemo(() => getAppEnv(), []);
   const api = useMemo(() => getResearchApi(), []);
   // Process health never opens an artifact, including on ETF observation pages.
-  const health = useResource((signal) => api.getHealth(signal), [api]);
+  const health = useResource((signal) => observeHealth ? api.getHealth(signal) : Promise.resolve(null), [api,observeHealth]);
 
   const shell = useResource(async (signal) => {
     // ETF rendering never opens a Research artifact or depends on its availability.

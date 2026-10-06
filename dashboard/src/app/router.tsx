@@ -8,8 +8,11 @@ import { diagnosticsRoute } from '@/routes/diagnostics';
 import { integrityRoute } from '@/routes/integrity';
 import { notFoundRoute } from '@/routes/notFound';
 import { etfQuantRoutes } from '@/routes/etfQuant';
+import { industryForecastRoute, industryForecastAlias } from '@/routes/industryForecast';
 
 const routeTree = rootRoute.addChildren([
+  industryForecastRoute,
+  industryForecastAlias,
   overviewRoute,
   candidatesRoute,
   developmentRoute,

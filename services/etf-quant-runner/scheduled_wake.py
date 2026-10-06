@@ -182,6 +182,9 @@ def wake(config: dict[str, Any], *, dry_run: bool = False) -> dict[str, Any]:
 
 
 def main() -> int:
+    print(json.dumps({"status": "SWL2_ETF_PRODUCTIZATION_RETIRED", "role": "LEGACY_READ_ONLY"}))
+    return 2
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--deployment", type=Path, required=True)
     parser.add_argument("--dry-run", action="store_true")

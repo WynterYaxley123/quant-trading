@@ -170,14 +170,27 @@ def factors_from_closes(closes: Array, dates: tuple[date, ...]) -> Array:
     )
 
 
-def append_snapshot(warmup: Path, snapshot: Path, *, expected_panel_sha256: str) -> ForwardFacts:
+def append_snapshot(
+    warmup: Path, snapshot: Path, *, expected_panel_sha256: str, industry_only: bool = False
+) -> ForwardFacts:
     """No historical recomputation or overwriting of the frozen factual prefix."""
     if checksum(contained(warmup, "panel.npz")) != expected_panel_sha256:
         raise ValueError("FROZEN_WARMUP_PANEL_REQUIRED")
     metadata = json.loads(contained(warmup, "panel.json").read_bytes())
     if metadata["panel_sha256"] != expected_panel_sha256:
         raise ValueError("WARMUP_METADATA_HASH_ERROR")
-    manifest = verified_snapshot(snapshot)
+    if industry_only:
+        from strategies.etf_quant.runtime.exports import ExportProvider
+
+        provider = ExportProvider(
+            snapshot,
+            expected_identity={"source_commit": PIN, "source_identity": "CNEQUITY_LOCAL_LAKE_V1"},
+            now=datetime.now().astimezone(),
+            industry_only=True,
+        )
+        manifest = provider.manifest
+    else:
+        manifest = verified_snapshot(snapshot)
     cutoff = date.fromisoformat(manifest["data_cutoff"])
     observed_at = datetime.fromisoformat(manifest["created_at"])
     if observed_at.tzinfo is None:
@@ -282,7 +295,11 @@ def append_snapshot(warmup: Path, snapshot: Path, *, expected_panel_sha256: str)
         features = calculated
     else:
         features = original_features
-    benchmark = pl.read_csv(contained(snapshot, "benchmark_csi300.csv"), try_parse_dates=True)
+    benchmark = (
+        pl.DataFrame()
+        if industry_only
+        else pl.read_csv(contained(snapshot, "benchmark_csi300.csv"), try_parse_dates=True)
+    )
     points = {
         str(r["trade_date"]): float(r["close"])
         for r in benchmark.to_dicts()

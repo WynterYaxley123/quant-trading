@@ -1,0 +1,187 @@
+/** Canonical SWL2 observer. Built-in Node only, closed routes, no writes or fitting. */
+import http from 'node:http';
+import {createHash} from 'node:crypto';
+import {realpath, access} from 'node:fs/promises';
+import {isDeepStrictEqual} from 'node:util';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {boundedLeaf, containedExists} from '../etf-quant-api/bounded.mjs';
+import {allowedOrigins} from '../etf-quant-api/origins.mjs';
+import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
+
+const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const ACTIVE='reports/engineering/swl2-industry-forecast-integrity.json';
+const PARENT='reports/engineering/shadow-task-installation-integrity.json';
+const REGISTRY='config/research/swl2-ridge-families.json';
+const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
+const sha=raw=>createHash('sha256').update(raw).digest('hex');
+const check=value=>{if(!value)throw new Error('FORECAST_INTEGRITY_BLOCKER');};
+const read=async(root,name,limit=1024*1024)=>(await boundedLeaf(root,name,limit)).raw;
+const json=raw=>JSON.parse(raw.toString());
+const mean=xs=>xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:null;
+const median=xs=>{if(!xs.length)return null;xs=[...xs].sort((a,b)=>a-b);const i=Math.floor(xs.length/2);return xs.length%2?xs[i]:(xs[i-1]+xs[i])/2;};
+
+export async function families(repoRoot=ROOT) {
+  const [raw,parentRaw,registryRaw]=await Promise.all([ACTIVE,PARENT,REGISTRY].map(n=>read(repoRoot,n)));
+  const parent=json(parentRaw).implementation_integrity;
+  check(parent.certificate_sha256===certificateHash(parent));
+  const manifest=verifyCurrentCertificate(json(raw).implementation_integrity,parent,parentRaw,PARENT);
+  // Verify source bytes, including registry and adapters; never parse performance records.
+  const entries=Object.entries(manifest.files);
+  for(let i=0;i<entries.length;i+=8)await Promise.all(entries.slice(i,i+8).map(async([name,hash])=>check(sha(await read(repoRoot,name,2*1024*1024))===hash)));
+  check(manifest.files[REGISTRY]===sha(registryRaw));
+  const result=json(registryRaw).families;
+  check(result.length===2);
+  result.forEach((f,i)=>check(f.family_id===`swl2_ridge_v${i+1}` && f.display_name===`SWL2-Ridge-V${i+1}` && f.current_role==='INDUSTRY_FORECAST_RESEARCH' && f.etf_productization_status==='RETIRED'));
+  return result;
+}
+
+async function externalRoot(root) {
+  check(path.isAbsolute(root));
+  const real=await realpath(root);
+  for(let p=real;;p=path.dirname(p)) {
+    try {await access(path.join(p,'.git'));throw new Error('FORECAST_INTEGRITY_BLOCKER');}
+    catch(e){if(e.code!=='ENOENT')throw e;}
+    if(path.dirname(p)===p)break;
+  }
+  check(path.basename(real)==='industry-forecast');
+  return real;
+}
+
+const DATE=/^\d{4}-\d{2}-\d{2}$/;
+const local=stamp=>new Date(Date.parse(stamp)+8*3600000).toISOString();
+function safe(value,depth=0) {
+  check(depth<40);
+  if(typeof value==='number')check(Number.isFinite(value));
+  if(typeof value==='string')check(value.length<8*1024*1024 && !/^(?:[A-Za-z]:[\\/]|file:|\/|\\\\)/.test(value));
+  if(value && typeof value==='object')for(const [key,child] of Object.entries(value)){
+    check(!/^(cash|account_value|nav|fills?|orders?|shares|commission|slippage|token|password|secret|api_key|credentials|private_key)$/i.test(key));safe(child,depth+1);
+  }
+}
+export function validateEvents(events,binding,family,now=Date.now()) {
+  check(Array.isArray(events) && events.length<=10000 && binding.family_id===family.family_id && binding.model_contract_hash===family.model_contract_hash && COMMIT.test(binding.source_commit) && COMMIT.test(binding.merge_commit));
+  check(Number.isFinite(Date.parse(binding.freeze_at)) && Date.parse(binding.freeze_at)<=now && Date.parse(binding.merge_at)<=Date.parse(binding.freeze_at));
+  let previous=null;const ids=new Set(),published=new Map(),evaluated=new Set();
+  for(const e of events) {
+    check(Object.keys(e).sort().join('|')==='body|body_hash|body_json|event_id|previous_hash');
+    check(e.previous_hash===previous && HASH.test(e.body_hash) && sha(e.body_json)===e.body_hash && isDeepStrictEqual(json(e.body_json),e.body) && !ids.has(e.event_id));
+    const b=e.body;safe(b);
+    check(b.schema_version===1 && b.family_id===family.family_id && b.model_contract_hash===binding.model_contract_hash && b.source_commit===binding.source_commit && DATE.test(b.signal_date));
+    const boundary=new Date(Math.max(Date.parse(binding.merge_at),Date.parse(binding.freeze_at))+8*3600*1000).toISOString().slice(0,10);
+    check(b.signal_date>boundary && b.taxonomy_identity===family.taxonomy_identity && b.target_contract==='SAME_DATE_CROSS_SECTION_EXCESS_INDUSTRY_RETURN');
+    if(b.kind==='FORECAST') {
+      check(!published.has(b.signal_date) && b.display_name===family.display_name && b.legacy_identity===family.legacy_identity && b.data_cutoff===b.signal_date && Date.parse(b.published_at)<=now);
+      check(new Date(Date.parse(b.published_at)+8*3600*1000).toISOString().slice(0,10)===b.signal_date);
+      check(Array.isArray(b.cross_section) && b.cross_section.length===family.industry_codes.length && b.industry_count===b.cross_section.length && isDeepStrictEqual(b.horizons,[10,40,120]));
+      check(new Set(b.cross_section.map(r=>r.industry_code)).size===b.industry_count && b.cross_section.every((r,i)=>family.industry_codes.includes(r.industry_code) && r.fused_rank===i+1 && typeof r.industry_name==='string' && Number.isFinite(r.fused_score) && ['10','40','120'].every(h=>Number.isFinite(r.horizons[h].raw_prediction) && Number.isFinite(r.horizons[h].cross_section_zscore) && Number.isInteger(r.horizons[h].rank))));
+      for(const h of ['10','40','120'])check(new Set(b.cross_section.map(r=>r.horizons[h].rank)).size===b.industry_count && b.cross_section.every(r=>r.horizons[h].rank>=1 && r.horizons[h].rank<=b.industry_count));
+      check(b.provenance.realized_series_type==='RECONSTRUCTED_SWL2_EQUAL_WEIGHT' && Date.parse(b.provenance.available_at)<=Date.parse(b.published_at));
+      check(b.provenance.data_cutoff===b.signal_date && local(b.published_at).slice(0,10)===b.signal_date && local(b.published_at).slice(11,16)>='15:05' && local(b.provenance.available_at).slice(0,10)===b.signal_date && local(b.provenance.available_at).slice(11,16)>='15:05');
+      published.set(b.signal_date,{body:b,hash:e.body_hash});
+    } else {
+      const forecast=published.get(b.signal_date),id=`${b.signal_date}_${b.horizon}`;
+      check(b.kind==='EVALUATION' && forecast && b.forecast_hash===forecast.hash && [10,40,120].includes(b.horizon) && !evaluated.has(id));
+      check(Array.isArray(b.maturity_sessions) && b.maturity_sessions.length===b.horizon+1 && b.maturity_sessions[0]===b.signal_date && b.maturity_sessions.at(-1)===b.maturity_date && b.maturity_sessions.every((d,i)=>DATE.test(d) && (!i || d>b.maturity_sessions[i-1])));
+      check(b.maturity_date>b.signal_date && Date.parse(b.evaluated_at)<=now && b.provenance.data_cutoff>=b.maturity_date && Date.parse(b.provenance.available_at)<=Date.parse(b.evaluated_at));
+      check(DATE.test(b.provenance.data_cutoff) && b.provenance.data_cutoff<=local(b.evaluated_at).slice(0,10) && b.maturity_date<=local(b.evaluated_at).slice(0,10));
+      check(b.realized_series_type==='RECONSTRUCTED_SWL2_EQUAL_WEIGHT' && b.metrics.horizon===b.horizon && b.metrics.realized.length===family.industry_codes.length);
+      check(b.metrics.diagnostic_label==='NON_TRADABLE_RESEARCH_DIAGNOSTIC' && HASH.test(b.target_cross_section_hash));
+      evaluated.add(id);
+    }
+    ids.add(e.event_id);
+    previous=sha(canonicalJSON({event_id:e.event_id,body_hash:e.body_hash,previous_hash:e.previous_hash}));
+  }
+}
+
+export function aggregate(evaluations,horizon) {
+  const rows=evaluations.filter(e=>e.horizon===horizon).sort((a,b)=>a.signal_date.localeCompare(b.signal_date));
+  const ic=rows.map(r=>r.metrics.rank_ic).filter(v=>v!==null);
+  const rolling=[];
+  for(let end=20;end<=rows.length;end++) {
+    const block=rows.slice(end-20,end),values=block.map(r=>r.metrics.rank_ic);
+    rolling.push({from:block[0].signal_date,through:block.at(-1).signal_date,rank_ic:values.includes(null)?null:mean(values),spread:mean(block.map(r=>r.metrics.top5_bottom5_spread))});
+  }
+  return {horizon,matured_forecast_dates:rows.length,valid_rank_ic_dates:ic.length,mean_rank_ic:mean(ic),median_rank_ic:median(ic),positive_rank_ic_fraction:mean(ic.map(v=>Number(v>0))),
+    ...Object.fromEntries(['top5_mean_return','bottom5_mean_return','top5_bottom5_spread','universe_mean_return','top5_overlap_count','top5_overlap_rate','mean_absolute_rank_error','median_absolute_rank_error'].map(k=>[k,mean(rows.map(r=>r.metrics[k]))])),
+    confidence_status:rows.length<20?'INSUFFICIENT_FORWARD_EVIDENCE':'DESCRIPTIVE_ONLY_OVERLAPPING_OBSERVATIONS',rolling_window_dates:20,rolling,worst_rolling_interval:rolling.length?[...rolling].sort((a,b)=>a.spread-b.spread)[0]:null};
+}
+export async function observe(runtimeRoot,family,now=Date.now()) {
+  let forecasts=[],evaluations=[];
+  if(runtimeRoot) {
+    const base=await externalRoot(runtimeRoot),root=path.join(base,family.family_id);
+    if(await containedExists(base,`${family.family_id}/latest.json`)) {
+      const pointer=json(await read(root,'latest.json',4096));
+      check(/^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$/.test(pointer.run_id) && HASH.test(pointer.manifest_sha256));
+      const run=`runs/${pointer.run_id}`;
+      const raw=await read(root,`${run}/manifest.json`,4096);check(sha(raw)===pointer.manifest_sha256);
+      const manifest=json(raw);check(manifest.run_id===pointer.run_id && manifest.schema_version==='1.0.0' && manifest.contract==='FORWARD_INDUSTRY_FORECAST_LEDGER' && Object.keys(manifest.files).sort().join('|')==='binding.json|events.json');
+      const bodies={};for(const [name,hash] of Object.entries(manifest.files)){bodies[name]=await read(root,`${run}/${name}`,16*1024*1024);check(sha(bodies[name])===hash);}
+      const references=json(bodies['events.json']).events,binding=json(bodies['binding.json']);
+      check(Array.isArray(references) && references.length<=10000);
+      const events=[];
+      for(const ref of references){
+        check(Object.keys(ref).sort().join('|')==='body_hash|event_id|previous_hash' && HASH.test(ref.body_hash));
+        const raw=await read(root,`objects/${ref.body_hash}.json`,512*1024);check(sha(raw)===ref.body_hash);
+        events.push({...ref,body:json(raw),body_json:raw.toString()});
+      }
+      validateEvents(events,binding,family,now);
+      forecasts=events.filter(e=>e.body.kind==='FORECAST').map(e=>e.body);evaluations=events.filter(e=>e.body.kind==='EVALUATION').map(e=>e.body);
+    }
+  }
+  return {family,status:forecasts.length?'FORWARD_FORECAST':'NO_FORWARD_FORECASTS',current:forecasts.at(-1)??null,history:forecasts,evaluations,metrics:[10,40,120].map(h=>aggregate(evaluations,h))};
+}
+
+function sharedMetric(rows,codes,raw) {
+  const scores=new Map(rows.map(r=>[r.industry_code,r.forecast_score]));
+  const rank=values=>values.map(v=>1+values.filter(x=>x<v).length+(values.filter(x=>x===v).length-1)/2);
+  const x=rank(codes.map(c=>scores.get(c))),y=rank(codes.map(c=>raw.get(c)));
+  const xm=mean(x),ym=mean(y),xx=x.reduce((n,v)=>n+(v-xm)**2,0),yy=y.reduce((n,v)=>n+(v-ym)**2,0);
+  const ic=xx>0&&yy>0?x.reduce((n,v,i)=>n+(v-xm)*(y[i]-ym),0)/Math.sqrt(xx*yy):null;
+  const ordered=[...codes].sort((c,d)=>scores.get(d)-scores.get(c)||c.localeCompare(d));
+  return {rank_ic:ic,top5_bottom5_spread:mean(ordered.slice(0,5).map(c=>raw.get(c)))-mean(ordered.slice(-5).map(c=>raw.get(c)))};
+}
+export function compare(a,b) {
+  return [10,40,120].map(h=>{
+    const left=new Map(a.evaluations.filter(e=>e.horizon===h).map(e=>[e.signal_date,e]));
+    const right=new Map(b.evaluations.filter(e=>e.horizon===h).map(e=>[e.signal_date,e]));
+    const dates=[...left.keys()].filter(d=>right.has(d)).sort(),x=[],y=[],counts={};
+    for(const d of dates) {
+      const aa=left.get(d),bb=right.get(d);
+      check(['taxonomy_identity','target_contract','realized_series_type'].every(k=>aa[k]===bb[k]));
+      const ar=new Map(aa.metrics.realized.map(r=>[r.industry_code,r.realized_return]));
+      const br=new Map(bb.metrics.realized.map(r=>[r.industry_code,r.realized_return]));
+      const codes=[...ar.keys()].filter(c=>br.has(c)).sort();
+      check(codes.length>=10 && codes.every(c=>Math.abs(ar.get(c)-br.get(c))<=1e-12+1e-10*Math.abs(br.get(c))));
+      counts[d]=codes.length;x.push(sharedMetric(aa.metrics.realized,codes,ar));y.push(sharedMetric(bb.metrics.realized,codes,ar));
+    }
+    const summary=rows=>{const ic=rows.map(r=>r.rank_ic).filter(v=>v!==null);return {mean_rank_ic:mean(ic),median_rank_ic:median(ic),positive_rank_ic_fraction:mean(ic.map(v=>Number(v>0))),top5_bottom5_spread:mean(rows.map(r=>r.top5_bottom5_spread))};};
+    const xx=summary(x),yy=summary(y),keys=Object.keys(xx);
+    return {scope:'COMMON_FORWARD_WINDOW',metric_scope:'COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC',common_industry_counts:counts,horizon:h,matured_common_dates:dates,matured_common_date_count:dates.length,
+      swl2_ridge_v1:xx,swl2_ridge_v2:yy,difference_v2_minus_v1:Object.fromEntries(keys.map(k=>[k,xx[k]===null||yy[k]===null?null:yy[k]-xx[k]])),confidence_status:dates.length<20?'INSUFFICIENT_FORWARD_EVIDENCE':'DESCRIPTIVE_ONLY_OVERLAPPING_OBSERVATIONS'};
+  });
+}
+
+export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins(),now=()=>Date.now()}={}) {
+  return http.createServer(async(req,res)=>{
+    res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
+    const reply=(status,data=null,code=null)=>{res.statusCode=status;res.end(req.method==='HEAD'?undefined:JSON.stringify({schemaVersion:'1.0.0',data,error:code?{code,message:code}:null}));};
+    if(!/^(127\.0\.0\.1|localhost)(:[0-9]+)?$/.test(req.headers.host??''))return reply(403,null,'LOCAL_HOST_REQUIRED');
+    if(req.headers.origin && !origins.has(req.headers.origin))return reply(403,null,'ORIGIN_NOT_ALLOWED');
+    if(req.headers.origin){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
+    if(!['GET','HEAD','OPTIONS'].includes(req.method))return reply(405,null,'READ_ONLY_API');
+    const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|swl2-ridge-v[12]\/(current|history|evaluation|status))$/);
+    if(!match)return reply(404,null,'INVALID_RESOURCE');
+    if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
+    try {
+      const registry=await families(repoRoot);
+      if(match[1]==='families')return reply(200,registry);
+      if(match[1]==='swl2-ridge/compare')return reply(200,compare(...await Promise.all(registry.map(f=>observe(runtimeRoot,f,now())))));
+      const family=registry[Number(match[1].split('/')[0].at(-1))-1],view=await observe(runtimeRoot,family,now());
+      return reply(200,match[2]==='current'?view:match[2]==='history'?view.history:match[2]==='evaluation'?{evaluations:view.evaluations,metrics:view.metrics}:{family,status:view.status});
+    }catch{return reply(503,null,'FORECAST_INTEGRITY_BLOCKER');}
+  });
+}
+if(process.argv[1] && path.resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
+  const port=Number(process.env.INDUSTRY_FORECAST_API_PORT||3313);check(Number.isInteger(port)&&port>=1024&&port<=65535);
+  createApi({runtimeRoot:process.env.INDUSTRY_FORECAST_RUNTIME_ROOT||''}).listen(port,'127.0.0.1',()=>process.stdout.write(`INDUSTRY_FORECAST_READ_ONLY_API 127.0.0.1:${port}\n`));
+}
