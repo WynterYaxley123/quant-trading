@@ -43,7 +43,7 @@
       "dashboard/src/routes/overview.tsx": "cc7f9efc657eda5b960206c0a9b56e4fa24b0f316c2fcba35e6c6688f4667257",
       "dashboard/tests/etf-quant-v2.test.tsx": "93d5058238cf392ff2d99cfebacb085dd5829018537cdba1b77f870178ae2d88",
       "dashboard/tests/etf-quant.test.tsx": "b113cf4759d5ca2fd7ebc471dc44ded42c4f25366f9fa384e90abf3e5164cf50",
-      "dashboard/tests/industry-forecast.test.tsx": "5d9cef8f17d74704f167ffed8cca03d10f3d994708345e03f8df1511a77575ce",
+      "dashboard/tests/industry-forecast.test.tsx": "39fe7dcf33bd0f49b635a58897e043840def3e534a90ed6c9acc9b445423ba60",
       "dashboard/tests/localization.test.ts": "2f2afa049d8d2c8953f92930c5fdfb6fbca8a5be0a2c09d9ba61fc015800d434",
       "dashboard/tests/navigation.test.tsx": "9b0d5ea33561ed15fbcbf6ec7814cafb943cf62cbe1112f7a39686395b6b830b",
       "dashboard/tests/test-utils.tsx": "392ff080b9baa82fcb77f45537b4e73ed8527d84f4824491a6dd375386622c04",
@@ -114,7 +114,7 @@
       "services/industry-forecast-api/package.json": "1f799794d4baf8c089b17af14419fa2d51a213ea40eea8001772a1be82d5dd7f",
       "services/industry-forecast-api/pnpm-lock.yaml": "17c814b167307942d3609c7b9d916ceddb85839573ab39baa114e30edb132a1a",
       "services/industry-forecast-api/server.mjs": "1b204971f6cf1376ea39ceaa7d12701f25613b2762133dfa473ad7726cf984a6",
-      "services/industry-forecast-api/tests/server.test.mjs": "89704c914edd935613b1d200e3abeaf7935cfa4f783562b9206525178802c564",
+      "services/industry-forecast-api/tests/server.test.mjs": "e35a7474293be59423dd0a2815e0784739c54c66b0f804a0e6e310277e8afb10",
       "services/industry-forecast-runner/README.md": "3624b8719824d9b99a57466531dfcfd71a48203f79967763a09927e4d0c40cbb",
       "services/industry-forecast-runner/config.example.json": "5a04fd0e922e9fa03b7631d3ebc92f58982c19815ca5a49b8e4ed27a07a3f153",
       "services/industry-forecast-runner/run_forecast.py": "a2898abe8972e74e0a1b704cc0d092b5eaafcceb3f8193587c3f1bec8ca4a3f7",
@@ -369,7 +369,7 @@
       {
         "path": "dashboard/tests/industry-forecast.test.tsx",
         "before_sha256": null,
-        "after_sha256": "5d9cef8f17d74704f167ffed8cca03d10f3d994708345e03f8df1511a77575ce",
+        "after_sha256": "39fe7dcf33bd0f49b635a58897e043840def3e534a90ed6c9acc9b445423ba60",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -795,7 +795,7 @@
       {
         "path": "services/industry-forecast-api/tests/server.test.mjs",
         "before_sha256": null,
-        "after_sha256": "89704c914edd935613b1d200e3abeaf7935cfa4f783562b9206525178802c564",
+        "after_sha256": "e35a7474293be59423dd0a2815e0784739c54c66b0f804a0e6e310277e8afb10",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -1034,6 +1034,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl2-industry-forecast-closure.md",
-    "certificate_sha256": "5aab085e27441ac3b83a3b1860c0c7a6e7a4cdd0be10750a24ce9bc75013006a"
+    "certificate_sha256": "753b9bd690fb5eec5bcc20253ff0d055b4e970af676e8a87cda02968f1c68fd1"
   }
 }
