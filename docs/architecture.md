@@ -35,3 +35,7 @@ Historical Research API remains separate at `/research`; legacy ETF routes retai
 audit access with retirement metadata. Default `/` never accesses old account APIs.
 See [industry contracts](industry-forecast.md), [deployment](deployment.md) and
 [source transition evidence](engineering/swl2-industry-forecast-transition.md).
+
+## Closure contracts
+
+Registry -> pinned universe resolution -> frozen adapter -> immutable full publication -> exact session maturity -> native centered evaluation -> bounded read-only API -> Dashboard. Taxonomy inventory, model universe and actual forecast rows are separate fields. Common intersection metrics are additional diagnostics. Historical ETF productization stays read-only and outside this active flow.

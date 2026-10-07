@@ -41,3 +41,7 @@ The historical Research/ETF APIs remain separate read-only boundaries. An absent
 runtime reports empty; integrity failures report blocked. No simulated account or
 fake forecast demo is injected into production UI. [Operations](operations.md)
 describes future authorized retries and [testing](testing.md) covers crash injection.
+
+## Current activation authority
+
+Forward activation uses the verified first-parent main integration commit and its committer timestamp, never author time. Runtime freeze is independent and cannot publish that day. The disabled scheduler template and source definitions are delivered for a later operational stage. This stage neither promotes the live checkout nor establishes a formal binding.

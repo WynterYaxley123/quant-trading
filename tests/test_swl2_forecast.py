@@ -139,6 +139,17 @@ def test_v1_model_invariance(synthetic):
             c: v["raw_prediction"] for c, v in result["components"][str(int(h))].items()
         }
     assert result["rankings"][:5] == [(r.industry_code, r.score) for r in fused.rankings[:5]]
+    actual = prediction(synthetic[0], inputs, now)["cross_section"]
+    assert [(r["industry_code"], r["fused_score"]) for r in actual] == result["rankings"]
+    for h, scores in dict(fused.horizon_zscores).items():
+        expected = {p.industry_code: p.prediction for p in scores}
+        ordered = sorted(raw[h], key=lambda p: (-p.prediction, p.industry_code))
+        for row in actual:
+            component = row["horizons"][str(int(h))]
+            assert component["cross_section_zscore"] == expected[row["industry_code"]]
+            assert component["rank"] == next(
+                i + 1 for i, p in enumerate(ordered) if p.industry_code == row["industry_code"]
+            )
 
 
 def test_v2_model_invariance_against_actual_base_source(synthetic, monkeypatch):
@@ -146,7 +157,10 @@ def test_v2_model_invariance_against_actual_base_source(synthetic, monkeypatch):
     family = resolve("swl2-ridge-v2")
     rng = np.random.default_rng(1234)
     frame = pd.DataFrame(
-        100 * np.exp(np.cumsum(rng.normal(0, 0.008, (len(days), 124)), axis=0)),
+        100
+        * np.exp(
+            np.cumsum(rng.normal(0, 0.008, (len(days), family["model_universe_size"])), axis=0)
+        ),
         index=pd.DatetimeIndex(days),
         columns=family["industry_codes"],
     )
@@ -221,6 +235,24 @@ def test_v2_model_invariance_against_actual_base_source(synthetic, monkeypatch):
             assert row["horizons"][str(model["horizon"])]["raw_prediction"] == pytest.approx(
                 value, abs=1e-12
             )
+
+    for h in (10, 40, 120):
+        values = {
+            r["industry_code"]: r["horizons"][str(h)]["raw_prediction"]
+            for r in actual["cross_section"]
+        }
+        population = np.array(list(values.values()))
+        ordered = sorted(values, key=lambda c: (-values[c], c))
+        for row in actual["cross_section"]:
+            component = row["horizons"][str(h)]
+            assert component["cross_section_zscore"] == pytest.approx(
+                (values[row["industry_code"]] - population.mean()) / population.std(), abs=1e-12
+            )
+            assert component["rank"] == ordered.index(row["industry_code"]) + 1
+    assert (
+        actual["cross_section"][:5]
+        == sorted(actual["cross_section"], key=lambda r: r["fused_rank"])[:5]
+    )
 
 
 @pytest.mark.parametrize(
@@ -396,7 +428,15 @@ def test_python_generation_is_readable_by_node_api(tmp_path, synthetic):
         )
     )
     assert actual["current"]["industry_count"] == 107
-    assert actual["evaluations"] == expected
+    assert [
+        {k: v for k, v in e.items() if k not in {"event_hash", "event_type"}}
+        for e in actual["evaluations"]
+    ] == expected
+    assert all(
+        projected["event_hash"] == digest(json_bytes(original))
+        and projected["event_type"] == "EVALUATION_EVENT"
+        for projected, original in zip(actual["evaluations"], expected, strict=True)
+    )
     for horizon in (10, 40, 120):
         reference = aggregate(expected, horizon)
         observed = next(r for r in actual["metrics"] if r["horizon"] == horizon)
@@ -554,3 +594,119 @@ def test_runner_preflight_and_duplicate_skip_model(tmp_path, synthetic, monkeypa
     with process_lock(tmp_path / "industry-forecast" / family["family_id"] / ".runner.guard"):
         with pytest.raises(GateError, match="CONCURRENT"):
             module.invoke(family, config, **options)
+
+
+def test_taxonomy_and_frozen_universe_metadata_fail_closed(tmp_path):
+    from shutil import copytree
+
+    from strategies.swl2_ridge.registry import universe_metadata
+
+    first, second = families()
+    assert first["taxonomy_universe_size"] == second["taxonomy_universe_size"] == 134
+    assert first["model_universe_size"] == 107
+    assert second["model_universe_size"] == 124
+    assert len(first["taxonomy_only_industries"]) == 27
+    assert len(second["taxonomy_only_industries"]) == 10
+    assert len(set(first["industry_codes"]) & set(second["industry_codes"])) == 107
+    copytree(ROOT / "config", tmp_path / "config")
+    copytree(ROOT / "strategies/etf_quant/config", tmp_path / "strategies/etf_quant/config")
+    altered = json.loads(json.dumps(second))
+    altered["industry_codes"] = altered["industry_codes"][:-1]
+    with pytest.raises(ValueError, match="UNIVERSE_MISMATCH"):
+        universe_metadata(altered, tmp_path)
+    path = tmp_path / second["frozen_universe_reference"]["path"]
+    path.write_text("{}")
+    with pytest.raises(ValueError, match="REFERENCE_MISMATCH"):
+        universe_metadata(second, tmp_path)
+
+
+def test_family_native_targets_differ_but_common_raw_returns_compare():
+    first, second = families()
+    raw = {c: i / 1000 for i, c in enumerate(second["industry_codes"])}
+    left = evaluate(
+        synthetic_prediction(first)["cross_section"],
+        {c: raw[c] for c in first["industry_codes"]},
+        10,
+    )
+    right = evaluate(synthetic_prediction(second)["cross_section"], raw, 10)
+    first_mean = np.mean([raw[c] for c in first["industry_codes"]])
+    second_mean = np.mean(list(raw.values()))
+    assert first_mean != second_mean
+    assert left["realized"][0]["scientific_target"] == pytest.approx(
+        raw[first["industry_codes"][0]] - first_mean
+    )
+    assert right["realized"][0]["scientific_target"] == pytest.approx(
+        raw[second["industry_codes"][0]] - second_mean
+    )
+
+    def event(metrics):
+        return dict(
+            signal_date="2028-01-04",
+            horizon=10,
+            metrics=metrics,
+            taxonomy_identity=first["taxonomy_identity"],
+            target_contract=TARGET,
+            realized_series_type=SERIES_TYPE,
+        )
+
+    result = compare([event(left)], [event(right)], 10)
+    assert result["common_industry_counts"] == {"2028-01-04": 107}
+    assert result["centered_target_equality_required"] is False
+    assert result["raw_return_compatibility"] == "VERIFIED"
+    assert result["swl2_ridge_v1"]["mean_absolute_rank_error"] is not None
+    changed = json.loads(json.dumps(right))
+    changed["realized"][0]["realized_return"] += 0.01
+    with pytest.raises(ValueError, match="TARGET_MISMATCH"):
+        compare([event(left)], [event(changed)], 10)
+
+
+def test_body_and_index_limits_preserve_original_publication(tmp_path, synthetic, monkeypatch):
+    root, bind, inputs, predicted = publish_synthetic(tmp_path, synthetic)
+    before = ledger.read(root)
+    body = dict(
+        before["events"][0]["body"], signal_date="2028-01-05", oversized="x" * ledger.MAX_EVENT_BODY
+    )
+    with pytest.raises(ValueError, match="EVENT_SIZE_LIMIT"):
+        ledger.append(root, bind, "oversized", body)
+    monkeypatch.setattr(ledger, "MAX_EVENTS", 1)
+    with pytest.raises(ValueError, match="EVENT_COUNT_LIMIT"):
+        ledger.append(root, bind, "second", dict(body, oversized=""))
+    assert ledger.read(root) == before
+
+
+def test_evaluation_crash_recovers_identical_outcome(tmp_path, synthetic, monkeypatch):
+    from strategies.etf_quant.runtime import storage
+
+    root, _, _, _ = publish_synthetic(tmp_path, synthetic)
+    _, days, _, index, _ = synthetic
+    inputs, now = inputs_at(synthetic, days[index + 10])
+    atomic = storage.atomic_bytes
+
+    def crash(path, body):
+        if path.name == "latest.json":
+            raise RuntimeError("EVALUATION_CRASH")
+        atomic(path, body)
+
+    monkeypatch.setattr(storage, "atomic_bytes", crash)
+    with pytest.raises(RuntimeError, match="EVALUATION_CRASH"):
+        mature(root, inputs, now)
+    objects = {p.name: p.read_bytes() for p in (root / "objects").iterdir()}
+    monkeypatch.setattr(storage, "atomic_bytes", atomic)
+    ledger.recover(root)
+    recovered = ledger.read(root)
+    assert len(mature(root, inputs, now)) == 1
+    assert ledger.read(root) == recovered
+    assert {p.name: p.read_bytes() for p in (root / "objects").iterdir()} == objects
+
+
+def test_revised_evaluation_facts_fail_closed_after_maturity(tmp_path, synthetic):
+    root, _, _, _ = publish_synthetic(tmp_path, synthetic)
+    _, days, _, index, _ = synthetic
+    inputs, now = inputs_at(synthetic, days[index + 10])
+    assert len(mature(root, inputs, now)) == 1
+    before = ledger.read(root)
+    inputs["closes"] = inputs["closes"].copy()
+    inputs["closes"].iloc[-1, 0] *= 1.001
+    with pytest.raises(ValueError, match="EVALUATION_FACTS_REVISED"):
+        mature(root, inputs, now)
+    assert ledger.read(root) == before

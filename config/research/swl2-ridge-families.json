@@ -144,6 +144,14 @@
           "strategies/etf_quant/models/fusion.py": "60846436a1250d676975b16612175c12bb87deb03c89b49727ccb4a4e42a8a5f",
           "reports/etf_quant/etf_quant_v1_proxy_final_candidate_manifest.json": "e743bedb846a286c83870202c4514c80504c74409779b24f2968740914c2eb89"
         }
+      },
+      "frozen_universe_reference": {
+        "path": "strategies/etf_quant/config/common_model_universe_v1.json",
+        "sha256": "a9eff4fb1e02f15ed5eee005bd67db065214fb23f89565af6a7a3df0fae9b9a5"
+      },
+      "taxonomy_reference": {
+        "path": "strategies/etf_quant/config/shenwan_industry_taxonomy_v1.json",
+        "sha256": "3333b4e09c65d6a6b5b6a3b33717236f5723c059c3890415ef9c8f4af5b55836"
       }
     },
     {
@@ -312,6 +320,14 @@
         },
         "warmup_panel_sha256": "f76c3c23061314de27813577502e7a44b53251436be44df6b1c48cc6bbd37f15",
         "warmup_metadata_sha256": "6312f21dd224369b56dfafd31d244ca9b76e54d70d6dc942b270b3506b69a3e7"
+      },
+      "frozen_universe_reference": {
+        "path": "config/research/swl2-ridge-v2-frozen-universe.json",
+        "sha256": "2c88056a7053785a1fe062567989ec2052272a0ff4f9538d8e70943d17820ad6"
+      },
+      "taxonomy_reference": {
+        "path": "strategies/etf_quant/config/shenwan_industry_taxonomy_v1.json",
+        "sha256": "3333b4e09c65d6a6b5b6a3b33717236f5723c059c3890415ef9c8f4af5b55836"
       }
     }
   ],

@@ -118,3 +118,7 @@ It carries every prior deployment delta and binds the unchanged installation par
 superseded deployment certificate, changed source, new registry and regression
 record. Historical certificates are never regenerated. Merged source identity is
 resolved dynamically; no runtime binding or forecast is pre-created.
+
+## Fresh clone closure checks
+
+The English/Chinese README quick start clones the public source, builds the independent developer Docker image, runs the synthetic industry forecast demo and full portable pytest. Frozen universe identity projection contains no prices or performance. Public reproducibility does not establish private factual-lake, historical-evidence or live-ledger acceptance. Optional external integrations remain explicit skips.

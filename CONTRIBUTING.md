@@ -16,3 +16,7 @@ history. No broker, real orders, retrospective epochs or market-data backtests b
 in cleanup. Keep secrets, market/runtime data and generated dependency/build trees out
 of Git. Historical evidence is immutable; follow [reproducibility](docs/reproducibility.md)
 for certificates, measurements and archived path resolution. Preserve third-party notices.
+
+## Closure invariants
+
+Runtime/API/UI changes must preserve frozen model and universe references. Require normalized raw/z/rank/fused numerical parity and native target centering regression. Current classification count is metadata, never an instruction to enlarge a model. Shared-window comparison does not recenter primary targets. Model research requires a separate authorized protocol.

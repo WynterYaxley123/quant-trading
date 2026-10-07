@@ -25,7 +25,11 @@ FIELDS = (
 
 
 def evaluate(
-    cross_section: list[dict[str, Any]], raw: dict[str, float], horizon: int
+    cross_section: list[dict[str, Any]],
+    raw: dict[str, float],
+    horizon: int,
+    *,
+    comparison_only: bool = False,
 ) -> dict[str, Any]:
     codes = sorted(raw)
     if set(codes) != {r["industry_code"] for r in cross_section} or len(codes) < 10:
@@ -38,7 +42,8 @@ def evaluate(
     centered = {c: raw[c] - mean(raw.values()) for c in codes}
     # Scientific labels are frozen same-date excess industry returns.
     left = pd.Series([predictions[c] for c in codes]).rank(method="average")
-    right = pd.Series([centered[c] for c in codes]).rank(method="average")
+    rank_target = raw if comparison_only else centered
+    right = pd.Series([rank_target[c] for c in codes]).rank(method="average")
     ic = float(left.corr(right)) if left.nunique() > 1 and right.nunique() > 1 else None
     predicted_rank, realized_rank = ranks(predictions), ranks(raw)
     ordered = sorted(codes, key=lambda c: predicted_rank[c])
@@ -152,13 +157,26 @@ def compare(
                 }
                 for c in codes
             ]
-            destination.append(source[day] | {"metrics": evaluate(rows, raw, horizon)})
+            destination.append(
+                source[day] | {"metrics": evaluate(rows, raw, horizon, comparison_only=True)}
+            )
     left, right = aggregate(adjusted_a, horizon), aggregate(adjusted_b, horizon)
-    keys = ("mean_rank_ic", "median_rank_ic", "positive_rank_ic_fraction", "top5_bottom5_spread")
+    keys = (
+        "mean_rank_ic",
+        "median_rank_ic",
+        "positive_rank_ic_fraction",
+        "top5_bottom5_spread",
+        "mean_absolute_rank_error",
+        "median_absolute_rank_error",
+        "top5_overlap_count",
+        "top5_overlap_rate",
+    )
     return {
         "scope": "COMMON_FORWARD_WINDOW",
         "metric_scope": "COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC",
         "common_industry_counts": counts,
+        "raw_return_compatibility": "VERIFIED" if common else "NO_COMMON_MATURED_OBSERVATIONS",
+        "centered_target_equality_required": False,
         "horizon": horizon,
         "matured_common_dates": common,
         "matured_common_date_count": len(common),

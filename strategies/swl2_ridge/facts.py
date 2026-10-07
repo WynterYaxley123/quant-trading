@@ -71,6 +71,8 @@ def load(family: dict[str, Any], config: dict[str, Any], now: datetime) -> dict[
         contract = bind_model_inputs(provider, external_read(config["model_reference_snapshot"]))
         series = build_industry_series(provider, classification_version=CLASSIFICATION_VERSION)
         industries = tuple(contract["industries"])
+        if sorted(industries) != family["industry_codes"]:
+            raise ValueError("FROZEN_MODEL_UNIVERSE_MISMATCH")
         return {
             "provider": provider,
             "series": series,
@@ -97,7 +99,9 @@ def load(family: dict[str, Any], config: dict[str, Any], now: datetime) -> dict[
         industry_only=True,
     )
     observations, current = forward.model_inputs(provider.cutoff)
-    if set(current) != set(forward.industries):
+    if sorted(forward.industries) != family["industry_codes"] or set(current) != set(
+        forward.industries
+    ):
         raise ValueError("FULL_CURRENT_INDUSTRY_CROSS_SECTION_REQUIRED")
     return {
         "observations": observations,

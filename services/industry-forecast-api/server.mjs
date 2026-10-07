@@ -10,7 +10,7 @@ import {allowedOrigins} from '../etf-quant-api/origins.mjs';
 import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl2-industry-forecast-integrity.json';
+const ACTIVE='reports/engineering/swl2-industry-forecast-closure-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
@@ -32,13 +32,22 @@ export async function families(repoRoot=ROOT) {
   check(manifest.files[REGISTRY]===sha(registryRaw));
   const result=json(registryRaw).families;
   check(result.length===2);
-  result.forEach((f,i)=>check(f.family_id===`swl2_ridge_v${i+1}` && f.display_name===`SWL2-Ridge-V${i+1}` && f.current_role==='INDUSTRY_FORECAST_RESEARCH' && f.etf_productization_status==='RETIRED'));
+  for(const [i,f] of result.entries()) {
+    check(f.family_id===`swl2_ridge_v${i+1}` && f.display_name===`SWL2-Ridge-V${i+1}` && f.current_role==='INDUSTRY_FORECAST_RESEARCH' && f.etf_productization_status==='RETIRED');
+    const [universe,taxonomy]=await Promise.all(['frozen_universe_reference','taxonomy_reference'].map(async key=>{const ref=f[key],bytes=await read(repoRoot,ref.path);check(sha(bytes)===ref.sha256);return json(bytes);}));
+    const codes=universe.industries;
+    check(isDeepStrictEqual(codes,[...new Set(codes)].sort()) && isDeepStrictEqual(codes,f.industry_codes));
+    if(f.generation===2)check(universe.source_metadata_sha256===f.frozen_model_reference.warmup_metadata_sha256 && universe.warmup_panel_sha256===f.frozen_model_reference.warmup_panel_sha256);
+    const current=taxonomy.industries.filter(r=>r.vintage===taxonomy.classification_version).map(r=>r.industry_code).sort();
+    check(taxonomy.taxonomy_identity===f.taxonomy_identity && codes.every(c=>current.includes(c)));
+    Object.assign(f,{taxonomy_scope:taxonomy.classification_version,taxonomy_universe_size:current.length,legacy_taxonomy_identity_count:taxonomy.industries.length-current.length,model_universe_size:codes.length,model_universe_hash:sha(JSON.stringify(codes)),taxonomy_only_industries:current.filter(c=>!codes.includes(c)),taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE'});
+  }
   return result;
 }
 
 async function externalRoot(root) {
   check(path.isAbsolute(root));
-  const real=await realpath(root);
+  const real=await realpath(root);check(path.relative(path.resolve(root),real)==='');
   for(let p=real;;p=path.dirname(p)) {
     try {await access(path.join(p,'.git'));throw new Error('FORECAST_INTEGRITY_BLOCKER');}
     catch(e){if(e.code!=='ENOENT')throw e;}
@@ -55,7 +64,7 @@ function safe(value,depth=0) {
   if(typeof value==='number')check(Number.isFinite(value));
   if(typeof value==='string')check(value.length<8*1024*1024 && !/^(?:[A-Za-z]:[\\/]|file:|\/|\\\\)/.test(value));
   if(value && typeof value==='object')for(const [key,child] of Object.entries(value)){
-    check(!/^(cash|account_value|nav|fills?|orders?|shares|commission|slippage|token|password|secret|api_key|credentials|private_key)$/i.test(key));safe(child,depth+1);
+    check(!/^(cash|initial_capital|account_value|position|positions|position_value|target_position|lot_size|etf_code|etf_mapping|intent|intents|nav|fills?|orders?|shares|commission|slippage|token|password|secret|api_key|credentials|private_key)$/i.test(key));safe(child,depth+1);
   }
 }
 export function validateEvents(events,binding,family,now=Date.now()) {
@@ -72,6 +81,7 @@ export function validateEvents(events,binding,family,now=Date.now()) {
     if(b.kind==='FORECAST') {
       check(!published.has(b.signal_date) && b.display_name===family.display_name && b.legacy_identity===family.legacy_identity && b.data_cutoff===b.signal_date && Date.parse(b.published_at)<=now);
       check(new Date(Date.parse(b.published_at)+8*3600*1000).toISOString().slice(0,10)===b.signal_date);
+      check(b.model_universe_hash===family.model_universe_hash && b.model_universe_size===family.model_universe_size && b.taxonomy_universe_size===family.taxonomy_universe_size && b.forecast_row_count===b.industry_count && isDeepStrictEqual(b.transition_binding,binding) && b.realized_series_type==='RECONSTRUCTED_SWL2_EQUAL_WEIGHT');
       check(Array.isArray(b.cross_section) && b.cross_section.length===family.industry_codes.length && b.industry_count===b.cross_section.length && isDeepStrictEqual(b.horizons,[10,40,120]));
       check(new Set(b.cross_section.map(r=>r.industry_code)).size===b.industry_count && b.cross_section.every((r,i)=>family.industry_codes.includes(r.industry_code) && r.fused_rank===i+1 && typeof r.industry_name==='string' && Number.isFinite(r.fused_score) && ['10','40','120'].every(h=>Number.isFinite(r.horizons[h].raw_prediction) && Number.isFinite(r.horizons[h].cross_section_zscore) && Number.isInteger(r.horizons[h].rank))));
       for(const h of ['10','40','120'])check(new Set(b.cross_section.map(r=>r.horizons[h].rank)).size===b.industry_count && b.cross_section.every(r=>r.horizons[h].rank>=1 && r.horizons[h].rank<=b.industry_count));
@@ -85,6 +95,10 @@ export function validateEvents(events,binding,family,now=Date.now()) {
       check(b.maturity_date>b.signal_date && Date.parse(b.evaluated_at)<=now && b.provenance.data_cutoff>=b.maturity_date && Date.parse(b.provenance.available_at)<=Date.parse(b.evaluated_at));
       check(DATE.test(b.provenance.data_cutoff) && b.provenance.data_cutoff<=local(b.evaluated_at).slice(0,10) && b.maturity_date<=local(b.evaluated_at).slice(0,10));
       check(b.realized_series_type==='RECONSTRUCTED_SWL2_EQUAL_WEIGHT' && b.metrics.horizon===b.horizon && b.metrics.realized.length===family.industry_codes.length);
+      const realized=b.metrics.realized;
+      check(new Set(realized.map(r=>r.industry_code)).size===family.model_universe_size && realized.every(r=>family.industry_codes.includes(r.industry_code) && Number.isFinite(r.realized_return) && Number.isFinite(r.scientific_target)));
+      const center=mean(realized.map(r=>r.realized_return));
+      check(realized.every(r=>Math.abs(r.scientific_target-(r.realized_return-center))<=1e-12));
       check(b.metrics.diagnostic_label==='NON_TRADABLE_RESEARCH_DIAGNOSTIC' && HASH.test(b.target_cross_section_hash));
       evaluated.add(id);
     }
@@ -125,10 +139,11 @@ export async function observe(runtimeRoot,family,now=Date.now()) {
         events.push({...ref,body:json(raw),body_json:raw.toString()});
       }
       validateEvents(events,binding,family,now);
-      forecasts=events.filter(e=>e.body.kind==='FORECAST').map(e=>e.body);evaluations=events.filter(e=>e.body.kind==='EVALUATION').map(e=>e.body);
+      const projection=e=>({...e.body,event_hash:e.body_hash,event_type:e.body.kind==='FORECAST'?'FORECAST':'EVALUATION_EVENT'});
+      forecasts=events.filter(e=>e.body.kind==='FORECAST').map(projection);evaluations=events.filter(e=>e.body.kind==='EVALUATION').map(projection);
     }
   }
-  return {family,status:forecasts.length?'FORWARD_FORECAST':'NO_FORWARD_FORECASTS',current:forecasts.at(-1)??null,history:forecasts,evaluations,metrics:[10,40,120].map(h=>aggregate(evaluations,h))};
+  return {family:{...family,forward_status:forecasts.length?'FORWARD_FORECAST':'NO_FORWARD_FORECASTS',forecast_row_count:forecasts.at(-1)?.cross_section.length??0},status:forecasts.length?'FORWARD_FORECAST':'NO_FORWARD_FORECASTS',current:forecasts.at(-1)??null,history:forecasts,evaluations,metrics:[10,40,120].map(h=>aggregate(evaluations,h))};
 }
 
 function sharedMetric(rows,codes,raw) {
@@ -138,7 +153,10 @@ function sharedMetric(rows,codes,raw) {
   const xm=mean(x),ym=mean(y),xx=x.reduce((n,v)=>n+(v-xm)**2,0),yy=y.reduce((n,v)=>n+(v-ym)**2,0);
   const ic=xx>0&&yy>0?x.reduce((n,v,i)=>n+(v-xm)*(y[i]-ym),0)/Math.sqrt(xx*yy):null;
   const ordered=[...codes].sort((c,d)=>scores.get(d)-scores.get(c)||c.localeCompare(d));
-  return {rank_ic:ic,top5_bottom5_spread:mean(ordered.slice(0,5).map(c=>raw.get(c)))-mean(ordered.slice(-5).map(c=>raw.get(c)))};
+  const actual=[...codes].sort((c,d)=>raw.get(d)-raw.get(c)||c.localeCompare(d));
+  const errors=codes.map(c=>Math.abs(ordered.indexOf(c)-actual.indexOf(c)));
+  const overlap=ordered.slice(0,5).filter(c=>actual.slice(0,5).includes(c)).length;
+  return {rank_ic:ic,mean_absolute_rank_error:mean(errors),median_absolute_rank_error:median(errors),top5_overlap_count:overlap,top5_overlap_rate:overlap/5,top5_bottom5_spread:mean(ordered.slice(0,5).map(c=>raw.get(c)))-mean(ordered.slice(-5).map(c=>raw.get(c)))};
 }
 export function compare(a,b) {
   return [10,40,120].map(h=>{
@@ -154,9 +172,9 @@ export function compare(a,b) {
       check(codes.length>=10 && codes.every(c=>Math.abs(ar.get(c)-br.get(c))<=1e-12+1e-10*Math.abs(br.get(c))));
       counts[d]=codes.length;x.push(sharedMetric(aa.metrics.realized,codes,ar));y.push(sharedMetric(bb.metrics.realized,codes,ar));
     }
-    const summary=rows=>{const ic=rows.map(r=>r.rank_ic).filter(v=>v!==null);return {mean_rank_ic:mean(ic),median_rank_ic:median(ic),positive_rank_ic_fraction:mean(ic.map(v=>Number(v>0))),top5_bottom5_spread:mean(rows.map(r=>r.top5_bottom5_spread))};};
+    const summary=rows=>{const ic=rows.map(r=>r.rank_ic).filter(v=>v!==null);return {mean_rank_ic:mean(ic),median_rank_ic:median(ic),positive_rank_ic_fraction:mean(ic.map(v=>Number(v>0))),top5_bottom5_spread:mean(rows.map(r=>r.top5_bottom5_spread)),...Object.fromEntries(['mean_absolute_rank_error','median_absolute_rank_error','top5_overlap_count','top5_overlap_rate'].map(k=>[k,mean(rows.map(r=>r[k]))]))};};
     const xx=summary(x),yy=summary(y),keys=Object.keys(xx);
-    return {scope:'COMMON_FORWARD_WINDOW',metric_scope:'COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC',common_industry_counts:counts,horizon:h,matured_common_dates:dates,matured_common_date_count:dates.length,
+    return {scope:'COMMON_FORWARD_WINDOW',metric_scope:'COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC',common_industry_counts:counts,raw_return_compatibility:dates.length?'VERIFIED':'NO_COMMON_MATURED_OBSERVATIONS',centered_target_equality_required:false,horizon:h,matured_common_dates:dates,matured_common_date_count:dates.length,
       swl2_ridge_v1:xx,swl2_ridge_v2:yy,difference_v2_minus_v1:Object.fromEntries(keys.map(k=>[k,xx[k]===null||yy[k]===null?null:yy[k]-xx[k]])),confidence_status:dates.length<20?'INSUFFICIENT_FORWARD_EVIDENCE':'DESCRIPTIVE_ONLY_OVERLAPPING_OBSERVATIONS'};
   });
 }
@@ -174,7 +192,7 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
     if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
     try {
       const registry=await families(repoRoot);
-      if(match[1]==='families')return reply(200,registry);
+      if(match[1]==='families')return reply(200,await Promise.all(registry.map(async f=>(await observe(runtimeRoot,f,now())).family)));
       if(match[1]==='swl2-ridge/compare')return reply(200,compare(...await Promise.all(registry.map(f=>observe(runtimeRoot,f,now())))));
       const family=registry[Number(match[1].split('/')[0].at(-1))-1],view=await observe(runtimeRoot,family,now());
       return reply(200,match[2]==='current'?view:match[2]==='history'?view.history:match[2]==='evaluation'?{evaluations:view.evaluations,metrics:view.metrics}:{family,status:view.status});

@@ -109,4 +109,9 @@ def prediction(family: dict[str, Any], inputs: dict[str, Any], now: datetime) ->
                 },
             }
         )
+    if (
+        len(rows) != family["model_universe_size"]
+        or sorted(r["industry_code"] for r in rows) != family["industry_codes"]
+    ):
+        raise ValueError("FULL_FROZEN_UNIVERSE_REQUIRED")
     return {"cross_section": rows, "models": result["models"]}

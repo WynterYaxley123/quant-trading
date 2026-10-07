@@ -65,3 +65,7 @@ their original names and bytes; the naming gate permits only exact pinned except
 - COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC: additional intersection-universe comparison; frozen primary metrics stay separate.
 - Research budget: experiment/phase constraints. Monetary budget, sizing and costs are retired.
 - HISTORICAL_PRODUCTIZATION_RESULT: preserved ETF evidence, not current forecast capability.
+
+## Current forecasting vocabulary
+
+Taxonomy universe: current classification inventory (134), independent of fitted model identities. Model universe: complete pinned family cross-section (107/124). Forecast row: actually published admitted industry. Scientific target: exact h-session return minus native universe mean. Raw realized return: uncentered industry outcome. Maturity: exact finalized exchange-session endpoint. Common forward window: shared genuine dates/horizons plus compatible raw returns on shared industries. Historical productization: retired ETF engineering lineage. SWL1-Ridge-V1 remains NOT_YET_RESEARCHED.
