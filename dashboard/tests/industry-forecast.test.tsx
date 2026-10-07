@@ -25,6 +25,16 @@ beforeEach(()=>{
 });
 afterEach(()=>{cleanup();vi.clearAllMocks();setEtfQuantPortForTesting(null);});
 describe('canonical industry forecast',()=>{
+  it('shows Level-1 failed research without an active forward model',async()=>{
+    const swl1=familySchema.parse({...family,family_id:'swl1_ridge_v1',display_name:'SWL1-Ridge-V1',industry_level:1,legacy_identity:null,etf_productization_status:'NOT_STARTED',scientific_status:'FAILED_VALIDATION',forward_eligible:false,taxonomy_universe_size:31,model_universe_size:30,taxonomy_only_industries:['510000'],historical_research:{validation:'FAIL',final_oos:'NOT_OPENED',development_composite_rank_ic:'0.1212',validation_composite_rank_ic:'-0.0763',selected_candidate:'Policy B / alpha 100 / 12 months'}});
+    vi.mocked(fetchFamilies).mockResolvedValue([family,second,swl1]);
+    vi.mocked(fetchForecast).mockResolvedValue({...empty(),family:swl1,status:'FAILED_VALIDATION'});
+    render(<IndustryForecastPage/>);
+    expect(await screen.findByText(/Final OOS not opened/)).toBeInTheDocument();
+    expect(screen.getByText('Shenwan Level-1 · Forward eligible: false')).toBeInTheDocument();
+    expect(screen.getByText(/ETF_PRODUCTIZATION_NOT_STARTED/)).toBeInTheDocument();
+    expect(screen.queryByRole('heading',{name:/Full Ranking/})).toBeNull();
+  });
   it('uses full family names, honest empty states and null metrics',async()=>{
     render(<IndustryForecastPage/>);
     expect(await screen.findByText('No forward forecasts yet. 不回填历史研究结果。')).toBeInTheDocument();

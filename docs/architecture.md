@@ -39,3 +39,7 @@ See [industry contracts](industry-forecast.md), [deployment](deployment.md) and
 ## Closure contracts
 
 Registry -> pinned universe resolution -> frozen adapter -> immutable full publication -> exact session maturity -> native centered evaluation -> bounded read-only API -> Dashboard. Taxonomy inventory, model universe and actual forecast rows are separate fields. Common intersection metrics are additional diagnostics. Historical ETF productization stays read-only and outside this active flow.
+
+## Independent industry levels
+
+The generic catalog is config/research/industry-forecast-families.json; Python discovery is strategies/industry_forecast/registry.py. It references the byte-identical SWL2 catalog and an independent SWL1 closed family. Universes and targets never merge. The read-only industry API exposes failed research families while bypassing their runtime entirely. SWL1 V1 is FAILED_VALIDATION, forward-ineligible; numerical SWL2 adapters remain unchanged.

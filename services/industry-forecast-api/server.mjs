@@ -10,7 +10,7 @@ import {allowedOrigins} from '../etf-quant-api/origins.mjs';
 import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl2-industry-forecast-closure-integrity.json';
+const ACTIVE='reports/engineering/swl1-ridge-v1-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
@@ -41,6 +41,26 @@ export async function families(repoRoot=ROOT) {
     const current=taxonomy.industries.filter(r=>r.vintage===taxonomy.classification_version).map(r=>r.industry_code).sort();
     check(taxonomy.taxonomy_identity===f.taxonomy_identity && codes.every(c=>current.includes(c)));
     Object.assign(f,{taxonomy_scope:taxonomy.classification_version,taxonomy_universe_size:current.length,legacy_taxonomy_identity_count:taxonomy.industries.length-current.length,model_universe_size:codes.length,model_universe_hash:sha(JSON.stringify(codes)),taxonomy_only_industries:current.filter(c=>!codes.includes(c)),taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE'});
+  }
+  const catalogRaw=await read(repoRoot,'config/research/industry-forecast-families.json');
+  check(manifest.files['config/research/industry-forecast-families.json']===sha(catalogRaw));
+  const catalog=json(catalogRaw);check(catalog.swl2_registry_reference.path===REGISTRY && catalog.swl2_registry_reference.sha256===sha(registryRaw));
+  for(const reference of catalog.additional_families) {
+    const bytes=await read(repoRoot,reference.path);check(sha(bytes)===reference.sha256);
+    const f=json(bytes),artifacts={};
+    for(const key of ['protocol_reference','candidate_reference','taxonomy_reference','frozen_universe_reference','validation_reference','status_reference']) {
+      const ref=f[key],raw=await read(repoRoot,ref.path);check(sha(raw)===ref.sha256);artifacts[key]=json(raw);
+    }
+    const {protocol_reference:protocol,candidate_reference:candidate,taxonomy_reference:taxonomy,frozen_universe_reference:universe,validation_reference:validation,status_reference:status}=artifacts;
+    check(f.family_id==='swl1_ridge_v1' && f.display_name==='SWL1-Ridge-V1' && f.industry_level===1 && f.generation===1 && f.current_role==='INDUSTRY_FORECAST_RESEARCH' && f.etf_productization_status==='NOT_STARTED');
+    check(f.scientific_status==='FAILED_VALIDATION' && status.scientific_status===f.scientific_status && f.forward_eligible===false && status.forward_eligible===false && validation.passed===false && status.final_oos_opened===false);
+    check(candidate.protocol_hash===f.protocol_reference.sha256 && status.protocol_hash===f.protocol_reference.sha256 && validation.lineage.protocol_hash===f.protocol_reference.sha256 && validation.lineage.candidate_hash===f.candidate_reference.sha256 && status.candidate_hash===f.candidate_reference.sha256 && f.model_contract_hash===f.candidate_reference.sha256);
+    check(candidate.model_universe_hash===f.frozen_universe_reference.sha256 && protocol.model_universe_hash===f.frozen_universe_reference.sha256 && protocol.taxonomy_hash===f.taxonomy_reference.sha256);
+    check(isDeepStrictEqual(universe.industries,f.industry_codes) && isDeepStrictEqual(protocol.model_universe,f.industry_codes));
+    const current=taxonomy.industries.map(r=>r.industry_code).sort(),codes=f.industry_codes;
+    check(isDeepStrictEqual(codes,[...new Set(codes)].sort()) && codes.every(c=>current.includes(c)));
+    Object.assign(f,{taxonomy_scope:taxonomy.classification_version,taxonomy_universe_size:current.length,model_universe_size:codes.length,model_universe_hash:sha(JSON.stringify(codes)),taxonomy_only_industries:current.filter(c=>!codes.includes(c)),taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE'});
+    result.push(f);
   }
   return result;
 }
@@ -120,6 +140,7 @@ export function aggregate(evaluations,horizon) {
     confidence_status:rows.length<20?'INSUFFICIENT_FORWARD_EVIDENCE':'DESCRIPTIVE_ONLY_OVERLAPPING_OBSERVATIONS',rolling_window_dates:20,rolling,worst_rolling_interval:rolling.length?[...rolling].sort((a,b)=>a.spread-b.spread)[0]:null};
 }
 export async function observe(runtimeRoot,family,now=Date.now()) {
+  if(family.forward_eligible===false)return {family:{...family,forward_status:'FORWARD_INELIGIBLE',forecast_row_count:0},status:family.scientific_status,current:null,history:[],evaluations:[],metrics:[10,40,120].map(h=>aggregate([],h))};
   let forecasts=[],evaluations=[];
   if(runtimeRoot) {
     const base=await externalRoot(runtimeRoot),root=path.join(base,family.family_id);
@@ -187,14 +208,15 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
     if(req.headers.origin && !origins.has(req.headers.origin))return reply(403,null,'ORIGIN_NOT_ALLOWED');
     if(req.headers.origin){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
     if(!['GET','HEAD','OPTIONS'].includes(req.method))return reply(405,null,'READ_ONLY_API');
-    const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|swl2-ridge-v[12]\/(current|history|evaluation|status))$/);
+    const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|(?:swl2-ridge-v[12]|swl1-ridge-v1)\/(current|history|evaluation|status))$/);
     if(!match)return reply(404,null,'INVALID_RESOURCE');
     if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
     try {
       const registry=await families(repoRoot);
       if(match[1]==='families')return reply(200,await Promise.all(registry.map(async f=>(await observe(runtimeRoot,f,now())).family)));
-      if(match[1]==='swl2-ridge/compare')return reply(200,compare(...await Promise.all(registry.map(f=>observe(runtimeRoot,f,now())))));
-      const family=registry[Number(match[1].split('/')[0].at(-1))-1],view=await observe(runtimeRoot,family,now());
+      if(match[1]==='swl2-ridge/compare')return reply(200,compare(...await Promise.all(registry.filter(f=>f.industry_level===2).map(f=>observe(runtimeRoot,f,now())))));
+      const family=registry.find(f=>f.family_id===match[1].split('/')[0].replaceAll('-','_'));check(family);
+      const view=await observe(runtimeRoot,family,now());
       return reply(200,match[2]==='current'?view:match[2]==='history'?view.history:match[2]==='evaluation'?{evaluations:view.evaluations,metrics:view.metrics}:{family,status:view.status});
     }catch{return reply(503,null,'FORECAST_INTEGRITY_BLOCKER');}
   });

@@ -2,15 +2,31 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-quant-trading studies **Shenwan Level-2 industry forecasts** with frozen multi-horizon
+quant-trading studies **Shenwan Level-1 and Level-2 industry forecasts** with frozen multi-horizon
 Ridge models, point-in-time facts and immutable forward observations. Its current
 families are **SWL2-Ridge-V1** (frozen baseline) and **SWL2-Ridge-V2** (provisional
 historical research candidate). Both have role `INDUSTRY_FORECAST_RESEARCH`.
-ETF productization is `RETIRED`. SWL1-Ridge-V1 is reserved, `NOT_YET_RESEARCHED`.
+SWL2 ETF productization is `RETIRED`. The independent **SWL1-Ridge-V1** generation
+completed its 20-spec Development and failed its single Validation; Final OOS
+was never opened. Its ETF productization is `NOT_STARTED` and forward eligibility is false.
 
 ## Current research status
 
-The [canonical registry](config/research/swl2-ridge-families.json) binds names,
+| Family | Level | Frozen universe | Model | Research status | Validation | Final OOS | Forward eligible | ETF productization |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SWL2-Ridge-V1 | 2 | 107 | Ridge | FROZEN_BASELINE | SEALED | SEALED | existing frozen forward path | RETIRED |
+| SWL2-Ridge-V2 | 2 | 124 | Ridge | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | original FAIL | CONSUMED | existing frozen forward path | RETIRED |
+| SWL1-Ridge-V1 | 1 | 30 (31 current identities) | Ridge alpha 100 / 12m / standardized 19 factors | FAILED_VALIDATION | FAIL | NOT_OPENED | false | NOT_STARTED |
+
+SWL1 is not SWL2 V3. [Its protocol](docs/research/swl1-ridge-v1-protocol.md) was
+committed before performance, with exact 120-session purges and a 20-spec budget.
+The [single Validation](docs/research/swl1-ridge-v1-results.md) had composite RankIC
+−0.076308, weighted positive fraction 42.26%, weighted raw spread −1.5404% and
+2/4 positive blocks. The failure is final for V1. The
+[generic catalog](config/research/industry-forecast-families.json) exposes this
+historical record without enabling a model, reading its runtime or creating forecasts.
+
+The unchanged [SWL2 registry](config/research/swl2-ridge-families.json) binds names,
 legacy identities, actual admitted universes and frozen model hashes. V1 emits all
 **107** admitted industries; V2 emits all **124** from its byte-pinned warmup.
 Expanding V1 would alter its training and target centering, so it retains 107.

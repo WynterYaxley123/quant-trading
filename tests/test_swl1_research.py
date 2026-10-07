@@ -21,6 +21,8 @@ from research.swl1_ridge_v1.protocol import (
     split_sessions,
 )
 from strategies.etf_quant.config import FACTORS_19
+from strategies.industry_forecast.registry import families as generic_families
+from strategies.industry_forecast.registry import resolve as resolve_family
 
 
 def test_taxonomy_discovers_count_and_explicit_named_parent_even_out_of_order(
@@ -174,3 +176,14 @@ def test_scientific_negative_paths_and_null_metrics():
     negative = summarize(rows(-0.1), 126)
     assert not validation_pass(negative)
     assert directional_label(negative) == "NEGATIVE"
+
+
+def test_failed_family_keeps_levels_separate_and_blocks_forward():
+    registry = generic_families()
+    assert [f["model_universe_size"] for f in registry] == [107, 124, 30]
+    failed = resolve_family("swl1-ridge-v1")
+    assert failed["taxonomy_universe_size"] == 31
+    assert failed["industry_level"] == 1
+    assert failed["scientific_status"] == "FAILED_VALIDATION"
+    with pytest.raises(ValueError, match="FORWARD_INELIGIBLE"):
+        resolve_family("swl1-ridge-v1", require_forward=True)

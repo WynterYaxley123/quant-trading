@@ -122,3 +122,7 @@ resolved dynamically; no runtime binding or forecast is pre-created.
 ## Fresh clone closure checks
 
 The English/Chinese README quick start clones the public source, builds the independent developer Docker image, runs the synthetic industry forecast demo and full portable pytest. Frozen universe identity projection contains no prices or performance. Public reproducibility does not establish private factual-lake, historical-evidence or live-ledger acceptance. Optional external integrations remain explicit skips.
+
+## SWL1 source transition
+
+The active authority is reports/engineering/swl1-ridge-v1-integrity.json. It carries every prior closure delta and preserves all SWL2 freezes/certificates. [SWL1 protocol and results](research/swl1-ridge-v1-results.md) are public-safe aggregates. Reproducing real calculations requires the authorized private panel and matching hashes; GitHub contains no price/member payload. Synthetic contracts and the demo use no local lake. Planned Final OOS remains unopened after failed Validation.

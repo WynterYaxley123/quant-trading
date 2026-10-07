@@ -72,3 +72,7 @@ performance is opened by this test workflow.
 ## Universe and centering closure regressions
 
 Tests independently verify current taxonomy inventory, pinned V1/V2 universe references, all raw/z/rank/fused outputs, complete forecast rows, family-native scientific targets and legal comparison with unequal centered targets. Raw return mismatch fails closed. Additional checks cover immutable evaluation recovery and body/index limits without truncating history. All quantitative execution remains in the independent Docker image.
+
+## SWL1 strict lifecycle
+
+Run python -m pytest -q tests/test_swl1_research.py in the independent developer Docker image. Synthetic tests cover dynamic explicit hierarchy, pre-version rejection, exact targets/missingness, population training-only scaling, mature-label cutoffs, registered search bounds, exchange-session splits/purges, protocol/candidate tampering, Validation one-shot failure and Final-OOS consumption. Generic family tests preserve 107/124 SWL2 universes and block failed SWL1 publication. API/frontend tests show FAILED_VALIDATION without runtime reads or invented forward metrics. Real research execution is separately authorized and is never rerun by CI.

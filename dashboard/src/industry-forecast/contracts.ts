@@ -4,9 +4,10 @@ const finite = z.number().finite();
 const nullable = finite.nullable();
 const component = z.object({ raw_prediction: finite, cross_section_zscore: finite, rank: z.number().int().positive() });
 export const familySchema = z.object({
-  family_id: z.enum(['swl2_ridge_v1', 'swl2_ridge_v2']), display_name: z.enum(['SWL2-Ridge-V1', 'SWL2-Ridge-V2']),
-  legacy_identity: z.string(), generation: z.number().int(), industry_level: z.literal(2),
-  current_role: z.literal('INDUSTRY_FORECAST_RESEARCH'), etf_productization_status: z.literal('RETIRED'),
+  family_id: z.enum(['swl2_ridge_v1', 'swl2_ridge_v2', 'swl1_ridge_v1']), display_name: z.enum(['SWL2-Ridge-V1', 'SWL2-Ridge-V2', 'SWL1-Ridge-V1']),
+  legacy_identity: z.string().nullable(), generation: z.number().int(), industry_level: z.union([z.literal(1),z.literal(2)]),
+  current_role: z.literal('INDUSTRY_FORECAST_RESEARCH'), etf_productization_status: z.enum(['RETIRED','NOT_STARTED']),
+  forward_eligible:z.boolean().optional(),research_status:z.string().optional(),
   taxonomy_scope:z.string(),taxonomy_universe_size:z.number().int().positive(),model_universe_size:z.number().int().positive(),model_universe_hash:z.string(),taxonomy_only_industries:z.array(z.string()),taxonomy_only_status:z.literal('NOT_IN_FROZEN_MODEL_UNIVERSE'),forecast_row_count:z.number().int().nonnegative().optional(),
   scientific_status: z.string(), historical_research: z.record(z.string(), z.string()),
 });
