@@ -35,15 +35,15 @@
       "dashboard/src/etf-quant/sections/V2Shadow.tsx": "bd1b7466a8ee1caf10ae7bfc5f1cf62ea52b90c2f7963f93718d4a2d7e64c680",
       "dashboard/src/etf-quant/v2-contracts.ts": "1395ad0ca58bfba36697b8585990d0094e493644c34f1e44330568938d03c0b9",
       "dashboard/src/features/overview/OverviewPage.tsx": "f85b8115cb64c902fe65d44c4204b9e8608ed4c36f44324ec81492325e59ec90",
-      "dashboard/src/industry-forecast/Page.tsx": "2b0da77986307ea98b264a05afcd24f6db4394162f07123f22655925949c5406",
+      "dashboard/src/industry-forecast/Page.tsx": "5d95f6ae76c5d634df8ed35bc0eadffd7846a20dbabe66944fe454959c514b6c",
       "dashboard/src/industry-forecast/client.ts": "642421acfbc4c072587ce322b68f0637b02f0b03d218282bea7a1597f726a979",
-      "dashboard/src/industry-forecast/contracts.ts": "259640969238a05fa07d3085ca01c37b22306c5bca9d3d08e1556206c372b616",
+      "dashboard/src/industry-forecast/contracts.ts": "3eef01b38cd1623b3b309ad0d42086c0ce3ecc2c0d147b2224e03f8d570b4979",
       "dashboard/src/lib/env.ts": "a63478b4fa62626c43ebd58dc370037d61ab83103a241f1718c505ffd81bda08",
       "dashboard/src/routes/industryForecast.tsx": "509d6712e39012280175eec77073fe46a5e8c624c1b8184cd959e18d26954064",
       "dashboard/src/routes/overview.tsx": "cc7f9efc657eda5b960206c0a9b56e4fa24b0f316c2fcba35e6c6688f4667257",
       "dashboard/tests/etf-quant-v2.test.tsx": "93d5058238cf392ff2d99cfebacb085dd5829018537cdba1b77f870178ae2d88",
       "dashboard/tests/etf-quant.test.tsx": "b113cf4759d5ca2fd7ebc471dc44ded42c4f25366f9fa384e90abf3e5164cf50",
-      "dashboard/tests/industry-forecast.test.tsx": "39fe7dcf33bd0f49b635a58897e043840def3e534a90ed6c9acc9b445423ba60",
+      "dashboard/tests/industry-forecast.test.tsx": "e32b623b9fc7287ac650520c69d95519eba59896a4fd3fc13bbd7e8b64910ea5",
       "dashboard/tests/localization.test.ts": "2f2afa049d8d2c8953f92930c5fdfb6fbca8a5be0a2c09d9ba61fc015800d434",
       "dashboard/tests/navigation.test.tsx": "9b0d5ea33561ed15fbcbf6ec7814cafb943cf62cbe1112f7a39686395b6b830b",
       "dashboard/tests/test-utils.tsx": "392ff080b9baa82fcb77f45537b4e73ed8527d84f4824491a6dd375386622c04",
@@ -62,14 +62,14 @@
       "docs/engineering/README.md": "033efa4ab9da8c04f80c9a7bfbdffea0dcc326aa3874d44a4aa253b6f653d172",
       "docs/engineering/deployment-source-boundary.md": "d2207b647fdd27b364f950c9b4585c85566e3e15579af70b1e66eb2b5d272e07",
       "docs/engineering/repository-health.md": "8c219ec9714c208ee4ca8e6c98d699b44850313331d64fc2e2f49a1f3b422033",
-      "docs/engineering/swl2-industry-forecast-closure.md": "1282cbfd81f08d921379d8cd928c76b856a70ff217567bfce429c9e88eac5406",
+      "docs/engineering/swl2-industry-forecast-closure.md": "72dac23701f2b77f4f8ee2eddf6035ac839919e9b605a4815141ce7924245926",
       "docs/engineering/swl2-industry-forecast-transition.md": "5c97c6067a9cb2fe558fbd165972b1130fee41fd39f818996c844330525667af",
       "docs/engineering/v7-remediation.md": "1480f458e39cb1ef44825f1a7df32ced27dea0060704bac35cbe45aed4ad202b",
       "docs/engineering/v8-remediation.md": "9a9330bb19e745ae708facd78418f2b91b61dcb4ab51e16d5f1e25ff4bb8c27d",
       "docs/etf-quant-v2-protocol.md": "0c18dc2cef03cd40904466478af60fee2acc68bc82942b2d9f862b5b8c700ad0",
       "docs/glossary.md": "363a9a81a40895c45a9a9806e9203fb6f219c21d779bb41e5e20b897b72b7e50",
       "docs/index.md": "8c0542000af7110dde7ee7f02573dfaa15cfc94bfac4efe0ddd55c38963da9ea",
-      "docs/industry-forecast.md": "c5fbc6ef2a898e9190532d0fc38bf68364ec83ae9bcca83c03651e353373f92b",
+      "docs/industry-forecast.md": "ada869b434bc9dd985e4f8a329b127ddbd144579c9ed0a861d59daab04a6766e",
       "docs/operations.md": "e2a47ef7c98d2fb34234b2889145d19dc646d9f78c89a59d5fe9ad1b14938f21",
       "docs/operations.zh-CN.md": "cf9ed6357071d928f331dd66df147b5423d9719a399ae78a53c21cc845085155",
       "docs/reproducibility.md": "8228749e67237ced3c8bf95fc88a05cb202ceef8b6af5b1ac6f6d3d8bcf2c294",
@@ -113,8 +113,8 @@
       "services/industry-forecast-api/README.md": "4ceb0231f43d129a43878ec09819453a2f4450e784b0412f9afb87704ff21ec5",
       "services/industry-forecast-api/package.json": "1f799794d4baf8c089b17af14419fa2d51a213ea40eea8001772a1be82d5dd7f",
       "services/industry-forecast-api/pnpm-lock.yaml": "17c814b167307942d3609c7b9d916ceddb85839573ab39baa114e30edb132a1a",
-      "services/industry-forecast-api/server.mjs": "1b204971f6cf1376ea39ceaa7d12701f25613b2762133dfa473ad7726cf984a6",
-      "services/industry-forecast-api/tests/server.test.mjs": "e35a7474293be59423dd0a2815e0784739c54c66b0f804a0e6e310277e8afb10",
+      "services/industry-forecast-api/server.mjs": "571508525c86341393116894b7fbf803c7df7d67f72e6e0a18fae99efb426be7",
+      "services/industry-forecast-api/tests/server.test.mjs": "fa350827d24715a8823b8044ec2f0d5e05e8abe78896219e4a8b17d02c38e6a4",
       "services/industry-forecast-runner/README.md": "3624b8719824d9b99a57466531dfcfd71a48203f79967763a09927e4d0c40cbb",
       "services/industry-forecast-runner/config.example.json": "5a04fd0e922e9fa03b7631d3ebc92f58982c19815ca5a49b8e4ed27a07a3f153",
       "services/industry-forecast-runner/run_forecast.py": "a2898abe8972e74e0a1b704cc0d092b5eaafcceb3f8193587c3f1bec8ca4a3f7",
@@ -136,7 +136,7 @@
       "strategies/etf_quant_v2/shadow.py": "32f15fdaa6e77bc578a1a9549fec918b6a915d93799fbb2bbc1acd7b596db984",
       "strategies/swl2_ridge/__init__.py": "ba55fa112edb46be235d0821029a885081504530bdc3607a9bd384573393e3fb",
       "strategies/swl2_ridge/adapter.py": "30679bd042865505428133193de4ae249ba0e415906251a8d8e51a3a4e674827",
-      "strategies/swl2_ridge/engine.py": "65bbb25f651c058e8dd72783668f0877dc374a3eaf1ea8c77da2b57626104527",
+      "strategies/swl2_ridge/engine.py": "d40f720df2055a84e0bc28adc021d71647b1f9775a2f6d63cf36c8d4403e24a2",
       "strategies/swl2_ridge/facts.py": "dad2e78d1be4fc7bd934fcdddc8df533800817c31e1ad0a3b69fcde4de4b6342",
       "strategies/swl2_ridge/ledger.py": "b6fe3a31ef2552159fe42e25e5333012a12196f1a2ffe38953728a839593098b",
       "strategies/swl2_ridge/metrics.py": "eeed08b6cadfced15e0cb1acde5b54a407523a939bc127ddba9786bc8ec8faf2",
@@ -150,7 +150,7 @@
       "tests/research/test_v2_finalization.py": "2f4c3b3e32e6185a270352e2f8bc1616d10a7f6bfd5676ccddf95bc46e54cbfa",
       "tests/test_deployment_boundaries.py": "cf922c1fe9fd770304d03c7a2ecc4b13ba6299ccede3612c1fb808cd227a3013",
       "tests/test_etf_quant_v2_shadow.py": "2f04a1d7e82aeb8b18a3940a0b882d48d12bffb70fb3bb99ba38d3904db73960",
-      "tests/test_swl2_forecast.py": "deb127fcfcf3cbe2cab60913ae454514cbea3fc9296743b88c02abe1f974649e",
+      "tests/test_swl2_forecast.py": "e219ec8a329ca13639f2a093df57b95cb877f029ae61e1186114791d6bfe43e9",
       "tests/test_v4_integrity.py": "76a698f0aa7e7e2b34f938b19923ac7afffc6d307e0fa1e8c448890f9ac24199",
       "tests/test_v7_runtime.py": "8fc0c1718513c0343246c8e89f9ea2ab85a1b592e5be14966a21bc26dee4c868",
       "tests/test_v8_scientific_labels.py": "573e30dda090806513f0b7eb9582738613fdbf6bb58ee28ebe3d5a993e8d0eb5"
@@ -321,7 +321,7 @@
       {
         "path": "dashboard/src/industry-forecast/Page.tsx",
         "before_sha256": null,
-        "after_sha256": "2b0da77986307ea98b264a05afcd24f6db4394162f07123f22655925949c5406",
+        "after_sha256": "5d95f6ae76c5d634df8ed35bc0eadffd7846a20dbabe66944fe454959c514b6c",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -333,7 +333,7 @@
       {
         "path": "dashboard/src/industry-forecast/contracts.ts",
         "before_sha256": null,
-        "after_sha256": "259640969238a05fa07d3085ca01c37b22306c5bca9d3d08e1556206c372b616",
+        "after_sha256": "3eef01b38cd1623b3b309ad0d42086c0ce3ecc2c0d147b2224e03f8d570b4979",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -369,7 +369,7 @@
       {
         "path": "dashboard/tests/industry-forecast.test.tsx",
         "before_sha256": null,
-        "after_sha256": "39fe7dcf33bd0f49b635a58897e043840def3e534a90ed6c9acc9b445423ba60",
+        "after_sha256": "e32b623b9fc7287ac650520c69d95519eba59896a4fd3fc13bbd7e8b64910ea5",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -483,7 +483,7 @@
       {
         "path": "docs/engineering/swl2-industry-forecast-closure.md",
         "before_sha256": null,
-        "after_sha256": "1282cbfd81f08d921379d8cd928c76b856a70ff217567bfce429c9e88eac5406",
+        "after_sha256": "72dac23701f2b77f4f8ee2eddf6035ac839919e9b605a4815141ce7924245926",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -525,7 +525,7 @@
       {
         "path": "docs/industry-forecast.md",
         "before_sha256": null,
-        "after_sha256": "c5fbc6ef2a898e9190532d0fc38bf68364ec83ae9bcca83c03651e353373f92b",
+        "after_sha256": "ada869b434bc9dd985e4f8a329b127ddbd144579c9ed0a861d59daab04a6766e",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -789,13 +789,13 @@
       {
         "path": "services/industry-forecast-api/server.mjs",
         "before_sha256": null,
-        "after_sha256": "1b204971f6cf1376ea39ceaa7d12701f25613b2762133dfa473ad7726cf984a6",
+        "after_sha256": "571508525c86341393116894b7fbf803c7df7d67f72e6e0a18fae99efb426be7",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
         "path": "services/industry-forecast-api/tests/server.test.mjs",
         "before_sha256": null,
-        "after_sha256": "e35a7474293be59423dd0a2815e0784739c54c66b0f804a0e6e310277e8afb10",
+        "after_sha256": "fa350827d24715a8823b8044ec2f0d5e05e8abe78896219e4a8b17d02c38e6a4",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -927,7 +927,7 @@
       {
         "path": "strategies/swl2_ridge/engine.py",
         "before_sha256": null,
-        "after_sha256": "65bbb25f651c058e8dd72783668f0877dc374a3eaf1ea8c77da2b57626104527",
+        "after_sha256": "d40f720df2055a84e0bc28adc021d71647b1f9775a2f6d63cf36c8d4403e24a2",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -1011,7 +1011,7 @@
       {
         "path": "tests/test_swl2_forecast.py",
         "before_sha256": null,
-        "after_sha256": "deb127fcfcf3cbe2cab60913ae454514cbea3fc9296743b88c02abe1f974649e",
+        "after_sha256": "e219ec8a329ca13639f2a093df57b95cb877f029ae61e1186114791d6bfe43e9",
         "reason": "SWL2_FORECAST_CLOSURE verified remediation"
       },
       {
@@ -1034,6 +1034,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl2-industry-forecast-closure.md",
-    "certificate_sha256": "753b9bd690fb5eec5bcc20253ff0d055b4e970af676e8a87cda02968f1c68fd1"
+    "certificate_sha256": "c80d9935e97fdd3acd448a5eaeed43097077e18d3e3da201e0f9eae079dd4bb5"
   }
 }

@@ -38,7 +38,7 @@ test('canonical naming, actual frozen universes and null empty metrics',async()=
   const view=await observe('',family,now);assert.equal(view.current,null);assert.equal(view.metrics[0].mean_rank_ic,null);assert.equal(view.metrics[0].top5_mean_return,null);assert.equal(view.metrics[0].matured_forecast_dates,0);
 });
 test('reads full immutable generation without state creation',async t=>{
-  const root=await temp(t);await generation(root);const view=await observe(root,family,now);assert.equal(view.current.cross_section.length,107);assert.equal(view.current.provenance.realized_series_type,'RECONSTRUCTED_SWL2_EQUAL_WEIGHT');assert.equal(view.evaluations.length,0);assert.equal(view.metrics[0].mean_rank_ic,null);
+  const root=await temp(t);await generation(root);const view=await observe(root,family,now);assert.equal(view.current.cross_section.length,107);assert.equal(view.current.event_hash,event(forecast()).body_hash);assert.equal(view.current.event_type,'FORECAST');assert.equal(view.current.provenance.realized_series_type,'RECONSTRUCTED_SWL2_EQUAL_WEIGHT');assert.equal(view.evaluations.length,0);assert.equal(view.metrics[0].mean_rank_ic,null);
   await writeFile(path.join(root,family.family_id,'objects',`${event(forecast()).body_hash}.json`),'tampered');await assert.rejects(observe(root,family,now));
 });
 test('tampered generation hash and path escape fail closed',async t=>{

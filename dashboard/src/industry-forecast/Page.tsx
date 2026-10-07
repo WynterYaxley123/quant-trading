@@ -11,6 +11,7 @@ export function IndustryForecastPage() {
   const [family,setFamily]=useState('swl2_ridge_v1');
   const [date,setDate]=useState('');
   const [horizon,setHorizon]=useState(10);
+  const [trendIndustry,setTrendIndustry]=useState('');
   const families=useResource(fetchFamilies,[]);
   const forecast=useResource(signal=>fetchForecast(family,signal),[family]);
   const comparison=useResource(fetchComparison,[]);
@@ -19,6 +20,8 @@ export function IndustryForecastPage() {
   const selected=view?.history.find(f=>f.signal_date===date)??view?.current;
   const evaluated=view?.evaluations.find(e=>e.signal_date===selected?.signal_date&&e.horizon===horizon);
   const names=new Map(selected?.cross_section.map(r=>[r.industry_code,r.industry_name])??[]);
+  const trendCodes=Object.keys(evaluated?.visual_trend_diagnostic.points[0]?.values??{});
+  const trendSelection=trendCodes.includes(trendIndustry)?[trendIndustry]:evaluated?.metrics.predicted_top5??[];
   const pending=(h:number)=>view?.evaluations.find(e=>e.signal_date===selected?.signal_date&&e.horizon===h);
   return <div className="flex flex-col gap-6">
     <section className="rounded-xl border bg-card p-5">
@@ -68,7 +71,7 @@ export function IndustryForecastPage() {
       {evaluated?<><p className="mt-2">Predicted Top5: {evaluated.metrics.predicted_top5.map(c=>names.get(c)??c).join(' / ')}</p><p>Actual future Top5: {evaluated.metrics.actual_top5.map(c=>names.get(c)??c).join(' / ')}</p><p>Overlap {evaluated.metrics.top5_overlap_count}/5 · {percent(evaluated.metrics.top5_overlap_rate)} · Mean / median absolute rank error {number(evaluated.metrics.mean_absolute_rank_error)} / {number(evaluated.metrics.median_absolute_rank_error)}</p><p>Fused Top5 horizon outcome {percent(evaluated.metrics.fused_top5_mean_return)} · NON_TRADABLE_RESEARCH_DIAGNOSTIC</p></>:null}
       <table className="mt-3 w-full text-sm"><thead><tr><th>Industry</th><th>Fused rank / score</th>{horizons.map(h=><th key={h}>H{h} predicted raw / rank → scientific target / raw realized return / rank</th>)}</tr></thead><tbody>{selected.cross_section.map(r=><tr key={r.industry_code} className="border-t"><td className="p-2">{r.industry_name} · {r.industry_code}</td><td>#{r.fused_rank} / {number(r.fused_score)}</td>{horizons.map(h=>{const outcome=pending(h)?.metrics.realized.find(e=>e.industry_code===r.industry_code);const component=r.horizons[String(h) as '10'|'40'|'120'];return <td key={h}>{number(component.raw_prediction)} / #{component.rank} → {outcome?`${percent(outcome.scientific_target)} / ${percent(outcome.realized_return)} / #${outcome.realized_rank}`:'PENDING'}</td>;})}</tr>)}</tbody></table>
       <p className="mt-2 text-xs">scientific_target != raw_realized_return；center 使用该家族完整冻结模型宇宙。</p>
-      {evaluated?<><h3 className="mt-5 font-semibold">Trend View · normalized start 1.0</h3><p className="my-2 text-sm">VISUAL_TREND_DIAGNOSTIC · NORMALIZED_RESEARCH_INDEX · NON_TRADABLE_RESEARCH_DIAGNOSTIC · RECONSTRUCTED_SWL2_EQUAL_WEIGHT</p><div className="h-72"><ResponsiveContainer width="100%" height="100%"><LineChart data={evaluated.visual_trend_diagnostic.points.map(p=>({date:p.date,universe_equal_weight:p.universe_equal_weight,...p.values}))}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="date"/><YAxis domain={['auto','auto']}/><Tooltip/><Line dataKey="universe_equal_weight" name="SWL2 universe equal-weight" stroke="#64748b" dot={false}/>{evaluated.metrics.predicted_top5.map((code,i)=><Line key={code} dataKey={code} name={names.get(code)??code} stroke={['#2563eb','#059669','#d97706','#7c3aed','#db2777'][i]} dot={false}/>)}</LineChart></ResponsiveContainer></div></>:<p className="mt-3">PENDING · 不读取或显示 provisional future values。</p>}
+      {evaluated?<><h3 className="mt-5 font-semibold">Trend View · normalized start 1.0</h3><p className="my-2 text-sm">VISUAL_TREND_DIAGNOSTIC · NORMALIZED_RESEARCH_INDEX · NON_TRADABLE_RESEARCH_DIAGNOSTIC · RECONSTRUCTED_SWL2_EQUAL_WEIGHT</p><label className="my-2 flex gap-3">Trend industry<select aria-label="Trend industry" value={trendCodes.includes(trendIndustry)?trendIndustry:""} onChange={e=>setTrendIndustry(e.target.value)}><option value="">Predicted Top5</option>{trendCodes.map(c=><option key={c} value={c}>{names.get(c)??c}</option>)}</select></label><div className="h-72"><ResponsiveContainer width="100%" height="100%"><LineChart data={evaluated.visual_trend_diagnostic.points.map(p=>({date:p.date,universe_equal_weight:p.universe_equal_weight,...p.values}))}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="date"/><YAxis domain={['auto','auto']}/><Tooltip/><Line dataKey="universe_equal_weight" name="SWL2 universe equal-weight" stroke="#64748b" dot={false}/>{trendSelection.map((code,i)=><Line key={code} dataKey={code} name={names.get(code)??code} stroke={['#2563eb','#059669','#d97706','#7c3aed','#db2777'][i]} dot={false}/>)}</LineChart></ResponsiveContainer></div></>:<p className="mt-3">PENDING · 不读取或显示 provisional future values。</p>}
     </section>:null}
 
     <section className="overflow-x-auto rounded-xl border bg-card p-5">

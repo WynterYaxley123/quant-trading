@@ -145,3 +145,5 @@ Common comparison returns per-date shared counts, common RankIC, rank errors,
 Top5 overlap and raw-return compatibility. The 107 shared identities are a
 comparison-only diagnostic universe; family-native targets and primary metrics
 remain unchanged. `centered_target_equality_required=false` is explicit.
+
+Read-only API projections expose `event_hash` (the SHA256 of the original stored body) and `event_type`. These projection fields never rewrite or self-hash the immutable body. Mature evaluations additionally bind the consumed factual prefix through maturity; a later revision of any evaluated prefix fails closed.

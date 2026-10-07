@@ -195,7 +195,18 @@ def mature(root: Path, inputs: dict[str, Any], now: datetime) -> list[dict[str, 
 
 def view(root: Path, family: dict[str, Any]) -> dict[str, Any]:
     state = ledger.read(root)
-    events = [e["body"] for e in state["events"]] if state else []
+    events = (
+        [
+            {
+                **e["body"],
+                "event_hash": e["body_hash"],
+                "event_type": "FORECAST" if e["body"]["kind"] == "FORECAST" else "EVALUATION_EVENT",
+            }
+            for e in state["events"]
+        ]
+        if state
+        else []
+    )
     forecasts = [e for e in events if e["kind"] == "FORECAST"]
     evaluations = [e for e in events if e["kind"] == "EVALUATION"]
     return {

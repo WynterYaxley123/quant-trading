@@ -15,7 +15,7 @@ const metrics=[10,40,120].map(horizon=>({horizon,matured_forecast_dates:0,mean_r
 const provenance={data_source:'SYNTHETIC_SOURCE_C',source_commit:'a'.repeat(40),snapshot_sha256:'b'.repeat(64),data_cutoff:'2028-01-04',available_at:'2028-01-04T16:00:00+08:00',realized_series_type:'RECONSTRUCTED_SWL2_EQUAL_WEIGHT',historical_membership:'RECONSTRUCTED'} as const;
 function empty() {return viewSchema.parse({family,status:'NO_FORWARD_FORECASTS',current:null,history:[],evaluations:[],metrics});}
 function published() {
-  const forecast={signal_date:'2028-01-04',published_at:'2028-01-04T16:00:00+08:00',data_cutoff:'2028-01-04',source_commit:'a'.repeat(40),model_contract_hash:'b'.repeat(64),taxonomy_identity:'SYNTHETIC_SWL2',industry_count:107,forecast_row_count:107,taxonomy_universe_size:family.taxonomy_universe_size,model_universe_size:family.model_universe_size,model_universe_hash:family.model_universe_hash,provenance,
+  const forecast={event_hash:'c'.repeat(64),event_type:'FORECAST',signal_date:'2028-01-04',published_at:'2028-01-04T16:00:00+08:00',data_cutoff:'2028-01-04',source_commit:'a'.repeat(40),model_contract_hash:'b'.repeat(64),taxonomy_identity:'SYNTHETIC_SWL2',industry_count:107,forecast_row_count:107,taxonomy_universe_size:family.taxonomy_universe_size,model_universe_size:family.model_universe_size,model_universe_hash:family.model_universe_hash,provenance,
     cross_section:Array.from({length:107},(_,i)=>({industry_code:`S${i}`,industry_name:`合成行业 ${i}`,fused_rank:i+1,fused_score:-i,horizons:Object.fromEntries([10,40,120].map(h=>[h,{raw_prediction:-i,cross_section_zscore:-i,rank:i+1}]))}))};
   return viewSchema.parse({...empty(),status:'FORWARD_FORECAST',current:forecast,history:[forecast]});
 }

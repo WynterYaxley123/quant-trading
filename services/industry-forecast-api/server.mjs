@@ -139,7 +139,8 @@ export async function observe(runtimeRoot,family,now=Date.now()) {
         events.push({...ref,body:json(raw),body_json:raw.toString()});
       }
       validateEvents(events,binding,family,now);
-      forecasts=events.filter(e=>e.body.kind==='FORECAST').map(e=>e.body);evaluations=events.filter(e=>e.body.kind==='EVALUATION').map(e=>e.body);
+      const projection=e=>({...e.body,event_hash:e.body_hash,event_type:e.body.kind==='FORECAST'?'FORECAST':'EVALUATION_EVENT'});
+      forecasts=events.filter(e=>e.body.kind==='FORECAST').map(projection);evaluations=events.filter(e=>e.body.kind==='EVALUATION').map(projection);
     }
   }
   return {family:{...family,forward_status:forecasts.length?'FORWARD_FORECAST':'NO_FORWARD_FORECASTS',forecast_row_count:forecasts.at(-1)?.cross_section.length??0},status:forecasts.length?'FORWARD_FORECAST':'NO_FORWARD_FORECASTS',current:forecasts.at(-1)??null,history:forecasts,evaluations,metrics:[10,40,120].map(h=>aggregate(evaluations,h))};

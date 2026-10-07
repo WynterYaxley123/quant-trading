@@ -428,7 +428,15 @@ def test_python_generation_is_readable_by_node_api(tmp_path, synthetic):
         )
     )
     assert actual["current"]["industry_count"] == 107
-    assert actual["evaluations"] == expected
+    assert [
+        {k: v for k, v in e.items() if k not in {"event_hash", "event_type"}}
+        for e in actual["evaluations"]
+    ] == expected
+    assert all(
+        projected["event_hash"] == digest(json_bytes(original))
+        and projected["event_type"] == "EVALUATION_EVENT"
+        for projected, original in zip(actual["evaluations"], expected, strict=True)
+    )
     for horizon in (10, 40, 120):
         reference = aggregate(expected, horizon)
         observed = next(r for r in actual["metrics"] if r["horizon"] == horizon)
