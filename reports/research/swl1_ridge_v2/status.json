@@ -1,0 +1,40 @@
+{
+  "candidate_hash": "c94d511d925e47947b12d12a1b8c0380417da525282651a790ca55f84c81efad",
+  "etf_productization_status": "NOT_STARTED",
+  "final_oos": "PROSPECTIVE_FORWARD_ONLY",
+  "final_oos_consumed": false,
+  "final_oos_opened": false,
+  "final_oos_reopened": false,
+  "final_oos_retuned": false,
+  "formal_forward_forecasts_created": 0,
+  "forward_eligible": false,
+  "historical_membership_confidence": "RECONSTRUCTED",
+  "independent_statistical_confidence": "LIMITED",
+  "live_deployment_promoted": false,
+  "live_scheduler_enabled": false,
+  "protocol_hash": "df832a94eba54d703110defe2e7f0169e9de93a316a7def795a38fe9e50e428a",
+  "public_preregistration_anchor": {
+    "external_merge_witness": {
+      "exact_remote_bytes_verified": true,
+      "factual_performance_before_remote_anchor": false,
+      "github_url": "https://github.com/WynterYaxley123/quant-trading/pull/30",
+      "head_sha": "bca3d3221f073d603185d53c703b5934bd09d237",
+      "merge_sha": "41c561448f2d643f4f64201cd7c023b49537c1a3",
+      "merged": true,
+      "merged_at": "2026-10-07T16:46:52Z",
+      "pr_number": 30,
+      "protocol_commit": "bca3d3221f073d603185d53c703b5934bd09d237",
+      "protocol_hash": "df832a94eba54d703110defe2e7f0169e9de93a316a7def795a38fe9e50e428a",
+      "remote_main_sha": "41c561448f2d643f4f64201cd7c023b49537c1a3"
+    },
+    "protocol_commit": "bca3d3221f073d603185d53c703b5934bd09d237",
+    "protocol_committed_at": "2026-10-08T01:37:29+09:00",
+    "remote_ref": "refs/remotes/origin/main"
+  },
+  "scientific_status": "FAILED_VALIDATION",
+  "search_spec_count": 16,
+  "validation_informed_revision": false,
+  "validation_opened": true,
+  "validation_passed": false,
+  "validation_reopened": false
+}

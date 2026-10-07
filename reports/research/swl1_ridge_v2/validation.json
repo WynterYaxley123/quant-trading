@@ -1,0 +1,79 @@
+{
+  "lineage": {
+    "candidate_hash": "c94d511d925e47947b12d12a1b8c0380417da525282651a790ca55f84c81efad",
+    "phase": "validation",
+    "protocol_hash": "df832a94eba54d703110defe2e7f0169e9de93a316a7def795a38fe9e50e428a"
+  },
+  "metrics": {
+    "block_composite_rank_ic": [
+      0.07362203214299413,
+      -0.04378197997775305,
+      -0.0853448275862069,
+      -0.05557285873192434
+    ],
+    "block_partition": "EQUAL_CALENDAR_DURATION",
+    "block_signal_counts": [
+      29,
+      35,
+      32,
+      30
+    ],
+    "composite_rank_ic": -0.030123417553895863,
+    "dependence": "TEMPORALLY_DEPENDENT_OVERLAPPING_HORIZONS",
+    "dropped_signals": [],
+    "fit_count": 378,
+    "fit_records_sha256": "919e1b35fe944cde266c7d29cf1729e57bfb37aaedb12290586b2185eb0748be",
+    "horizons": {
+      "10": {
+        "bottom5_return": 0.003068977687067038,
+        "mean_rank_ic": 0.0406518706852411,
+        "median_rank_ic": 0.0471635150166852,
+        "positive_fraction": 0.5714285714285714,
+        "spread": 0.006894908380470668,
+        "top5_return": 0.009963886067537705
+      },
+      "120": {
+        "bottom5_return": -0.014392451807888819,
+        "mean_rank_ic": -0.16132916644596285,
+        "median_rank_ic": -0.16262513904338152,
+        "positive_fraction": 0.18253968253968253,
+        "spread": -0.025149188586774885,
+        "top5_return": -0.039541640394663694
+      },
+      "40": {
+        "bottom5_return": 0.015785456987075237,
+        "mean_rank_ic": 9.181277256917043e-05,
+        "median_rank_ic": -0.02135706340378198,
+        "positive_fraction": 0.4603174603174603,
+        "spread": 0.010463372237539905,
+        "top5_return": 0.02624882922461514
+      }
+    },
+    "independent_statistical_confidence": "LIMITED",
+    "median_composite_rank_ic": -0.04349276974416018,
+    "positive_blocks": 1,
+    "required_signal_count": 126,
+    "ridge_alpha_by_horizon": {
+      "10": {
+        "fits": 126,
+        "maximum": 143100.0,
+        "minimum": 141600.0
+      },
+      "120": {
+        "fits": 126,
+        "maximum": 110100.0,
+        "minimum": 108600.0
+      },
+      "40": {
+        "fits": 126,
+        "maximum": 134100.0,
+        "minimum": 132600.0
+      }
+    },
+    "signal_count": 126,
+    "sufficient_dates": true,
+    "weighted_positive_fraction": 0.4186507936507936,
+    "weighted_spread": 0.0006681160671938981
+  },
+  "passed": false
+}
