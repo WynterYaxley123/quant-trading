@@ -1,0 +1,2057 @@
+{
+  "boundary_source": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+  "classification_version": "SWCLASS2021",
+  "hierarchy": [
+    {
+      "child_code": "110100",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110101",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110102",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110103",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110104",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110200",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110201",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110202",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110300",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110301",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110400",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110402",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110403",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110404",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110500",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110501",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110502",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110504",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110700",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110702",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110703",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110704",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110800",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110801",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110900",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "110901",
+      "parent_code": "110000"
+    },
+    {
+      "child_code": "220200",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220201",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220202",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220203",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220204",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220205",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220206",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220300",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220305",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220307",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220308",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220309",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220311",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220313",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220315",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220316",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220317",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220400",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220401",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220403",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220404",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220405",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220406",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220500",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220501",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220503",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220504",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220505",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220600",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220602",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220603",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220604",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220800",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220801",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220802",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220803",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220804",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220805",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220900",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "220901",
+      "parent_code": "220000"
+    },
+    {
+      "child_code": "230300",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230301",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230302",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230400",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230401",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230402",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230403",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230500",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "230501",
+      "parent_code": "230000"
+    },
+    {
+      "child_code": "240200",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240201",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240202",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240300",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240301",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240302",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240303",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240400",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240401",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240402",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240500",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240501",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240502",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240504",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240505",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240600",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240601",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240602",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "240603",
+      "parent_code": "240000"
+    },
+    {
+      "child_code": "270100",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270102",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270103",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270104",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270105",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270106",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270107",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270108",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270200",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270202",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270203",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270300",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270301",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270302",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270303",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270400",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270401",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270500",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270503",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270504",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270600",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "270601",
+      "parent_code": "270000"
+    },
+    {
+      "child_code": "280601",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280602",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280200",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280202",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280203",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280204",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280205",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280206",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280300",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280302",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280303",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280400",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280401",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280402",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280500",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280501",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280502",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "280600",
+      "parent_code": "280000"
+    },
+    {
+      "child_code": "330100",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330102",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330106",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330200",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330201",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330202",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330300",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330301",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330302",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330303",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330400",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330401",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330402",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330500",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330501",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330600",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330601",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330700",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "330701",
+      "parent_code": "330000"
+    },
+    {
+      "child_code": "340400",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340401",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340404",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340406",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340407",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340500",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340501",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340600",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340601",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340602",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340700",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340701",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340702",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340800",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340801",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340802",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340803",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340900",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "340901",
+      "parent_code": "340000"
+    },
+    {
+      "child_code": "350100",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350104",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350105",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350106",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350107",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350200",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350205",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350206",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350208",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350209",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350300",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350301",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350302",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "350303",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "360100",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360102",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360103",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360200",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360202",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360203",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360204",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360205",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360206",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360300",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360306",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360307",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360308",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360309",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360311",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360500",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360501",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "360502",
+      "parent_code": "360000"
+    },
+    {
+      "child_code": "370100",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370101",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370102",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370200",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370201",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370300",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370302",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370303",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370304",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370400",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370402",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370403",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370404",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370500",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370502",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370503",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370504",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370600",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370602",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370603",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370604",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "370605",
+      "parent_code": "370000"
+    },
+    {
+      "child_code": "410100",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410101",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410102",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410104",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410106",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410107",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410108",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410109",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410110",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410300",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "410301",
+      "parent_code": "410000"
+    },
+    {
+      "child_code": "421102",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420800",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420802",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420803",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420804",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420805",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420806",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420807",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420900",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420901",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420902",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "420903",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "421000",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "421001",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "421002",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "421100",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "421101",
+      "parent_code": "420000"
+    },
+    {
+      "child_code": "430100",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430101",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430102",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430103",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430300",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430301",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430302",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "430303",
+      "parent_code": "430000"
+    },
+    {
+      "child_code": "450200",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450201",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450300",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450301",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450302",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450303",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450304",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450400",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450401",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450600",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450601",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450602",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450603",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450700",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "450701",
+      "parent_code": "450000"
+    },
+    {
+      "child_code": "460600",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460601",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460700",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460701",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460800",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460801",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460802",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460803",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460804",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460900",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460901",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "460902",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461000",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461001",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461002",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461003",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461004",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461100",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461101",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461102",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "461103",
+      "parent_code": "460000"
+    },
+    {
+      "child_code": "480200",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480201",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480300",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480301",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480400",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480401",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480500",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480501",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480600",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "480601",
+      "parent_code": "480000"
+    },
+    {
+      "child_code": "490100",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490101",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490200",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490201",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490300",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490302",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490303",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490304",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490305",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490306",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490307",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "490308",
+      "parent_code": "490000"
+    },
+    {
+      "child_code": "510100",
+      "parent_code": "510000"
+    },
+    {
+      "child_code": "510101",
+      "parent_code": "510000"
+    },
+    {
+      "child_code": "610100",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610101",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610102",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610200",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610201",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610202",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610300",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610301",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610302",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610303",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610304",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "610305",
+      "parent_code": "610000"
+    },
+    {
+      "child_code": "620100",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620101",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620200",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "350102",
+      "parent_code": "350000"
+    },
+    {
+      "child_code": "620201",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620300",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620306",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620400",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620401",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620402",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620403",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620404",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620307",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620600",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "620601",
+      "parent_code": "620000"
+    },
+    {
+      "child_code": "630100",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630101",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630300",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630301",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630304",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630306",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630500",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630501",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630502",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630503",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630504",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630505",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630600",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630601",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630602",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630700",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630701",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630702",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630703",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630704",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630705",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630800",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630801",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630802",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630803",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630804",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "630805",
+      "parent_code": "630000"
+    },
+    {
+      "child_code": "640100",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640101",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640103",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640105",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640106",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640200",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640203",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640204",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640206",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640207",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640208",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640209",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640107",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640108",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640500",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640501",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640600",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640601",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640602",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640700",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640701",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640702",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640703",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "640704",
+      "parent_code": "640000"
+    },
+    {
+      "child_code": "650100",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650101",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650200",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650201",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650300",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650301",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650400",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650401",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650500",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "650501",
+      "parent_code": "650000"
+    },
+    {
+      "child_code": "710100",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710102",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710103",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710300",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710301",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710400",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710401",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "710402",
+      "parent_code": "710000"
+    },
+    {
+      "child_code": "720400",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720401",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720500",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720501",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720502",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720600",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720601",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720602",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720700",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720701",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720702",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720703",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720704",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720705",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720706",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720800",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720801",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720900",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720901",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720902",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "720903",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "721000",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "721001",
+      "parent_code": "720000"
+    },
+    {
+      "child_code": "730100",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730102",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730103",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730104",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730200",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730204",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730205",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730206",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "730207",
+      "parent_code": "730000"
+    },
+    {
+      "child_code": "740100",
+      "parent_code": "740000"
+    },
+    {
+      "child_code": "740101",
+      "parent_code": "740000"
+    },
+    {
+      "child_code": "740102",
+      "parent_code": "740000"
+    },
+    {
+      "child_code": "740200",
+      "parent_code": "740000"
+    },
+    {
+      "child_code": "740201",
+      "parent_code": "740000"
+    },
+    {
+      "child_code": "750100",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750101",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750200",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750201",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750202",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750300",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750301",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750302",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "750303",
+      "parent_code": "750000"
+    },
+    {
+      "child_code": "760100",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "760101",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "760102",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "760103",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "760104",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "760200",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "760201",
+      "parent_code": "760000"
+    },
+    {
+      "child_code": "770100",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770101",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770102",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770200",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770201",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770202",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770300",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770301",
+      "parent_code": "770000"
+    },
+    {
+      "child_code": "770302",
+      "parent_code": "770000"
+    }
+  ],
+  "historical_version_boundary": "2021-07-31",
+  "industries": [
+    {
+      "industry_code": "110000",
+      "industry_name": "\u519c\u6797\u7267\u6e14"
+    },
+    {
+      "industry_code": "220000",
+      "industry_name": "\u57fa\u7840\u5316\u5de5"
+    },
+    {
+      "industry_code": "230000",
+      "industry_name": "\u94a2\u94c1"
+    },
+    {
+      "industry_code": "240000",
+      "industry_name": "\u6709\u8272\u91d1\u5c5e"
+    },
+    {
+      "industry_code": "270000",
+      "industry_name": "\u7535\u5b50"
+    },
+    {
+      "industry_code": "280000",
+      "industry_name": "\u6c7d\u8f66"
+    },
+    {
+      "industry_code": "330000",
+      "industry_name": "\u5bb6\u7528\u7535\u5668"
+    },
+    {
+      "industry_code": "340000",
+      "industry_name": "\u98df\u54c1\u996e\u6599"
+    },
+    {
+      "industry_code": "350000",
+      "industry_name": "\u7eba\u7ec7\u670d\u9970"
+    },
+    {
+      "industry_code": "360000",
+      "industry_name": "\u8f7b\u5de5\u5236\u9020"
+    },
+    {
+      "industry_code": "370000",
+      "industry_name": "\u533b\u836f\u751f\u7269"
+    },
+    {
+      "industry_code": "410000",
+      "industry_name": "\u516c\u7528\u4e8b\u4e1a"
+    },
+    {
+      "industry_code": "420000",
+      "industry_name": "\u4ea4\u901a\u8fd0\u8f93"
+    },
+    {
+      "industry_code": "430000",
+      "industry_name": "\u623f\u5730\u4ea7"
+    },
+    {
+      "industry_code": "450000",
+      "industry_name": "\u5546\u8d38\u96f6\u552e"
+    },
+    {
+      "industry_code": "460000",
+      "industry_name": "\u793e\u4f1a\u670d\u52a1"
+    },
+    {
+      "industry_code": "480000",
+      "industry_name": "\u94f6\u884c"
+    },
+    {
+      "industry_code": "490000",
+      "industry_name": "\u975e\u94f6\u91d1\u878d"
+    },
+    {
+      "industry_code": "510000",
+      "industry_name": "\u7efc\u5408"
+    },
+    {
+      "industry_code": "610000",
+      "industry_name": "\u5efa\u7b51\u6750\u6599"
+    },
+    {
+      "industry_code": "620000",
+      "industry_name": "\u5efa\u7b51\u88c5\u9970"
+    },
+    {
+      "industry_code": "630000",
+      "industry_name": "\u7535\u529b\u8bbe\u5907"
+    },
+    {
+      "industry_code": "640000",
+      "industry_name": "\u673a\u68b0\u8bbe\u5907"
+    },
+    {
+      "industry_code": "650000",
+      "industry_name": "\u56fd\u9632\u519b\u5de5"
+    },
+    {
+      "industry_code": "710000",
+      "industry_name": "\u8ba1\u7b97\u673a"
+    },
+    {
+      "industry_code": "720000",
+      "industry_name": "\u4f20\u5a92"
+    },
+    {
+      "industry_code": "730000",
+      "industry_name": "\u901a\u4fe1"
+    },
+    {
+      "industry_code": "740000",
+      "industry_name": "\u7164\u70ad"
+    },
+    {
+      "industry_code": "750000",
+      "industry_name": "\u77f3\u6cb9\u77f3\u5316"
+    },
+    {
+      "industry_code": "760000",
+      "industry_name": "\u73af\u4fdd"
+    },
+    {
+      "industry_code": "770000",
+      "industry_name": "\u7f8e\u5bb9\u62a4\u7406"
+    }
+  ],
+  "industry_level": 1,
+  "limitation": "Version-specific reconstruction, not contemporaneous availability proof.",
+  "source_sha256": "184465ee6a884e0eb218b6706c4eb36f8a91646fd2a8218658e23d735fd21faa",
+  "source_url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls"
+}

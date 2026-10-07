@@ -1,0 +1,225 @@
+{
+  "admission_rule": "Every post-seed industry day valid; >=5 exact adjacent constituents and >=80% daily constituent coverage. No recursive restart after a gap.",
+  "excluded": [
+    {
+      "code": "510000",
+      "reason": "RECURSIVE_SERIES_FACTUAL_GAP"
+    }
+  ],
+  "industries": [
+    "110000",
+    "220000",
+    "230000",
+    "240000",
+    "270000",
+    "280000",
+    "330000",
+    "340000",
+    "350000",
+    "360000",
+    "370000",
+    "410000",
+    "420000",
+    "430000",
+    "450000",
+    "460000",
+    "480000",
+    "490000",
+    "610000",
+    "620000",
+    "630000",
+    "640000",
+    "650000",
+    "710000",
+    "720000",
+    "730000",
+    "740000",
+    "750000",
+    "760000",
+    "770000"
+  ],
+  "industry_level": 1,
+  "metadata": [
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "110000",
+      "name": "\u519c\u6797\u7267\u6e14",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "220000",
+      "name": "\u57fa\u7840\u5316\u5de5",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "230000",
+      "name": "\u94a2\u94c1",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "240000",
+      "name": "\u6709\u8272\u91d1\u5c5e",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "270000",
+      "name": "\u7535\u5b50",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "280000",
+      "name": "\u6c7d\u8f66",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "330000",
+      "name": "\u5bb6\u7528\u7535\u5668",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "340000",
+      "name": "\u98df\u54c1\u996e\u6599",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "350000",
+      "name": "\u7eba\u7ec7\u670d\u9970",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "360000",
+      "name": "\u8f7b\u5de5\u5236\u9020",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "370000",
+      "name": "\u533b\u836f\u751f\u7269",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "410000",
+      "name": "\u516c\u7528\u4e8b\u4e1a",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "420000",
+      "name": "\u4ea4\u901a\u8fd0\u8f93",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "430000",
+      "name": "\u623f\u5730\u4ea7",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "450000",
+      "name": "\u5546\u8d38\u96f6\u552e",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "460000",
+      "name": "\u793e\u4f1a\u670d\u52a1",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "480000",
+      "name": "\u94f6\u884c",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "490000",
+      "name": "\u975e\u94f6\u91d1\u878d",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "610000",
+      "name": "\u5efa\u7b51\u6750\u6599",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "620000",
+      "name": "\u5efa\u7b51\u88c5\u9970",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "630000",
+      "name": "\u7535\u529b\u8bbe\u5907",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "640000",
+      "name": "\u673a\u68b0\u8bbe\u5907",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "650000",
+      "name": "\u56fd\u9632\u519b\u5de5",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "710000",
+      "name": "\u8ba1\u7b97\u673a",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "720000",
+      "name": "\u4f20\u5a92",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "730000",
+      "name": "\u901a\u4fe1",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "740000",
+      "name": "\u7164\u70ad",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "750000",
+      "name": "\u77f3\u6cb9\u77f3\u5316",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "760000",
+      "name": "\u73af\u4fdd",
+      "valid_industry_days": 1252
+    },
+    {
+      "admission_reason": "CONTINUOUS_EXACT_RETURN_HISTORY",
+      "code": "770000",
+      "name": "\u7f8e\u5bb9\u62a4\u7406",
+      "valid_industry_days": 1252
+    }
+  ],
+  "performance_used": false
+}
