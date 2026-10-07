@@ -19,7 +19,7 @@
       "config/deployment/cnequity.pin.json": "d34049303cc7ebbaafdf04b303b780f53df9477508eecfd0ec206eafb00f8650",
       "config/deployment/compose.host-ports.example.yml": "2474b98c674c2b78a526a4eefa14d82f1444d7cc53c90fd051e15efd4c8344c3",
       "config/deployment/runtime.example.json": "faab95b3d28359117bb95b02dfb4794de846e354945be773cf1a50be0a19ad31",
-      "config/engineering/documentation-map.json": "190868cae9d1c15509923feb6f6da843e88a6256c704698b457e214270dd9c99",
+      "config/engineering/documentation-map.json": "f5b046b5d1ca94bdaa77f0774c76faa1563aeba1be76f9d33f58cfa9e8a354cc",
       "config/research/etf-quant-v2-scientific-status.json": "5b4d3489499f9c6f0bbc53915ad2ed3a0e0a459266212d6c121dfec9be71e086",
       "config/research/industry-forecast-families.json": "6213c203695db5693c32030ce1bba2cc6362408dbd96062534771ffa767ed4f0",
       "config/research/swl1-ridge-v1-candidate.json": "c5917b83d5c81627cfa88ae19d1691fd7356b7c91134be1472c1047e2a31ab6c",
@@ -68,6 +68,7 @@
       "docs/engineering/README.md": "033efa4ab9da8c04f80c9a7bfbdffea0dcc326aa3874d44a4aa253b6f653d172",
       "docs/engineering/deployment-source-boundary.md": "d2207b647fdd27b364f950c9b4585c85566e3e15579af70b1e66eb2b5d272e07",
       "docs/engineering/repository-health.md": "8c219ec9714c208ee4ca8e6c98d699b44850313331d64fc2e2f49a1f3b422033",
+      "docs/engineering/swl1-ridge-v1-acceptance.md": "89d4c3a44453152c43a3c7d747071316cd5ab447b4e8d957b7d17892d82c4f97",
       "docs/engineering/swl2-industry-forecast-closure.md": "72dac23701f2b77f4f8ee2eddf6035ac839919e9b605a4815141ce7924245926",
       "docs/engineering/swl2-industry-forecast-transition.md": "5c97c6067a9cb2fe558fbd165972b1130fee41fd39f818996c844330525667af",
       "docs/engineering/v7-remediation.md": "1480f458e39cb1ef44825f1a7df32ced27dea0060704bac35cbe45aed4ad202b",
@@ -130,8 +131,8 @@
       "services/etf-quant-runner/one_shot.py": "667b193a0da3dc9452dc78b3d85cfc10d7c4504fb4f5e067b94d1b1f6044c7aa",
       "services/etf-quant-runner/run.py": "f37e7569d34f21611e3928cce88bf237029be956001f328bb521f6a9102ec0f8",
       "services/etf-quant-runner/scheduled_wake.py": "e7a6837214b8f91d3e1a3e4dde5a49ed7999b388dae2bbdc4ff90c229443fd00",
-      "services/etf-quant-runner/security-audit.mjs": "bf26749731836b3f9a28b36f10d785439047c0992e2842b13c128ac2c12513d5",
-      "services/etf-quant-runner/security-audit.test.mjs": "39e58f1565e40e925a28c40fe1eb60c62d0b9cc2637a16e980a7bfe80b433b01",
+      "services/etf-quant-runner/security-audit.mjs": "cfd43e6e1a347ffd678b7896aedc93920b1db00f0fc3ebfe11dbed5447d31014",
+      "services/etf-quant-runner/security-audit.test.mjs": "c5981df77be1067aa243334142b27abf1a8c24061786eba8bbabb4c1747df277",
       "services/etf-quant-runner/versioned.py": "ce66809fb96a76c976b5bcfeffac0fc1dc553ba0325cd0b2f8863655254d1d03",
       "services/industry-forecast-api/README.md": "4ceb0231f43d129a43878ec09819453a2f4450e784b0412f9afb87704ff21ec5",
       "services/industry-forecast-api/package.json": "1f799794d4baf8c089b17af14419fa2d51a213ea40eea8001772a1be82d5dd7f",
@@ -175,7 +176,7 @@
       "tests/research/test_v2_finalization.py": "2f4c3b3e32e6185a270352e2f8bc1616d10a7f6bfd5676ccddf95bc46e54cbfa",
       "tests/test_deployment_boundaries.py": "cf922c1fe9fd770304d03c7a2ecc4b13ba6299ccede3612c1fb808cd227a3013",
       "tests/test_etf_quant_v2_shadow.py": "2f04a1d7e82aeb8b18a3940a0b882d48d12bffb70fb3bb99ba38d3904db73960",
-      "tests/test_swl1_research.py": "546db5217e2cb6bd154fe1c8568f4315fbd9afc9959587e8c016a40cc7c5487a",
+      "tests/test_swl1_research.py": "bc7aa19944acd284ab3307d936cf70f59cf2bd6b4e530357c2087760dc03d7a7",
       "tests/test_swl2_forecast.py": "e219ec8a329ca13639f2a093df57b95cb877f029ae61e1186114791d6bfe43e9",
       "tests/test_v4_integrity.py": "76a698f0aa7e7e2b34f938b19923ac7afffc6d307e0fa1e8c448890f9ac24199",
       "tests/test_v7_runtime.py": "8fc0c1718513c0343246c8e89f9ea2ab85a1b592e5be14966a21bc26dee4c868",
@@ -251,7 +252,7 @@
       {
         "path": "config/engineering/documentation-map.json",
         "before_sha256": "02a997b0d18fe4d6ec02465aeaf713f399e909bdf2dbcb0b0ff0982d91d87223",
-        "after_sha256": "190868cae9d1c15509923feb6f6da843e88a6256c704698b457e214270dd9c99",
+        "after_sha256": "f5b046b5d1ca94bdaa77f0774c76faa1563aeba1be76f9d33f58cfa9e8a354cc",
         "reason": "SWL1-RIDGE-V1 verified remediation"
       },
       {
@@ -541,6 +542,12 @@
         "before_sha256": "e9320377f9e3d37f97818cad9d7608b43f51b4c9272cea2def4168c083693bf5",
         "after_sha256": "8c219ec9714c208ee4ca8e6c98d699b44850313331d64fc2e2f49a1f3b422033",
         "reason": "V8 verified remediation"
+      },
+      {
+        "path": "docs/engineering/swl1-ridge-v1-acceptance.md",
+        "before_sha256": null,
+        "after_sha256": "89d4c3a44453152c43a3c7d747071316cd5ab447b4e8d957b7d17892d82c4f97",
+        "reason": "SWL1-RIDGE-V1 verified remediation"
       },
       {
         "path": "docs/engineering/swl2-industry-forecast-closure.md",
@@ -917,14 +924,14 @@
       {
         "path": "services/etf-quant-runner/security-audit.mjs",
         "before_sha256": "bb3c2bcdfa089967aab30f36786cb0de79ea45a64638b63f0127ef31c4432cc5",
-        "after_sha256": "bf26749731836b3f9a28b36f10d785439047c0992e2842b13c128ac2c12513d5",
+        "after_sha256": "cfd43e6e1a347ffd678b7896aedc93920b1db00f0fc3ebfe11dbed5447d31014",
         "reason": "SWL1-RIDGE-V1 verified remediation"
       },
       {
         "path": "services/etf-quant-runner/security-audit.test.mjs",
         "before_sha256": "e49dc2da41cd2027dbbe54128690a5c61949d8c7d666506f5e0b3b931665e5b7",
-        "after_sha256": "39e58f1565e40e925a28c40fe1eb60c62d0b9cc2637a16e980a7bfe80b433b01",
-        "reason": "V7 verified research labeling, runtime recovery and engineering correction"
+        "after_sha256": "c5981df77be1067aa243334142b27abf1a8c24061786eba8bbabb4c1747df277",
+        "reason": "SWL1-RIDGE-V1 verified remediation"
       },
       {
         "path": "services/etf-quant-runner/versioned.py",
@@ -1187,7 +1194,7 @@
       {
         "path": "tests/test_swl1_research.py",
         "before_sha256": null,
-        "after_sha256": "546db5217e2cb6bd154fe1c8568f4315fbd9afc9959587e8c016a40cc7c5487a",
+        "after_sha256": "bc7aa19944acd284ab3307d936cf70f59cf2bd6b4e530357c2087760dc03d7a7",
         "reason": "SWL1-RIDGE-V1 verified remediation"
       },
       {
@@ -1216,6 +1223,6 @@
       }
     ],
     "regression_evidence": "docs/research/swl1-ridge-v1-results.md",
-    "certificate_sha256": "4d47235e3d427893456d04bb052bbdeb9319b99fb0eb9c19aae852253748319f"
+    "certificate_sha256": "2d61eef2209f25c41857411060d8985f09a3e95cc7dc45055419a15c0e6dd549"
   }
 }

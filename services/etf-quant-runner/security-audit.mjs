@@ -84,11 +84,23 @@ export function secretKinds(text) {
   }
   return [...new Set(kinds)];
 }
-const forbiddenData = name=> /^(?:data|runtime|external|lake|exports|cache|logs|secrets)\//.test(name)
+// Reviewed aggregate-only V1 closure. Both path and exact bytes must match;
+// altered reports and all other research payloads remain prohibited.
+const reviewedResearchHashes = Object.freeze({
+  'reports/research/swl1_ridge_v1/data_feasibility.json':'39aff56e15b730bc834cb7407a086546a75f7d4f292ee0cadc38294e1987fad3',
+  'reports/research/swl1_ridge_v1/development.json':'a031bec412de2c86008eeb2b9272f8409fd17ce79b8ef511a893d497003dfeda',
+  'reports/research/swl1_ridge_v1/factor_audit.json':'c3998b221e4b210271dee6e6e4b6ae118cc4a34717900820425c2d1ef8f9f041',
+  'reports/research/swl1_ridge_v1/preregistration.json':'98f3751e7eee900424a05dc28abe53242039477f7dca0e520267fd0741edc8fa',
+  'reports/research/swl1_ridge_v1/status.json':'9d2a6b9d418e88008a0125d4004fd9283735ce5fd1b854f7a9de607f73eb6569',
+  'reports/research/swl1_ridge_v1/validation.json':'4f39211fb8fcdd3e350355414b753065940b8bdb42bb2ee57a432b89241c205c',
+});
+export const forbiddenData = (name,bytes)=> /^(?:data|runtime|external|lake|exports|cache|logs|secrets)\//.test(name)
   || /(?:^|\/)\.env(?:$|\.(?!example$))/.test(name)
   || /\.(?:db|sqlite3?|h5|hdf5|parquet|p12|pfx)$/.test(name)
   || /(?:^|\/)node_modules\//.test(name)
-  || (/^reports\/(backtests|research)\//.test(name) && !name.endsWith('/.gitkeep'));
+  || (/^reports\/(backtests|research)\//.test(name) && !name.endsWith('/.gitkeep')
+    && !(Object.hasOwn(reviewedResearchHashes,name) && bytes!==undefined
+      && createHash('sha256').update(bytes).digest('hex')===reviewedResearchHashes[name]));
 const sealedPerformance = name=>/(?:validation|final[_-]?oos)/i.test(name)
   && /(?:performance|predictions|results|returns|metrics)\.(json|csv|parquet)$/i.test(name);
 
@@ -97,14 +109,15 @@ export function audit() {
   const extra=git(['ls-files','--others','--exclude-standard','-z']).split('\0').filter(Boolean);
   const candidates=[],large=[],forbidden=[],sealed=[];
   for(const [scope,names] of [['tracked',tracked],['new',extra]]) for(const name of names) {
-    if(forbiddenData(name))forbidden.push({scope,path:name});
     if(sealedPerformance(name)){sealed.push({scope,path:name});continue;} // Do NOT inspect sealed content.
     const target=path.join(repo,name), info=lstatSync(target);
     if(info.isSymbolicLink() || !realpathSync(target).startsWith(repo+path.sep)) {
       forbidden.push({scope,path:name,kind:'LINK_OR_CONTAINMENT'});continue;
     }
     if(info.size>500*1024)large.push({scope,path:name,bytes:info.size});
-    const kinds=secretKinds(readFileSync(target,'utf8'));
+    const bytes=readFileSync(target);
+    if(forbiddenData(name,bytes))forbidden.push({scope,path:name});
+    const kinds=secretKinds(bytes.toString('utf8'));
     if(kinds.length)candidates.push({scope,path:name,kinds});
   }
   const objects=git(['rev-list','--objects','--all']).trim().split('\n').filter(Boolean)
@@ -118,7 +131,6 @@ export function audit() {
   const blobs=checks.filter(([,type])=>type==='blob');
   for(const [id,,size] of blobs) {
     const name=names.get(id)||'';
-    if(forbiddenData(name))forbidden.push({scope:'history',path:name,blob:id});
     if(Number(size)>500*1024)large.push({scope:'history',path:name,blob:id,bytes:Number(size)});
   }
   const content=blobs.length?git(['cat-file','--batch'],blobs.map(([id])=>id).join('\n')+'\n',null):Buffer.alloc(0);
@@ -126,7 +138,8 @@ export function audit() {
   for(const [id,,expectedSize] of blobs) {
     const end=content.indexOf(10,offset),header=content.subarray(offset,end).toString('utf8').split(' ');
     if(header[0]!==id || Number(header[2])!==Number(expectedSize))throw new Error('HISTORY_STREAM_BLOCKER');
-    offset=end+1;const size=Number(expectedSize),body=content.subarray(offset,offset+size).toString('utf8');offset+=size+1;
+    offset=end+1;const size=Number(expectedSize),bytes=content.subarray(offset,offset+size),body=bytes.toString('utf8');offset+=size+1;
+    if(forbiddenData(names.get(id)||'',bytes))forbidden.push({scope:'history',path:names.get(id)||'',blob:id});
     const kinds=secretKinds(body);
     if(kinds.length)candidates.push({scope:'history',path:names.get(id)||'',blob:id,kinds});
   }

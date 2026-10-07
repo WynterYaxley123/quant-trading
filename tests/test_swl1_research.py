@@ -152,6 +152,39 @@ def test_future_source_not_available():
         available_at(datetime(2028, 1, 2, tzinfo=timezone.utc), decision)
 
 
+def test_training_scaler_excludes_future_features_and_labels_remove_daily_market_return():
+    rng = np.random.default_rng(94)
+    features = rng.normal(size=(700, 8, len(FACTORS_19)))
+    features[:, :, 0] = 7.0  # Constant training factor must remain finite.
+    targets = rng.normal(size=(700, 8))
+    days = pd.bdate_range("2020-01-01", periods=700).strftime("%Y-%m-%d").tolist()
+    spec = Spec(100, 12, "B")
+    expected, _ = fit_predict(features, targets, days, 600, 120, spec)
+    poisoned = features.copy()
+    poisoned[481:600] = 1e12
+    poisoned[601:] = -1e12
+    actual, _ = fit_predict(poisoned, targets, days, 600, 120, spec)
+    np.testing.assert_array_equal(actual, expected)
+    translated = targets + rng.normal(size=(700, 1)) * 5
+    actual, _ = fit_predict(features, translated, days, 600, 120, spec)
+    np.testing.assert_allclose(actual, expected, atol=1e-13)
+
+
+def test_incomplete_industry_drops_whole_training_date_without_short_window_fallback():
+    features = np.ones((700, 8, len(FACTORS_19)))
+    targets = np.ones((700, 8))
+    days = pd.bdate_range("2020-01-01", periods=700).strftime("%Y-%m-%d").tolist()
+    spec = Spec(1, 24, "B")
+    _, before = fit_predict(features, targets, days, 600, 120, spec)
+    targets[450, 0] = np.nan
+    _, after = fit_predict(features, targets, days, 600, 120, spec)
+    assert after["valid_training_dates"] == before["valid_training_dates"] - 1
+    assert after["industry_rows"] == before["industry_rows"] - 8
+    targets[:452] = np.nan
+    with pytest.raises(ValueError, match="INSUFFICIENT_COMPLETE"):
+        fit_predict(features, targets, days, 600, 120, spec)
+
+
 def test_scientific_negative_paths_and_null_metrics():
     empty = summarize([], 126)
     assert empty["composite_rank_ic"] is None

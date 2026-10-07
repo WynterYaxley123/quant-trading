@@ -1453,6 +1453,10 @@
     {
       "path": "docs/research/swl1-ridge-v1-results.md",
       "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/engineering/swl1-ridge-v1-acceptance.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }
