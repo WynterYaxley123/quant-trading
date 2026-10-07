@@ -1461,6 +1461,10 @@
     {
       "path": "docs/research/swl1-ridge-v2-draft.md",
       "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-ridge-v2-protocol.md",
+      "class": "ACTIVE_USER_DOC"
     }
   ]
 }

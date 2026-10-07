@@ -10,7 +10,7 @@ import {allowedOrigins} from '../etf-quant-api/origins.mjs';
 import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-ridge-v2-draft-integrity.json';
+const ACTIVE='reports/engineering/swl1-ridge-v2-prereg-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;

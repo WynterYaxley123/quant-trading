@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 
 from research.swl1_ridge_v1.evaluation import rank_ic
-from research.swl1_ridge_v1.protocol import HORIZONS, WEIGHTS, exact_targets
+from research.swl1_ridge_v1.protocol import HORIZONS, WEIGHTS, body, digest, exact_targets
 
 from .protocol import Spec, fit_predict
 
@@ -22,6 +22,11 @@ def extremes(prediction: np.ndarray, codes: list[str], count: int = 5) -> tuple[
     top = np.lexsort((code, -prediction))[:count]
     bottom = np.lexsort((code, prediction))[:count]
     return top, bottom
+
+
+def public_metrics(metrics: dict[str, Any]) -> dict[str, Any]:
+    """Per-fit trace is private; preserve aggregate actual alpha and its byte hash."""
+    return {key: value for key, value in metrics.items() if key != "fit_records"}
 
 
 def calendar_blocks(row_dates: list[str], start: str, end: str) -> list[int]:
@@ -109,17 +114,30 @@ def evaluate(
     codes: list[str],
     signals: list[int],
     spec: Spec,
+    phase: str = "synthetic",
 ) -> dict[str, Any]:
     """Only the phase's factual maturity prefix is turned into labels."""
     last_maturity = max(signals) + max(HORIZONS)
     targets = {h: exact_targets(returns[: last_maturity + 1], h) for h in HORIZONS}
     rows: list[dict[str, Any]] = []
     dropped: list[dict[str, str]] = []
+    fits: list[dict[str, Any]] = []
     for index in signals:
         parts = {}
+        horizon = "evaluation"
         try:
             for h in HORIZONS:
-                prediction, _ = fit_predict(features, targets[h], dates, index, h, spec)
+                horizon = str(h)
+                prediction, metadata = fit_predict(features, targets[h], dates, index, h, spec)
+                fits.append(
+                    {
+                        "signal_date": dates[index],
+                        "phase": phase,
+                        "spec": spec.identifier,
+                        "horizon": h,
+                        **metadata,
+                    }
+                )
                 actual = targets[h][index]
                 if not np.isfinite(actual).all():
                     raise ValueError("INCOMPLETE_FIXED_UNIVERSE_TARGET")
@@ -134,7 +152,30 @@ def evaluate(
                     "spread": float(np.mean(actual[top]) - np.mean(actual[bottom])),
                 }
         except ValueError as error:
-            dropped.append({"date": dates[index], "reason": str(error)})
+            dropped.append(
+                {
+                    "signal_date": dates[index],
+                    "phase": phase,
+                    "spec": spec.identifier,
+                    "horizon": horizon,
+                    "reason_code": str(error),
+                }
+            )
             continue
         rows.append({"date": dates[index], "horizons": parts})
-    return summarize(rows, dropped, len(signals), dates[signals[0]], dates[signals[-1]])
+    if len(rows) + len(dropped) != len(signals):
+        raise ValueError("SIGNAL_ACCOUNTING_MISMATCH")
+    metrics = summarize(rows, dropped, len(signals), dates[signals[0]], dates[signals[-1]])
+    metrics["fit_records"] = fits
+    metrics["fit_records_sha256"] = digest(body(fits))
+    metrics["fit_count"] = len(fits)
+    metrics["ridge_alpha_by_horizon"] = {
+        str(h): {
+            "minimum": min(values) if values else None,
+            "maximum": max(values) if values else None,
+            "fits": len(values),
+        }
+        for h in HORIZONS
+        for values in [[f["ridge_alpha"] for f in fits if f["horizon"] == h]]
+    }
+    return metrics
