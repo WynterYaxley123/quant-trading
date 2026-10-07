@@ -166,9 +166,9 @@ Start with [industry forecast](docs/industry-forecast.md), [documentation index]
 [research status](docs/research-status.md) and [contributing](CONTRIBUTING.md).
 The [historical strategy contract](docs/strategy.md) remains auditable.
 
-SWL1-Ridge-V1 needs an independent universe, preregistered protocol, Development,
-Validation and unopened Final OOS. This task trains no SWL1 model and does not
-repurpose SWL2 consumed evidence for it. Source is [MIT licensed](LICENSE);
+SWL1-Ridge-V1 is closed after its failed Validation; it never repurposed SWL2
+consumed evidence. A result-free [SWL1-Ridge-V2 draft](docs/research/swl1-ridge-v2-draft.md)
+is not preregistered and has not been run. Source is [MIT licensed](LICENSE);
 [third-party notices](THIRD_PARTY_NOTICES.md) and [data-rights policy](docs/data/market_data_policy.md)
 apply independently. See [security reporting](SECURITY.md).
 

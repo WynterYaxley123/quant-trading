@@ -41,8 +41,8 @@ test('V2 endpoint keeps local origin/read-only/path boundaries',async t=>{
 test('forged report or tampered certified fit source fails closed',async t=>{
   const temp=await mkdtemp(path.join(os.tmpdir(),'SYNTHETIC-v2-integrity-'));t.after(()=>rm(temp,{recursive:true,force:true}));
   const manifest=JSON.parse(await readFile(path.join(root,'reports/engineering/shadow-task-installation-integrity.json')));
-  const delta=JSON.parse(await readFile(path.join(root,'reports/engineering/swl1-ridge-v1-integrity.json')));
-  const names=new Set([...Object.keys(manifest.implementation_integrity.files),...Object.keys(delta.implementation_integrity.files),'reports/engineering/shadow-task-installation-integrity.json','reports/engineering/swl1-ridge-v1-integrity.json']);
+  const delta=JSON.parse(await readFile(path.join(root,'reports/engineering/swl1-ridge-v2-draft-integrity.json')));
+  const names=new Set([...Object.keys(manifest.implementation_integrity.files),...Object.keys(delta.implementation_integrity.files),'reports/engineering/shadow-task-installation-integrity.json','reports/engineering/swl1-ridge-v2-draft-integrity.json']);
   for(const name of names){await mkdir(path.dirname(path.join(temp,name)),{recursive:true});await writeFile(path.join(temp,name),await readFile(path.join(root,name)));}
   assert.equal((await observeV2(temp)).validation_status,'FAILED');
   await writeFile(path.join(temp,'research/etf_quant_v2/experiment.py'),'SYNTHETIC tamper');

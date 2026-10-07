@@ -4,7 +4,8 @@ The canonical family registry is [swl2-ridge-families.json](../config/research/s
 SWL2-Ridge-V1 is the frozen baseline; SWL2-Ridge-V2 is a provisional historical
 research candidate. Both have role `INDUSTRY_FORECAST_RESEARCH` and ETF
 productization status `RETIRED`. `ETF_QUANT_V1` / `ETF_QUANT_V2` remain historical
-identities in immutable artifacts. SWL1-Ridge-V1 is reserved and `NOT_YET_RESEARCHED`.
+identities in immutable artifacts. SWL1-Ridge-V1 is closed as `FAILED_VALIDATION`; see its
+[results](research/swl1-ridge-v1-results.md) and the unregistered [V2 draft](research/swl1-ridge-v2-draft.md).
 
 ## Frozen universes and targets
 
