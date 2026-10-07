@@ -1,0 +1,13 @@
+{
+  "swl2_registry_reference": {
+    "sha256": "a979471b7e75e51e1ca9494d53c78dbe5a2ea71c560ed6d97d4f03dc8ba7a1ad",
+    "path": "config/research/swl2-ridge-families.json"
+  },
+  "schema_version": 1,
+  "additional_families": [
+    {
+      "sha256": "c204fa4303c64385c2038431162d5e38410aa56b1ada6bc500e825a4e261717f",
+      "path": "config/research/swl1-ridge-v1-family.json"
+    }
+  ]
+}
