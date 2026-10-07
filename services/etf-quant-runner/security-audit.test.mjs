@@ -7,14 +7,16 @@ import {createHash} from 'node:crypto';
 import {secretKinds,canonicalJSON,certificateHash,repositoryFile,verifyCurrentCertificate,forbiddenData} from './security-audit.mjs';
 
 test('reviewed public aggregates require exact path and byte hash; payload changes remain blocked',()=>{
-  for(const stem of ['data_feasibility','development','factor_audit','preregistration','status','validation']) {
-    const name=`reports/research/swl1_ridge_v1/${stem}.json`;
+  for(const name of [
+    ...['data_feasibility','development','factor_audit','preregistration','status','validation'].map(stem=>`reports/research/swl1_ridge_v1/${stem}.json`),
+    ...['development','validation','status'].map(stem=>`reports/research/swl1_ridge_v2/${stem}.json`),
+  ]) {
     const bytes=readFileSync(new URL(`../../${name}`,import.meta.url));
     assert.equal(forbiddenData(name,bytes),false);
     assert.equal(forbiddenData(name),true);
     assert.equal(forbiddenData(name,Buffer.concat([bytes,Buffer.from('\n')])),true);
     assert.equal(forbiddenData(name,Buffer.from('{"stock_prices":[1,2]}')),true);
-    assert.equal(forbiddenData(`reports/research/unreviewed/${stem}.json`,bytes),true);
+    assert.equal(forbiddenData(`reports/research/unreviewed/${path.basename(name)}`,bytes),true);
   }
   for(const name of ['data/prices.json','runtime/ledger.json','reports/backtests/returns.json',
     'reports/research/swl1_ridge_v1/predictions.csv','reports/research/swl1_ridge_v1/prices.parquet'])

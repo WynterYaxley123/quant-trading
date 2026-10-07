@@ -4,7 +4,8 @@
 | --- | --- | --- | --- |
 | SWL2-Ridge-V1 | INDUSTRY_FORECAST_RESEARCH | FROZEN_BASELINE; Validation / Final OOS SEALED | 107 |
 | SWL2-Ridge-V2 | INDUSTRY_FORECAST_RESEARCH | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | 124 |
-| SWL1-Ridge-V1 | RESERVED | NOT_YET_RESEARCHED | null |
+| SWL1-Ridge-V1 | INDUSTRY_FORECAST_RESEARCH | CLOSED / FAILED_VALIDATION | 30 |
+| SWL1-Ridge-V2 | INDUSTRY_FORECAST_RESEARCH | CLOSED / FAILED_VALIDATION | same 30 |
 
 ETF productization is RETIRED. V1's first formal Shadow epoch was never created;
 this engineering delivery creates neither ETF events nor real forward forecasts.
@@ -30,8 +31,18 @@ See [industry forecast](industry-forecast.md) and [reproducibility](reproducibil
 
 ## Native universes and forward comparison
 
-SWL2-Ridge-V1 remains the 107-industry frozen baseline; SWL2-Ridge-V2 remains the actual byte-verified 124-industry provisional historical candidate. Current taxonomy is 134, independent of model coverage. Primary metrics retain native centering. Shared-window diagnostics use common dates/horizons and 107 shared identities with compatible raw outcomes; centered targets need not be equal. No new forward records or SWL1 model are created by engineering.
+SWL2-Ridge-V1 remains the 107-industry frozen baseline; SWL2-Ridge-V2 remains the actual byte-verified 124-industry provisional historical candidate. Current taxonomy is 134, independent of model coverage. Primary metrics retain native centering. Shared-window diagnostics use common dates/horizons and 107 shared identities with compatible raw outcomes; centered targets need not be equal. No new forward records are created. Separately authorized SWL1 research is described below.
 
 ## SWL1-Ridge-V1
 
 Independent Level-1 generation: FAILED_VALIDATION. Current taxonomy 31, frozen admission 30. Exactly 20 preregistered specs; candidate Policy B / alpha 100 / 12m / STANDARDIZED. Validation opened once and failed; Final OOS never opened. Forward eligible=false; ETF productization NOT_STARTED. See [closed result](research/swl1-ridge-v1-results.md).
+
+## SWL1-Ridge-V2
+
+The separate result-free public preregistration merged in PR #30 after draft
+PR #29. Exactly 16 specs, three admitted; frozen candidate B-m24-l10.
+Development composite RankIC 0.0703535932138508; single Validation composite
+-0.030123417553895863, H120 -0.16132916644596285 and 1/4 positive blocks:
+FAILED_VALIDATION, permanently closed. Same 30-industry reconstructed primary
+series; no Final OOS, forward eligibility false, ETF productization NOT_STARTED.
+See [protocol](research/swl1-ridge-v2-protocol.md) and [result](research/swl1-ridge-v2-results.md).

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useResource } from '@/hooks/useResource';
 import { fetchFamilies, fetchForecast, fetchComparison } from './client';
+import { ResearchEvidence } from './ResearchEvidence';
 
 const number=(value:number|null|undefined)=>value==null?'—':value.toFixed(4);
 const percent=(value:number|null|undefined)=>value==null?'—':`${(value*100).toFixed(2)}%`;
@@ -17,7 +18,7 @@ export function IndustryForecastPage() {
   const comparison=useResource(fetchComparison,[]);
   const view=forecast.data;
   const definition=view?.family??families.data?.find(f=>f.family_id===family);
-  const selected=view?.history.find(f=>f.signal_date===date)??view?.current;
+  const selected=definition?.forward_eligible===false?null:view?.history.find(f=>f.signal_date===date)??view?.current;
   const evaluated=view?.evaluations.find(e=>e.signal_date===selected?.signal_date&&e.horizon===horizon);
   const names=new Map(selected?.cross_section.map(r=>[r.industry_code,r.industry_name])??[]);
   const trendCodes=Object.keys(evaluated?.visual_trend_diagnostic.points[0]?.values??{});
@@ -37,11 +38,13 @@ export function IndustryForecastPage() {
       <p className="mt-3 text-sm">{view?.family.scientific_status??'正在读取研究状态'} · INDUSTRY_FORECAST_RESEARCH · ETF_PRODUCTIZATION_{definition?.etf_productization_status??'UNKNOWN'}</p>
       {definition?<p className="mt-2 text-sm">Shenwan Level-{definition.industry_level} · Forward eligible: {definition.forward_eligible===false?'false':'existing frozen family'}</p>:null}
       {definition?<p className="mt-2 text-sm">Taxonomy ({definition.taxonomy_scope}): {definition.taxonomy_universe_size} · Frozen model universe: {definition.model_universe_size} · Published forecast rows: {view?.current?.forecast_row_count??0} · {definition.taxonomy_only_industries.length} taxonomy-only industries: NOT_IN_FROZEN_MODEL_UNIVERSE</p>:null}
-      {definition?.industry_level===1?<div className="mt-3 rounded border p-3 text-sm"><p>FAILED_VALIDATION · Final OOS not opened · Forward publication disabled.</p><p>Candidate: {definition.historical_research.selected_candidate}</p><p>Development composite RankIC: {definition.historical_research.development_composite_rank_ic} · Validation composite RankIC: {definition.historical_research.validation_composite_rank_ic}</p><p>Validation positive fraction: {definition.historical_research.validation_positive_fraction} · weighted spread: {definition.historical_research.validation_weighted_spread} · positive blocks: {definition.historical_research.validation_positive_blocks}</p><p>RECONSTRUCTED_SWL1_EQUAL_WEIGHT · RECONSTRUCTED membership · independent confidence LIMITED. 历史研究结果不属于前瞻证据。</p></div>:view?.family.generation===2?<p className="mt-2 text-sm">历史 directional Final OOS: STRONG_POSITIVE · independent confidence: LIMITED · membership: RECONSTRUCTED · historical ETF execution: NOT_ESTABLISHED</p>:<p className="mt-2 text-sm">SWL2-Ridge-V1 frozen baseline · Validation / Final OOS 保持 SEALED</p>}
+      {definition?.industry_level===1?<div className="mt-3 rounded border p-3 text-sm"><p>{definition.scientific_status} · Final OOS not opened · Forward publication disabled.</p><p>Final OOS: {definition.historical_research.final_oos??'NOT_OPENED'}</p><p>Candidate: {definition.historical_research.selected_candidate??'not_selected'}</p><p>Development composite RankIC: {definition.historical_research.development_composite_rank_ic??'—'} · Validation composite RankIC: {definition.historical_research.validation_composite_rank_ic??'—'}</p><p>Validation positive fraction: {definition.historical_research.validation_positive_fraction??'—'} · weighted spread: {definition.historical_research.validation_weighted_spread??'—'} · positive blocks: {definition.historical_research.validation_positive_blocks??'—'}</p><p>RECONSTRUCTED_SWL1_EQUAL_WEIGHT · RECONSTRUCTED membership · independent confidence LIMITED. 历史研究结果不属于前瞻证据。</p></div>:view?.family.generation===2?<p className="mt-2 text-sm">历史 directional Final OOS: STRONG_POSITIVE · independent confidence: LIMITED · membership: RECONSTRUCTED · historical ETF execution: NOT_ESTABLISHED</p>:<p className="mt-2 text-sm">SWL2-Ridge-V1 frozen baseline · Validation / Final OOS 保持 SEALED</p>}
       {families.error||forecast.error?<p role="alert">Industry Forecast API unavailable or integrity blocked. 无法读取前瞻证据。</p>:null}
       {forecast.loading?<p>正在读取前瞻预测…</p>:null}
       {!forecast.loading&&!forecast.error&&!selected?<p className="mt-4">No forward forecasts yet. 不回填历史研究结果。</p>:null}
     </section>
+
+    {definition?.research_evidence?<ResearchEvidence family={definition}/>:null}
 
     {selected?<><section className="rounded-xl border bg-card p-5">
       <h2 className="text-lg font-semibold">Current Forecast / Signal history</h2>
@@ -57,13 +60,13 @@ export function IndustryForecastPage() {
         <tbody>{selected.cross_section.map(r=><tr key={r.industry_code} className="border-t"><td className="p-2">{r.fused_rank}</td><td>{r.industry_name} · {r.industry_code}</td><td>{number(r.fused_score)}</td>{horizons.map(h=>{const c=r.horizons[String(h) as '10'|'40'|'120'];return <td key={h}>{number(c.raw_prediction)} / {number(c.cross_section_zscore)} / #{c.rank}</td>;})}</tr>)}</tbody></table>
     </section></>:null}
 
-    <section className="overflow-x-auto rounded-xl border bg-card p-5">
+    {definition?.forward_eligible!==false?<section className="overflow-x-auto rounded-xl border bg-card p-5">
       <h2 className="text-lg font-semibold">Forecast Evaluation · SCIENTIFIC_TARGET</h2>
       <p className="my-2 text-sm">RECONSTRUCTED_SWL2_EQUAL_WEIGHT。H10/H40/H120 为真实交易 session；未成熟或未 finalized 均为 PENDING。</p>
       {!view?.metrics.some(m=>m.matured_forecast_dates>0)?<p>No matured forward observations yet.</p>:null}
       <table className="mt-3 w-full text-sm"><thead><tr>{['Horizon','Matured dates','Mean RankIC','Median RankIC','Positive fraction','Top5 return','Bottom5 return','Spread','SWL2 universe EW'].map(s=><th key={s} className="p-2 text-left">{s}</th>)}</tr></thead><tbody>{view?.metrics.map(m=><tr key={m.horizon} className="border-t"><td className="p-2">H{m.horizon}</td><td>{m.matured_forecast_dates}</td><td>{number(m.mean_rank_ic)}</td><td>{number(m.median_rank_ic)}</td><td>{percent(m.positive_rank_ic_fraction)}</td><td>{percent(m.top5_mean_return)}</td><td>{percent(m.bottom5_mean_return)}</td><td>{percent(m.top5_bottom5_spread)}</td><td>{percent(m.universe_mean_return)}</td></tr>)}</tbody></table>
       {view?.metrics.map(m=><p key={m.horizon} className="mt-2 text-xs">H{m.horizon}: {m.confidence_status} · worst rolling 20-date spread interval {m.worst_rolling_interval?`${m.worst_rolling_interval.from} → ${m.worst_rolling_interval.through}: ${percent(m.worst_rolling_interval.spread)}`:'PENDING'}</p>)}
-    </section>
+    </section>:null}
 
     {selected?<section className="overflow-x-auto rounded-xl border bg-card p-5">
       <h2 className="text-lg font-semibold">Predicted vs Realized · {selected.signal_date}</h2>

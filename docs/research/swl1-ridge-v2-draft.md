@@ -1,10 +1,10 @@
 # SWL1-Ridge-V2 result-free design and formalization
 
-PR #29 was a result-free draft. The owner has now authorized a separate formal
-preregistration and execution. Status becomes **FORMALLY_PREREGISTERED_RESULT_FREE**
-when the dedicated preregistration PR merges and exact remote bytes are verified.
-No factual V2 metric has been calculated in this preregistration change.
-See the canonical [formal protocol](swl1-ridge-v2-protocol.md).
+PR #29 was a result-free draft. Separate formal preregistration merged in PR #30
+and exact remote bytes were verified before factual metrics. The now completed
+lifecycle is **FAILED_VALIDATION**, permanently closed. This page explains the
+failure-informed design; canonical authority is the immutable
+[formal protocol](swl1-ridge-v2-protocol.md) and [actual result](swl1-ridge-v2-results.md).
 Design input: [issue #28](https://github.com/WynterYaxley123/quant-trading/issues/28).
 
 ## What changes from V1, and why
@@ -25,8 +25,10 @@ unchanged by import. V1 sources stay hash-pinned by the V1 protocol.
 
 V2 is informed by V1, so every label that entered a V1 metric is seen: through the
 last V1 Validation signal plus 120 sessions. Development may reuse that history.
-Validation is the first 126 eligible signals after it (on current data, V1's
-never-opened planned Final OOS interval), after an exact 120-session purge.
+Validation is the first 126 eligible endpoints with all future outcomes after
+that seen boundary, following an exact 120-session purge. The formal protocol
+documents endpoint equality and 125/126 overlap with V1's unopened reserved
+OOS, rather than exact equality of those signal ranges.
 No historical interval then remains unseen, so **Final OOS is prospective only**:
 the lifecycle rejects any historical Final-OOS claim.
 
@@ -39,6 +41,8 @@ Resolved owner decisions:
 - Final OOS is prospective only; a Validation PASS does not enable forward.
 
 ## Procedure
+
+The following describes the consumed procedure, not a rerun instruction.
 
 1. `python -m research.swl1_ridge_v2.preregister <source-commit>` writes
    the V2 protocol JSON under `config/research/` from V1's admitted private panel.

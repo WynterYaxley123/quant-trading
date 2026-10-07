@@ -1,11 +1,17 @@
-# SWL2 industry forecasting
+# Industry forecast research
 
 The canonical family registry is [swl2-ridge-families.json](../config/research/swl2-ridge-families.json).
 SWL2-Ridge-V1 is the frozen baseline; SWL2-Ridge-V2 is a provisional historical
 research candidate. Both have role `INDUSTRY_FORECAST_RESEARCH` and ETF
 productization status `RETIRED`. `ETF_QUANT_V1` / `ETF_QUANT_V2` remain historical
 identities in immutable artifacts. SWL1-Ridge-V1 is closed as `FAILED_VALIDATION`; see its
-[results](research/swl1-ridge-v1-results.md) and the unregistered [V2 draft](research/swl1-ridge-v2-draft.md).
+[results](research/swl1-ridge-v1-results.md). SWL1-Ridge-V2 also closed as
+FAILED_VALIDATION after its separately merged [formal protocol](research/swl1-ridge-v2-protocol.md)
+and single [Validation](research/swl1-ridge-v2-results.md). Both Level-1
+generations retain the same 30-industry universe and forward eligibility false.
+The generic catalog exposes protocol/candidate hashes, Validation/OOS status,
+membership confidence and primary series. A passing V2 Validation would still
+remain forward-ineligible pending prospective OOS; inactive routes read no runtime.
 
 ## Frozen universes and targets
 

@@ -3,14 +3,28 @@ import { z } from 'zod';
 const finite = z.number().finite();
 const nullable = finite.nullable();
 const component = z.object({ raw_prediction: finite, cross_section_zscore: finite, rank: z.number().int().positive() });
+const specSchema=z.object({months:z.number().int(),penalty:finite,policy:z.enum(['A','B'])});
+const researchMetricsSchema=z.object({
+  signal_count:z.number().int().nonnegative(),required_signal_count:z.number().int().positive(),dropped_signals:z.array(z.unknown()),
+  composite_rank_ic:nullable,median_composite_rank_ic:nullable,weighted_positive_fraction:nullable,weighted_spread:nullable,positive_blocks:z.number().int(),
+  block_composite_rank_ic:z.array(nullable),block_signal_counts:z.array(z.number().int()),
+  horizons:z.record(z.string(),z.object({mean_rank_ic:nullable,median_rank_ic:nullable,positive_fraction:nullable,spread:nullable})),
+});
+const researchEvidenceSchema=z.object({
+  ranges:z.record(z.string(),z.object({start:z.string(),end:z.string(),signals:z.number().int()})),
+  development:z.object({leaderboard:z.array(z.object({id:z.string(),admitted:z.boolean(),spec:specSchema,metrics:researchMetricsSchema}))}).nullable(),
+  validation:z.object({passed:z.boolean(),metrics:researchMetricsSchema}).nullable(),selected_spec:specSchema.nullable(),
+  anchor:z.object({github_url:z.string().url(),protocol_commit:z.string(),protocol_hash:z.string(),merge_sha:z.string()}),
+});
 export const familySchema = z.object({
-  family_id: z.enum(['swl2_ridge_v1', 'swl2_ridge_v2', 'swl1_ridge_v1']), display_name: z.enum(['SWL2-Ridge-V1', 'SWL2-Ridge-V2', 'SWL1-Ridge-V1']),
+  family_id: z.enum(['swl2_ridge_v1', 'swl2_ridge_v2', 'swl1_ridge_v1','swl1_ridge_v2']), display_name: z.enum(['SWL2-Ridge-V1', 'SWL2-Ridge-V2', 'SWL1-Ridge-V1','SWL1-Ridge-V2']),
   legacy_identity: z.string().nullable(), generation: z.number().int(), industry_level: z.union([z.literal(1),z.literal(2)]),
   current_role: z.literal('INDUSTRY_FORECAST_RESEARCH'), etf_productization_status: z.enum(['RETIRED','NOT_STARTED']),
   forward_eligible:z.boolean().optional(),research_status:z.string().optional(),
   taxonomy_scope:z.string(),taxonomy_universe_size:z.number().int().positive(),model_universe_size:z.number().int().positive(),model_universe_hash:z.string(),taxonomy_only_industries:z.array(z.string()),taxonomy_only_status:z.literal('NOT_IN_FROZEN_MODEL_UNIVERSE'),forecast_row_count:z.number().int().nonnegative().optional(),
   scientific_status: z.string(), historical_research: z.record(z.string(), z.string()),
-});
+  protocol_hash:z.string().optional(),candidate_hash:z.string().nullable().optional(),validation_status:z.string().optional(),final_oos_status:z.string().optional(),membership_confidence:z.string().optional(),primary_series:z.string().optional(),research_evidence:researchEvidenceSchema.optional(),
+}).refine(f=>f.family_id!=='swl1_ridge_v2'||(f.forward_eligible===false&&f.industry_level===1&&f.generation===2&&f.display_name==='SWL1-Ridge-V2'),'V2 remains forward-ineligible');
 export const rowSchema = z.object({industry_code: z.string(), industry_name: z.string(), fused_rank: z.number().int(), fused_score: finite,
   horizons: z.object({'10':component,'40':component,'120':component})});
 const provenanceSchema = z.object({data_source:z.string(),source_commit:z.string(),snapshot_sha256:z.string(),data_cutoff:z.string(),available_at:z.string(),realized_series_type:z.literal('RECONSTRUCTED_SWL2_EQUAL_WEIGHT'),historical_membership:z.string()});
@@ -20,7 +34,8 @@ const evaluationSchema = z.object({signal_date:z.string(),horizon:z.number(),mat
   metrics:z.object({rank_ic:nullable,predicted_top5:z.array(z.string()),actual_top5:z.array(z.string()),top5_overlap_count:z.number(),top5_overlap_rate:finite,mean_absolute_rank_error:finite,median_absolute_rank_error:finite,fused_top5_mean_return:finite,
     realized:z.array(z.object({industry_code:z.string(),predicted_rank:z.number(),realized_rank:z.number(),realized_return:finite,scientific_target:finite}))}),
   visual_trend_diagnostic:z.object({type:z.literal('NORMALIZED_RESEARCH_INDEX'),start:z.literal(1),label:z.literal('NON_TRADABLE_RESEARCH_DIAGNOSTIC'),points:z.array(z.object({date:z.string(),values:z.record(z.string(),finite),universe_equal_weight:finite}))})});
-export const viewSchema=z.object({family:familySchema,status:z.string(),current:forecastSchema.nullable(),history:z.array(forecastSchema),evaluations:z.array(evaluationSchema),metrics:z.array(metricSchema)});
+export const viewSchema=z.object({family:familySchema,status:z.string(),current:forecastSchema.nullable(),history:z.array(forecastSchema),evaluations:z.array(evaluationSchema),metrics:z.array(metricSchema)})
+  .refine(v=>v.family.forward_eligible!==false||(v.current===null&&v.history.length===0&&v.evaluations.length===0&&v.metrics.every(m=>m.matured_forecast_dates===0&&m.mean_rank_ic===null)),'Inactive research cannot expose forward evidence');
 const comparisonValues=z.object({mean_absolute_rank_error:nullable,median_absolute_rank_error:nullable,top5_overlap_count:nullable,top5_overlap_rate:nullable,mean_rank_ic:nullable,median_rank_ic:nullable,positive_rank_ic_fraction:nullable,top5_bottom5_spread:nullable});
 export const comparisonSchema=z.array(z.object({scope:z.literal('COMMON_FORWARD_WINDOW'),metric_scope:z.literal('COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC'),common_industry_counts:z.record(z.string(),z.number().int()),raw_return_compatibility:z.enum(['VERIFIED','NO_COMMON_MATURED_OBSERVATIONS']),centered_target_equality_required:z.literal(false),horizon:z.number(),matured_common_dates:z.array(z.string()),matured_common_date_count:z.number(),swl2_ridge_v1:comparisonValues,swl2_ridge_v2:comparisonValues,difference_v2_minus_v1:comparisonValues,confidence_status:z.string()}));
 export type Family=z.infer<typeof familySchema>;

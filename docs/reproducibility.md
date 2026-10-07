@@ -109,11 +109,11 @@ Security scans omit sealed performance content and publish finding identifiers/c
 Shadow checks use real namespace path/size/hash metadata before/after, without creating
 business records. See the [engineering health](engineering/repository-health.md).
 
-The active deployment-source transition is `reports/engineering/deployment-source-integrity.json`. It uses the same verified full parent and retains the V8 delta bytes as a hashed source. Reusable diagnostics, templates and public documentation change; models, mapping and historical certificates do not. Regression evidence is in [the source-boundary record](engineering/deployment-source-boundary.md).
+The historical deployment-source transition is `reports/engineering/deployment-source-integrity.json`. It uses the same verified full parent and retains the V8 delta bytes as a hashed source. Regression evidence is in [the source-boundary record](engineering/deployment-source-boundary.md).
 
 ## Current source authority
 
-The active source transition is `reports/engineering/swl2-industry-forecast-integrity.json`.
+The historical SWL2 source transition is `reports/engineering/swl2-industry-forecast-integrity.json`.
 It carries every prior deployment delta and binds the unchanged installation parent,
 superseded deployment certificate, changed source, new registry and regression
 record. Historical certificates are never regenerated. Merged source identity is
@@ -125,4 +125,12 @@ The English/Chinese README quick start clones the public source, builds the inde
 
 ## SWL1 source transition
 
-The active authority is reports/engineering/swl1-ridge-v2-draft-integrity.json. It carries every prior closure delta and preserves all SWL2 freezes/certificates. [SWL1 protocol and results](research/swl1-ridge-v1-results.md) are public-safe aggregates. Reproducing real calculations requires the authorized private panel and matching hashes; GitHub contains no price/member payload. Synthetic contracts and the demo use no local lake. Planned Final OOS remains unopened after failed Validation.
+The active authority is reports/engineering/swl1-ridge-v2-execution-integrity.json.
+It carries prior closure/preregistration deltas and preserves all historical
+certificates, V1 artifacts and SWL2 freezes. The V2 protocol and implementation
+pins remain byte-identical to the separate public preregistration. Public source
+reproduces code, protocol, synthetic anchor/seen/lifecycle contracts, hashes and
+[result summaries](research/swl1-ridge-v2-results.md), with zero private mounts.
+Real calculation additionally requires the authorized private panel and exact
+hashes; licensed price/member payloads and full fit traces are not redistributed.
+The failed V2 generation is closed and never rerun by reproducibility checks.

@@ -42,13 +42,13 @@ not portable tests or CI. V2's forward preparation, mature labels, sealed-region
 exclusion, costs, cash, rebalance and T+1 gates are verified with synthetic inputs.
 Its read-only API verifies the published aggregate/candidate/source hash chain.
 
-The separately authorized finalization opens V2 Final OOS once; portable tests
+The historical SWL2 finalization opened its Final OOS once; portable tests
 verify immutable gate/result identities without rerunning the real evaluation.
 `tests/test_etf_quant_v2_shadow.py` exercises synthetic facts, factors, Ridge/fusion,
 independent mapping, collisions/cash, T-close intent, delayed T+1 lot/cost accounting,
 idempotence and NAV/public view. API/frontend tests verify empty arming, scientific
 failure labels, version selection and date-aligned ledgers. Post-merge operational
-arming/launch is explicitly authorized and remains outside engineering acceptance.
+arming/launch belongs to historical context; current scheduler remains disabled.
 
 `tests/etf_quant/test_publication_recovery.py` and the V2 Shadow suite inject crashes
 before/after latest-pointer publication for both T signals and T+1 fills. A killed
@@ -76,3 +76,15 @@ Tests independently verify current taxonomy inventory, pinned V1/V2 universe ref
 ## SWL1 strict lifecycle
 
 Run python -m pytest -q tests/test_swl1_research.py in the independent developer Docker image. Synthetic tests cover dynamic explicit hierarchy, pre-version rejection, exact targets/missingness, population training-only scaling, mature-label cutoffs, registered search bounds, exchange-session splits/purges, protocol/candidate tampering, Validation one-shot failure and Final-OOS consumption. Generic family tests preserve 107/124 SWL2 universes and block failed SWL1 publication. API/frontend tests show FAILED_VALIDATION without runtime reads or invented forward metrics. Real research execution is separately authorized and is never rerun by CI.
+
+## SWL1-Ridge-V2 preregistered lifecycle
+
+Run tests/test_swl1_ridge_v2.py and tests/test_industry_forecast_v2_registry.py
+in Docker. Synthetic tests cover external public merge/ancestry/exact-byte
+anchors, result-free history, seen-data witnesses, endpoint equality and unseen
+labels, per-row alpha, fixed equal-calendar blocks despite drops, full dropped
+signal accounting, candidate freeze, one exclusive Validation claim, retry and
+historical/prospective OOS rejection. V1/SWL2 bytes and numerical behavior remain
+invariant. Generic API/UI tests cover absent candidates, failed Validation and
+AWAITING_PROSPECTIVE_FINAL_OOS with forward=false; no future metrics are invented.
+Full portable/API/frontend gates run against a public clone without private data.
