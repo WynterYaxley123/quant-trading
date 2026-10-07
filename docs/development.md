@@ -73,3 +73,7 @@ entry points never inherit that gate. No real runtime is mounted for these check
 ## Read-only and dependency verification
 
 Only current ETF state writers are retired; historical read-only inspection and explicitly isolated synthetic regression remain. The forward runner is services/industry-forecast-runner/run_forecast.py. Run pnpm audit --json in dashboard, services/research-api and services/industry-forecast-api, compare against the base lockfiles, and introduce no new advisories. Existing advisories are reported separately.
+
+## SWL1 development directory boundary
+
+On this maintainer workstation the primary project is D:/quant-trading; isolated checkouts belong under D:/QuantForge/worktrees, private task research under D:/QuantForge/research, and temporary logs/clones under a dedicated D:/QuantForge/temp subdirectory. Never scatter files at the drive root. SWL1 V1 research is closed after failed Validation; ordinary commands must not reopen it. The public demo uses only synthetic Level-1 data.

@@ -12,6 +12,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from research.swl1_ridge_v1.protocol import Spec, exact_targets, fit_predict
 from strategies.etf_quant.runtime.industry import IndustrySeries
 from strategies.etf_quant.runtime.storage import digest, json_bytes
 from strategies.etf_quant_v2.facts import ForwardFacts, factors_from_closes
@@ -105,6 +106,32 @@ def run_demo() -> dict[str, Any]:
                     "synthetic_matured_horizons": [e["horizon"] for e in evaluations],
                 }
             )
+    # Independent synthetic Level-1 fit: no real candidate/result, factual lake or publication.
+    synthetic_days = pd.bdate_range("2020-01-02", periods=800).strftime("%Y-%m-%d").tolist()
+    generator = np.random.default_rng(1101)
+    synthetic_returns = generator.normal(0, 0.005, (800, 12))
+    synthetic_features = generator.normal(0, 1, (800, 12, 19))
+    for horizon in (10, 40, 120):
+        values, metadata = fit_predict(
+            synthetic_features,
+            exact_targets(synthetic_returns, horizon),
+            synthetic_days,
+            650,
+            horizon,
+            Spec(1, 12, "A"),
+        )
+        assert (
+            len(values) == 12 and metadata["mature_label_cutoff"] == synthetic_days[650 - horizon]
+        )
+    results.append(
+        {
+            "family": "SWL1-Ridge-V1",
+            "mode": "SYNTHETIC_ONLY",
+            "industry_count": 12,
+            "synthetic_fit_horizons": [10, 40, 120],
+            "formal_publications": 0,
+        }
+    )
     return {
         "mode": "SYNTHETIC_ONLY",
         "families": results,

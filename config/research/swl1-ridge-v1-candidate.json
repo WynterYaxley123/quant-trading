@@ -1,0 +1,66 @@
+{
+  "data_panel_sha256": "20c038f87daa93cccf1515f41bda7de5b30fa70a4d1443ae6c34b770e19a5776",
+  "development": {
+    "block_composite_rank_ic": [
+      0.04135934514132511,
+      0.06300162573799949,
+      0.16925073443427172,
+      0.2110835401157982
+    ],
+    "composite_rank_ic": 0.12117381135734863,
+    "dependence": "TEMPORALLY_DEPENDENT_OVERLAPPING_HORIZONS",
+    "horizons": {
+      "10": {
+        "bottom5_return": -0.005987011801462814,
+        "mean_rank_ic": -0.016146145289638054,
+        "median_rank_ic": -0.015127919911012234,
+        "positive_fraction": 0.47435897435897434,
+        "spread": -0.0028913524007289095,
+        "top5_return": -0.008878364202191725
+      },
+      "120": {
+        "bottom5_return": -0.13032518601950147,
+        "mean_rank_ic": 0.18330908987193745,
+        "median_rank_ic": 0.17953281423804227,
+        "positive_fraction": 0.8589743589743589,
+        "spread": 0.04456770891677422,
+        "top5_return": -0.08575747710272726
+      },
+      "40": {
+        "bottom5_return": -0.035369284790257034,
+        "mean_rank_ic": 0.15876615042354755,
+        "median_rank_ic": 0.19243604004449388,
+        "positive_fraction": 0.8076923076923077,
+        "spread": 0.03162488777815276,
+        "top5_return": -0.0037443970121042716
+      }
+    },
+    "independent_statistical_confidence": "LIMITED",
+    "median_composite_rank_ic": 0.132202447163515,
+    "positive_blocks": 4,
+    "required_signal_count": 156,
+    "signal_count": 156,
+    "sufficient_dates": true,
+    "weighted_positive_fraction": 0.7371794871794872,
+    "weighted_spread": 0.026231533018087706
+  },
+  "fusion": [
+    0.25,
+    0.5,
+    0.25
+  ],
+  "horizons": [
+    10,
+    40,
+    120
+  ],
+  "model_universe_hash": "cdd23d6822a3300f5f9dd301b3e2aefbb4ca9434a5a609e90ade0023d2985163",
+  "protocol_hash": "3d148ba7adc4846cd3fa951a46dc224f34a5070a8dd5cfa50523bca4a0c5222e",
+  "scaling": "STANDARDIZED",
+  "source_commit": "7b550fcc388732422feac7a8ae965def191d41b7",
+  "spec": {
+    "alpha": 100.0,
+    "months": 12,
+    "policy": "B"
+  }
+}

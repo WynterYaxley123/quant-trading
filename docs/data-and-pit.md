@@ -36,3 +36,7 @@ See the [executed V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary
 ## Current industry outcome boundary
 
 Taxonomy scope SWCLASS2021 has 134 current identities and 63 historical parsing identities. Model sizes come from pinned universe references (107/124), never taxonomy count. Realized series is RECONSTRUCTED_SWL2_EQUAL_WEIGHT from existing Source-C adjusted constituent returns and dated membership. Official classification provenance does not establish official price bars. Revised consumed factual prefixes fail closed. Scientific targets center exact h-session returns over each complete family universe.
+
+## SWL1 factual admission
+
+The [Level-1 protocol](research/swl1-ridge-v1-protocol.md) dynamically discovers 31 current identities and admits 30 with continuous exact equal-weight history after the 2021 version boundary. Explicit parent-name/code relations establish hierarchy; current codes are not backfilled before 2021-07-31. Effective-dated stock spells remain retrospective, Tier A=0. Aggregation does not upgrade confidence. The series is RECONSTRUCTED_SWL1_EQUAL_WEIGHT, not an official index. Unsupported membership, suspension and missing adjacent adjusted prices remain excluded/missing.

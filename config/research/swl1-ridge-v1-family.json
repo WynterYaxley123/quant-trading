@@ -1,0 +1,90 @@
+{
+  "family_id": "swl1_ridge_v1",
+  "historical_research": {
+    "development_composite_rank_ic": "0.12117381135734863",
+    "selected_candidate": "Policy B / alpha 100 / 12 calendar months / STANDARDIZED",
+    "validation_positive_fraction": "0.4226190476190476",
+    "final_oos": "NOT_OPENED",
+    "validation": "FAIL",
+    "independent_statistical_confidence": "LIMITED",
+    "validation_positive_blocks": "2/4",
+    "validation_weighted_spread": "-0.015404401968270379",
+    "historical_membership_confidence": "RECONSTRUCTED",
+    "search_spec_count": "20",
+    "validation_composite_rank_ic": "-0.07630789060155022"
+  },
+  "industry_codes": [
+    "110000",
+    "220000",
+    "230000",
+    "240000",
+    "270000",
+    "280000",
+    "330000",
+    "340000",
+    "350000",
+    "360000",
+    "370000",
+    "410000",
+    "420000",
+    "430000",
+    "450000",
+    "460000",
+    "480000",
+    "490000",
+    "610000",
+    "620000",
+    "630000",
+    "640000",
+    "650000",
+    "710000",
+    "720000",
+    "730000",
+    "740000",
+    "750000",
+    "760000",
+    "770000"
+  ],
+  "model_family": "RIDGE",
+  "display_name": "SWL1-Ridge-V1",
+  "taxonomy_identity": "SHENWAN_L1_SWCLASS2021",
+  "protocol_reference": {
+    "sha256": "3d148ba7adc4846cd3fa951a46dc224f34a5070a8dd5cfa50523bca4a0c5222e",
+    "path": "config/research/swl1-ridge-v1-protocol.json"
+  },
+  "candidate_reference": {
+    "sha256": "c5917b83d5c81627cfa88ae19d1691fd7356b7c91134be1472c1047e2a31ab6c",
+    "path": "config/research/swl1-ridge-v1-candidate.json"
+  },
+  "taxonomy_reference": {
+    "sha256": "a5bca45bb240a15d4cf4864c31b4a2e6b8774ab296c66804b2f079eae8d2caec",
+    "path": "config/research/swl1-ridge-v1-taxonomy.json"
+  },
+  "industry_level": 1,
+  "etf_productization_status": "NOT_STARTED",
+  "legacy_identity": null,
+  "frozen_universe_reference": {
+    "sha256": "cdd23d6822a3300f5f9dd301b3e2aefbb4ca9434a5a609e90ade0023d2985163",
+    "path": "config/research/swl1-ridge-v1-universe.json"
+  },
+  "forward_eligible": false,
+  "validation_reference": {
+    "sha256": "4f39211fb8fcdd3e350355414b753065940b8bdb42bb2ee57a432b89241c205c",
+    "path": "reports/research/swl1_ridge_v1/validation.json"
+  },
+  "horizons": [
+    10,
+    40,
+    120
+  ],
+  "scientific_status": "FAILED_VALIDATION",
+  "model_contract_hash": "c5917b83d5c81627cfa88ae19d1691fd7356b7c91134be1472c1047e2a31ab6c",
+  "industry_system": "SHENWAN",
+  "research_status": "FAILED_VALIDATION",
+  "status_reference": {
+    "sha256": "9d2a6b9d418e88008a0125d4004fd9283735ce5fd1b854f7a9de607f73eb6569",
+    "path": "reports/research/swl1_ridge_v1/status.json"
+  },
+  "generation": 1,
+  "current_role": "INDUSTRY_FORECAST_RESEARCH"
+}

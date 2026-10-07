@@ -69,3 +69,7 @@ their original names and bytes; the naming gate permits only exact pinned except
 ## Current forecasting vocabulary
 
 Taxonomy universe: current classification inventory (134), independent of fitted model identities. Model universe: complete pinned family cross-section (107/124). Forecast row: actually published admitted industry. Scientific target: exact h-session return minus native universe mean. Raw realized return: uncentered industry outcome. Maturity: exact finalized exchange-session endpoint. Common forward window: shared genuine dates/horizons plus compatible raw returns on shared industries. Historical productization: retired ETF engineering lineage. SWL1-Ridge-V1 remains NOT_YET_RESEARCHED.
+
+## SWL1 research terms
+
+SWL1 means Shenwan Level-1; SWL2 means Level-2. Generation numbers are independent within each family. A model universe is fixed factual admission, distinct from current taxonomy inventory. A purged split separates signal phases by exact exchange sessions to avoid horizon label overlap. Candidate freeze binds parameters before Validation. A phase consumption claim cannot be reopened. Directional labels are descriptive; overlapping horizons limit independent confidence. Forward eligibility is a protocol gate, not evidence of live predictions.

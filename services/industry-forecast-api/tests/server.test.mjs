@@ -10,6 +10,16 @@ import {canonicalJSON} from '../../etf-quant-runner/security-audit.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const registry=await families();
 const family=registry[0],now=Date.parse('2030-01-20T16:00:00+08:00');
+test('failed Level-1 research remains discoverable and cannot expose a runtime',async t=>{
+  const closed=registry.find(f=>f.family_id==='swl1_ridge_v1');
+  assert.equal(closed.industry_level,1);assert.equal(closed.model_universe_size,30);assert.equal(closed.taxonomy_universe_size,31);
+  assert.equal(closed.scientific_status,'FAILED_VALIDATION');assert.equal(closed.etf_productization_status,'NOT_STARTED');
+  const view=await observe('/unreadable/never-inspect-this-runtime',closed,now);
+  assert.equal(view.current,null);assert.equal(view.status,'FAILED_VALIDATION');assert.deepEqual(view.history,[]);assert.equal(view.metrics[0].mean_rank_ic,null);
+  const server=createApi({now:()=>now});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>server.close(resolve)));
+  const response=await fetch(`http://127.0.0.1:${server.address().port}/api/industry-forecast/swl1-ridge-v1/current`);
+  assert.equal(response.status,200);const envelope=await response.json();assert.equal(envelope.data.family.forward_eligible,false);assert.equal(envelope.data.current,null);
+});
 const binding={family_id:family.family_id,source_commit:'a'.repeat(40),merge_commit:'b'.repeat(40),model_contract_hash:family.model_contract_hash,merge_at:'2030-01-02T16:00:00+08:00',freeze_at:'2030-01-03T16:00:00+08:00'};
 function forecast() {
   return {schema_version:1,kind:'FORECAST',...Object.fromEntries(['family_id','source_commit','model_contract_hash'].map(k=>[k,binding[k]])),display_name:family.display_name,legacy_identity:family.legacy_identity,model_generation:1,signal_date:'2030-01-04',published_at:'2030-01-04T16:00:00+08:00',data_cutoff:'2030-01-04',taxonomy_identity:family.taxonomy_identity,industry_count:family.industry_codes.length,taxonomy_universe_size:family.taxonomy_universe_size,model_universe_size:family.model_universe_size,model_universe_hash:family.model_universe_hash,forecast_row_count:family.model_universe_size,transition_binding:binding,realized_series_type:'RECONSTRUCTED_SWL2_EQUAL_WEIGHT',horizons:[10,40,120],target_contract:'SAME_DATE_CROSS_SECTION_EXCESS_INDUSTRY_RETURN',models:[],
@@ -34,7 +44,7 @@ async function generation(root,events=[event(forecast())]) {
   await writeFile(path.join(namespace,'latest.json'),JSON.stringify({run_id:'synthetic_run',manifest_sha256:sha(manifest)}));return run;
 }
 test('canonical naming, actual frozen universes and null empty metrics',async()=>{
-  const f=await families();assert.deepEqual(f.map(v=>v.display_name),['SWL2-Ridge-V1','SWL2-Ridge-V2']);assert.deepEqual(f.map(v=>v.industry_codes.length),[107,124]);
+  const f=await families();assert.deepEqual(f.map(v=>v.display_name),['SWL2-Ridge-V1','SWL2-Ridge-V2','SWL1-Ridge-V1']);assert.deepEqual(f.map(v=>v.industry_codes.length),[107,124,30]);
   const view=await observe('',family,now);assert.equal(view.current,null);assert.equal(view.metrics[0].mean_rank_ic,null);assert.equal(view.metrics[0].top5_mean_return,null);assert.equal(view.metrics[0].matured_forecast_dates,0);
 });
 test('reads full immutable generation without state creation',async t=>{

@@ -31,3 +31,7 @@ See [industry forecast](industry-forecast.md) and [reproducibility](reproducibil
 ## Native universes and forward comparison
 
 SWL2-Ridge-V1 remains the 107-industry frozen baseline; SWL2-Ridge-V2 remains the actual byte-verified 124-industry provisional historical candidate. Current taxonomy is 134, independent of model coverage. Primary metrics retain native centering. Shared-window diagnostics use common dates/horizons and 107 shared identities with compatible raw outcomes; centered targets need not be equal. No new forward records or SWL1 model are created by engineering.
+
+## SWL1-Ridge-V1
+
+Independent Level-1 generation: FAILED_VALIDATION. Current taxonomy 31, frozen admission 30. Exactly 20 preregistered specs; candidate Policy B / alpha 100 / 12m / STANDARDIZED. Validation opened once and failed; Final OOS never opened. Forward eligible=false; ETF productization NOT_STARTED. See [closed result](research/swl1-ridge-v1-results.md).

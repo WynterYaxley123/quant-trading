@@ -2,11 +2,24 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-当前项目研究**申万二级行业预测**，策略家族正式命名为 **SWL2-Ridge-V1** 与
+当前项目研究**申万一级与二级行业预测**，二级策略家族正式命名为 **SWL2-Ridge-V1** 与
 **SWL2-Ridge-V2**。两者角色均为 `INDUSTRY_FORECAST_RESEARCH`，ETF 产品化已
-`RETIRED`。SWL1-Ridge-V1 仅预留名称，状态 `NOT_YET_RESEARCHED`，本任务没有训练它。
+`RETIRED`。独立的 **SWL1-Ridge-V1** 已完成 20 个 Development specs 和一次 Validation，
+结果为 `FAILED_VALIDATION`；Final OOS 从未打开，forward eligible=false，ETF 产品化 `NOT_STARTED`。
 
 ## 当前状态
+
+| 家族 | 行业层级 | 冻结宇宙 | 模型 | 研究状态 | Validation | Final OOS | 前瞻资格 | ETF 产品化 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SWL2-Ridge-V1 | 2 | 107 | Ridge | FROZEN_BASELINE | SEALED | SEALED | 既有冻结前瞻路径 | RETIRED |
+| SWL2-Ridge-V2 | 2 | 124 | Ridge | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | 原始 FAIL | CONSUMED | 既有冻结前瞻路径 | RETIRED |
+| SWL1-Ridge-V1 | 1 | 30（当前 taxonomy 31） | alpha 100 / 12个月 / 标准化19因子 | FAILED_VALIDATION | FAIL | NOT_OPENED | false | NOT_STARTED |
+
+SWL1 是独立家族，不是 SWL2 V3。[协议](docs/research/swl1-ridge-v1-protocol.md)在任何真实
+模型表现计算前提交并冻结，两个 purge 各 120 个真实交易 session。[一次 Validation](docs/research/swl1-ridge-v1-results.md)
+综合 RankIC −0.076308、加权正 IC 比例 42.26%、加权原始收益 spread −1.5404%，仅 2/4 时间块为正。
+V1 不重试、不调整 candidate，不打开 Final OOS。[通用目录](config/research/industry-forecast-families.json)
+让 API/UI 如实展示历史失败记录，禁止该家族读取或发布前瞻 runtime。
 
 [家族注册表](config/research/swl2-ridge-families.json)统一名字、历史身份、模型哈希和宇宙。
 V1 的冻结准入宇宙实际是 **107** 个行业；V2 的冻结 warmup 元数据是 **124** 个行业。
@@ -31,7 +44,7 @@ V1 是冻结基线，Validation / Final OOS 继续 SEALED。V2 是
 | 融合 | 总体 z-score；0.25 / 0.50 / 0.25 | 总体 z-score；0.25 / 0.50 / 0.25 |
 
 科学目标仍为同日截面超额行业收益：行业精确 H-session 累积收益减去该模型冻结宇宙均值。
-滚动系数拟合只用成熟标签。本任务没有调参、重新 Validation、打开 sealed OOS 或重跑
+滚动系数拟合只用成熟标签。SWL2 没有调参、重新 Validation、打开 sealed OOS 或重跑
 市场数据回测。research budget 指实验数量及阶段门控；货币预算不属于当前行业研究。
 
 ## 前瞻发布与成熟评价

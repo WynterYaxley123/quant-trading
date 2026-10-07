@@ -1,0 +1,20 @@
+{
+  "candidate_hash": "c5917b83d5c81627cfa88ae19d1691fd7356b7c91134be1472c1047e2a31ab6c",
+  "etf_productization_status": "NOT_STARTED",
+  "final_oos_opened": false,
+  "final_oos_reopened": false,
+  "final_oos_retuned": false,
+  "formal_forward_forecasts_created": 0,
+  "forward_eligible": false,
+  "historical_membership_confidence": "RECONSTRUCTED",
+  "independent_statistical_confidence": "LIMITED",
+  "live_deployment_promoted": false,
+  "live_scheduler_enabled": false,
+  "protocol_hash": "3d148ba7adc4846cd3fa951a46dc224f34a5070a8dd5cfa50523bca4a0c5222e",
+  "scientific_status": "FAILED_VALIDATION",
+  "search_spec_count": 20,
+  "validation_informed_revision": false,
+  "validation_opened": true,
+  "validation_passed": false,
+  "validation_reopened": false
+}

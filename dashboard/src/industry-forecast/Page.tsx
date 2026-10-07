@@ -26,7 +26,7 @@ export function IndustryForecastPage() {
   return <div className="flex flex-col gap-6">
     <section className="rounded-xl border bg-card p-5">
       <h1 className="text-2xl font-semibold">Industry Forecast</h1>
-      <p className="mt-2 text-sm text-muted-foreground">申万二级行业预测研究 · NON_TRADABLE_RESEARCH_DIAGNOSTIC</p>
+      <p className="mt-2 text-sm text-muted-foreground">申万一级 / 二级行业预测研究 · NON_TRADABLE_RESEARCH_DIAGNOSTIC</p>
       <p className="mt-2 text-sm">科学目标：exact h-session 行业复合收益减去该家族完整冻结宇宙在同一 (t,h) 的均值。走势图仅为 VISUAL_TREND_DIAGNOSTIC。</p>
       <label className="mt-4 flex items-center gap-3">策略家族
         <select aria-label="策略家族" className="rounded border bg-background p-2" value={family} onChange={e=>{setFamily(e.target.value);setDate('');}}>
@@ -34,9 +34,10 @@ export function IndustryForecastPage() {
           {!families.data?<><option value="swl2_ridge_v1">SWL2-Ridge-V1</option><option value="swl2_ridge_v2">SWL2-Ridge-V2</option></>:null}
         </select>
       </label>
-      <p className="mt-3 text-sm">{view?.family.scientific_status??'正在读取研究状态'} · INDUSTRY_FORECAST_RESEARCH · ETF_PRODUCTIZATION_RETIRED</p>
+      <p className="mt-3 text-sm">{view?.family.scientific_status??'正在读取研究状态'} · INDUSTRY_FORECAST_RESEARCH · ETF_PRODUCTIZATION_{definition?.etf_productization_status??'UNKNOWN'}</p>
+      {definition?<p className="mt-2 text-sm">Shenwan Level-{definition.industry_level} · Forward eligible: {definition.forward_eligible===false?'false':'existing frozen family'}</p>:null}
       {definition?<p className="mt-2 text-sm">Taxonomy ({definition.taxonomy_scope}): {definition.taxonomy_universe_size} · Frozen model universe: {definition.model_universe_size} · Published forecast rows: {view?.current?.forecast_row_count??0} · {definition.taxonomy_only_industries.length} taxonomy-only industries: NOT_IN_FROZEN_MODEL_UNIVERSE</p>:null}
-      {view?.family.generation===2?<p className="mt-2 text-sm">历史 directional Final OOS: STRONG_POSITIVE · independent confidence: LIMITED · membership: RECONSTRUCTED · historical ETF execution: NOT_ESTABLISHED</p>:<p className="mt-2 text-sm">SWL2-Ridge-V1 frozen baseline · Validation / Final OOS 保持 SEALED</p>}
+      {definition?.industry_level===1?<div className="mt-3 rounded border p-3 text-sm"><p>FAILED_VALIDATION · Final OOS not opened · Forward publication disabled.</p><p>Candidate: {definition.historical_research.selected_candidate}</p><p>Development composite RankIC: {definition.historical_research.development_composite_rank_ic} · Validation composite RankIC: {definition.historical_research.validation_composite_rank_ic}</p><p>Validation positive fraction: {definition.historical_research.validation_positive_fraction} · weighted spread: {definition.historical_research.validation_weighted_spread} · positive blocks: {definition.historical_research.validation_positive_blocks}</p><p>RECONSTRUCTED_SWL1_EQUAL_WEIGHT · RECONSTRUCTED membership · independent confidence LIMITED. 历史研究结果不属于前瞻证据。</p></div>:view?.family.generation===2?<p className="mt-2 text-sm">历史 directional Final OOS: STRONG_POSITIVE · independent confidence: LIMITED · membership: RECONSTRUCTED · historical ETF execution: NOT_ESTABLISHED</p>:<p className="mt-2 text-sm">SWL2-Ridge-V1 frozen baseline · Validation / Final OOS 保持 SEALED</p>}
       {families.error||forecast.error?<p role="alert">Industry Forecast API unavailable or integrity blocked. 无法读取前瞻证据。</p>:null}
       {forecast.loading?<p>正在读取前瞻预测…</p>:null}
       {!forecast.loading&&!forecast.error&&!selected?<p className="mt-4">No forward forecasts yet. 不回填历史研究结果。</p>:null}
