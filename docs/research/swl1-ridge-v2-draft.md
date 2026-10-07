@@ -1,9 +1,11 @@
-# SWL1-Ridge-V2 draft (not preregistered)
+# SWL1-Ridge-V2 result-free design and formalization
 
-Status: **DRAFT_NOT_PREREGISTERED**. No V2 protocol exists, nothing has been run on
-factual data, and no metric below is a V2 result. The code in `research/swl1_ridge_v2/`
-is result-free and covered only by synthetic tests. Starting the generation needs
-owner authorization. Design input: [issue #28](https://github.com/WynterYaxley123/quant-trading/issues/28).
+PR #29 was a result-free draft. The owner has now authorized a separate formal
+preregistration and execution. Status becomes **FORMALLY_PREREGISTERED_RESULT_FREE**
+when the dedicated preregistration PR merges and exact remote bytes are verified.
+No factual V2 metric has been calculated in this preregistration change.
+See the canonical [formal protocol](swl1-ridge-v2-protocol.md).
+Design input: [issue #28](https://github.com/WynterYaxley123/quant-trading/issues/28).
 
 ## What changes from V1, and why
 
@@ -28,17 +30,19 @@ never-opened planned Final OOS interval), after an exact 120-session purge.
 No historical interval then remains unseen, so **Final OOS is prospective only**:
 the lifecycle rejects any historical Final-OOS claim.
 
-Owner decisions before preregistration:
+Resolved owner decisions:
 
-- Accept V1's unopened planned Final OOS window as V2 Validation, or wait for new
-  prospective data for Validation too.
-- Whether official SW Level-1 index closes are available as the target or as a
-  cross-check of the equal-weight reconstruction. The draft keeps the V1 panel.
+- Accept use of V1's unopened reserved interval only after outcome-unseenness is
+  proven. Exact first-126 endpoint dates are derived by the existing draft rule.
+- Keep the V1 reconstructed equal-weight panel as primary target. Official L1
+  index performance is excluded from this generation's selection and gates.
+- Final OOS is prospective only; a Validation PASS does not enable forward.
 
 ## Procedure
 
 1. `python -m research.swl1_ridge_v2.preregister <source-commit>` writes
    the V2 protocol JSON under `config/research/` from V1's admitted private panel.
-2. Merge that protocol **alone** and fetch it.
+2. Merge the result-free protocol PR and fetch it; retrieve and verify its external
+   GitHub merge witness before any factual performance calculation.
 3. `python -m research.swl1_ridge_v2.execute refs/remotes/origin/main` records the
    publication anchor, runs Development and at most one Validation, then stops.
