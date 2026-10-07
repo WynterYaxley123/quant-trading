@@ -53,7 +53,7 @@
       "dashboard/src/routes/overview.tsx": "cc7f9efc657eda5b960206c0a9b56e4fa24b0f316c2fcba35e6c6688f4667257",
       "dashboard/tests/etf-quant-v2.test.tsx": "93d5058238cf392ff2d99cfebacb085dd5829018537cdba1b77f870178ae2d88",
       "dashboard/tests/etf-quant.test.tsx": "b113cf4759d5ca2fd7ebc471dc44ded42c4f25366f9fa384e90abf3e5164cf50",
-      "dashboard/tests/industry-forecast.test.tsx": "e19dc2f2431303547722322684dd39299bfc9d96979c653a5d88518a5581dae0",
+      "dashboard/tests/industry-forecast.test.tsx": "4d2a7b67afc98077d34fcbc3bba594a7dfdc3e450041cbaecb504237ec22ad0e",
       "dashboard/tests/localization.test.ts": "2f2afa049d8d2c8953f92930c5fdfb6fbca8a5be0a2c09d9ba61fc015800d434",
       "dashboard/tests/navigation.test.tsx": "9b0d5ea33561ed15fbcbf6ec7814cafb943cf62cbe1112f7a39686395b6b830b",
       "dashboard/tests/test-utils.tsx": "392ff080b9baa82fcb77f45537b4e73ed8527d84f4824491a6dd375386622c04",
@@ -481,7 +481,7 @@
       {
         "path": "dashboard/tests/industry-forecast.test.tsx",
         "before_sha256": null,
-        "after_sha256": "e19dc2f2431303547722322684dd39299bfc9d96979c653a5d88518a5581dae0",
+        "after_sha256": "4d2a7b67afc98077d34fcbc3bba594a7dfdc3e450041cbaecb504237ec22ad0e",
         "reason": "SWL1-RIDGE-V2-EXECUTION verified remediation"
       },
       {
@@ -1398,6 +1398,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-ridge-v2-execution.md",
-    "certificate_sha256": "4ebc094b60acd15a1490bd1a42995d50437a305e63b9394947b24245c154ee0a"
+    "certificate_sha256": "0b5d7b127885b3324a8f20fbd48046d6a79e2656dc341530152bb9d737cd73c2"
   }
 }

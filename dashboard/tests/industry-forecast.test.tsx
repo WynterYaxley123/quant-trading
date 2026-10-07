@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { act, cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router';
@@ -27,7 +28,7 @@ beforeEach(()=>{
 afterEach(()=>{cleanup();vi.clearAllMocks();setEtfQuantPortForTesting(null);});
 describe('canonical industry forecast',()=>{
   it('renders all 16 public Development rows and the failed single Validation evidence',async()=>{
-    const read=(name:string)=>JSON.parse(readFileSync(new URL(`../../${name}`,import.meta.url),'utf8'));
+    const read=(name:string)=>JSON.parse(readFileSync(path.resolve(process.cwd(),'..',name),'utf8'));
     const record=read('config/research/swl1-ridge-v2-family.json');
     const protocol=read(record.protocol_reference.path),status=read(record.status_reference.path);
     const swl1=familySchema.parse({...record,taxonomy_scope:'SWCLASS2021',taxonomy_universe_size:31,model_universe_size:30,model_universe_hash:'a'.repeat(64),taxonomy_only_industries:['510000'],taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE',protocol_hash:record.protocol_reference.sha256,candidate_hash:status.candidate_hash,validation_status:'FAIL',final_oos_status:'PROSPECTIVE_NOT_OPENED',primary_series:protocol.primary_series,research_evidence:{ranges:protocol.split.ranges,development:read(record.development_reference.path),validation:read(record.validation_reference.path),selected_spec:read(record.candidate_reference.path).spec,anchor:status.public_preregistration_anchor.external_merge_witness}});
