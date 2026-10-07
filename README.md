@@ -101,6 +101,7 @@ temporary namespace. No real orders, brokers, leverage or shorting are enabled.
 ```mermaid
 flowchart LR
  F[External pinned PIT facts] --> M[Frozen Ridge industry adapters]
+ F -. historical lineage .-> H[ETF productization: RETIRED / read-only]
  M --> L[Immutable full forecast ledger]
  F --> E[Exact mature industry outcomes]
  L --> E
@@ -126,6 +127,8 @@ flowchart LR
 Use the independent developer image, never the deployed image or host quant Python.
 
 ```sh
+git clone https://github.com/WynterYaxley123/quant-trading.git
+cd quant-trading
 docker build -f .devcontainer/Dockerfile -t quant-trading-dev:local .
 docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m examples.industry_forecast_demo
 docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m pytest -q -m "not external_runtime"
@@ -152,3 +155,22 @@ Validation and unopened Final OOS. This task trains no SWL1 model and does not
 repurpose SWL2 consumed evidence for it. Source is [MIT licensed](LICENSE);
 [third-party notices](THIRD_PARTY_NOTICES.md) and [data-rights policy](docs/data/market_data_policy.md)
 apply independently. See [security reporting](SECURITY.md).
+
+## Universe metadata and native targets
+
+Current SWCLASS2021 taxonomy: **134** identities; legacy parsing inventory: **63**.
+Frozen models retain **107 / 124**, with **27 / 10** taxonomy-only exclusions.
+The API derives these values from pinned references and reports actual publication
+row counts separately. Historical ETF coverage is a productization result.
+
+| Family | Industry universe | Frozen model size | Model | Current role | Historical status | ETF productization |
+| --- | --- | --- | --- | --- | --- | --- |
+| SWL2-Ridge-V1 | Shenwan Level-2 | 107 | Frozen Ridge baseline | INDUSTRY_FORECAST_RESEARCH | Validation/OOS SEALED | RETIRED |
+| SWL2-Ridge-V2 | Shenwan Level-2 | 124 (verified warmup projection) | Frozen Ridge challenger | INDUSTRY_FORECAST_RESEARCH | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | RETIRED |
+
+For each (signal date, horizon), the scientific target is exact h-session compounded
+industry return minus the mean over that family's complete frozen universe.
+Common diagnostics verify shared **raw returns**, not equality of differently
+centered targets. Historical ETF productization was retired for the SWL2 family
+because reliable executable ETF coverage was structurally insufficient relative
+to the Level-2 research universe. Historical engineering remains reproducible.

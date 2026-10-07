@@ -90,6 +90,8 @@ Dashboard 默认展示 Industry Forecast：完整排名、Top5、信号历史、
 仅使用独立开发 Docker 镜像，不修改部署镜像、不在宿主 Python 安装量化依赖。
 
 ```sh
+git clone https://github.com/WynterYaxley123/quant-trading.git
+cd quant-trading
 docker build -f .devcontainer/Dockerfile -t quant-trading-dev:local .
 docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m examples.industry_forecast_demo
 docker run --rm -v "${PWD}:/workspace" quant-trading-dev:local python -m pytest -q -m "not external_runtime"
@@ -109,3 +111,17 @@ runner 必须使用 clean merged source 与显式外部只读事实。scheduler 
 SWL1-Ridge-V1 必须以独立宇宙、预注册 protocol、Development、Validation 和未消费
 Final OOS 启动；不得挪用 SWL2 的已消费证据。源码 [MIT](LICENSE)，
 [第三方声明](THIRD_PARTY_NOTICES.md)和[数据权限](docs/data/market_data_policy.md)独立适用。
+
+## 宇宙与目标的独立口径
+
+冻结 taxonomy artifact 的当前 SWCLASS2021 二级行业为 **134** 个，另保留
+**63** 个旧版解析身份。V1/V2 模型宇宙保持 **107/124**，对应 **27/10** 个
+当前 taxonomy-only 身份。API 动态校验冻结引用，分别展示分类数量、模型数量
+和真实发布行数；未发布时行数为 0。历史 ETF mapping coverage 属于历史产品化结果。
+
+科学目标为行业从信号日到准确第 h 个后续交易 session 的复合收益，减去该家族
+完整冻结宇宙在同一 (t,h) 的收益均值。V1/V2 共同窗口只校验共有行业原始收益
+兼容性；不同宇宙中心化后的 scientific target 可以不同。
+
+历史 ETF 产品化退役原因是相对于二级行业研究宇宙，可靠可执行产品覆盖存在结构性
+不足。历史 mapping、账户、Shadow、合同与证书完整保留。

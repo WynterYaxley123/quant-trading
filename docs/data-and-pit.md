@@ -32,3 +32,7 @@ Annual independent public stock rosters check symbol coverage, not industry accu
 Current membership alone cannot be backfilled. Unknown denominators remain null;
 absent bars/amounts stay missing. V2 roots are independent of V1 and outside Git.
 See the [executed V2 protocol](etf-quant-v2-protocol.md) and [glossary](glossary.md).
+
+## Current industry outcome boundary
+
+Taxonomy scope SWCLASS2021 has 134 current identities and 63 historical parsing identities. Model sizes come from pinned universe references (107/124), never taxonomy count. Realized series is RECONSTRUCTED_SWL2_EQUAL_WEIGHT from existing Source-C adjusted constituent returns and dated membership. Official classification provenance does not establish official price bars. Revised consumed factual prefixes fail closed. Scientific targets center exact h-session returns over each complete family universe.

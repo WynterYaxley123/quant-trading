@@ -68,3 +68,7 @@ recovery, cross-language body hashes, malformed/path-escape reads, null metrics,
 honest UI maturity and shared-universe descriptive comparison. The new source
 certificate preserves historical report/config/archive hashes. No sealed
 performance is opened by this test workflow.
+
+## Universe and centering closure regressions
+
+Tests independently verify current taxonomy inventory, pinned V1/V2 universe references, all raw/z/rank/fused outputs, complete forecast rows, family-native scientific targets and legal comparison with unequal centered targets. Raw return mismatch fails closed. Additional checks cover immutable evaluation recovery and body/index limits without truncating history. All quantitative execution remains in the independent Docker image.

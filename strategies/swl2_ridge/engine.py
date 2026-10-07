@@ -90,6 +90,12 @@ def publish(
         "data_cutoff": str(inputs["cutoff"]),
         "taxonomy_identity": inputs["taxonomy_identity"],
         "industry_count": len(rows),
+        "taxonomy_universe_size": family["taxonomy_universe_size"],
+        "model_universe_size": family["model_universe_size"],
+        "model_universe_hash": family["model_universe_hash"],
+        "forecast_row_count": len(rows),
+        "transition_binding": dict(binding),
+        "realized_series_type": inputs["provenance"]["realized_series_type"],
         "horizons": list(HORIZONS),
         "target_contract": TARGET,
         "provenance": {**inputs["provenance"], "factual_prefix_hash": prefix_hash(inputs, day)},
@@ -112,6 +118,11 @@ def mature(root: Path, inputs: dict[str, Any], now: datetime) -> list[dict[str, 
         or inputs["available_at"] > now
     ):
         raise ValueError("FINALIZED_EVALUATION_CALENDAR_REQUIRED")
+    for evaluation in evaluations:
+        if evaluation["provenance"].get("factual_prefix_hash") != prefix_hash(
+            inputs, date.fromisoformat(evaluation["maturity_date"])
+        ):
+            raise ValueError("PUBLISHED_EVALUATION_FACTS_REVISED")
     for event in events:
         forecast = event["body"]
         if forecast["kind"] != "FORECAST":
@@ -164,7 +175,10 @@ def mature(root: Path, inputs: dict[str, Any], now: datetime) -> list[dict[str, 
                 "target_contract": TARGET,
                 "realized_series_type": inputs["provenance"]["realized_series_type"],
                 "target_cross_section_hash": digest(json_bytes(raw)),
-                "provenance": inputs["provenance"],
+                "provenance": {
+                    **inputs["provenance"],
+                    "factual_prefix_hash": prefix_hash(inputs, maturity),
+                },
                 "metrics": metrics,
                 "visual_trend_diagnostic": {
                     "type": "NORMALIZED_RESEARCH_INDEX",

@@ -27,3 +27,7 @@ RECONSTRUCTED_SWL2_EQUAL_WEIGHT; official SWL2 index bars are not established by
 admitted adapters. Shared-date comparison additionally uses the industry
 intersection, with identical realized returns required, and remains descriptive.
 See [industry forecast](industry-forecast.md) and [reproducibility](reproducibility.md).
+
+## Native universes and forward comparison
+
+SWL2-Ridge-V1 remains the 107-industry frozen baseline; SWL2-Ridge-V2 remains the actual byte-verified 124-industry provisional historical candidate. Current taxonomy is 134, independent of model coverage. Primary metrics retain native centering. Shared-window diagnostics use common dates/horizons and 107 shared identities with compatible raw outcomes; centered targets need not be equal. No new forward records or SWL1 model are created by engineering.

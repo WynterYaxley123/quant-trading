@@ -54,3 +54,7 @@ Keep Jupyter authenticated and loopback-bound as specified by existing compose.
 No broker, real order, leverage, shorting or external message path exists here.
 See [deployment](deployment.md), [industry contracts](industry-forecast.md),
 [testing](testing.md) and [source evidence](engineering/swl2-industry-forecast-transition.md).
+
+## Industry Forecast closure runbook
+
+Read-only preflight/dry-run never initialize or write. Genuine retries return NOOP without fitting; mature checks append evaluations only after exact finalized exchange sessions. DATA_UNAVAILABLE/CALENDAR_UNAVAILABLE stay blocked or pending. Under the runner mutex, journals recover byte-identical publications; stale OS locks do not authorize overlap. Hash/source/model mismatch blocks and requires an independently reviewed source transition. Back up complete objects, generations, pointers and journals together; restore to an isolated external namespace and verify before any separately authorized activation. Legacy read-only inspection remains permitted; state-mutating ETF commands are retired.

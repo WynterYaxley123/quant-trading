@@ -20,3 +20,7 @@ finalized 才评价，不填缺口、不读未来或临时行情，不重新生�
 参阅[行业合同](industry-forecast.md)、[部署](deployment.md)、[测试](testing.md)、
 [工程证据](engineering/swl2-industry-forecast-transition.md)。旧账户和数据保持原位置及哈希，
 不迁移。Jupyter 继续要求非空认证与 loopback。没有真实订单或券商路径。
+
+## 行业预测收口运行合同
+
+preflight/dry-run 全程只读，不冻结 namespace。重复调用 NOOP，不重新拟合。成熟评价要求精确 exchange sessions 与完整 finalized 事实；数据/日历缺失保持阻断或 pending。Runner mutex 下按 journal 恢复原始字节，哈希、source、model 不匹配阻断并要求独立审核的 source transition。备份必须包含完整 objects、generations、pointer 与 journal，先在隔离外部目录恢复并校验，再进入另行授权的运行阶段。历史只读检查保留，ETF 状态写入入口已退役。

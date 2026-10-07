@@ -17,7 +17,7 @@ are different quantities. Expanding V1 to 124 changes its training cross-section
 target centering and ranks; this transition preserves its 107-industry contract.
 
 `SCIENTIFIC_TARGET` is the frozen same-date cross-sectional excess industry return:
-an industry's exact H-session compounded return minus its frozen-universe mean.
+for signal date t and horizon h, target_i(t,h) = R_i(t,t+h) - mean_{j in FAMILY_FROZEN_UNIVERSE} R_j(t,t+h). Each R is the exact h-session compounded return. V1 centers over its 107 industries; V2 centers over its own dynamically verified frozen universe. Taxonomy-only industries and the common intersection never enter primary target centering.
 Ridge alpha, factors, mature-label windows, raw/standardized specification, eligibility,
 fusion and industry-code deterministic ties stay unchanged. V2 normally refits
 coefficients using mature facts at alpha 30, 12 months, raw X and H10/H40/H120;
@@ -29,7 +29,7 @@ Validation isolation and consumed/sealed Final-OOS rules remain in force.
 
 The [transition](../config/research/swl2-industry-forecast-transition.json) identifies
 the change before merge without inventing its final SHA. The runner resolves the
-actual first-parent main commit that introduced it and its commit time. A separate
+verified first-parent main integration commit that introduced it and its repository-observed integration/committer timestamp (%cI), never the contributor author timestamp. A separate
 immutable runtime binding freezes the merged source, model hash and activation
 time. The first legal session is strictly after both merge and freeze dates, using
 the verified exchange calendar; its factual snapshot must be observed after 15:05
@@ -88,7 +88,7 @@ matured horizon and compatible target provenance. It never combines historical
 sealed baseline or consumed challenger OOS. Its COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC computes an additional shared-industry
 intersection because the frozen universes are 107 and 124. Equal realized returns
 are required (rtol 1e-10, atol 1e-12); primary metrics keep their original universe.
-Any target mismatch fails closed;
+A raw realized-return mismatch fails closed. Centered scientific targets do not need to match between families because their frozen centering universes differ;
 the difference is descriptive, with no statistical winner declaration.
 
 ## Visual diagnostics
@@ -115,8 +115,8 @@ regions retain their bytes and identities. Current source does not expand mappin
 or create ETF targets, intents, fills, account events or NAV points. Money, initial
 capital, position caps, lot rounding and trading costs have no active role.
 
-Legacy ETF commands fail closed with `SWL2_ETF_PRODUCTIZATION_RETIRED`; historical
-writer regression is available only through an explicitly isolated synthetic
+State-mutating/current-productization legacy ETF commands fail closed with `SWL2_ETF_PRODUCTIZATION_RETIRED`; historical
+read-only inspection remains available; writer regression is available only through an explicitly isolated synthetic
 temporary namespace. Legacy APIs remain read-only, with retirement metadata.
 The default dashboard uses `/api/industry-forecast/` and no ETF/account endpoint.
 
@@ -124,3 +124,24 @@ See [operations](operations.md), [deployment](deployment.md), [testing](testing.
 and [source transition evidence](engineering/swl2-industry-forecast-transition.md).
 Live deployment promotion, scheduler enabling and real forecast publication are
 outside this engineering delivery. The scheduler template remains disabled.
+
+## Inventory and current API contract
+
+The pinned classification artifact contains 134 current SWCLASS2021 Level-2 identities
+and 63 PRE_2021_OR_UNMAPPED_LEGACY identities retained for historical parsing.
+Current taxonomy size is therefore 134, independent of the model universe.
+V1 excludes 27 current taxonomy identities; V2 excludes 10. These are
+`NOT_IN_FROZEN_MODEL_UNIVERSE` and never become null/zero ranking rows.
+
+Registry resolution reads and verifies each `frozen_universe_reference`: the unchanged
+V1 COMMON_MODEL_UNIVERSE_V1 and the public identity-only V2 warmup projection,
+which is bound to the original warmup metadata/panel hashes. It derives
+`taxonomy_universe_size`, `model_universe_size`, `model_universe_hash` and excluded
+identities. A forecast adds `forecast_row_count` and the exact transition binding.
+No model-count constant in the dashboard is an authority. With no publication,
+the API reports zero published rows, while model size remains visible.
+
+Common comparison returns per-date shared counts, common RankIC, rank errors,
+Top5 overlap and raw-return compatibility. The 107 shared identities are a
+comparison-only diagnostic universe; family-native targets and primary metrics
+remain unchanged. `centered_target_equality_required=false` is explicit.

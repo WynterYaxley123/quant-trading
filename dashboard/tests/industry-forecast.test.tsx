@@ -9,19 +9,19 @@ import { comparisonSchema, familySchema, viewSchema } from '@/industry-forecast/
 import { setEtfQuantPortForTesting } from '@/etf-quant/data-port';
 
 vi.mock('@/industry-forecast/client',()=>({fetchFamilies:vi.fn(),fetchForecast:vi.fn(),fetchComparison:vi.fn()}));
-const family=familySchema.parse({family_id:'swl2_ridge_v1',display_name:'SWL2-Ridge-V1',legacy_identity:'ETF_QUANT_V1',generation:1,industry_level:2,current_role:'INDUSTRY_FORECAST_RESEARCH',etf_productization_status:'RETIRED',scientific_status:'FROZEN_BASELINE',historical_research:{validation:'SEALED',final_oos:'SEALED'}});
-const second=familySchema.parse({...family,family_id:'swl2_ridge_v2',display_name:'SWL2-Ridge-V2',legacy_identity:'ETF_QUANT_V2',generation:2,scientific_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE'});
+const family=familySchema.parse({family_id:'swl2_ridge_v1',display_name:'SWL2-Ridge-V1',legacy_identity:'ETF_QUANT_V1',generation:1,industry_level:2,current_role:'INDUSTRY_FORECAST_RESEARCH',etf_productization_status:'RETIRED',taxonomy_scope:'SWCLASS2021',taxonomy_universe_size:134,model_universe_size:107,model_universe_hash:'b'.repeat(64),taxonomy_only_industries:Array.from({length:27},(_,i)=>`T${i}`),taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE',scientific_status:'FROZEN_BASELINE',historical_research:{validation:'SEALED',final_oos:'SEALED'}});
+const second=familySchema.parse({...family,family_id:'swl2_ridge_v2',display_name:'SWL2-Ridge-V2',legacy_identity:'ETF_QUANT_V2',generation:2,model_universe_size:124,taxonomy_only_industries:Array.from({length:10},(_,i)=>`T${i}`),scientific_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE'});
 const metrics=[10,40,120].map(horizon=>({horizon,matured_forecast_dates:0,mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_mean_return:null,bottom5_mean_return:null,top5_bottom5_spread:null,universe_mean_return:null,confidence_status:'INSUFFICIENT_FORWARD_EVIDENCE',rolling:[],worst_rolling_interval:null}));
 const provenance={data_source:'SYNTHETIC_SOURCE_C',source_commit:'a'.repeat(40),snapshot_sha256:'b'.repeat(64),data_cutoff:'2028-01-04',available_at:'2028-01-04T16:00:00+08:00',realized_series_type:'RECONSTRUCTED_SWL2_EQUAL_WEIGHT',historical_membership:'RECONSTRUCTED'} as const;
 function empty() {return viewSchema.parse({family,status:'NO_FORWARD_FORECASTS',current:null,history:[],evaluations:[],metrics});}
 function published() {
-  const forecast={signal_date:'2028-01-04',published_at:'2028-01-04T16:00:00+08:00',data_cutoff:'2028-01-04',source_commit:'a'.repeat(40),model_contract_hash:'b'.repeat(64),taxonomy_identity:'SYNTHETIC_SWL2',industry_count:107,provenance,
+  const forecast={signal_date:'2028-01-04',published_at:'2028-01-04T16:00:00+08:00',data_cutoff:'2028-01-04',source_commit:'a'.repeat(40),model_contract_hash:'b'.repeat(64),taxonomy_identity:'SYNTHETIC_SWL2',industry_count:107,forecast_row_count:107,taxonomy_universe_size:family.taxonomy_universe_size,model_universe_size:family.model_universe_size,model_universe_hash:family.model_universe_hash,provenance,
     cross_section:Array.from({length:107},(_,i)=>({industry_code:`S${i}`,industry_name:`合成行业 ${i}`,fused_rank:i+1,fused_score:-i,horizons:Object.fromEntries([10,40,120].map(h=>[h,{raw_prediction:-i,cross_section_zscore:-i,rank:i+1}]))}))};
   return viewSchema.parse({...empty(),status:'FORWARD_FORECAST',current:forecast,history:[forecast]});
 }
 beforeEach(()=>{
   vi.mocked(fetchFamilies).mockResolvedValue([family,second]);vi.mocked(fetchForecast).mockResolvedValue(empty());
-  vi.mocked(fetchComparison).mockResolvedValue(comparisonSchema.parse([10,40,120].map(horizon=>({scope:'COMMON_FORWARD_WINDOW',horizon,matured_common_dates:[],matured_common_date_count:0,swl2_ridge_v1:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null},swl2_ridge_v2:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null},difference_v2_minus_v1:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null},confidence_status:'INSUFFICIENT_FORWARD_EVIDENCE'}))));
+  vi.mocked(fetchComparison).mockResolvedValue(comparisonSchema.parse([10,40,120].map(horizon=>({scope:'COMMON_FORWARD_WINDOW',metric_scope:'COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC',common_industry_counts:{},raw_return_compatibility:'NO_COMMON_MATURED_OBSERVATIONS',centered_target_equality_required:false,horizon,matured_common_dates:[],matured_common_date_count:0,swl2_ridge_v1:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null,mean_absolute_rank_error:null,median_absolute_rank_error:null,top5_overlap_count:null,top5_overlap_rate:null},swl2_ridge_v2:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null,mean_absolute_rank_error:null,median_absolute_rank_error:null,top5_overlap_count:null,top5_overlap_rate:null},difference_v2_minus_v1:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null,mean_absolute_rank_error:null,median_absolute_rank_error:null,top5_overlap_count:null,top5_overlap_rate:null},confidence_status:'INSUFFICIENT_FORWARD_EVIDENCE'}))));
 });
 afterEach(()=>{cleanup();vi.clearAllMocks();setEtfQuantPortForTesting(null);});
 describe('canonical industry forecast',()=>{
@@ -68,4 +68,14 @@ describe('canonical industry forecast',()=>{
     expect(screen.queryByRole('link',{name:'模拟持仓'})).toBeNull();
     expect(screen.getByRole('heading',{name:/COMMON_FORWARD_WINDOW/})).toBeInTheDocument();
   });
+});
+
+it('renders V2 full frozen rows and dynamic inventory metadata',async()=>{
+  const value=published();value.family=second;
+  value.current={...value.current!,industry_count:second.model_universe_size,forecast_row_count:second.model_universe_size,model_universe_size:second.model_universe_size,cross_section:Array.from({length:second.model_universe_size},(_,i)=>({industry_code:`S${i}`,industry_name:`合成行业 ${i}`,fused_rank:i+1,fused_score:-i,horizons:{'10':{raw_prediction:-i,cross_section_zscore:-i,rank:i+1},'40':{raw_prediction:-i,cross_section_zscore:-i,rank:i+1},'120':{raw_prediction:-i,cross_section_zscore:-i,rank:i+1}}}))};
+  value.history=[value.current];vi.mocked(fetchForecast).mockResolvedValue(value);render(<IndustryForecastPage/>);
+  expect(await screen.findByRole('heading',{name:'Full Ranking · 124 industries'})).toBeInTheDocument();
+  expect(within(screen.getAllByRole('table')[0]!).getAllByRole('row')).toHaveLength(125);
+  expect(screen.getByText(/Taxonomy \(SWCLASS2021\): 134 · Frozen model universe: 124/)).toBeInTheDocument();
+  expect(screen.getByText(/Centered target 不要求跨家族相等/)).toBeInTheDocument();
 });

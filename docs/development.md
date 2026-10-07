@@ -69,3 +69,7 @@ pnpm --dir services/industry-forecast-api build
 
 Legacy writer tests use an explicit pytest temporary replay namespace. Production
 entry points never inherit that gate. No real runtime is mounted for these checks.
+
+## Read-only and dependency verification
+
+Only current ETF state writers are retired; historical read-only inspection and explicitly isolated synthetic regression remain. The forward runner is services/industry-forecast-runner/run_forecast.py. Run pnpm audit --json in dashboard, services/research-api and services/industry-forecast-api, compare against the base lockfiles, and introduce no new advisories. Existing advisories are reported separately.

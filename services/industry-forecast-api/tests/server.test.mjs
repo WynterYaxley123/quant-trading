@@ -8,11 +8,11 @@ import {createApi,families,observe,validateEvents,aggregate,compare} from '../se
 import {canonicalJSON} from '../../etf-quant-runner/security-audit.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
-const registry=JSON.parse(await readFile(new URL('../../../config/research/swl2-ridge-families.json',import.meta.url))).families;
+const registry=await families();
 const family=registry[0],now=Date.parse('2030-01-20T16:00:00+08:00');
 const binding={family_id:family.family_id,source_commit:'a'.repeat(40),merge_commit:'b'.repeat(40),model_contract_hash:family.model_contract_hash,merge_at:'2030-01-02T16:00:00+08:00',freeze_at:'2030-01-03T16:00:00+08:00'};
 function forecast() {
-  return {schema_version:1,kind:'FORECAST',...Object.fromEntries(['family_id','source_commit','model_contract_hash'].map(k=>[k,binding[k]])),display_name:family.display_name,legacy_identity:family.legacy_identity,model_generation:1,signal_date:'2030-01-04',published_at:'2030-01-04T16:00:00+08:00',data_cutoff:'2030-01-04',taxonomy_identity:family.taxonomy_identity,industry_count:family.industry_codes.length,horizons:[10,40,120],target_contract:'SAME_DATE_CROSS_SECTION_EXCESS_INDUSTRY_RETURN',models:[],
+  return {schema_version:1,kind:'FORECAST',...Object.fromEntries(['family_id','source_commit','model_contract_hash'].map(k=>[k,binding[k]])),display_name:family.display_name,legacy_identity:family.legacy_identity,model_generation:1,signal_date:'2030-01-04',published_at:'2030-01-04T16:00:00+08:00',data_cutoff:'2030-01-04',taxonomy_identity:family.taxonomy_identity,industry_count:family.industry_codes.length,taxonomy_universe_size:family.taxonomy_universe_size,model_universe_size:family.model_universe_size,model_universe_hash:family.model_universe_hash,forecast_row_count:family.model_universe_size,transition_binding:binding,realized_series_type:'RECONSTRUCTED_SWL2_EQUAL_WEIGHT',horizons:[10,40,120],target_contract:'SAME_DATE_CROSS_SECTION_EXCESS_INDUSTRY_RETURN',models:[],
     provenance:{data_source:'SYNTHETIC_SOURCE_C',source_commit:'c'.repeat(40),snapshot_sha256:'d'.repeat(64),data_cutoff:'2030-01-04',available_at:'2030-01-04T15:30:00+08:00',realized_series_type:'RECONSTRUCTED_SWL2_EQUAL_WEIGHT',historical_membership:'RECONSTRUCTED'},
     cross_section:family.industry_codes.map((c,i)=>({industry_code:c,industry_name:`合成行业 ${c}`,fused_rank:i+1,fused_score:-i,horizons:Object.fromEntries([10,40,120].map(h=>[h,{raw_prediction:-i,cross_section_zscore:-i,rank:i+1}]))}))};
 }
@@ -84,3 +84,11 @@ test('closed read-only routes, origins and paths',async t=>{
   assert.equal((await fetch(`${base}/families`,{headers:{Origin:'https://evil.invalid'}})).status,403);
   assert.equal((await fetch(`${base}/swl2-ridge/compare`)).status,200);
 });
+
+test('native centers differ while shared raw outcomes remain compatible',()=>{
+  const raw=new Map(registry[1].industry_codes.map((c,i)=>[c,i/1000]));
+  const event=f=>{const center=f.industry_codes.reduce((n,c)=>n+raw.get(c),0)/f.model_universe_size;return {signal_date:'2030-01-04',horizon:10,taxonomy_identity:f.taxonomy_identity,target_contract:'SAME_DATE_CROSS_SECTION_EXCESS_INDUSTRY_RETURN',realized_series_type:'RECONSTRUCTED_SWL2_EQUAL_WEIGHT',metrics:{realized:f.industry_codes.map((c,i)=>({industry_code:c,forecast_score:-i,realized_return:raw.get(c),scientific_target:raw.get(c)-center}))}};};
+  const left=event(registry[0]),right=event(registry[1]);assert.notEqual(left.metrics.realized[0].scientific_target,right.metrics.realized[0].scientific_target);
+  const result=compare({evaluations:[left]},{evaluations:[right]})[0];assert.equal(result.centered_target_equality_required,false);assert.equal(result.raw_return_compatibility,'VERIFIED');assert.equal(result.common_industry_counts['2030-01-04'],107);assert.equal(typeof result.swl2_ridge_v1.mean_absolute_rank_error,'number');assert.equal(typeof result.swl2_ridge_v2.top5_overlap_rate,'number');
+});
+for(const key of ['forecast_row_count','model_universe_size','taxonomy_universe_size','model_universe_hash'])test(`rejects tampered ${key}`,()=>{const body=forecast();body[key]=key==='model_universe_hash'?'f'.repeat(64):5;assert.throws(()=>validateEvents([event(body)],binding,family,now));});
