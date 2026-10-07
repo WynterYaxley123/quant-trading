@@ -1,0 +1,255 @@
+{
+  "excluded": [],
+  "factors": [
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "(close-MA5)/MA5",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 5,
+      "name": "d5",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "(close-MA10)/MA10",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 10,
+      "name": "d10",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "(close-MA20)/MA20",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 20,
+      "name": "d20",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "(close-MA60)/MA60",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 60,
+      "name": "d60",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "(close-MA120)/MA120",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 120,
+      "name": "d120",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "clip((close-min5)/(max5-min5+1e-10),0,1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 5,
+      "name": "p5",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "clip((close-min10)/(max10-min10+1e-10),0,1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 10,
+      "name": "p10",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "clip((close-min20)/(max20-min20+1e-10),0,1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 20,
+      "name": "p20",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "clip((close-min60)/(max60-min60+1e-10),0,1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 60,
+      "name": "p60",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "clip((close-min120)/(max120-min120+1e-10),0,1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 120,
+      "name": "p120",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "(3*(MA5>MA10)+2*(MA10>MA20)+(MA20>MA60))/6",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 60,
+      "name": "align",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "std(pct_change(close),5,ddof=1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 6,
+      "name": "v5",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "std(pct_change(close),20,ddof=1)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 21,
+      "name": "v20",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "v5/(v20+1e-10)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 21,
+      "name": "vc",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "-mean(pct_change(close),5)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 6,
+      "name": "rev5",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "-mean(pct_change(close),10)",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 11,
+      "name": "rev10",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "close/rolling_max(close,20)-1",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 20,
+      "name": "dd20",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "close/rolling_max(close,60)-1",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 60,
+      "name": "dd60",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "DIMENSIONLESS_WITH_HETEROGENEOUS_SCALE"
+    },
+    {
+      "data_dependency": "CLOSE_ONLY_RECONSTRUCTED_INDUSTRY_LEVEL",
+      "formula": "100-100/(1+mean(gain,14)/(mean(loss,14)+1e-10))",
+      "input_fields": [
+        "close"
+      ],
+      "leakage_policy": "BACKWARD_LOOKBACK_ONLY",
+      "level_1_applicable": true,
+      "lookback_sessions": 15,
+      "name": "rsi",
+      "nan_policy": "PRESERVE_GAPS_AND_ROLLING_WARMUP",
+      "units": "0_TO_100"
+    }
+  ],
+  "performance_used": false,
+  "reason": "RSI scale differs from fractional returns and bounded position factors; training-only population scaling.",
+  "scaling": "STANDARDIZED"
+}

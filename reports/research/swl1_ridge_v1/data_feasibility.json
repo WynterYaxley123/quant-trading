@@ -1,0 +1,187 @@
+{
+  "coverage_admission_rule": "Every post-seed industry day valid; >=5 exact adjacent constituents and >=80% daily constituent coverage. No recursive restart after a gap.",
+  "coverage_admitted_industries": [
+    "110000",
+    "220000",
+    "230000",
+    "240000",
+    "270000",
+    "280000",
+    "330000",
+    "340000",
+    "350000",
+    "360000",
+    "370000",
+    "410000",
+    "420000",
+    "430000",
+    "450000",
+    "460000",
+    "480000",
+    "490000",
+    "610000",
+    "620000",
+    "630000",
+    "640000",
+    "650000",
+    "710000",
+    "720000",
+    "730000",
+    "740000",
+    "750000",
+    "760000",
+    "770000"
+  ],
+  "coverage_quantiles": {
+    "0": 0.0,
+    "0.25": 0.9939393939393939,
+    "0.5": 1.0,
+    "0.75": 1.0,
+    "1": 1.0
+  },
+  "current_taxonomy_size": 31,
+  "eligible_training_signal_sessions_upper_bound": null,
+  "excluded_industries": [
+    {
+      "code": "510000",
+      "reason": "RECURSIVE_SERIES_FACTUAL_GAP"
+    }
+  ],
+  "family_id": "swl1_ridge_v1",
+  "feasibility_reason": "EXACT_WINDOW_AND_PURGED_SPLIT_ADMISSION",
+  "full_feature_sessions": 1133,
+  "full_h120_mature_sessions": 1133,
+  "historical_membership_confidence": "RECONSTRUCTED",
+  "history_end": "2026-09-30",
+  "history_start": "2021-08-02",
+  "industry_valid_day_counts": {
+    "110000": 1252,
+    "220000": 1252,
+    "230000": 1252,
+    "240000": 1252,
+    "270000": 1252,
+    "280000": 1252,
+    "330000": 1252,
+    "340000": 1252,
+    "350000": 1252,
+    "360000": 1252,
+    "370000": 1252,
+    "410000": 1252,
+    "420000": 1252,
+    "430000": 1252,
+    "450000": 1252,
+    "460000": 1252,
+    "480000": 1252,
+    "490000": 1252,
+    "510000": 1251,
+    "610000": 1252,
+    "620000": 1252,
+    "630000": 1252,
+    "640000": 1252,
+    "650000": 1252,
+    "710000": 1252,
+    "720000": 1252,
+    "730000": 1252,
+    "740000": 1252,
+    "750000": 1252,
+    "760000": 1252,
+    "770000": 1252
+  },
+  "input_hash_manifest_sha256": "95363186c06eaf0e9f9597970099a1ecb9444bf1c913ae3cd4c28b7a4d9fd74e",
+  "latest_factual_cutoff": "2026-09-30",
+  "latest_fully_mature_h120_signal_date": "2026-04-08",
+  "limitations": [
+    "Tier A = 0; later observation is not historical availability.",
+    "No independent historical assignment verification.",
+    "Legacy/unmapped classification spells excluded; current hierarchy never backfilled before 2021-07-31.",
+    "Suspensions and missing exact adjacent returns remain missing.",
+    "Data redistribution rights unverified; no market payload enters Git."
+  ],
+  "membership_interval_rows": 12925,
+  "membership_source": {
+    "last_modified": "Fri, 02 Oct 2026 07:55:31 GMT",
+    "observed_at": "2026-10-03T18:30:21.318832+00:00",
+    "parsed_sha256": "e7b32db874ec326c10556a085657d30a83c822388fe94035e8ec165b35a56e0a",
+    "publication_proof": null,
+    "sha256": "98fe3b4ccccd1639ebee0adcadb338c30736710fab32533c86b69eec971e1283",
+    "url": "https://www.swsresearch.com/swindex/pdf/SwClass2021/StockClassifyUse_stock.xls"
+  },
+  "membership_tier_rows": {
+    "A": 0,
+    "B": 0,
+    "C": 6515140,
+    "D": 1406
+  },
+  "minimum_constituents": 5,
+  "minimum_coverage": 0.8,
+  "minimum_development_signals": 126,
+  "minimum_phase_signals": 126,
+  "minimum_training_dates": 30,
+  "model_universe_size": 30,
+  "performance_computed": false,
+  "purge_exchange_sessions": 120,
+  "realized_series_type": "RECONSTRUCTED_SWL1_EQUAL_WEIGHT",
+  "research_feasible": true,
+  "research_feasible_upper_bound": true,
+  "scaling_policy": "STANDARDIZED",
+  "schema_version": 1,
+  "scientific_status": "READY_FOR_PREREGISTRATION",
+  "taxonomy_sha256": "184465ee6a884e0eb218b6706c4eb36f8a91646fd2a8218658e23d735fd21faa",
+  "taxonomy_source": "https://www.swsresearch.com/swindex/pdf/SwClass2021/SwClassCode_2021.xls",
+  "taxonomy_version": "SWCLASS2021",
+  "tier_count_unit": "listed stock/exchange-session rows",
+  "total_industry_days": 38843,
+  "trading_sessions": 1253,
+  "training_windows": {
+    "12": {
+      "eligible_signal_sessions": 864,
+      "split": {
+        "purge_sessions": 120,
+        "ranges": {
+          "development": {
+            "end": "2024-03-25",
+            "signals": 372,
+            "start": "2022-09-08"
+          },
+          "final_oos": {
+            "end": "2026-04-08",
+            "signals": 126,
+            "start": "2025-09-24"
+          },
+          "validation": {
+            "end": "2025-04-01",
+            "signals": 126,
+            "start": "2024-09-20"
+          }
+        }
+      },
+      "status": "ELIGIBLE"
+    },
+    "24": {
+      "eligible_signal_sessions": 648,
+      "split": {
+        "purge_sessions": 120,
+        "ranges": {
+          "development": {
+            "end": "2024-03-25",
+            "signals": 156,
+            "start": "2023-08-02"
+          },
+          "final_oos": {
+            "end": "2026-04-08",
+            "signals": 126,
+            "start": "2025-09-24"
+          },
+          "validation": {
+            "end": "2025-04-01",
+            "signals": 126,
+            "start": "2024-09-20"
+          }
+        }
+      },
+      "status": "ELIGIBLE"
+    }
+  },
+  "unknown_active_membership_rows": 1406,
+  "valid_industry_days": 38811
+}
