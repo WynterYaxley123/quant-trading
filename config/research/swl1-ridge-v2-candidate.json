@@ -1,0 +1,130 @@
+{
+  "data_panel_sha256": "20c038f87daa93cccf1515f41bda7de5b30fa70a4d1443ae6c34b770e19a5776",
+  "development": {
+    "block_composite_rank_ic": [
+      0.11692621431219874,
+      0.1586865224398992,
+      0.005062291434927707,
+      0.002255531448584238
+    ],
+    "block_partition": "EQUAL_CALENDAR_DURATION",
+    "block_signal_counts": [
+      102,
+      98,
+      100,
+      101
+    ],
+    "composite_rank_ic": 0.0703535932138508,
+    "dependence": "TEMPORALLY_DEPENDENT_OVERLAPPING_HORIZONS",
+    "dropped_signals": [],
+    "fit_count": 1203,
+    "fit_records_sha256": "13db465755a9b9c36dcc9df027eb0de655a4c20d2a2b3dfb7a6d67a7ef48b278",
+    "horizons": {
+      "10": {
+        "bottom5_return": 0.001097097463402566,
+        "mean_rank_ic": 0.037213418067733886,
+        "median_rank_ic": 0.010011123470522802,
+        "positive_fraction": 0.5187032418952618,
+        "spread": 0.00416556115408893,
+        "top5_return": 0.0052626586174914945
+      },
+      "120": {
+        "bottom5_return": 0.07421573939452408,
+        "mean_rank_ic": 0.022180921444997063,
+        "median_rank_ic": 0.010011123470522802,
+        "positive_fraction": 0.513715710723192,
+        "spread": 0.003217666339805337,
+        "top5_return": 0.07743340573432944
+      },
+      "40": {
+        "bottom5_return": 0.010583232681877486,
+        "mean_rank_ic": 0.11101001667133611,
+        "median_rank_ic": 0.13281423804226916,
+        "positive_fraction": 0.6408977556109726,
+        "spread": 0.015193755704842552,
+        "top5_return": 0.02577698838672004
+      }
+    },
+    "independent_statistical_confidence": "LIMITED",
+    "median_composite_rank_ic": 0.1103448275862069,
+    "positive_blocks": 4,
+    "required_signal_count": 401,
+    "ridge_alpha_by_horizon": {
+      "10": {
+        "fits": 401,
+        "maximum": 144600.0,
+        "minimum": 106800.0
+      },
+      "120": {
+        "fits": 401,
+        "maximum": 111600.0,
+        "minimum": 73800.0
+      },
+      "40": {
+        "fits": 401,
+        "maximum": 135600.0,
+        "minimum": 97800.0
+      }
+    },
+    "signal_count": 401,
+    "sufficient_dates": true,
+    "weighted_positive_fraction": 0.5785536159600998,
+    "weighted_spread": 0.009442684725894842
+  },
+  "fusion": [
+    0.25,
+    0.5,
+    0.25
+  ],
+  "horizons": [
+    10,
+    40,
+    120
+  ],
+  "implementation_hashes": {
+    "research/swl1_ridge_v1/__init__.py": "41cdad267b30825260fa3a3a944cc0e4e38cda076ad92a950907a5ea2420e6fe",
+    "research/swl1_ridge_v1/audit.py": "0323f0f36b6cfc2f6f7fe069992131ee22a46f54660498ee483e21b25f24bfce",
+    "research/swl1_ridge_v1/data_contract.py": "0411d361d0e01ab68449b8f4e781e26a58d4f74756ec9c92e6372c7dd5dd6398",
+    "research/swl1_ridge_v1/evaluation.py": "a1fff51b86f4225e4f5ff0e49ac579752a0477c1c87bdaf7c0730be54a31ef10",
+    "research/swl1_ridge_v1/execute.py": "c69277778ed5597b7f55bc4f6517505c95b506a11ad64ee878b2aacc40371860",
+    "research/swl1_ridge_v1/lifecycle.py": "ea4434ea02e689329bcb49e8106699d2dcb0858257fcfd6daafd139ee5f276c8",
+    "research/swl1_ridge_v1/preregister.py": "d5cd7b121ee8310b140eb6d952d6acc0f3a2851383c7acef6a3eadb26fb7a763",
+    "research/swl1_ridge_v1/protocol.py": "23f38a30c3624ff7acd31c534b000173b5e99ef885ff8ad2d8bf12a82cbf884b",
+    "research/swl1_ridge_v2/__init__.py": "f6a964b1d83f72eed453141c1066011feaed10832cc767f9b2c812002743d13a",
+    "research/swl1_ridge_v2/anchor.py": "72d740d26cc6d6a985b5ed1063e12dcb52e7520079b66bd1cab4b673365d8150",
+    "research/swl1_ridge_v2/evaluation.py": "2736a737abbb28712d4fc46b5f30a554d3a09be7760a7a9cea758093ef9b3d4d",
+    "research/swl1_ridge_v2/execute.py": "88588e686100fee435799fad8bdb4100e085c0aa1572571872aff1ed81089b5e",
+    "research/swl1_ridge_v2/lifecycle.py": "202e43fa991ed09129993e35f382453b21c7b23852ba825ad23a906636cb7234",
+    "research/swl1_ridge_v2/preregister.py": "eb92766bf9559a5a41a50f9132b0cfe50df06157f4dc1a53e6f407385a45f9c6",
+    "research/swl1_ridge_v2/protocol.py": "31be0b16113d4b57cb683ebcc48bfe45edf82ff773a09b99f0d8df40919d7489",
+    "research/swl1_ridge_v2/seen.py": "3eb9c6bd79254c4553e2602ba4e5992bc41e2c146c796645335d1eb687cf310a"
+  },
+  "model_universe_hash": "cdd23d6822a3300f5f9dd301b3e2aefbb4ca9434a5a609e90ade0023d2985163",
+  "penalty_rule": "Ridge alpha = penalty x standardized training rows",
+  "protocol_hash": "df832a94eba54d703110defe2e7f0169e9de93a316a7def795a38fe9e50e428a",
+  "public_preregistration_anchor": {
+    "external_merge_witness": {
+      "exact_remote_bytes_verified": true,
+      "factual_performance_before_remote_anchor": false,
+      "github_url": "https://github.com/WynterYaxley123/quant-trading/pull/30",
+      "head_sha": "bca3d3221f073d603185d53c703b5934bd09d237",
+      "merge_sha": "41c561448f2d643f4f64201cd7c023b49537c1a3",
+      "merged": true,
+      "merged_at": "2026-10-07T16:46:52Z",
+      "pr_number": 30,
+      "protocol_commit": "bca3d3221f073d603185d53c703b5934bd09d237",
+      "protocol_hash": "df832a94eba54d703110defe2e7f0169e9de93a316a7def795a38fe9e50e428a",
+      "remote_main_sha": "41c561448f2d643f4f64201cd7c023b49537c1a3"
+    },
+    "protocol_commit": "bca3d3221f073d603185d53c703b5934bd09d237",
+    "protocol_committed_at": "2026-10-08T01:37:29+09:00",
+    "remote_ref": "refs/remotes/origin/main"
+  },
+  "scaling": "STANDARDIZED",
+  "source_commit": "0b9a9e013e613b99870163485c5a947bb15fdcb2",
+  "spec": {
+    "months": 24,
+    "penalty": 10.0,
+    "policy": "B"
+  }
+}

@@ -8,6 +8,10 @@
     {
       "sha256": "9e2a3ccebfa67a8d7d4a3f51b586947a4bf927a14d8d184a8c05fe73e130943a",
       "path": "config/research/swl1-ridge-v1-family.json"
+    },
+    {
+      "path": "config/research/swl1-ridge-v2-family.json",
+      "sha256": "bf283047f2502986e71ed21e9413eeafdf137481e744dbd6e12c81c4942e2e23"
     }
   ]
 }

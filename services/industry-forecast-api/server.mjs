@@ -10,7 +10,7 @@ import {allowedOrigins} from '../etf-quant-api/origins.mjs';
 import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-ridge-v2-prereg-integrity.json';
+const ACTIVE='reports/engineering/swl1-ridge-v2-execution-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
@@ -20,6 +20,26 @@ const read=async(root,name,limit=1024*1024)=>(await boundedLeaf(root,name,limit)
 const json=raw=>JSON.parse(raw.toString());
 const mean=xs=>xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:null;
 const median=xs=>{if(!xs.length)return null;xs=[...xs].sort((a,b)=>a-b);const i=Math.floor(xs.length/2);return xs.length%2?xs[i]:(xs[i-1]+xs[i])/2;};
+
+export function validateV2(f,artifacts) {
+  const {protocol_reference:p,status_reference:s,frozen_universe_reference:u,candidate_reference:c,validation_reference:v,development_reference:d}=artifacts;
+  const hash=f.protocol_reference.sha256,w=s.public_preregistration_anchor.external_merge_witness;
+  check(f.family_id==='swl1_ridge_v2' && f.display_name==='SWL1-Ridge-V2' && f.generation===2 && f.industry_level===1 && f.current_role==='INDUSTRY_FORECAST_RESEARCH' && f.etf_productization_status==='NOT_STARTED');
+  check(['NO_DEVELOPMENT_CANDIDATE','FAILED_VALIDATION','AWAITING_PROSPECTIVE_FINAL_OOS','VALIDATION_INTERVAL_NOT_UNSEEN','NOT_RESEARCHABLE_WITH_CURRENT_DATA'].includes(s.scientific_status) && f.scientific_status===s.scientific_status);
+  check(f.forward_eligible===false && s.forward_eligible===false && s.final_oos_opened===false && s.final_oos_consumed===false && s.validation_reopened===false && s.validation_informed_revision===false && s.formal_forward_forecasts_created===0 && s.live_scheduler_enabled===false && s.live_deployment_promoted===false);
+  check(p.family_id===f.family_id && s.protocol_hash===hash && p.primary_series==='RECONSTRUCTED_SWL1_EQUAL_WEIGHT' && p.final_oos_mode==='PROSPECTIVE_ONLY' && p.model_universe_hash===f.frozen_universe_reference.sha256 && isDeepStrictEqual(p.model_universe,u.industries) && isDeepStrictEqual(u.industries,f.industry_codes));
+  check(w.protocol_hash===hash && w.merged===true && w.exact_remote_bytes_verified===true && w.factual_performance_before_remote_anchor===false);
+  if(d)check(d.protocol_hash===hash && d.leaderboard.length===16 && p.specifications.length===16);
+  if(c)check(c.protocol_hash===hash && s.candidate_hash===f.candidate_reference.sha256 && f.model_contract_hash===s.candidate_hash && c.model_universe_hash===f.frozen_universe_reference.sha256 && isDeepStrictEqual(c.implementation_hashes,p.implementation_hashes));
+  else check(s.candidate_hash==null && f.model_contract_hash===hash);
+  if(['FAILED_VALIDATION','AWAITING_PROSPECTIVE_FINAL_OOS'].includes(s.scientific_status)) {
+    check(c && v && d);
+    check(v.lineage.protocol_hash===hash && v.lineage.candidate_hash===s.candidate_hash && v.passed===(s.scientific_status==='AWAITING_PROSPECTIVE_FINAL_OOS') && s.validation_opened===true && s.validation_passed===v.passed);
+  } else {
+    check(!c && !v && s.validation_opened===false);
+    if(s.scientific_status==='NO_DEVELOPMENT_CANDIDATE')check(d && d.leaderboard.every(row=>row.admitted===false));
+  }
+}
 
 export async function families(repoRoot=ROOT) {
   const [raw,parentRaw,registryRaw]=await Promise.all([ACTIVE,PARENT,REGISTRY].map(n=>read(repoRoot,n)));
@@ -48,18 +68,27 @@ export async function families(repoRoot=ROOT) {
   for(const reference of catalog.additional_families) {
     const bytes=await read(repoRoot,reference.path);check(sha(bytes)===reference.sha256);
     const f=json(bytes),artifacts={};
-    for(const key of ['protocol_reference','candidate_reference','taxonomy_reference','frozen_universe_reference','validation_reference','status_reference']) {
+    for(const key of ['protocol_reference','candidate_reference','taxonomy_reference','frozen_universe_reference','validation_reference','status_reference','development_reference'].filter(key=>f[key]!=null)) {
       const ref=f[key],raw=await read(repoRoot,ref.path);check(sha(raw)===ref.sha256);artifacts[key]=json(raw);
     }
     const {protocol_reference:protocol,candidate_reference:candidate,taxonomy_reference:taxonomy,frozen_universe_reference:universe,validation_reference:validation,status_reference:status}=artifacts;
+    if(f.family_id==='swl1_ridge_v2')validateV2(f,artifacts);
+    else {
     check(f.family_id==='swl1_ridge_v1' && f.display_name==='SWL1-Ridge-V1' && f.industry_level===1 && f.generation===1 && f.current_role==='INDUSTRY_FORECAST_RESEARCH' && f.etf_productization_status==='NOT_STARTED');
     check(f.scientific_status==='FAILED_VALIDATION' && status.scientific_status===f.scientific_status && f.forward_eligible===false && status.forward_eligible===false && validation.passed===false && status.final_oos_opened===false);
     check(candidate.protocol_hash===f.protocol_reference.sha256 && status.protocol_hash===f.protocol_reference.sha256 && validation.lineage.protocol_hash===f.protocol_reference.sha256 && validation.lineage.candidate_hash===f.candidate_reference.sha256 && status.candidate_hash===f.candidate_reference.sha256 && f.model_contract_hash===f.candidate_reference.sha256);
     check(candidate.model_universe_hash===f.frozen_universe_reference.sha256 && protocol.model_universe_hash===f.frozen_universe_reference.sha256 && protocol.taxonomy_hash===f.taxonomy_reference.sha256);
     check(isDeepStrictEqual(universe.industries,f.industry_codes) && isDeepStrictEqual(protocol.model_universe,f.industry_codes));
+    }
     const current=taxonomy.industries.map(r=>r.industry_code).sort(),codes=f.industry_codes;
     check(isDeepStrictEqual(codes,[...new Set(codes)].sort()) && codes.every(c=>current.includes(c)));
     Object.assign(f,{taxonomy_scope:taxonomy.classification_version,taxonomy_universe_size:current.length,model_universe_size:codes.length,model_universe_hash:sha(JSON.stringify(codes)),taxonomy_only_industries:current.filter(c=>!codes.includes(c)),taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE'});
+    if(f.family_id==='swl1_ridge_v2')Object.assign(f,{
+      protocol_hash:f.protocol_reference.sha256,candidate_hash:status.candidate_hash??null,
+      validation_status:status.validation_opened?(status.validation_passed?'PASS':'FAIL'):'NOT_OPENED',
+      final_oos_status:'PROSPECTIVE_NOT_OPENED',membership_confidence:protocol.membership_confidence,primary_series:protocol.primary_series,
+      research_evidence:{ranges:protocol.split.ranges,development:artifacts.development_reference??null,validation:validation??null,selected_spec:candidate?.spec??null,anchor:status.public_preregistration_anchor.external_merge_witness},
+    });
     result.push(f);
   }
   return result;
@@ -208,7 +237,7 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
     if(req.headers.origin && !origins.has(req.headers.origin))return reply(403,null,'ORIGIN_NOT_ALLOWED');
     if(req.headers.origin){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
     if(!['GET','HEAD','OPTIONS'].includes(req.method))return reply(405,null,'READ_ONLY_API');
-    const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|(?:swl2-ridge-v[12]|swl1-ridge-v1)\/(current|history|evaluation|status))$/);
+    const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|(?:swl2-ridge-v[12]|swl1-ridge-v[12])\/(current|history|evaluation|status))$/);
     if(!match)return reply(404,null,'INVALID_RESOURCE');
     if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
     try {

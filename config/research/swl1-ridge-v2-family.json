@@ -1,0 +1,95 @@
+{
+  "family_id": "swl1_ridge_v2",
+  "display_name": "SWL1-Ridge-V2",
+  "generation": 2,
+  "industry_system": "SHENWAN",
+  "industry_level": 1,
+  "taxonomy_identity": "SHENWAN_L1_SWCLASS2021",
+  "model_family": "RIDGE",
+  "legacy_identity": null,
+  "current_role": "INDUSTRY_FORECAST_RESEARCH",
+  "etf_productization_status": "NOT_STARTED",
+  "scientific_status": "FAILED_VALIDATION",
+  "research_status": "FAILED_VALIDATION",
+  "forward_eligible": false,
+  "industry_codes": [
+    "110000",
+    "220000",
+    "230000",
+    "240000",
+    "270000",
+    "280000",
+    "330000",
+    "340000",
+    "350000",
+    "360000",
+    "370000",
+    "410000",
+    "420000",
+    "430000",
+    "450000",
+    "460000",
+    "480000",
+    "490000",
+    "610000",
+    "620000",
+    "630000",
+    "640000",
+    "650000",
+    "710000",
+    "720000",
+    "730000",
+    "740000",
+    "750000",
+    "760000",
+    "770000"
+  ],
+  "horizons": [
+    10,
+    40,
+    120
+  ],
+  "model_contract_hash": "c94d511d925e47947b12d12a1b8c0380417da525282651a790ca55f84c81efad",
+  "protocol_reference": {
+    "path": "config/research/swl1-ridge-v2-protocol.json",
+    "sha256": "df832a94eba54d703110defe2e7f0169e9de93a316a7def795a38fe9e50e428a"
+  },
+  "candidate_reference": {
+    "path": "config/research/swl1-ridge-v2-candidate.json",
+    "sha256": "c94d511d925e47947b12d12a1b8c0380417da525282651a790ca55f84c81efad"
+  },
+  "taxonomy_reference": {
+    "sha256": "a5bca45bb240a15d4cf4864c31b4a2e6b8774ab296c66804b2f079eae8d2caec",
+    "path": "config/research/swl1-ridge-v1-taxonomy.json"
+  },
+  "frozen_universe_reference": {
+    "sha256": "cdd23d6822a3300f5f9dd301b3e2aefbb4ca9434a5a609e90ade0023d2985163",
+    "path": "config/research/swl1-ridge-v1-universe.json"
+  },
+  "development_reference": {
+    "path": "reports/research/swl1_ridge_v2/development.json",
+    "sha256": "8715911746935fcf27200a76d17f402cd95f61f3eaa36312f947c07081be13f2"
+  },
+  "validation_reference": {
+    "path": "reports/research/swl1_ridge_v2/validation.json",
+    "sha256": "e1fea05ccef53c1767f3e8e6b845c9e52e23112543856bbe85095501706dbc97"
+  },
+  "status_reference": {
+    "path": "reports/research/swl1_ridge_v2/status.json",
+    "sha256": "5453501bbe21068042f9691f3cf900513e6d529a28dd8de3f73b624cc7b6eb85"
+  },
+  "historical_research": {
+    "selected_candidate": "B-m24-l10 / Policy B / penalty 10 × training rows / 24 calendar months / STANDARDIZED",
+    "development_composite_rank_ic": "0.0703535932138508",
+    "validation_composite_rank_ic": "-0.0301234175538959",
+    "validation_positive_fraction": "0.418650793650794",
+    "validation_weighted_spread": "0.000668116067193898",
+    "validation_positive_blocks": "1/4",
+    "validation": "FAIL",
+    "final_oos": "PROSPECTIVE_ONLY / NOT_OPENED",
+    "search_spec_count": "16",
+    "development_admitted_specs": "3",
+    "independent_statistical_confidence": "LIMITED",
+    "historical_membership_confidence": "RECONSTRUCTED"
+  }
+}

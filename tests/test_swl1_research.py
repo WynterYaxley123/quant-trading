@@ -213,7 +213,7 @@ def test_scientific_negative_paths_and_null_metrics():
 
 def test_failed_family_keeps_levels_separate_and_blocks_forward():
     registry = generic_families()
-    assert [f["model_universe_size"] for f in registry] == [107, 124, 30]
+    assert [f["model_universe_size"] for f in registry] == [107, 124, 30, 30]
     failed = resolve_family("swl1-ridge-v1")
     assert failed["taxonomy_universe_size"] == 31
     assert failed["industry_level"] == 1

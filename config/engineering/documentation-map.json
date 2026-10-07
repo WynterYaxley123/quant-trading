@@ -3,6 +3,14 @@
   "semantics": "LITERAL_ACTIVE_LINKS_REQUIRED; RETAINED_ARCHIVE_BYTES_PINNED; REDUNDANT_TRANSCRIPTS_RECOVERABLE_FROM_GIT",
   "documents": [
     {
+      "path": "docs/research/swl1-ridge-v2-results.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/engineering/swl1-ridge-v2-execution.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
       "path": "AGENTS.md",
       "class": "ACTIVE_DEVELOPER_DOC"
     },

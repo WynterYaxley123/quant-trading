@@ -40,3 +40,14 @@ Taxonomy scope SWCLASS2021 has 134 current identities and 63 historical parsing 
 ## SWL1 factual admission
 
 The [Level-1 protocol](research/swl1-ridge-v1-protocol.md) dynamically discovers 31 current identities and admits 30 with continuous exact equal-weight history after the 2021 version boundary. Explicit parent-name/code relations establish hierarchy; current codes are not backfilled before 2021-07-31. Effective-dated stock spells remain retrospective, Tier A=0. Aggregation does not upgrade confidence. The series is RECONSTRUCTED_SWL1_EQUAL_WEIGHT, not an official index. Unsupported membership, suspension and missing adjacent adjusted prices remain excluded/missing.
+
+SWL1-Ridge-V2 retained this exact panel/universe and target before results.
+Official L1 index performance never entered target selection. V1 outcomes
+through its last H120 maturity, 2025-09-23, are seen. V2's first Validation
+endpoint is 2025-09-23, first outcome 2025-09-24: all 378 `(t,t+h]` intervals
+are strictly outcome-unseen. The unopened V1 OOS plan overlaps 125/126 signals,
+with one earlier endpoint; exact-range repurpose is false. Verified public/
+private lineage and absence of V1 OOS claims/results allowed authorized partial
+reuse as V2 Validation. Its single failed Validation makes those outcomes seen
+for later research; no historical Final OOS is available to V2. See
+[actual closure](research/swl1-ridge-v2-results.md).

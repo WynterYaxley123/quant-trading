@@ -9,6 +9,9 @@ historical research candidate). Both have role `INDUSTRY_FORECAST_RESEARCH`.
 SWL2 ETF productization is `RETIRED`. The independent **SWL1-Ridge-V1** generation
 completed its 20-spec Development and failed its single Validation; Final OOS
 was never opened. Its ETF productization is `NOT_STARTED` and forward eligibility is false.
+The separately preregistered **SWL1-Ridge-V2** completed its frozen 16-spec search
+and failed its only Validation. It is permanently closed, with no Final OOS
+opened and forward eligibility false.
 
 ## Current research status
 
@@ -17,6 +20,14 @@ was never opened. Its ETF productization is `NOT_STARTED` and forward eligibilit
 | SWL2-Ridge-V1 | 2 | 107 | Ridge | FROZEN_BASELINE | SEALED | SEALED | existing frozen forward path | RETIRED |
 | SWL2-Ridge-V2 | 2 | 124 | Ridge | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | original FAIL | CONSUMED | existing frozen forward path | RETIRED |
 | SWL1-Ridge-V1 | 1 | 30 (31 current identities) | Ridge alpha 100 / 12m / standardized 19 factors | FAILED_VALIDATION | FAIL | NOT_OPENED | false | NOT_STARTED |
+| SWL1-Ridge-V2 | 1 | same 30 | penalty 10 × training rows / 24m / standardized 19 factors | FAILED_VALIDATION | FAIL | PROSPECTIVE_ONLY / NOT_OPENED | false | NOT_STARTED |
+
+[V2's public preregistration](docs/research/swl1-ridge-v2-protocol.md) merged
+before factual metrics. Three of 16 Development specs were admitted; candidate
+B-m24-l10 had [single Validation](docs/research/swl1-ridge-v2-results.md)
+composite RankIC −0.030123, H120 −0.161329, weighted positive fraction 41.87%
+and 1/4 positive calendar blocks. No retry, revision or OOS follows. The same
+reconstructed Level-1 equal-weight primary target was retained.
 
 SWL1 is not SWL2 V3. [Its protocol](docs/research/swl1-ridge-v1-protocol.md) was
 committed before performance, with exact 120-session purges and a 20-spec budget.

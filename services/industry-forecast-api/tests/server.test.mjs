@@ -44,7 +44,7 @@ async function generation(root,events=[event(forecast())]) {
   await writeFile(path.join(namespace,'latest.json'),JSON.stringify({run_id:'synthetic_run',manifest_sha256:sha(manifest)}));return run;
 }
 test('canonical naming, actual frozen universes and null empty metrics',async()=>{
-  const f=await families();assert.deepEqual(f.map(v=>v.display_name),['SWL2-Ridge-V1','SWL2-Ridge-V2','SWL1-Ridge-V1']);assert.deepEqual(f.map(v=>v.industry_codes.length),[107,124,30]);
+  const f=await families();assert.deepEqual(f.map(v=>v.display_name),['SWL2-Ridge-V1','SWL2-Ridge-V2','SWL1-Ridge-V1','SWL1-Ridge-V2']);assert.deepEqual(f.map(v=>v.industry_codes.length),[107,124,30,30]);
   const view=await observe('',family,now);assert.equal(view.current,null);assert.equal(view.metrics[0].mean_rank_ic,null);assert.equal(view.metrics[0].top5_mean_return,null);assert.equal(view.metrics[0].matured_forecast_dates,0);
 });
 test('reads full immutable generation without state creation',async t=>{

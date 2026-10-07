@@ -93,6 +93,9 @@ const reviewedResearchHashes = Object.freeze({
   'reports/research/swl1_ridge_v1/preregistration.json':'98f3751e7eee900424a05dc28abe53242039477f7dca0e520267fd0741edc8fa',
   'reports/research/swl1_ridge_v1/status.json':'9d2a6b9d418e88008a0125d4004fd9283735ce5fd1b854f7a9de607f73eb6569',
   'reports/research/swl1_ridge_v1/validation.json':'4f39211fb8fcdd3e350355414b753065940b8bdb42bb2ee57a432b89241c205c',
+  'reports/research/swl1_ridge_v2/development.json':'8715911746935fcf27200a76d17f402cd95f61f3eaa36312f947c07081be13f2',
+  'reports/research/swl1_ridge_v2/validation.json':'e1fea05ccef53c1767f3e8e6b845c9e52e23112543856bbe85095501706dbc97',
+  'reports/research/swl1_ridge_v2/status.json':'5453501bbe21068042f9691f3cf900513e6d529a28dd8de3f73b624cc7b6eb85',
 });
 export const forbiddenData = (name,bytes)=> /^(?:data|runtime|external|lake|exports|cache|logs|secrets)\//.test(name)
   || /(?:^|\/)\.env(?:$|\.(?!example$))/.test(name)
@@ -222,7 +225,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-ridge-v2-prereg-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-ridge-v2-execution-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

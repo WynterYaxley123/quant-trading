@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { act, cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router';
@@ -25,6 +27,37 @@ beforeEach(()=>{
 });
 afterEach(()=>{cleanup();vi.clearAllMocks();setEtfQuantPortForTesting(null);});
 describe('canonical industry forecast',()=>{
+  it('renders all 16 public Development rows and the failed single Validation evidence',async()=>{
+    const read=(name:string)=>JSON.parse(readFileSync(path.resolve(process.cwd(),'..',name),'utf8'));
+    const record=read('config/research/swl1-ridge-v2-family.json');
+    const protocol=read(record.protocol_reference.path),status=read(record.status_reference.path);
+    const swl1=familySchema.parse({...record,taxonomy_scope:'SWCLASS2021',taxonomy_universe_size:31,model_universe_size:30,model_universe_hash:'a'.repeat(64),taxonomy_only_industries:['510000'],taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE',protocol_hash:record.protocol_reference.sha256,candidate_hash:status.candidate_hash,validation_status:'FAIL',final_oos_status:'PROSPECTIVE_NOT_OPENED',primary_series:protocol.primary_series,research_evidence:{ranges:protocol.split.ranges,development:read(record.development_reference.path),validation:read(record.validation_reference.path),selected_spec:read(record.candidate_reference.path).spec,anchor:status.public_preregistration_anchor.external_merge_witness}});
+    vi.mocked(fetchFamilies).mockResolvedValue([family,second,swl1]);
+    vi.mocked(fetchForecast).mockResolvedValue({...empty(),family:swl1,status:'FAILED_VALIDATION'});
+    render(<IndustryForecastPage/>);
+    expect(await screen.findByRole('heading',{name:'SWL1-Ridge-V2 · Historical research lifecycle'})).toBeInTheDocument();
+    expect(within(screen.getAllByRole('table')[0]!).getAllByRole('row')).toHaveLength(17);
+    expect(screen.getByText('B-m24-l10')).toBeInTheDocument();
+    expect(screen.getByText('-0.161329')).toBeInTheDocument();
+    expect(screen.getByText('V2 permanently closed. No retry or retuning.')).toBeInTheDocument();
+    expect(screen.queryByRole('heading',{name:/Full Ranking/})).toBeNull();
+  });
+  for(const state of ['NO_DEVELOPMENT_CANDIDATE','FAILED_VALIDATION','AWAITING_PROSPECTIVE_FINAL_OOS'])it(`shows V2 ${state} without an active forecast or invented missing metrics`,async()=>{
+    const swl1=familySchema.parse({...family,family_id:'swl1_ridge_v2',display_name:'SWL1-Ridge-V2',industry_level:1,generation:2,legacy_identity:null,etf_productization_status:'NOT_STARTED',scientific_status:state,forward_eligible:false,taxonomy_universe_size:31,model_universe_size:30,taxonomy_only_industries:['510000'],historical_research:{final_oos:'PROSPECTIVE_ONLY / NOT_OPENED'}});
+    vi.mocked(fetchFamilies).mockResolvedValue([family,second,swl1]);
+    vi.mocked(fetchForecast).mockResolvedValue({...empty(),family:swl1,status:state});
+    render(<IndustryForecastPage/>);
+    expect(await screen.findByText(new RegExp(`${state} · Final OOS not opened`))).toBeInTheDocument();
+    expect(screen.getByText('Candidate: not_selected')).toBeInTheDocument();
+    expect(screen.getByText('Development composite RankIC: — · Validation composite RankIC: —')).toBeInTheDocument();
+    expect(screen.queryByRole('heading',{name:/Full Ranking/})).toBeNull();
+    expect(screen.queryByRole('heading',{name:/Forecast Evaluation/})).toBeNull();
+  });
+  it('rejects a V2 forecast even when Validation is marked passed',()=>{
+    const swl1={...family,family_id:'swl1_ridge_v2',display_name:'SWL1-Ridge-V2',industry_level:1,generation:2,forward_eligible:false,scientific_status:'AWAITING_PROSPECTIVE_FINAL_OOS'};
+    expect(viewSchema.safeParse({...published(),family:swl1}).success).toBe(false);
+    expect(familySchema.safeParse({...swl1,forward_eligible:true}).success).toBe(false);
+  });
   it('shows Level-1 failed research without an active forward model',async()=>{
     const swl1=familySchema.parse({...family,family_id:'swl1_ridge_v1',display_name:'SWL1-Ridge-V1',industry_level:1,legacy_identity:null,etf_productization_status:'NOT_STARTED',scientific_status:'FAILED_VALIDATION',forward_eligible:false,taxonomy_universe_size:31,model_universe_size:30,taxonomy_only_industries:['510000'],historical_research:{validation:'FAIL',final_oos:'NOT_OPENED',development_composite_rank_ic:'0.1212',validation_composite_rank_ic:'-0.0763',selected_candidate:'Policy B / alpha 100 / 12 months'}});
     vi.mocked(fetchFamilies).mockResolvedValue([family,second,swl1]);

@@ -1,6 +1,7 @@
 # Documentation
 
-Current role: SWL2 industry forecast research; ETF productization retired.
+Current role: Level-1/Level-2 industry research. Both SWL1 generations closed
+FAILED_VALIDATION; SWL2 ETF productization retired.
 
 | Guide | Covers |
 | --- | --- |
@@ -16,6 +17,9 @@ Current role: SWL2 industry forecast research; ETF productization retired.
 | [Reproducibility](reproducibility.md) | Chained certificates and preserved historical hashes |
 | [Historical strategy](strategy.md) | Frozen historical ETF productization formulas |
 | [Glossary](glossary.md) | Scientific and visual terminology |
+| [SWL1-Ridge-V2 protocol](research/swl1-ridge-v2-protocol.md) | Separate public preregistration and unseen outcomes |
+| [SWL1-Ridge-V2 result](research/swl1-ridge-v2-results.md) | Frozen 16-spec Development and one failed Validation |
+| [V2 engineering acceptance](engineering/swl1-ridge-v2-execution.md) | Public verification and preserved freezes |
 
 [README](../README.md), [中文说明](../README.zh-CN.md), [contributing](../CONTRIBUTING.md),
 [security](../SECURITY.md), [repository rules](../AGENTS.md), [archive](archive/README.md),

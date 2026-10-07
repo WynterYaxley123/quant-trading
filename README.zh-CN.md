@@ -6,6 +6,8 @@
 **SWL2-Ridge-V2**。两者角色均为 `INDUSTRY_FORECAST_RESEARCH`，ETF 产品化已
 `RETIRED`。独立的 **SWL1-Ridge-V1** 已完成 20 个 Development specs 和一次 Validation，
 结果为 `FAILED_VALIDATION`；Final OOS 从未打开，forward eligible=false，ETF 产品化 `NOT_STARTED`。
+单独公开预注册的 **SWL1-Ridge-V2** 已完成冻结的 16 个规格及唯一一次 Validation，
+同样为 `FAILED_VALIDATION`，永久关闭。Final OOS 从未打开，前瞻资格为 false。
 
 ## 当前状态
 
@@ -14,6 +16,12 @@
 | SWL2-Ridge-V1 | 2 | 107 | Ridge | FROZEN_BASELINE | SEALED | SEALED | 既有冻结前瞻路径 | RETIRED |
 | SWL2-Ridge-V2 | 2 | 124 | Ridge | PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE | 原始 FAIL | CONSUMED | 既有冻结前瞻路径 | RETIRED |
 | SWL1-Ridge-V1 | 1 | 30（当前 taxonomy 31） | alpha 100 / 12个月 / 标准化19因子 | FAILED_VALIDATION | FAIL | NOT_OPENED | false | NOT_STARTED |
+| SWL1-Ridge-V2 | 1 | 相同30 | penalty 10 × 训练行数 / 24个月 / 标准化19因子 | FAILED_VALIDATION | FAIL | PROSPECTIVE_ONLY / NOT_OPENED | false | NOT_STARTED |
+
+[V2 正式预注册](docs/research/swl1-ridge-v2-protocol.md)在真实指标计算前单独合并。
+16 个 Development 规格中 3 个准入，确定性选择 B-m24-l10；[一次 Validation](docs/research/swl1-ridge-v2-results.md)
+综合 RankIC −0.030123、H120 −0.161329、加权正 IC 比例 41.87%、正时间块仅 1/4。
+保持相同的重建一级行业等权目标，不重试、不修订，也不进入 OOS。
 
 SWL1 是独立家族，不是 SWL2 V3。[协议](docs/research/swl1-ridge-v1-protocol.md)在任何真实
 模型表现计算前提交并冻结，两个 purge 各 120 个真实交易 session。[一次 Validation](docs/research/swl1-ridge-v1-results.md)
