@@ -121,8 +121,8 @@ runner 必须使用 clean merged source 与显式外部只读事实。scheduler 
 [部署](docs/deployment.md)、[中文运维](docs/operations.zh-CN.md)、
 [复现](docs/reproducibility.md)、[研究状态](docs/research-status.md)、
 [贡献指南](CONTRIBUTING.md)与[历史策略合同](docs/strategy.md)。
-SWL1-Ridge-V1 必须以独立宇宙、预注册 protocol、Development、Validation 和未消费
-Final OOS 启动；不得挪用 SWL2 的已消费证据。源码 [MIT](LICENSE)，
+SWL1-Ridge-V1 已因 Validation 失败关闭，未挪用 SWL2 的已消费证据。不含结果的
+[SWL1-Ridge-V2 草案](docs/research/swl1-ridge-v2-draft.md)尚未预注册、也未运行。源码 [MIT](LICENSE)，
 [第三方声明](THIRD_PARTY_NOTICES.md)和[数据权限](docs/data/market_data_policy.md)独立适用。
 
 ## 宇宙与目标的独立口径

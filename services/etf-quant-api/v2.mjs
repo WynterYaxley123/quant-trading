@@ -9,7 +9,7 @@ import {boundedLeaf} from './bounded.mjs';
 const defaultRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const CANDIDATE='strategies/etf_quant_v2/config/candidate.json';
 const REPORT='reports/engineering/etf-quant-v2-build-research.json';
-export const CURRENT_MANIFEST='reports/engineering/swl1-ridge-v1-integrity.json';
+export const CURRENT_MANIFEST='reports/engineering/swl1-ridge-v2-draft-integrity.json';
 const MANIFEST=CURRENT_MANIFEST;
 const PARENTS=['reports/engineering/shadow-task-installation-integrity.json','reports/engineering/shadow-operations-integrity.json','reports/engineering/forward-shadow-closure-integrity.json','reports/engineering/etf-quant-v2-console-integrity.json','reports/engineering/etf-quant-v2-factual-units-integrity.json','reports/engineering/etf-quant-v2-factual-refresh-integrity.json','reports/engineering/etf-quant-v2-observation-integrity.json',
   'reports/engineering/etf-quant-v2-finalization-integrity.json','reports/engineering/etf-quant-v2-build-integrity.json'];

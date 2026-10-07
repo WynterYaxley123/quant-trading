@@ -1457,6 +1457,10 @@
     {
       "path": "docs/engineering/swl1-ridge-v1-acceptance.md",
       "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-ridge-v2-draft.md",
+      "class": "ACTIVE_USER_DOC"
     }
   ]
 }
