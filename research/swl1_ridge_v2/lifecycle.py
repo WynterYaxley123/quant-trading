@@ -9,6 +9,11 @@ from research.swl1_ridge_v1.protocol import immutable
 
 
 class Lifecycle(FrozenLifecycle):
+    def freeze_candidate(self, candidate: dict[str, Any]) -> str:
+        if not (self.root / "development.result.json").is_file():
+            raise ValueError("COMPLETED_DEVELOPMENT_REQUIRED")
+        return super().freeze_candidate(candidate)
+
     def record_anchor(self, anchor: dict[str, Any]) -> str:
         self.verify()
         return immutable(self.root / "anchor.json", anchor)

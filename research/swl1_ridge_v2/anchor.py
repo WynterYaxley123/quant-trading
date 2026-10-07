@@ -11,6 +11,8 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+from research.swl1_ridge_v1.protocol import digest
+
 PROTOCOL = "config/research/swl1-ridge-v2-protocol.json"
 RESULTS = (
     "reports/research/swl1_ridge_v2/development.json",
@@ -35,10 +37,48 @@ def public_anchor(repository: Path, remote_ref: str) -> dict[str, Any]:
         raise ValueError("PROTOCOL_NOT_PUBLISHED")
     commit = commits[-1]
     published = git(repository, "show", f"{remote_ref}:{PROTOCOL}")
-    if published.returncode or published.stdout != (repository / PROTOCOL).read_bytes():
+    original = git(repository, "show", f"{commit}:{PROTOCOL}")
+    if (
+        published.returncode
+        or original.returncode
+        or published.stdout != (repository / PROTOCOL).read_bytes()
+        or original.stdout != published.stdout
+    ):
         raise ValueError("PROTOCOL_CHANGED_AFTER_PUBLICATION")
     for name in RESULTS:
         if not git(repository, "cat-file", "-e", f"{commit}:{name}").returncode:
             raise ValueError("RESULTS_PUBLISHED_WITH_PROTOCOL")
+    tree = git(repository, "ls-tree", "-r", "--name-only", commit).stdout.decode().splitlines()
+    if any(
+        name.startswith("reports/research/swl1_ridge_v2/") and not name.endswith("/.gitkeep")
+        for name in tree
+    ):
+        raise ValueError("RESULTS_PUBLISHED_WITH_PROTOCOL")
+    historical = git(repository, "log", "--format=%H", commit, "--", *RESULTS)
+    if historical.returncode or historical.stdout.strip():
+        raise ValueError("RESULTS_EXISTED_BEFORE_PROTOCOL")
     when = git(repository, "show", "-s", "--format=%cI", commit).stdout.decode().strip()
     return {"remote_ref": remote_ref, "protocol_commit": commit, "protocol_committed_at": when}
+
+
+def verify_merge_witness(
+    repository: Path, remote_ref: str, witness: dict[str, Any]
+) -> dict[str, Any]:
+    """Bind an externally retrieved GitHub merge record to the fetched exact bytes."""
+    anchor = public_anchor(repository, remote_ref)
+    if (
+        witness.get("merged") is not True
+        or not witness.get("merged_at")
+        or witness.get("protocol_commit") != anchor["protocol_commit"]
+        or witness.get("protocol_hash") != digest((repository / PROTOCOL).read_bytes())
+        or not isinstance(witness.get("pr_number"), int)
+    ):
+        raise ValueError("EXTERNAL_MERGE_WITNESS_REQUIRED")
+    for sha in (witness.get("merge_sha"), witness.get("head_sha")):
+        if (
+            not isinstance(sha, str)
+            or len(sha) != 40
+            or git(repository, "merge-base", "--is-ancestor", sha, remote_ref).returncode
+        ):
+            raise ValueError("PREREGISTRATION_MERGE_NOT_IN_REMOTE_MAIN")
+    return {**anchor, "external_merge_witness": witness}

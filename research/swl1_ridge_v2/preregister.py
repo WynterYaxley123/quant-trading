@@ -13,6 +13,7 @@ from research.swl1_ridge_v1.protocol import digest, eligible_signals, immutable
 
 from .anchor import PROTOCOL
 from .protocol import MONTHS, PENALTIES, POLICIES, split_sessions
+from .seen import chronology_proof, v1_lineage
 
 V1_PROTOCOL = "config/research/swl1-ridge-v1-protocol.json"
 
@@ -39,13 +40,19 @@ def preregister(root: Path, repository: Path, source_commit: str) -> dict[str, A
     eligible = eligible_signals(data["features"], data["returns"], dates, 24)
     last_seen = v1["split"]["ranges"]["validation"]["end"]
     split = split_sessions(dates, eligible, last_seen)
+    proof = chronology_proof(v1, dates, split, v1_lineage(repository, root))
     protocol = {
         "protocol_version": "SWL1_RIDGE_V2_PREREGISTRATION_1",
         "family_id": "swl1_ridge_v2",
-        "parent_generation": {"family_id": "swl1_ridge_v1", "status": "FAILED_VALIDATION"},
+        "parent_generation": {
+            "family_id": "swl1_ridge_v1",
+            "status": "FAILED_VALIDATION",
+            "protocol_hash": digest((repository / V1_PROTOCOL).read_bytes()),
+        },
         "source_commit": source_commit,
         "research_feasible": split is not None,
         "data_panel_sha256": v1["data_panel_sha256"],
+        "date_spine_hash": digest(json.dumps(dates, separators=(",", ":")).encode()),
         "model_universe": codes,
         "model_universe_hash": v1["model_universe_hash"],
         "primary_series": v1["primary_series"],
@@ -64,14 +71,18 @@ def preregister(root: Path, repository: Path, source_commit: str) -> dict[str, A
         "search_budget_max": len(PENALTIES) * len(MONTHS) * len(POLICIES),
         "seen_data": {
             "v1_last_validation_signal": last_seen,
-            "rule": "V1 Development and Validation labels are seen; V2 Validation starts after them.",
+            "rule": "All V1 Development/Validation outcome sessions are seen; every V2 Validation target session must be later. Predictor endpoint equality is permitted.",
         },
+        "unseen_validation_proof": proof,
         "split": split,
         "development_admission": "All horizons sufficient; every mean RankIC >= -0.02; >=3/4 positive equal-calendar blocks.",
+        "block_rule": "Four equal calendar durations over registered phase endpoints; min(3, floor(4*day_offset/span_days)); endpoints never shift after dropped signals.",
+        "drop_accounting": "Every dropped signal records signal_date, phase, spec, horizon, reason_code; valid+dropped equals registered phase size. Full per-fit alpha evidence stays private; public aggregate ranges and hashes remain reproducible.",
         "selection": "Composite mean RankIC descending; 1e-12 ties; minimum horizon mean descending; 12m before 24m; larger penalty; policy lexical.",
         "validation_gate": v1["validation_gate"]
         | {"positive_chronological_blocks": ">=3/4 equal-calendar"},
-        "final_oos": "PROSPECTIVE_FORWARD_ONLY; no historical interval remains unseen.",
+        "final_oos": "PROSPECTIVE_FORWARD_ONLY",
+        "final_oos_mode": "PROSPECTIVE_ONLY",
         "preregistration_anchor": "Protocol merged alone; Development requires its exact bytes on a fetched remote-tracking ref.",
         "independent_statistical_confidence": "LIMITED",
         "iid_inference": False,

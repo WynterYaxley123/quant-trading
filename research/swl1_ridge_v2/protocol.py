@@ -99,8 +99,8 @@ def split_sessions(
     """Development may reuse seen history; Validation starts after every seen label.
 
     ``last_seen_signal`` is V1's last Validation signal. Its H120 label is the last
-    realized return that entered any V1 metric, so a V2 Validation signal must lie
-    beyond it. A historical Final OOS cannot exist: it is prospective only.
+    realized return that entered any V1 metric. A V2 signal may equal that endpoint:
+    its target starts on the next exchange session. Final OOS is prospective only.
     """
     if dates != sorted(set(dates)) or eligible != sorted(set(eligible)):
         raise ValueError("SORTED_UNIQUE_EXCHANGE_SPINE_REQUIRED")
