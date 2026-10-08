@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Performance-blind source admission record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_id",
+    "source_hash",
+    "data_contract_hash",
+    "taxonomy_identity",
+    "membership_identity",
+    "kind",
+    "tier",
+    "revision_identity"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "source_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "data_contract_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "taxonomy_identity": {
+      "type": "string"
+    },
+    "membership_identity": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "OFFICIAL_TAXONOMY",
+        "OFFICIAL_INDEX_PRICE_SERIES",
+        "RECONSTRUCTED_INDUSTRY_RETURN"
+      ]
+    },
+    "tier": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "revision_identity": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

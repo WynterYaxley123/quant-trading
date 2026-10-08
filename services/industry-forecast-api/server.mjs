@@ -8,9 +8,10 @@ import {fileURLToPath} from 'node:url';
 import {boundedLeaf, containedExists} from '../etf-quant-api/bounded.mjs';
 import {allowedOrigins} from '../etf-quant-api/origins.mjs';
 import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
+import {publicEvidence} from './evidence.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-forensics-access-integrity.json';
+const ACTIVE='reports/engineering/swl1-data-first-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
@@ -238,9 +239,11 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
     if(req.headers.origin){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
     if(!['GET','HEAD','OPTIONS'].includes(req.method))return reply(405,null,'READ_ONLY_API');
     const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|(?:swl2-ridge-v[12]|swl1-ridge-v[12])\/(current|history|evaluation|status))$/);
-    if(!match)return reply(404,null,'INVALID_RESOURCE');
+    const evidence=url.match(/^\/api\/industry-forecast\/research-evidence\/(sources|source-admissions|prospective-status|access-policy|maturity-status)$/);
+    if(!match && !evidence)return reply(404,null,'INVALID_RESOURCE');
     if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
     try {
+      if(evidence)return reply(200,await publicEvidence(repoRoot,evidence[1]));
       const registry=await families(repoRoot);
       if(match[1]==='families')return reply(200,await Promise.all(registry.map(async f=>(await observe(runtimeRoot,f,now())).family)));
       if(match[1]==='swl2-ridge/compare')return reply(200,compare(...await Promise.all(registry.filter(f=>f.industry_level===2).map(f=>observe(runtimeRoot,f,now())))));

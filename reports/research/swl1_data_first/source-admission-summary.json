@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "source_admission_status": "BLOCKED_UNVERIFIED_RIGHTS",
+  "formal_admitted_sources": 0,
+  "official_source_license_status": "NOT_ESTABLISHED",
+  "signature_authority": "SIGNATURE_AUTHORITY_NOT_ESTABLISHED",
+  "states": [
+    "SOURCE_UNREVIEWED",
+    "SOURCE_METADATA_VERIFIED",
+    "SOURCE_RIGHTS_VERIFIED",
+    "SOURCE_PIT_VERIFIED",
+    "SOURCE_ADMITTED",
+    "SOURCE_REJECTED",
+    "SOURCE_BLOCKED"
+  ],
+  "engineering_contract": "TESTED_SYNTHETIC_ONLY",
+  "performance_blind": true,
+  "boolean_verified_shortcut": false,
+  "synthetic_fixture": {
+    "source": "PUBLIC_SYNTHETIC_FIXTURE",
+    "rights": "PERMITTED_FOR_SYNTHETIC_ENGINEERING",
+    "production_admission": false
+  },
+  "recommended_data_gap_remediation": [
+    "Document dataset-specific research-use rights and redistribution scope",
+    "Obtain contemporaneous membership publication/receipt proof for a new source generation",
+    "Independently establish adjustment, suspension, delisting and constituent completeness",
+    "Admit a versioned exchange spine and factual finalization receipts"
+  ]
+}

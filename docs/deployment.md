@@ -1,5 +1,11 @@
 # Industry forecast deployment boundary
 
+[Prospective infrastructure](engineering/prospective-evidence-operations.md) has
+no production signing identity, admitted real source or activation. Its developer
+worker containment is verified in Linux Docker only; deployment must satisfy the
+same inspected mount/network/user policy. Do not enable collectors, schedulers or
+new protocols from this engineering delivery.
+
 Engineering delivery is source-only. Live deployment promotion, runtime activation
 and scheduler enabling require a separate operational instruction. Historical ETF
 deployment guides retain original bytes under [archive](archive/README.md).

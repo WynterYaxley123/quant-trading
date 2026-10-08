@@ -2,6 +2,15 @@
 
 # Testing and quality
 
+Run `python -m pytest -q tests/test_prospective_evidence.py tests/test_evidence_invariance.py`
+in the pinned developer Docker, plus `python -m examples.prospective_evidence_demo`.
+The [acceptance record](engineering/swl1-data-first-acceptance.md) covers
+performance-blind source/PIT, future poisoning across C/F/compressed layouts,
+pre-decode gates, path/link/TOCTOU denial, mutex/crash recovery, immutable
+consumption, exact maturity and frozen byte hashes. Hosted CI also launches actual
+isolated Docker workers and runs actual Windows junction tests; native Windows
+quantitative process isolation is not claimed. No market-data research is rerun.
+
 `python -m pytest -q -m "not external_runtime"` runs portable numerical contracts,
 synthetic evidence, schema, provider and transport regressions. It needs no private
 data or credentials. Synthetic HDF5/Parquet fixtures exercise real readers.

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "scope": "TESTED_INFRASTRUCTURE_NOT_LIVE_ACTIVATION",
+  "models": {
+    "swl1_ridge_v1": "FAILED_VALIDATION",
+    "swl1_ridge_v2": "FAILED_VALIDATION"
+  },
+  "source_admission_status": "BLOCKED_UNVERIFIED_RIGHTS",
+  "PIT_confidence": "RECONSTRUCTED_TIER_C",
+  "historical_numeric_access_isolation": "NOT_CERTIFIED",
+  "certified_historically_unseen_sessions": 0,
+  "infrastructure_readiness": "TESTED_SYNTHETIC_ONLY",
+  "logical_boundary": "PASS_SYNTHETIC",
+  "physical_view_boundary": "PASS_SYNTHETIC",
+  "process_isolation": "PASS_LINUX_DOCKER_SYNTHETIC",
+  "windows_native_process_isolation": "NOT_ESTABLISHED",
+  "signature_authority": "SIGNATURE_AUTHORITY_NOT_ESTABLISHED",
+  "future_protocol": "NOT_CREATED",
+  "formal_prospective_evidence": "NONE",
+  "formal_observations": 0,
+  "real_forecasts": 0,
+  "live_activation": false,
+  "next_generation_research_readiness": "DATA_SOURCE_NOT_READY",
+  "maturity": [
+    {
+      "horizon": 10,
+      "status": "PENDING_MATURITY",
+      "matured_observations": 0
+    },
+    {
+      "horizon": 40,
+      "status": "PENDING_MATURITY",
+      "matured_observations": 0
+    },
+    {
+      "horizon": 120,
+      "status": "PENDING_MATURITY",
+      "matured_observations": 0
+    }
+  ],
+  "decision": "C",
+  "blocking_gaps": [
+    "SOURCE_RIGHTS_UNKNOWN",
+    "PIT_EVIDENCE_INSUFFICIENT",
+    "SIGNATURE_AUTHORITY_NOT_ESTABLISHED",
+    "PROSPECTIVE_ACTIVATION_NOT_VERIFIED"
+  ],
+  "recommended_data_gap_remediation": [
+    "Document dataset-specific research-use rights and redistribution scope",
+    "Obtain contemporaneous membership publication/receipt proof for a new source generation",
+    "Independently establish adjustment, suspension, delisting and constituent completeness",
+    "Admit a versioned exchange spine and factual finalization receipts"
+  ]
+}

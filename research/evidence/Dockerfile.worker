@@ -1,0 +1,8 @@
+ARG DEV_IMAGE=quant-trading-dev:ci
+FROM ${DEV_IMAGE}
+WORKDIR /worker
+COPY research/evidence /worker/research/evidence
+COPY strategies/etf_quant/runtime/storage.py /worker/strategies/etf_quant/runtime/storage.py
+ENV PYTHONPATH=/worker PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1
+USER 65534:65534
+ENTRYPOINT ["python", "-m", "research.evidence.worker"]

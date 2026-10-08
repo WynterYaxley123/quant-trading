@@ -9,8 +9,10 @@ import { IndustryForecastPage } from '@/industry-forecast/Page';
 import { fetchFamilies, fetchForecast, fetchComparison } from '@/industry-forecast/client';
 import { comparisonSchema, familySchema, viewSchema } from '@/industry-forecast/contracts';
 import { setEtfQuantPortForTesting } from '@/etf-quant/data-port';
+import {fetchEvidenceReadiness,evidenceReadinessSchema} from '@/industry-forecast/evidence-client';
 
 vi.mock('@/industry-forecast/client',()=>({fetchFamilies:vi.fn(),fetchForecast:vi.fn(),fetchComparison:vi.fn()}));
+vi.mock('@/industry-forecast/evidence-client',async importOriginal=>({...await importOriginal<object>(),fetchEvidenceReadiness:vi.fn()}));
 const family=familySchema.parse({family_id:'swl2_ridge_v1',display_name:'SWL2-Ridge-V1',legacy_identity:'ETF_QUANT_V1',generation:1,industry_level:2,current_role:'INDUSTRY_FORECAST_RESEARCH',etf_productization_status:'RETIRED',taxonomy_scope:'SWCLASS2021',taxonomy_universe_size:134,model_universe_size:107,model_universe_hash:'b'.repeat(64),taxonomy_only_industries:Array.from({length:27},(_,i)=>`T${i}`),taxonomy_only_status:'NOT_IN_FROZEN_MODEL_UNIVERSE',scientific_status:'FROZEN_BASELINE',historical_research:{validation:'SEALED',final_oos:'SEALED'}});
 const second=familySchema.parse({...family,family_id:'swl2_ridge_v2',display_name:'SWL2-Ridge-V2',legacy_identity:'ETF_QUANT_V2',generation:2,model_universe_size:124,taxonomy_only_industries:Array.from({length:10},(_,i)=>`T${i}`),scientific_status:'PROVISIONAL_HISTORICAL_RESEARCH_CANDIDATE'});
 const metrics=[10,40,120].map(horizon=>({horizon,matured_forecast_dates:0,mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_mean_return:null,bottom5_mean_return:null,top5_bottom5_spread:null,universe_mean_return:null,confidence_status:'INSUFFICIENT_FORWARD_EVIDENCE',rolling:[],worst_rolling_interval:null}));
@@ -22,6 +24,7 @@ function published() {
   return viewSchema.parse({...empty(),status:'FORWARD_FORECAST',current:forecast,history:[forecast]});
 }
 beforeEach(()=>{
+  vi.mocked(fetchEvidenceReadiness).mockResolvedValue(evidenceReadinessSchema.parse(JSON.parse(readFileSync(path.resolve(process.cwd(),'../reports/research/swl1_data_first/prospective-readiness.json'),'utf8'))));
   vi.mocked(fetchFamilies).mockResolvedValue([family,second]);vi.mocked(fetchForecast).mockResolvedValue(empty());
   vi.mocked(fetchComparison).mockResolvedValue(comparisonSchema.parse([10,40,120].map(horizon=>({scope:'COMMON_FORWARD_WINDOW',metric_scope:'COMMON_INDUSTRY_CROSS_SECTION_DIAGNOSTIC',common_industry_counts:{},raw_return_compatibility:'NO_COMMON_MATURED_OBSERVATIONS',centered_target_equality_required:false,horizon,matured_common_dates:[],matured_common_date_count:0,swl2_ridge_v1:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null,mean_absolute_rank_error:null,median_absolute_rank_error:null,top5_overlap_count:null,top5_overlap_rate:null},swl2_ridge_v2:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null,mean_absolute_rank_error:null,median_absolute_rank_error:null,top5_overlap_count:null,top5_overlap_rate:null},difference_v2_minus_v1:{mean_rank_ic:null,median_rank_ic:null,positive_rank_ic_fraction:null,top5_bottom5_spread:null,mean_absolute_rank_error:null,median_absolute_rank_error:null,top5_overlap_count:null,top5_overlap_rate:null},confidence_status:'INSUFFICIENT_FORWARD_EVIDENCE'}))));
 });

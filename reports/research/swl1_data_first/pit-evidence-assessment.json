@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "official_index_source_status": "NOT_ESTABLISHED",
+  "historical_membership_source_status": "EFFECTIVE_DATED_RECONSTRUCTION",
+  "contemporaneous_membership_proof": "NOT_ESTABLISHED",
+  "historical_tiers": {
+    "A": 0,
+    "B": 0,
+    "C": "RECONSTRUCTED",
+    "D": "EXCLUDED"
+  },
+  "historical_numeric_access_isolation": "NOT_CERTIFIED",
+  "certified_historically_unseen_sessions": 0,
+  "corporate_action_quality": "NOT_ESTABLISHED",
+  "delisting_coverage": "NOT_ESTABLISHED",
+  "suspension_coverage": "NOT_ESTABLISHED",
+  "publication_time_quality": "NOT_ESTABLISHED",
+  "research_use_rights": "NOT_ESTABLISHED",
+  "redistribution_rights": "NOT_ESTABLISHED",
+  "PIT_confidence": "RECONSTRUCTED_TIER_C",
+  "source_admission_status": "BLOCKED_UNVERIFIED_RIGHTS",
+  "timestamp_roles": {
+    "effective_at": "When a classification/action applies",
+    "published_at": "When provider published the fact, independently witnessed",
+    "observed_at": "When trusted authority actually received it",
+    "ingested_at": "Local persistence time; not historical availability",
+    "revised_at": "New correction identity; original remains frozen"
+  },
+  "revision_categories": [
+    "membership",
+    "adjusted_close",
+    "delisting",
+    "calendar",
+    "symbol",
+    "coverage"
+  ],
+  "metadata_revisions": {
+    "industry_members": 5,
+    "industry_index": 3,
+    "trading_calendar": 4,
+    "instruments": 6,
+    "adj_factors": 28,
+    "corporate_actions": 3,
+    "daily_bars": 33
+  },
+  "numeric_quality_recomputed": false,
+  "recommended_data_gap_remediation": [
+    "Document dataset-specific research-use rights and redistribution scope",
+    "Obtain contemporaneous membership publication/receipt proof for a new source generation",
+    "Independently establish adjustment, suspension, delisting and constituent completeness",
+    "Admit a versioned exchange spine and factual finalization receipts"
+  ]
+}

@@ -47,10 +47,13 @@ jobs:
             python -m pytest -q -m "not external_runtime"
             python -m examples.minimal_demo
             python -m examples.industry_forecast_demo
+            python -m examples.prospective_evidence_demo
             python -m scripts.engineering.benchmark
             python -m pytest -q tests/performance
             python -m scripts.engineering.references
           '
+      - name: Actual isolated synthetic Docker worker adversarial acceptance
+        run: node scripts/engineering/prospective-isolation.mjs "$PWD" "$RUNNER_TEMP/prospective-evidence" quant-trading-dev:ci
 
   frontend:
     runs-on: ubuntu-latest
@@ -92,6 +95,7 @@ jobs:
           node-version: '24.19.0'
       - run: node --test services/etf-quant-api/tests/*.test.mjs services/etf-quant-runner/security-audit.test.mjs scripts/tests/operations.test.mjs
       - run: node --test services/industry-forecast-api/tests/*.test.mjs
+      - run: node --test scripts/tests/evidence-isolation.test.mjs
       - run: node --check services/industry-forecast-api/server.mjs
 
   windows-launcher:
@@ -102,3 +106,4 @@ jobs:
         with:
           node-version: '24.19.0'
       - run: node --test scripts/tests/launcher-unit.test.mjs scripts/tests/scheduler.test.mjs scripts/tests/operations.test.mjs
+      - run: node --test scripts/tests/evidence-isolation.test.mjs

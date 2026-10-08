@@ -3,6 +3,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import { useResource } from '@/hooks/useResource';
 import { fetchFamilies, fetchForecast, fetchComparison } from './client';
 import { ResearchEvidence } from './ResearchEvidence';
+import { EvidenceReadiness } from './EvidenceReadiness';
 
 const number=(value:number|null|undefined)=>value==null?'—':value.toFixed(4);
 const percent=(value:number|null|undefined)=>value==null?'—':`${(value*100).toFixed(2)}%`;
@@ -44,6 +45,7 @@ export function IndustryForecastPage() {
       {!forecast.loading&&!forecast.error&&!selected?<p className="mt-4">No forward forecasts yet. 不回填历史研究结果。</p>:null}
     </section>
 
+    <EvidenceReadiness/>
     {definition?.research_evidence?<ResearchEvidence family={definition}/>:null}
 
     {selected?<><section className="rounded-xl border bg-card p-5">

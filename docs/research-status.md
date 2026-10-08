@@ -1,5 +1,11 @@
 # Current research status
 
+Next-generation readiness: DATA_SOURCE_NOT_READY (decision C). The
+[data-first audit](research/swl1-data-first-feasibility.md) establishes metadata
+identity, not formal rights/PIT admission. Infrastructure is tested synthetic
+only; future protocol NOT_CREATED, prospective evidence NONE. Historical numeric
+isolation remains NOT_CERTIFIED and certified unseen sessions remain zero.
+
 | Family | Current role | Scientific status | Actual frozen universe |
 | --- | --- | --- | --- |
 | SWL2-Ridge-V1 | INDUSTRY_FORECAST_RESEARCH | FROZEN_BASELINE; Validation / Final OOS SEALED | 107 |

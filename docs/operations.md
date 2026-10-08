@@ -1,5 +1,11 @@
 # Industry forecast operations
 
+[Evidence operations](engineering/prospective-evidence-operations.md) expose five
+read-only research-evidence resources under the industry API. They read reviewed
+public aggregate metadata, never runtime facts, and create no event or data view.
+Rights/PIT gaps, NOT_CREATED future protocol and zero formal observations remain
+visible separately from successful synthetic engineering checks.
+
 ETF productization is RETIRED. Historical ETF task/runner/config documents in the
 [archive](archive/README.md) are audit records, not current launch instructions.
 This engineering delivery does not promote deployed source, enable tasks or create

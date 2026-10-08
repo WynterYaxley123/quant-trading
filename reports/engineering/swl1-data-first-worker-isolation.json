@@ -1,0 +1,50 @@
+{
+  "scope": "SYNTHETIC_ONLY",
+  "logical_boundary": "PASS",
+  "physical_view_boundary": "PASS",
+  "process_isolation": "PASS_LINUX_DOCKER_SYNTHETIC",
+  "windows_native_process_isolation": "NOT_ESTABLISHED",
+  "future_poison_variants": 3,
+  "worker_mounts": [
+    "/view:readonly",
+    "/policy:readonly"
+  ],
+  "results": [
+    {
+      "content_hash": "e5c904ffb84de22f88af6993b4642b6ff2f35ef0d474e880fb7f50dd515bd6e7",
+      "derived_hash": "dcb7cb5fcd1927d68068068b6d5311ea7f62ad373f092ccc236dd2b3467edadf",
+      "direct_mother_read": "DENIED",
+      "feature_rows": 15,
+      "inherited_descriptors": 0,
+      "manifest_hash": "b373fda2c2b623aaa05c747209039a090fdfb9c119b86e8faa892a76ee5b997b",
+      "network": "DENIED",
+      "process_isolation": "PASS_LINUX_DOCKER_SYNTHETIC",
+      "return_rows": 11,
+      "scope": "SYNTHETIC_ONLY"
+    },
+    {
+      "content_hash": "e5c904ffb84de22f88af6993b4642b6ff2f35ef0d474e880fb7f50dd515bd6e7",
+      "derived_hash": "dcb7cb5fcd1927d68068068b6d5311ea7f62ad373f092ccc236dd2b3467edadf",
+      "direct_mother_read": "DENIED",
+      "feature_rows": 15,
+      "inherited_descriptors": 0,
+      "manifest_hash": "795f3b020f61d41950055e3e767ca3201cec70e83fac49ae55a87429cf0cea3a",
+      "network": "DENIED",
+      "process_isolation": "PASS_LINUX_DOCKER_SYNTHETIC",
+      "return_rows": 11,
+      "scope": "SYNTHETIC_ONLY"
+    },
+    {
+      "content_hash": "e5c904ffb84de22f88af6993b4642b6ff2f35ef0d474e880fb7f50dd515bd6e7",
+      "derived_hash": "dcb7cb5fcd1927d68068068b6d5311ea7f62ad373f092ccc236dd2b3467edadf",
+      "direct_mother_read": "DENIED",
+      "feature_rows": 15,
+      "inherited_descriptors": 0,
+      "manifest_hash": "93f255b6175de74687d8a998f9d86f9fc7b848cbb22775f29886f797d80a7439",
+      "network": "DENIED",
+      "process_isolation": "PASS_LINUX_DOCKER_SYNTHETIC",
+      "return_rows": 11,
+      "scope": "SYNTHETIC_ONLY"
+    }
+  ]
+}
