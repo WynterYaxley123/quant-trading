@@ -87,6 +87,10 @@ export function secretKinds(text) {
 // Reviewed aggregate-only V1 closure. Both path and exact bytes must match;
 // altered reports and all other research payloads remain prohibited.
 const reviewedResearchHashes = Object.freeze({
+  'reports/research/swl1_data_first/source-inventory.json':'075b4d07e1fec347ec1e247b7a61fab3dbc47db1af850dd951f352dd7cce0414',
+  'reports/research/swl1_data_first/pit-evidence-assessment.json':'b425233fcc74fbf722ec375c18ef66d7431558eeebbc99edcf5e9bd11c03db49',
+  'reports/research/swl1_data_first/source-admission-summary.json':'d5a86b523183eb2ed6705e4133989d8b9f3166d2f4733f37e629f533f7dbbfda',
+  'reports/research/swl1_data_first/prospective-readiness.json':'d21f2d7574a46006d5b27cae60f0afefa4acce25fad7d0b7038d3592ba81fbda',
   'reports/research/swl1_failure_forensics/summary.json':'eb67fd6588bd48ffcd13679904bf51e63c62ebfeb5f035b81e9b90f7fe0dadae',
   'reports/research/swl1_failure_forensics/evidence-manifest.json':'b2c40df063112b2c2820a913d6a6e5a0e46369e5530a6fbfd558a17cf413668e',
   'reports/research/swl1_failure_forensics/attribution-matrix.json':'72ffff2424cc5f9f1b897d14ec4854bec45ceaeb7e9f803dc9f66f1ef5000a7c',
@@ -238,7 +242,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-forensics-access-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-data-first-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

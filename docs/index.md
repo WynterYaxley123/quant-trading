@@ -1,5 +1,13 @@
 # Documentation
 
+Data-first evidence: [EN feasibility](research/swl1-data-first-feasibility.md),
+[中文](research/swl1-data-first-feasibility.zh-CN.md),
+[architecture](engineering/prospective-evidence-architecture.md),
+[numeric isolation](engineering/numeric-access-isolation.md),
+[source admission](engineering/source-admission-contract.md),
+[operations](engineering/prospective-evidence-operations.md),
+[acceptance](engineering/swl1-data-first-acceptance.md).
+
 Current role: Level-1/Level-2 industry research. Both SWL1 generations closed
 FAILED_VALIDATION; SWL2 ETF productization retired.
 

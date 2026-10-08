@@ -2,6 +2,12 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+SWL1 数据与证据基础设施已完成合成验收；正式来源准入仍阻断，V1/V2 保持失败，
+未来协议尚未创建，正式前瞻观察为 0。参见[数据可行性](docs/research/swl1-data-first-feasibility.zh-CN.md)
+和[独立 Docker 演示与操作边界](docs/engineering/prospective-evidence-operations.md)。
+全新公开 clone 使用固定开发镜像运行 `python -m examples.prospective_evidence_demo`，
+不需要私有数据。新隔离不会追认旧数值访问合格。
+
 当前项目研究**申万一级与二级行业预测**，二级策略家族正式命名为 **SWL2-Ridge-V1** 与
 **SWL2-Ridge-V2**。两者角色均为 `INDUSTRY_FORECAST_RESEARCH`，ETF 产品化已
 `RETIRED`。独立的 **SWL1-Ridge-V1** 已完成 20 个 Development specs 和一次 Validation，

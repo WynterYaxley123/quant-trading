@@ -2,6 +2,15 @@
 
 # Reproducibility and provenance
 
+The data-first cumulative source layer is
+[swl1-data-first-integrity.json](../reports/engineering/swl1-data-first-integrity.json).
+It preserves all earlier certificates and frozen bytes, verified by the new
+[historical invariant manifest](../reports/engineering/swl1-data-first-historical-invariance.json).
+View content hashes, authority receipts and hash-linked synthetic events establish
+new lineage without certifying old access. See
+[source contract](engineering/source-admission-contract.md) and
+[numeric boundary](engineering/numeric-access-isolation.md).
+
 `scripts/engineering/inventory.py` is the canonical measurement tool. It reads a Git
 path manifest and ASTs without importing strategy code. Complete signatures require
 all parameters except self/cls and the return. LOC includes blank/comment lines.

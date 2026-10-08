@@ -45,9 +45,18 @@ SWL1-Ridge-V2 retained this exact panel/universe and target before results.
 Official L1 index performance never entered target selection. V1 outcomes
 through its last H120 maturity, 2025-09-23, are seen. V2's first Validation
 endpoint is 2025-09-23, first outcome 2025-09-24: all 378 `(t,t+h]` intervals
-are strictly outcome-unseen. The unopened V1 OOS plan overlaps 125/126 signals,
+were outside the declared V1 consumed outcome interval. This arithmetic does not
+certify historically unseen numeric access: the old executors materialized full
+panels. Historical isolation remains NOT_CERTIFIED, with zero certified unseen
+sessions. The unopened V1 OOS plan overlaps 125/126 signals,
 with one earlier endpoint; exact-range repurpose is false. Verified public/
 private lineage and absence of V1 OOS claims/results allowed authorized partial
 reuse as V2 Validation. Its single failed Validation makes those outcomes seen
 for later research; no historical Final OOS is available to V2. See
 [actual closure](research/swl1-ridge-v2-results.md).
+
+The new [data-first assessment](research/swl1-data-first-feasibility.md) keeps
+historical Tier A=0/B=0/C=reconstructed. Publication, effective, observation,
+ingestion and revision times are distinct. Metadata watermarks do not establish
+rights, contemporary availability or adjustment/delisting completeness. Formal
+source admission remains blocked; revisions require immutable new generations.

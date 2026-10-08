@@ -1,5 +1,10 @@
 # Architecture
 
+The generic [prospective evidence layer](engineering/prospective-evidence-architecture.md)
+separates source admission, trusted staging, physical bounded views, isolated
+worker access and independent append-only receipts. Its current executable scope
+is synthetic only; it adds no research family or production activation.
+
 Current families share a naming registry, factual provenance, immutable forecast
 storage and descriptive evaluation. Their frozen numerical implementations stay
 self-contained; adapters remove the ETF execution boundary without changing fits.

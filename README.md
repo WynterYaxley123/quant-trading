@@ -2,6 +2,14 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+SWL1 data/evidence infrastructure is tested with synthetic facts only. Formal
+source admission remains blocked; V1/V2 stay failed, future protocol is not created,
+and formal prospective observations are zero. See [data-first feasibility](docs/research/swl1-data-first-feasibility.md)
+and [isolated Docker demo/operations](docs/engineering/prospective-evidence-operations.md).
+From a fresh clone, build the pinned developer image and run
+`python -m examples.prospective_evidence_demo` inside that Docker image; no private
+data is required. New containment does not certify old numeric access.
+
 quant-trading studies **Shenwan Level-1 and Level-2 industry forecasts** with frozen multi-horizon
 Ridge models, point-in-time facts and immutable forward observations. Its current
 families are **SWL2-Ridge-V1** (frozen baseline) and **SWL2-Ridge-V2** (provisional

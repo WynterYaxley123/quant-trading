@@ -1493,6 +1493,34 @@
     {
       "path": "docs/research/swl1-ridge-v2-protocol.md",
       "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-data-first-feasibility.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/swl1-data-first-feasibility.zh-CN.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/engineering/prospective-evidence-architecture.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/numeric-access-isolation.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/source-admission-contract.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/prospective-evidence-operations.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/swl1-data-first-acceptance.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }
