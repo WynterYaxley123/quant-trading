@@ -12,7 +12,7 @@
   "sources": [
     {
       "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
+      "industry_level": null,
       "schema_version": 1,
       "first_available_date": null,
       "last_available_date": null,
@@ -32,12 +32,14 @@
       "local_adapter": "research/swl1_ridge_v1/audit.py",
       "availability": "PINNED_HISTORICAL_METADATA",
       "metadata_watermark": null,
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1,
+      "industry_level_semantics": "SOURCE_HIERARCHY_NOT_LEVEL1_ONLY; frozen SWL1 consumer uses explicit Level-2-to-Level-1 mapping"
     },
     {
-      "taxonomy_version": "SWCLASS2021",
+      "taxonomy_version": null,
       "industry_level": 1,
-      "schema_version": 1,
+      "schema_version": null,
       "first_available_date": null,
       "last_available_date": null,
       "publication_timestamp_semantics": "NOT_ESTABLISHED; ingestion time is not historical publication time",
@@ -56,11 +58,12 @@
       "local_adapter": "NO_AUTHORIZED_ADAPTER_ESTABLISHED",
       "availability": "NOT_ESTABLISHED",
       "metadata_watermark": null,
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     },
     {
       "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
+      "industry_level": null,
       "schema_version": 1,
       "first_available_date": null,
       "last_available_date": null,
@@ -80,11 +83,13 @@
       "local_adapter": "CNEquity/src/cnequity/adapters/sw/industry_history.py",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": "2026-09-30",
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1,
+      "industry_level_semantics": "SOURCE_HIERARCHY_NOT_LEVEL1_ONLY; frozen SWL1 consumer uses explicit Level-2-to-Level-1 mapping"
     },
     {
-      "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
+      "taxonomy_version": null,
+      "industry_level": null,
       "schema_version": 1,
       "first_available_date": null,
       "last_available_date": null,
@@ -104,12 +109,13 @@
       "local_adapter": "CNEquity/src/cnequity/adapters/tdx/",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": "2026-09-30",
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     },
     {
-      "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
-      "schema_version": 1,
+      "taxonomy_version": null,
+      "industry_level": null,
+      "schema_version": 2,
       "first_available_date": null,
       "last_available_date": null,
       "publication_timestamp_semantics": "NOT_ESTABLISHED; ingestion time is not historical publication time",
@@ -128,11 +134,12 @@
       "local_adapter": "CNEquity/src/cnequity/adapters/sina/",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": "2026-09-30",
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     },
     {
-      "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
+      "taxonomy_version": null,
+      "industry_level": null,
       "schema_version": 1,
       "first_available_date": null,
       "last_available_date": null,
@@ -152,11 +159,12 @@
       "local_adapter": "CNEquity/src/cnequity/derive/",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": null,
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     },
     {
-      "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
+      "taxonomy_version": null,
+      "industry_level": null,
       "schema_version": 1,
       "first_available_date": null,
       "last_available_date": null,
@@ -176,7 +184,8 @@
       "local_adapter": "CNEquity/src/cnequity/adapters/baostock/",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": null,
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     },
     {
       "taxonomy_version": null,
@@ -200,11 +209,12 @@
       "local_adapter": "CNEquity/src/cnequity/adapters/",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": "2027-09-30",
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     },
     {
       "taxonomy_version": "SWCLASS2021",
-      "industry_level": 1,
+      "industry_level": null,
       "schema_version": 1,
       "first_available_date": null,
       "last_available_date": null,
@@ -224,7 +234,9 @@
       "local_adapter": "CNEquity/src/cnequity/derive/industry_index.py",
       "availability": "LOCAL_REVISION_METADATA_ONLY",
       "metadata_watermark": "2026-09-28",
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1,
+      "industry_level_semantics": "SOURCE_HIERARCHY_NOT_LEVEL1_ONLY; frozen SWL1 consumer uses explicit Level-2-to-Level-1 mapping"
     },
     {
       "taxonomy_version": "SWCLASS2021",
@@ -248,7 +260,8 @@
       "local_adapter": "research/swl1_ridge_v1/audit.py",
       "availability": "FROZEN_PUBLISHED_AUDIT_RANGE_NOT_REVERIFIED",
       "metadata_watermark": "2026-09-30",
-      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27"
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "research_target_level": 1
     }
   ]
 }

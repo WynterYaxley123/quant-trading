@@ -12,6 +12,10 @@ test('five evidence resources preserve blocked scientific readiness and zero rea
     const raw=JSON.stringify(data);assert.ok(raw.length<64*1024);assert.doesNotMatch(raw,/(?:D:\\|password|api_key|raw_prices|raw_membership)/);
   }
   const status=await publicEvidence(root,'prospective-status');
+  const inventory=await publicEvidence(root,'sources');
+  assert.equal(inventory.sources.find(s=>s.source_id==='sina-corporate-actions').schema_version,2);
+  assert.equal(inventory.sources.find(s=>s.source_id==='tdx-daily-bars').industry_level,null);
+  assert.equal(inventory.sources.find(s=>s.source_id==='official-swl1-index').taxonomy_version,null);
   assert.equal(status.future_protocol,'NOT_CREATED');assert.equal(status.historical_numeric_access_isolation,'NOT_CERTIFIED');
   assert.equal(status.next_generation_research_readiness,'DATA_SOURCE_NOT_READY');assert.equal(status.formal_observations,0);
   assert.ok(status.maturity.every(m=>m.status==='PENDING_MATURITY' && m.matured_observations===0));

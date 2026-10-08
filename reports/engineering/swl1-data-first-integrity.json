@@ -140,7 +140,7 @@
       "reports/research/swl1_data_first/pit-evidence-assessment.json": "b425233fcc74fbf722ec375c18ef66d7431558eeebbc99edcf5e9bd11c03db49",
       "reports/research/swl1_data_first/prospective-readiness.json": "d21f2d7574a46006d5b27cae60f0afefa4acce25fad7d0b7038d3592ba81fbda",
       "reports/research/swl1_data_first/source-admission-summary.json": "d5a86b523183eb2ed6705e4133989d8b9f3166d2f4733f37e629f533f7dbbfda",
-      "reports/research/swl1_data_first/source-inventory.json": "075b4d07e1fec347ec1e247b7a61fab3dbc47db1af850dd951f352dd7cce0414",
+      "reports/research/swl1_data_first/source-inventory.json": "a59cefa8e760900ce0b29170a6f3b3bc2269c2002325ccf3fe0c1c3a834ac8a4",
       "reports/research/swl1_failure_forensics/attribution-matrix.json": "72ffff2424cc5f9f1b897d14ec4854bec45ceaeb7e9f803dc9f66f1ef5000a7c",
       "reports/research/swl1_failure_forensics/evidence-manifest.json": "b2c40df063112b2c2820a913d6a6e5a0e46369e5530a6fbfd558a17cf413668e",
       "reports/research/swl1_failure_forensics/next-generation-options.json": "709617fd146ec5a2aa76667b1f5722378120aaa1d0f33e724179a63333f0e378",
@@ -211,7 +211,7 @@
       "services/etf-quant-runner/one_shot.py": "667b193a0da3dc9452dc78b3d85cfc10d7c4504fb4f5e067b94d1b1f6044c7aa",
       "services/etf-quant-runner/run.py": "f37e7569d34f21611e3928cce88bf237029be956001f328bb521f6a9102ec0f8",
       "services/etf-quant-runner/scheduled_wake.py": "e7a6837214b8f91d3e1a3e4dde5a49ed7999b388dae2bbdc4ff90c229443fd00",
-      "services/etf-quant-runner/security-audit.mjs": "e7b4d82a22854274cd70937ca577c85350d95030b385e42d7a7534e2079cf2c2",
+      "services/etf-quant-runner/security-audit.mjs": "1169397be4b473b0a4aa72e622ccf1429a14bf30f5650ba8b54537471fc6314f",
       "services/etf-quant-runner/security-audit.test.mjs": "3b7ccf415f5d6ec413b61df2dc9212e97be5f5eacbb3631aa0adf16d1b6c90fe",
       "services/etf-quant-runner/versioned.py": "ce66809fb96a76c976b5bcfeffac0fc1dc553ba0325cd0b2f8863655254d1d03",
       "services/industry-forecast-api/README.md": "4ceb0231f43d129a43878ec09819453a2f4450e784b0412f9afb87704ff21ec5",
@@ -219,7 +219,7 @@
       "services/industry-forecast-api/package.json": "1f799794d4baf8c089b17af14419fa2d51a213ea40eea8001772a1be82d5dd7f",
       "services/industry-forecast-api/pnpm-lock.yaml": "17c814b167307942d3609c7b9d916ceddb85839573ab39baa114e30edb132a1a",
       "services/industry-forecast-api/server.mjs": "6a55e856a41604f63c5e81d8500a263d29c4681ba5c6075bf75fcb3c7cd1a4e7",
-      "services/industry-forecast-api/tests/evidence.test.mjs": "066f9f6f0e2f81837a17559722852443ee7d5ed379b13a5d8132a4e02ca1edbd",
+      "services/industry-forecast-api/tests/evidence.test.mjs": "ed1a28e34ba61fcbf2519e69e62972ccd1878243df82b4564b0a6b04a6b82181",
       "services/industry-forecast-api/tests/server.test.mjs": "ffca93942226ce73291cc38676ed560abfa7c61ce11d05b7f339d17f1afb2684",
       "services/industry-forecast-api/tests/v2-research.test.mjs": "665f5461f7bd41b20e31129c53bd86b6817be081e3dd14ba791ae82e8d964c4e",
       "services/industry-forecast-runner/README.md": "3624b8719824d9b99a57466531dfcfd71a48203f79967763a09927e4d0c40cbb",
@@ -1066,7 +1066,7 @@
       {
         "path": "reports/research/swl1_data_first/source-inventory.json",
         "before_sha256": null,
-        "after_sha256": "075b4d07e1fec347ec1e247b7a61fab3dbc47db1af850dd951f352dd7cce0414",
+        "after_sha256": "a59cefa8e760900ce0b29170a6f3b3bc2269c2002325ccf3fe0c1c3a834ac8a4",
         "reason": "SWL1-DATA-FIRST verified remediation"
       },
       {
@@ -1492,7 +1492,7 @@
       {
         "path": "services/etf-quant-runner/security-audit.mjs",
         "before_sha256": "bb3c2bcdfa089967aab30f36786cb0de79ea45a64638b63f0127ef31c4432cc5",
-        "after_sha256": "e7b4d82a22854274cd70937ca577c85350d95030b385e42d7a7534e2079cf2c2",
+        "after_sha256": "1169397be4b473b0a4aa72e622ccf1429a14bf30f5650ba8b54537471fc6314f",
         "reason": "SWL1-DATA-FIRST verified remediation"
       },
       {
@@ -1540,7 +1540,7 @@
       {
         "path": "services/industry-forecast-api/tests/evidence.test.mjs",
         "before_sha256": null,
-        "after_sha256": "066f9f6f0e2f81837a17559722852443ee7d5ed379b13a5d8132a4e02ca1edbd",
+        "after_sha256": "ed1a28e34ba61fcbf2519e69e62972ccd1878243df82b4564b0a6b04a6b82181",
         "reason": "SWL1-DATA-FIRST verified remediation"
       },
       {
@@ -1839,6 +1839,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-data-first-acceptance.md",
-    "certificate_sha256": "3d0a6806cb3cd5aed89fe9da70e07586f78dd02fa8971d095325ed2b4c57d718"
+    "certificate_sha256": "c0360bdbd955bf33829e6f42a874240816b77ca3014618122c76778e0e544eb1"
   }
 }
