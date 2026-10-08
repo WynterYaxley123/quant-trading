@@ -4,7 +4,7 @@ NOT_A_NEW_VALIDATION · NOT_A_NEW_FINAL_OOS · NOT_A_NEW_MODEL_GENERATION · NOT
 
 ## 结论与证据强度
 
-V1、V2 均保持 **FAILED_VALIDATION**，Final OOS 未开启、forward=false、ETF 产品化 NOT_STARTED。本次2,427次冻结拟合精确重放、原始指标树和V2拟合元数据哈希全部一致。在允许审计的源代码和行业面板范围内，确认的实现缺陷=0、数据完整性缺陷=0；这不等于原始股票、历史成员和复权数据已获得独立真实性证明。
+V1、V2 均保持 **FAILED_VALIDATION**，Final OOS 未开启、forward=false、ETF 产品化 NOT_STARTED。本次2,427次冻结拟合精确重放、原始指标树和V2拟合元数据哈希全部一致。在允许审计的源代码和行业面板范围内，确认的target/拟合/评估实现缺陷=0、数据完整性缺陷=0；另确认1项历史读取隔离缺口：原执行器在阶段评估前载入完整数值面板。因此历史数值访问隔离、原始股票/成员/复权数据的独立真实性均不能由当前证据证明。
 
 主要描述性失败模式是**样本外时段的周期方向错配**，V2尤其集中在H120；不同周期预测排序高度一致，难以分散错误方向。唯一因果根因仍不可识别，不能声称“正则化过强导致失败”或“修复某个因子就能成功”。建议下一步 **DATA_FIRST**，对行动顺序的置信度中等，对任何下一代预测成功不作承诺。[English report](swl1-v1-v2-failure-forensics.md) 与下方完整数值附录使用相同证据。
 
@@ -26,7 +26,13 @@ V1、V2 均保持 **FAILED_VALIDATION**，Final OOS 未开启、forward=false、
 
 V1最后目标日2025-09-23，V2和并集最后目标日2026-09-29，分别为完整交易日脊柱索引1006和1251。实际转换为数值的收益仅1,252行；特征只到最后信号索引1131，共1,132行。日期/code/header只作非绩效元数据。边界manifest先于数值解码写入独立scratch。
 
-压缩文件收益采用Fortran列优先存储。读取器逐列仅把允许行前缀转换成浮点数；29个间隔尾段共232字节只作为布局字节跳过，末列尾段不解码。未消费的2026-09-30收益不进入数组、目标、IC、spread；未来121行特征不转换。完整文件哈希只校验不透明字节，不解释绩效。对C和Fortran格式都用故意注入未来收益的对抗测试验证隔离。
+### 声明消费边界与历史数值访问必须分开
+
+冻结[V1执行器](../../research/swl1_ridge_v1/execute.py)第32–33行、[V2执行器](../../research/swl1_ridge_v2/execute.py)第88–89行在Development claim之前调用`np.load`并读取完整`features`/`returns`成员，实际会物化整张数值面板，包含各自声明目标消费边界后的行。manifest以冻结源码哈希记录该事实；这是源码证据，不是运行时或人员查阅记录。原评估器和拟合函数正确限定目标与成熟标签，已消费汇总全部精确重放；未发现未来尾行进入target、sealed OOS绩效被计算或此缺口导致失败的证据。
+
+原maturity/lineage证明只覆盖声明目标区间，**不能证明历史访问隔离**。算术PASS不能证明V2 Validation数据在先前构造/执行面板时不可接触；2026-09-30虽在声明消费边界外，也不能认证为历史未看。可认证独立未看的历史尾部交易日=0。这是C类有证据的访问控制限制，不能推断人员看过尾行、数值模型有bug或某个因果效应。两个冻结失败、原协议/证明/结果字节保持不变。未来研究必须通过prospective访问隔离保护结果，仅有未开启的生命周期不能阻止数组读取。
+
+本次压缩文件收益采用Fortran列优先存储。读取器逐列仅把允许行前缀转换成浮点数；29个间隔尾段共232字节只作为布局字节跳过，末列尾段不解码。声明消费边界外的2026-09-30收益在本次不进入数组、目标、IC、spread；未来121行特征不转换。完整文件哈希只校验不透明字节，不解释绩效。对C和Fortran格式都用故意注入未来收益的对抗测试验证本次隔离，不能据此推断旧进程的访问行为。
 
 V2 Dev复用V1全部156个Dev信号，并包含125/126个V1 Validation信号；V2 Validation复用125/126个原计划V1 OOS信号日期。V1 OOS流程未打开，但这些由V2消费过的收益已不能再次宣称unseen。相同历史文件不意味着相同证据角色或独立性。
 
@@ -106,21 +112,21 @@ V2 H120“每天挑最有利的一个行业删除”的均值上界仍为-0.0883
 
 两代同宇宙、同事实面板、同target定义，但Validation日期、实际收益、块定义不同。共同156个Dev日期上V1/V2的H10 IC=-0.01615/+0.07519，H40=+0.15877/+0.20286，H120=+0.18331/+0.08843；预测排名相关0.6340/0.7340/0.01981。说明规格组合确有差异，不能证明V2全面优于V1或某个penalty最优。V2设计与Dev也已受到V1 Validation结果影响。
 
-归因矩阵区分A确认实现缺陷、B确认数据完整性缺陷、C支持的描述模式、D合理未确认假说、E现有证据反驳、F不可识别。A/B在本范围为0；C包含强收缩、冗余、稳定但长周期错误方向、状态漂移和依赖；D包括24m过时方向/过度正则机制；成员偏差大小和唯一根因仍F。详见[机器矩阵](../../reports/research/swl1_failure_forensics/attribution-matrix.json)和附录，不能用测试全过证明经济模型正确。
+归因矩阵区分A确认实现缺陷、B确认数据完整性缺陷、C支持的描述模式、D合理未确认假说、E现有证据反驳、F不可识别。A/B在target/拟合/评估审计范围为0；历史读取隔离缺口1项归C，不能推断人员查阅或数值影响。C还包含强收缩、冗余、稳定但长周期错误方向、状态漂移和依赖；D包括24m过时方向/过度正则机制；成员偏差大小和唯一根因仍F。详见[机器矩阵](../../reports/research/swl1_failure_forensics/attribution-matrix.json)和附录，不能用测试全过证明经济模型正确。
 
 ## 下一代建议与真正未看数据
 
 五路线详见[设计审查](swl1-next-generation-design-review.md)和[机器选项](../../reports/research/swl1_failure_forensics/next-generation-options.json)。推荐DATA_FIRST：先获取授权、成员当时可得性和独立来源语义证明，再决定是否值得独立预注册短期反转/轮动假说。H10只是已看结果启发的候选研究方向，不是运行中的新家族。所有下一代protocol/candidate/training/Validation均未开始。
 
-范围级库存：V1已看到2025-09-23、V2已看到2026-09-29；历史可得但未看仅2026-09-30一个目标日，未读绩效；未来仅指超出当前脊柱的prospective日期；缺失资料包括成员 contemporaneous proof 和独立授权官方指数。当前没有在并集之后完整成熟的H10/H40/H120标签，没有合法成熟的新一代独立Validation/Final OOS阶段。旧OOS未开启并不意味着其被其他已消费horizon覆盖的收益仍独立。
+范围级库存：V1声明目标消费到2025-09-23、V2到2026-09-29；边界之外只有2026-09-30一个交易日，本次未数值读取，但原执行器完整物化面板，因此其历史状态为NOT_CERTIFIED_UNSEEN，可认证独立未看的历史日=0。未来仅指超出当前脊柱的prospective日期；缺失资料包括成员 contemporaneous proof 和独立授权官方指数。当前没有在并集之后完整成熟的H10/H40/H120标签，没有合法成熟的新一代独立Validation/Final OOS阶段。旧OOS未开启并不意味着其数据从未被访问或其被其他已消费horizon覆盖的收益仍独立。
 
 将来先按来源质量冻结目标，不根据已看表现挑源；公开独立result-free协议、经济方向、有限因子/窗口/选择规则、成功失败标准和完整union边界，然后才可接触新目标。未来Validation目标起点必须晚于已看收益和经批准的未来观察边界，逐交易日核验成熟与阶段分离；仅126个连续H120信号就至少需要245个未来目标交易日，依赖仍存在，阶段间隔额外增加等待。未来Validation通过后再开启 untouched Final OOS。不能为减少等待降低证据要求。
 
 ## 可复现性与工程边界
 
-量化计算只在独立固定依赖Docker中，科学容器断网，面板和已消费生命周期目录只读，未挂载live/runtime/CNEquity。CLI默认只校验元数据/哈希，不写盘或拟合；明确--replay与独立--scratch才重放冻结候选。28项合成测试覆盖hash/path/layout、未来尾行、成熟边界、targets、df/condition、系数贡献、常量/相关因子、缺失系数、ties/calendar blocks、日期混淆、公开redaction与parity失败；正式生命周期从未调用。
+量化计算只在独立固定依赖Docker中，科学容器断网，面板和已消费生命周期目录只读，未挂载live/runtime/CNEquity。CLI默认只校验元数据/哈希，不写盘或拟合；明确--replay与独立--scratch才重放冻结候选。30项合成测试覆盖hash/path/layout、未来尾行、成熟边界、targets、df/condition、系数贡献、常量/相关因子、缺失系数、ties/calendar blocks、日期混淆、公开redaction与parity失败；正式生命周期从未调用。
 
-公开仅汇总JSON和静态SVG，逐日预测/系数保存在QuantForge独立私有研究目录，未公开股票价格/成员名单。普通fresh clone和CI不需要数据也不重放实际研究。[新的完整性层](../../reports/engineering/swl1-failure-forensics-integrity.json)与[工程验收](../engineering/swl1-failure-forensics.md)记录本次变化和回归；旧证书和冻结字节不变。四家族API/status未改变，没有启用scheduler、部署、formal forecast、ETF事件或真实订单。
+公开仅汇总JSON和静态SVG，逐日预测/系数保存在QuantForge独立私有研究目录，未公开股票价格/成员名单。普通fresh clone和CI不需要数据也不重放实际研究。[新的完整性层](../../reports/engineering/swl1-forensics-access-integrity.json)与[工程验收](../engineering/swl1-failure-forensics.md)记录本次变化和回归；旧证书和冻结字节不变。四家族API/status未改变，没有启用scheduler、部署、formal forecast、ETF事件或真实订单。
 
 ## Auditable numerical appendix / 可审计数值附录
 
@@ -352,6 +358,7 @@ Drift=(Val pooled mean-Dev pooled mean)/Dev pooled SD, across phase signals x30 
 | V1/V2 comparability | F_NOT_IDENTIFIABLE | Validation dates/outcomes differ; V1 equal-count blocks versus V2 equal-calendar.156 shared Dev dates available. Native Validation aggregates cannot identify a model winner; shared Dev changes combine penalty, window and selection. |
 | Primary failure mechanism | C_SUPPORTED_DESCRIPTIVE_PATTERN | Out-of-period directional mismatch concentrated at V2 H120, highly coherent horizon ranks, strong shrinkage and limited independent observations. Descriptive failure pattern is supported; a unique causal source/model/window/penalty root cause is NOT_IDENTIFIABLE. |
 | Overregularization causes H120 | D_PLAUSIBLE_UNCONFIRMED_HYPOTHESIS | Strong shrinkage is measured, but no fixed-date same-window alpha-only causal experiment was authorized. Plausible underfitting mechanism; cannot state causation or optimum penalty. |
+| Historical numerical-access isolation | C_SUPPORTED_DESCRIPTIVE_PATTERN | Original V1/V2 executors materialize full numeric panel members before Development. One historical isolation gap; declared maturity proof is not an access-isolation certificate. No demonstrated tail-target use, numerical defect or human inspection; zero certified independent historical unseen sessions. |
 
 
 ### Immutable lineage / 不可变谱系
@@ -372,4 +379,4 @@ Drift=(Val pooled mean-Dev pooled mean)/Dev pooled SD, across phase signals x30 
 | reports/research/swl1_ridge_v2/validation.json | `e1fea05ccef53c1767f3e8e6b845c9e52e23112543856bbe85095501706dbc97` |
 
 
-The manifest also pins every preregistered implementation file, the original private panel hash, private consumed claim/result byte hashes and independent forensic source hashes. Private claims/results were hashed as opaque integrity evidence, not republished. Their historical lifecycle was never called. Data-file byte hashing and Fortran layout-tail skipping are distinguished from numeric outcome decoding:29 intervening future-column tails (232 bytes) were discarded without floating-point conversion, and the last column tail was not decoded. The1 unseen outcome row never entered an ndarray, target, IC or spread;121 future feature rows were likewise excluded.
+The manifest also pins every preregistered implementation file, the original private panel hash, private consumed claim/result byte hashes and independent forensic source hashes. Private claims/results were hashed as opaque integrity evidence, not republished. Their historical lifecycle was never called. Data-file byte hashing and Fortran layout-tail skipping are distinguished from numeric outcome decoding:29 intervening future-column tails (232 bytes) were discarded without floating-point conversion, and the last column tail was not decoded. In this task the1 outcome row beyond declared consumption never entered an ndarray, target, IC or spread;121 future feature rows were likewise excluded. This task-local receipt does not certify historical isolation by the original executors.

@@ -9,7 +9,7 @@
       "dependence_on_better_data": "HIGH",
       "economic_rationale": "Different horizons may need distinct economic signals and stability admission before fusion.",
       "estimated_complexity": "HIGH",
-      "genuinely_unseen_evidence": "Only1 metadata-known outcome session; insufficient mature Validation.",
+      "genuinely_unseen_evidence": "One session beyond declared consumption, historically full-panel materialized; zero certified independent unseen sessions and no mature Validation.",
       "next_validation_method": "A separately approved, public result-free finite preregistration; future disjoint Validation/OOS; horizon stability and fusion rationale.",
       "priority": 4,
       "route": "SWL1_RIDGE_V3",
@@ -52,7 +52,7 @@
       "next_validation_method": "First source feasibility/PIT proof with no performance criterion; freeze target source by provenance, then preregister before new outcomes if research remains justified.",
       "priority": 1,
       "route": "DATA_FIRST",
-      "supporting_evidence": "Tier A/B0, retrospective membership/coverage universe, no independently admitted official index;1 unseen session.",
+      "supporting_evidence": "Tier A/B0, retrospective membership/coverage universe, no independently admitted official index; zero certified independent unseen sessions.",
       "unresolved_risks": "Licensing/availability may fail; source improvement may still leave no signal."
     },
     {

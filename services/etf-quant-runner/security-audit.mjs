@@ -88,9 +88,9 @@ export function secretKinds(text) {
 // altered reports and all other research payloads remain prohibited.
 const reviewedResearchHashes = Object.freeze({
   'reports/research/swl1_failure_forensics/summary.json':'eb67fd6588bd48ffcd13679904bf51e63c62ebfeb5f035b81e9b90f7fe0dadae',
-  'reports/research/swl1_failure_forensics/evidence-manifest.json':'a2b3d45de880e1e591c567bd2b8dc951429e812583a7907ea49930597821cc86',
-  'reports/research/swl1_failure_forensics/attribution-matrix.json':'993b5e9acb061d075dedaaff3e8a8991a24950892d8badc0e4a46e57d7f38fee',
-  'reports/research/swl1_failure_forensics/next-generation-options.json':'17fead746b99caf95504537c04d81344fdcd028c44d2cf0bd6cdc61368a63d61',
+  'reports/research/swl1_failure_forensics/evidence-manifest.json':'b2c40df063112b2c2820a913d6a6e5a0e46369e5530a6fbfd558a17cf413668e',
+  'reports/research/swl1_failure_forensics/attribution-matrix.json':'72ffff2424cc5f9f1b897d14ec4854bec45ceaeb7e9f803dc9f66f1ef5000a7c',
+  'reports/research/swl1_failure_forensics/next-generation-options.json':'709617fd146ec5a2aa76667b1f5722378120aaa1d0f33e724179a63333f0e378',
   'reports/research/swl1_ridge_v1/data_feasibility.json':'39aff56e15b730bc834cb7407a086546a75f7d4f292ee0cadc38294e1987fad3',
   'reports/research/swl1_ridge_v1/development.json':'a031bec412de2c86008eeb2b9272f8409fd17ce79b8ef511a893d497003dfeda',
   'reports/research/swl1_ridge_v1/factor_audit.json':'c3998b221e4b210271dee6e6e4b6ae118cc4a34717900820425c2d1ef8f9f041',
@@ -101,13 +101,22 @@ const reviewedResearchHashes = Object.freeze({
   'reports/research/swl1_ridge_v2/validation.json':'e1fea05ccef53c1767f3e8e6b845c9e52e23112543856bbe85095501706dbc97',
   'reports/research/swl1_ridge_v2/status.json':'5453501bbe21068042f9691f3cf900513e6d529a28dd8de3f73b624cc7b6eb85',
 });
+// Preserve the previously reviewed public bytes in Git history. Every exception
+// still requires its exact path and hash; a corrected export adds no broad bypass.
+const reviewedHistoricalForensicHashes = Object.freeze({
+  'reports/research/swl1_failure_forensics/evidence-manifest.json':'a2b3d45de880e1e591c567bd2b8dc951429e812583a7907ea49930597821cc86',
+  'reports/research/swl1_failure_forensics/attribution-matrix.json':'993b5e9acb061d075dedaaff3e8a8991a24950892d8badc0e4a46e57d7f38fee',
+  'reports/research/swl1_failure_forensics/next-generation-options.json':'17fead746b99caf95504537c04d81344fdcd028c44d2cf0bd6cdc61368a63d61',
+});
 export const forbiddenData = (name,bytes)=> /^(?:data|runtime|external|lake|exports|cache|logs|secrets)\//.test(name)
   || /(?:^|\/)\.env(?:$|\.(?!example$))/.test(name)
   || /\.(?:db|sqlite3?|h5|hdf5|parquet|p12|pfx)$/.test(name)
   || /(?:^|\/)node_modules\//.test(name)
   || (/^reports\/(backtests|research)\//.test(name) && !name.endsWith('/.gitkeep')
     && !(Object.hasOwn(reviewedResearchHashes,name) && bytes!==undefined
-      && createHash('sha256').update(bytes).digest('hex')===reviewedResearchHashes[name]));
+      && (createHash('sha256').update(bytes).digest('hex')===reviewedResearchHashes[name]
+        || (Object.hasOwn(reviewedHistoricalForensicHashes,name)
+          && createHash('sha256').update(bytes).digest('hex')===reviewedHistoricalForensicHashes[name]))));
 const sealedPerformance = name=>/(?:validation|final[_-]?oos)/i.test(name)
   && /(?:performance|predictions|results|returns|metrics)\.(json|csv|parquet)$/i.test(name);
 
@@ -229,7 +238,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-failure-forensics-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-forensics-access-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

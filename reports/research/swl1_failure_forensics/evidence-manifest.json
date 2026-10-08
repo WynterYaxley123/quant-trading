@@ -63,10 +63,12 @@
         }
       }
     },
-    "historically_available_unseen_outcomes": {
+    "outcomes_beyond_declared_consumption": {
       "first": "2026-09-30",
+      "historical_unseen_status": "NOT_CERTIFIED_BY_DATE_ARITHMETIC",
+      "independently_unseen_sessions_certified": 0,
       "last": "2026-09-30",
-      "outcomes_read": false,
+      "outcomes_read_by_this_forensic_task": false,
       "sessions": 1
     },
     "permitted_feature_rows": 1132,
@@ -118,6 +120,43 @@
     "research/swl1_ridge_v2/preregister.py": "eb92766bf9559a5a41a50f9132b0cfe50df06157f4dc1a53e6f407385a45f9c6",
     "research/swl1_ridge_v2/protocol.py": "31be0b16113d4b57cb683ebcc48bfe45edf82ff773a09b99f0d8df40919d7489",
     "research/swl1_ridge_v2/seen.py": "3eb9c6bd79254c4553e2602ba4e5992bc41e2c146c796645335d1eb687cf310a"
+  },
+  "historical_numeric_access_audit": {
+    "declared_target_maturity_is_not_access_isolation_proof": true,
+    "historical_unseen_access_certified": false,
+    "method": "PINNED_SOURCE_INSPECTION_NOT_RUNTIME_OR_HUMAN_ACCESS_TRACE",
+    "sources": {
+      "research/swl1_ridge_v1/execute.py": {
+        "full_numeric_members_materialized": true,
+        "np_load_lines": [
+          32
+        ],
+        "numeric_member_lines": {
+          "features": [
+            33
+          ],
+          "returns": [
+            33
+          ]
+        },
+        "sha256": "c69277778ed5597b7f55bc4f6517505c95b506a11ad64ee878b2aacc40371860"
+      },
+      "research/swl1_ridge_v2/execute.py": {
+        "full_numeric_members_materialized": true,
+        "np_load_lines": [
+          88
+        ],
+        "numeric_member_lines": {
+          "features": [
+            89
+          ],
+          "returns": [
+            89
+          ]
+        },
+        "sha256": "88588e686100fee435799fad8bdb4100e085c0aa1572571872aff1ed81089b5e"
+      }
+    }
   },
   "label": "POST_HOC_FAILURE_FORENSICS",
   "new_model_generation": false,
@@ -183,13 +222,13 @@
   "sealed_oos_performance_read": false,
   "source_sha256": {
     "research/swl1_failure_forensics/__init__.py": "d34cf71e41cd8dafea1fbbdf18a501d8cbc6198b03d1849cd018db8aff8eff25",
-    "research/swl1_failure_forensics/__main__.py": "479d7620ea55645e90e5eea1d84a86223bc570473b5648a33d8e57f698467fa7",
-    "research/swl1_failure_forensics/boundary.py": "7c4c5cbbc4b80b12c5dad0a5b15d1b52a41fb327a13db26e00336c28d77e9d43",
+    "research/swl1_failure_forensics/__main__.py": "361cd719fab01352553757e73e606ee9041c8f484e5faa5131ee442401200e05",
+    "research/swl1_failure_forensics/boundary.py": "c00ef7d8e1593473367d3cb722b21e7041aaf603b8771be089445f5560e8aa81",
     "research/swl1_failure_forensics/diagnostics.py": "aa379735e1ca78b9aecdbb451bb169e8acd15daab7df5410f29d68efbae983e3",
     "research/swl1_failure_forensics/figures.py": "f35c1b0e17087c1d9b254fcad1dc0874e45bf543e271085f6892efdd30c595d0",
     "research/swl1_failure_forensics/replay.py": "0076160b3848887e0f5f7fd0946f6a7bc9270514781a799705c33edf2cbe7074",
     "research/swl1_failure_forensics/report.py": "7890a16f3ce9161f515f5a84208fddf8f6ad2eaf8d6f598708649824055f07b7"
   },
-  "source_transition_note": "Only the aggregate figure layout changed after numerical replay; quantitative replay implementation hashes remain equal.",
+  "source_transition_note": "Numerical replay used replay_source_sha256. Later changes affect figure layout and metadata-only historical source-access audit/boundary certification, not quantitative replay, target, fit or numerical diagnostics. No factual replay was rerun for this clarification.",
   "unseen_outcomes_read": false
 }

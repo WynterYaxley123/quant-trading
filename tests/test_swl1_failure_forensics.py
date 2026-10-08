@@ -15,6 +15,7 @@ from research.swl1_failure_forensics.boundary import (
     admit,
     boundary,
     contained,
+    historical_panel_access,
     npy_prefix,
     sha,
 )
@@ -125,9 +126,36 @@ def test_exact_h120_boundary_and_future_separation() -> None:
     result = boundary(dates, protocols)
     assert result["generations"]["v1"]["last_outcome"] == dates[320]
     assert result["union_last_outcome"] == dates[370]
-    assert result["historically_available_unseen_outcomes"]["first"] == dates[371]
+    tail = result["outcomes_beyond_declared_consumption"]
+    assert tail["first"] == dates[371]
+    assert tail["independently_unseen_sessions_certified"] == 0
+    assert tail["historical_unseen_status"] == "NOT_CERTIFIED_BY_DATE_ARITHMETIC"
     assert result["permitted_return_rows"] == 371
     assert result["permitted_feature_rows"] == 251
+
+
+def test_historical_full_panel_access_is_source_evidence_only(tmp_path: Path) -> None:
+    name = "research/swl1_ridge_v1/execute.py"
+    source = tmp_path / name
+    source.parent.mkdir(parents=True)
+    source.write_text(
+        'raise AssertionError("must never execute this file")\n'
+        'data = np.load("missing-private-panel.npz", allow_pickle=False)\n'
+        'features, returns = data["features"], data["returns"]\n'
+    )
+    result = historical_panel_access(tmp_path, {name: sha(source)})
+    assert result["sources"][name]["full_numeric_members_materialized"]
+    assert result["sources"][name]["numeric_member_lines"]["returns"] == [3]
+    assert not result["historical_unseen_access_certified"]
+    source.write_text("changed")
+    with pytest.raises(ValueError, match="IMPLEMENTATION_HASH_MISMATCH"):
+        historical_panel_access(tmp_path, {name: "0" * 64})
+
+
+def test_missing_historical_source_never_certifies_independence(tmp_path: Path) -> None:
+    result = historical_panel_access(tmp_path, {})
+    assert result["sources"] == {}
+    assert not result["historical_unseen_access_certified"]
 
 
 def test_immature_or_unsorted_boundary_rejected() -> None:
