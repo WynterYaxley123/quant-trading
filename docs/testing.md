@@ -88,3 +88,17 @@ historical/prospective OOS rejection. V1/SWL2 bytes and numerical behavior remai
 invariant. Generic API/UI tests cover absent candidates, failed Validation and
 AWAITING_PROSPECTIVE_FINAL_OOS with forward=false; no future metrics are invented.
 Full portable/API/frontend gates run against a public clone without private data.
+
+## SWL1 failure-forensics safety
+
+Run `python -m pytest -q tests/test_swl1_failure_forensics.py` in the independent
+developer image. Synthetic checks cover pinned evidence/hash failure, realpath and
+symlink containment, exact H120 outcome cutoffs, adversarial future-row exclusion
+in C/Fortran compressed NPY, bounded decoding, target alignment, condition/df,
+constant/correlated factors, missing coefficients, contribution accounting,
+code ties/calendar blocks, date-confounded comparisons, public redaction and
+native aggregate parity. Fortran layout bytes are discarded without numeric
+conversion; no future outcome enters a target or performance calculation.
+Ordinary CI never runs the private forensic replay or changes lifecycle claims.
+The separately authorized replay is post-hoc only; the original failures and all
+four registered family contracts stay intact. [Report](research/swl1-v1-v2-failure-forensics.md).

@@ -9,6 +9,7 @@ import {secretKinds,canonicalJSON,certificateHash,repositoryFile,verifyCurrentCe
 test('reviewed public aggregates require exact path and byte hash; payload changes remain blocked',()=>{
   for(const name of [
     ...['data_feasibility','development','factor_audit','preregistration','status','validation'].map(stem=>`reports/research/swl1_ridge_v1/${stem}.json`),
+    ...['summary','evidence-manifest','attribution-matrix','next-generation-options'].map(stem=>`reports/research/swl1_failure_forensics/${stem}.json`),
     ...['development','validation','status'].map(stem=>`reports/research/swl1_ridge_v2/${stem}.json`),
   ]) {
     const bytes=readFileSync(new URL(`../../${name}`,import.meta.url));

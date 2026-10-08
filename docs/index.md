@@ -20,6 +20,9 @@ FAILED_VALIDATION; SWL2 ETF productization retired.
 | [SWL1-Ridge-V2 protocol](research/swl1-ridge-v2-protocol.md) | Separate public preregistration and unseen outcomes |
 | [SWL1-Ridge-V2 result](research/swl1-ridge-v2-results.md) | Frozen 16-spec Development and one failed Validation |
 | [V2 engineering acceptance](engineering/swl1-ridge-v2-execution.md) | Public verification and preserved freezes |
+| [SWL1 failure forensics](research/swl1-v1-v2-failure-forensics.md) / [中文](research/swl1-v1-v2-failure-forensics.zh-CN.md) | Consumed boundary, 19 factors, numerical/horizon/regime diagnostics and causal limits |
+| [Next-generation design review](research/swl1-next-generation-design-review.md) | Five recommendation-only routes; DATA_FIRST, next generation NOT_STARTED |
+| [Forensic engineering acceptance](engineering/swl1-failure-forensics.md) | Synthetic safety, full public gates and immutable source transition |
 
 [README](../README.md), [中文说明](../README.zh-CN.md), [contributing](../CONTRIBUTING.md),
 [security](../SECURITY.md), [repository rules](../AGENTS.md), [archive](archive/README.md),

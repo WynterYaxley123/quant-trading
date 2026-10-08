@@ -29,6 +29,12 @@ composite RankIC −0.030123, H120 −0.161329, weighted positive fraction 41.87
 and 1/4 positive calendar blocks. No retry, revision or OOS follows. The same
 reconstructed Level-1 equal-weight primary target was retained.
 
+SWL1 failure forensics: **COMPLETED** ([report](docs/research/swl1-v1-v2-failure-forensics.md)).
+V1/V2 stay **FAILED_VALIDATION**. Exact frozen diagnostic replay matched all
+original selected aggregates; causal attribution remains limited. Next generation:
+**NOT_STARTED**; [design review](docs/research/swl1-next-generation-design-review.md)
+recommends DATA_FIRST without creating a protocol, candidate or model.
+
 SWL1 is not SWL2 V3. [Its protocol](docs/research/swl1-ridge-v1-protocol.md) was
 committed before performance, with exact 120-session purges and a 20-spec budget.
 The [single Validation](docs/research/swl1-ridge-v1-results.md) had composite RankIC
@@ -179,7 +185,8 @@ The [historical strategy contract](docs/strategy.md) remains auditable.
 
 SWL1-Ridge-V1 is closed after its failed Validation; it never repurposed SWL2
 consumed evidence. A result-free [SWL1-Ridge-V2 draft](docs/research/swl1-ridge-v2-draft.md)
-is not preregistered and has not been run. Source is [MIT licensed](LICENSE);
+was superseded by the separate public V2 preregistration and closed execution above.
+Source is [MIT licensed](LICENSE);
 [third-party notices](THIRD_PARTY_NOTICES.md) and [data-rights policy](docs/data/market_data_policy.md)
 apply independently. See [security reporting](SECURITY.md).
 

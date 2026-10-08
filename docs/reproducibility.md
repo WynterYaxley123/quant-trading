@@ -125,7 +125,7 @@ The English/Chinese README quick start clones the public source, builds the inde
 
 ## SWL1 source transition
 
-The active authority is reports/engineering/swl1-ridge-v2-execution-integrity.json.
+The prior V2 execution authority is reports/engineering/swl1-ridge-v2-execution-integrity.json.
 It carries prior closure/preregistration deltas and preserves all historical
 certificates, V1 artifacts and SWL2 freezes. The V2 protocol and implementation
 pins remain byte-identical to the separate public preregistration. Public source
@@ -134,3 +134,37 @@ reproduces code, protocol, synthetic anchor/seen/lifecycle contracts, hashes and
 Real calculation additionally requires the authorized private panel and exact
 hashes; licensed price/member payloads and full fit traces are not redistributed.
 The failed V2 generation is closed and never rerun by reproducibility checks.
+
+## Post-hoc SWL1 forensic reproduction
+
+The active authority is [the new cumulative forensic layer](../reports/engineering/swl1-failure-forensics-integrity.json).
+It carries all earlier deltas and pins the superseded V2 execution certificate;
+old research source/artifacts/certificates retain their bytes. Public reproduction
+needs only the pinned developer Docker image, source, aggregates and synthetic
+tests. [Method and limitations](research/swl1-v1-v2-failure-forensics.md) distinguish
+it from an official Validation rerun.
+
+For an authorized maintainer only, mount the exact original panel and consumed
+V1/V2 lifecycle roots read-only, with no network/live mount, and use an independent
+scratch path. Default audit reads hashes/date metadata without writing/fitting:
+
+```sh
+python -m research.swl1_failure_forensics --evidence /evidence
+```
+
+Explicit frozen diagnostic replay (only when authorized) records its admission
+manifest before numeric reads; it cannot create a candidate or lifecycle claim:
+
+```sh
+python -m research.swl1_failure_forensics --evidence /evidence --replay --scratch /scratch
+python -m research.swl1_failure_forensics.figures --summary reports/research/swl1_failure_forensics/summary.json --output /scratch/figures
+```
+
+The outcome boundary is dynamically derived from both frozen protocols and the
+full exchange spine. C-order prefixes are decoded only to the bound; Fortran
+column tails are skipped as opaque layout bytes without outcome conversion.
+Original code/selected metric trees/V2 fit trace hashes must match or the replay
+fails. The public aggregate/figure exporter rejects private/per-date payloads and
+nonfinite JSON. Exact licensed inputs and private fit traces are not redistributed,
+so public source alone cannot reproduce factual numerical diagnostics. No unseen
+extension is searched/read and no forward/deployment action follows.

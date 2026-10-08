@@ -23,6 +23,11 @@
 综合 RankIC −0.030123、H120 −0.161329、加权正 IC 比例 41.87%、正时间块仅 1/4。
 保持相同的重建一级行业等权目标，不重试、不修订，也不进入 OOS。
 
+SWL1 失败归因：**COMPLETED**（[中文报告](docs/research/swl1-v1-v2-failure-forensics.zh-CN.md)）。
+V1/V2 仍为 **FAILED_VALIDATION**。冻结诊断重放与原始指标一致，唯一因果根因尚不可识别。
+下一代：**NOT_STARTED**；[设计审查](docs/research/swl1-next-generation-design-review.md)
+建议 DATA_FIRST，没有生成新协议、候选或模型。
+
 SWL1 是独立家族，不是 SWL2 V3。[协议](docs/research/swl1-ridge-v1-protocol.md)在任何真实
 模型表现计算前提交并冻结，两个 purge 各 120 个真实交易 session。[一次 Validation](docs/research/swl1-ridge-v1-results.md)
 综合 RankIC −0.076308、加权正 IC 比例 42.26%、加权原始收益 spread −1.5404%，仅 2/4 时间块为正。

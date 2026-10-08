@@ -1,0 +1,76 @@
+{
+  "candidate_created": false,
+  "confidence": "MODERATE_FOR_NEXT_ACTION_NOT_PREDICTIVE_SUCCESS",
+  "label": "POST_HOC_FAILURE_FORENSICS",
+  "options": [
+    {
+      "contradictory_evidence": "Both generations failed; no independent model success; strong shrinkage alone is not identified cause.",
+      "created": false,
+      "dependence_on_better_data": "HIGH",
+      "economic_rationale": "Different horizons may need distinct economic signals and stability admission before fusion.",
+      "estimated_complexity": "HIGH",
+      "genuinely_unseen_evidence": "Only1 metadata-known outcome session; insufficient mature Validation.",
+      "next_validation_method": "A separately approved, public result-free finite preregistration; future disjoint Validation/OOS; horizon stability and fusion rationale.",
+      "priority": 4,
+      "route": "SWL1_RIDGE_V3",
+      "supporting_evidence": "Measured cross-horizon rank collapse and V2 H120 directional mismatch.",
+      "unresolved_risks": "Many feature/window/fusion choices; seen-data overfit and reused outcomes."
+    },
+    {
+      "contradictory_evidence": "V1 H10 Val negative; V2 H10 block3 negative and block2 near0; selected after seeing results.",
+      "created": false,
+      "dependence_on_better_data": "HIGH",
+      "economic_rationale": "Short-term reversal/rotation may differ from longer-horizon continuation.",
+      "estimated_complexity": "LOW_TO_MEDIUM",
+      "genuinely_unseen_evidence": "No10-session entirely unseen target currently mature in admitted spine.",
+      "next_validation_method": "Only after data admission, explicitly label hypothesis informed by V1/V2; fixed economic direction/rules; new independent Validation/OOS.",
+      "priority": 2,
+      "route": "SWL1_RIDGE_SHORT_V1",
+      "supporting_evidence": "V2 H10 Val mean0.04065; rev10 descriptive IC0.09531.",
+      "unresolved_risks": "H10-only selection is post-hoc, shared data/30 correlated industries, weak evidence."
+    },
+    {
+      "contradictory_evidence": "No evidence that three separately chosen families succeed; long-horizon data sparse.",
+      "created": false,
+      "dependence_on_better_data": "HIGH",
+      "economic_rationale": "Separate economic mechanisms and admission prevent a failed horizon entering every fused result.",
+      "estimated_complexity": "VERY_HIGH",
+      "genuinely_unseen_evidence": "Prospective data and longer independent long-horizon periods required.",
+      "next_validation_method": "Separate preregistration and disjoint evidence budgets; no retrospective horizon-specific leaderboard.",
+      "priority": 3,
+      "route": "SWL1_HORIZON_SPECIFIC_FAMILIES",
+      "supporting_evidence": "Different realized ranks and horizon IC signs despite very similar V2 predictions.",
+      "unresolved_risks": "Multiplied degrees of freedom, testing and source/governance cost."
+    },
+    {
+      "contradictory_evidence": "No confirmed direction or size of data bias; better data does not guarantee predictive skill.",
+      "created": false,
+      "dependence_on_better_data": "THIS_ROUTE_ESTABLISHES_IT",
+      "economic_rationale": "Reliable sector identity and source semantics are prerequisites to economic interpretation.",
+      "estimated_complexity": "MEDIUM_TO_HIGH_WITH_EXTERNAL_DEPENDENCE",
+      "genuinely_unseen_evidence": "Future observation and licensing/source receipts can be collected before inspecting outcomes.",
+      "next_validation_method": "First source feasibility/PIT proof with no performance criterion; freeze target source by provenance, then preregister before new outcomes if research remains justified.",
+      "priority": 1,
+      "route": "DATA_FIRST",
+      "supporting_evidence": "Tier A/B0, retrospective membership/coverage universe, no independently admitted official index;1 unseen session.",
+      "unresolved_risks": "Licensing/availability may fail; source improvement may still leave no signal."
+    },
+    {
+      "contradictory_evidence": "Source evidence may be improvable; limited short-horizon hypothesis warrants retaining records.",
+      "created": false,
+      "dependence_on_better_data": "RESUME_ONLY_IF_EVIDENCE_IMPROVES",
+      "economic_rationale": "Avoid paying research complexity while source quality and independent evidence remain scarce.",
+      "estimated_complexity": "LOW",
+      "genuinely_unseen_evidence": "No current mature unseen independent phase.",
+      "next_validation_method": "No model execution during pause; resume only with explicit data feasibility evidence and authorization.",
+      "priority": 5,
+      "route": "PAUSE_SWL1_RIDGE",
+      "supporting_evidence": "Two closed failures and insufficient unseen maturity.",
+      "unresolved_risks": "Opportunity cost; permanent abandonment is not established by these data."
+    }
+  ],
+  "protocol_created": false,
+  "recommendation": "DATA_FIRST",
+  "trained": false,
+  "validation_opened": false
+}
