@@ -87,6 +87,10 @@ export function secretKinds(text) {
 // Reviewed aggregate-only V1 closure. Both path and exact bytes must match;
 // altered reports and all other research payloads remain prohibited.
 const reviewedResearchHashes = Object.freeze({
+  'reports/research/swl1_failure_forensics/summary.json':'eb67fd6588bd48ffcd13679904bf51e63c62ebfeb5f035b81e9b90f7fe0dadae',
+  'reports/research/swl1_failure_forensics/evidence-manifest.json':'a2b3d45de880e1e591c567bd2b8dc951429e812583a7907ea49930597821cc86',
+  'reports/research/swl1_failure_forensics/attribution-matrix.json':'993b5e9acb061d075dedaaff3e8a8991a24950892d8badc0e4a46e57d7f38fee',
+  'reports/research/swl1_failure_forensics/next-generation-options.json':'17fead746b99caf95504537c04d81344fdcd028c44d2cf0bd6cdc61368a63d61',
   'reports/research/swl1_ridge_v1/data_feasibility.json':'39aff56e15b730bc834cb7407a086546a75f7d4f292ee0cadc38294e1987fad3',
   'reports/research/swl1_ridge_v1/development.json':'a031bec412de2c86008eeb2b9272f8409fd17ce79b8ef511a893d497003dfeda',
   'reports/research/swl1_ridge_v1/factor_audit.json':'c3998b221e4b210271dee6e6e4b6ae118cc4a34717900820425c2d1ef8f9f041',
@@ -225,7 +229,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-ridge-v2-execution-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-failure-forensics-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

@@ -46,3 +46,15 @@ Development composite RankIC 0.0703535932138508; single Validation composite
 FAILED_VALIDATION, permanently closed. Same 30-industry reconstructed primary
 series; no Final OOS, forward eligibility false, ETF productization NOT_STARTED.
 See [protocol](research/swl1-ridge-v2-protocol.md) and [result](research/swl1-ridge-v2-results.md).
+
+## SWL1 post-hoc failure forensics
+
+COMPLETED: [English](research/swl1-v1-v2-failure-forensics.md),
+[中文](research/swl1-v1-v2-failure-forensics.zh-CN.md). Both generations remain
+FAILED_VALIDATION; no Final OOS was opened. The exact selected forensic replay
+matched 2,427 frozen fits and original aggregates. Outcome-union consumption ends
+2026-09-29; the metadata-known 2026-09-30 row remains numerically unread.
+Strong shrinkage and horizon-direction mismatch are descriptive findings;
+causal source/window/penalty attribution remains unidentified. Next generation
+NOT_STARTED; [design review](research/swl1-next-generation-design-review.md)
+recommends DATA_FIRST. This is not a new Validation or model generation.

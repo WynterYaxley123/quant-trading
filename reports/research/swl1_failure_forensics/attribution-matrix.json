@@ -1,0 +1,170 @@
+{
+  "causal_identification_strength": "LIMITED_NOT_IDENTIFIABLE",
+  "confirmed_data_integrity_defects": [],
+  "confirmed_implementation_defects": [],
+  "label": "POST_HOC_FAILURE_FORENSICS",
+  "rows": [
+    {
+      "classification": "E_CONTRADICTED_BY_AVAILABLE_EVIDENCE",
+      "dimension": "Target correctness",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "No confirmed target alignment, scale, maturity or evaluation defect in admitted scope. Tests do not establish source PIT accuracy.",
+      "observation": "Exact t+1..t+h compounding, per-date 30-industry training centering; all four native aggregate trees and V2 fit-trace hashes match.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Independent future source receipts and prospective target reconciliation."
+    },
+    {
+      "classification": "F_NOT_IDENTIFIABLE",
+      "dimension": "PIT/membership",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Direction and magnitude of retrospective membership bias are not identifiable from the industry panel.",
+      "observation": "Tier A=0, B=0; 6,515,140 Tier-C listed stock/session rows; historical assignment publication proof absent.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Contemporaneous effective/available membership evidence; authorized independent source audit."
+    },
+    {
+      "classification": "F_NOT_IDENTIFIABLE",
+      "dimension": "Data integrity",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "No confirmed byte/alignment/feature defect; independent data correctness and corporate-action PIT remain unestablished.",
+      "observation": "Pinned panel; 0 post-seed missing admitted returns; factor reconstruction max error 7.25e-13. Full raw stock pipeline was not rerun.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Receipt-level adjusted-price, listing/delisting and historical assignment reconciliation."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Feature suitability",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Redundancy is observed; blanket claim that all Level-1 factors are constant is contradicted. Economic sufficiency remains unproved.",
+      "observation": "All19 factors have positive median signal dispersion; isolated saturated range/drawdown/align cross sections occur in V1/V2 Dev and V1 Val. Three V2 Validation pairs have abs pooled correlation >0.9.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Preregister a finite economic hypothesis on genuinely unseen periods, after source admission."
+    },
+    {
+      "classification": "E_CONTRADICTED_BY_AVAILABLE_EVIDENCE",
+      "dimension": "Ridge conditioning",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Numerical instability does not explain the replayed H120 failure. Strong shrinkage is not a causal test of underfitting.",
+      "observation": "V2 Validation regularized Gram condition medians 1.9968, 2.0003, 1.9965; solve residual q95 <3e-16.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Future fixed-design regularization hypothesis; no retuning these results."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Regularization strength",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "V2 heavily suppresses weak eigen-directions; this changes model shape, but window and selection effects confound attribution.",
+      "observation": "V1 alpha/n medians 0.0144/0.0165/0.0273; V2 alpha/n=10; slope df about1.29 versus V1 14.69..16.44.",
+      "scope": "BOTH",
+      "unseen_test_needed": "One separately preregistered controlled design; preserve both closed generations."
+    },
+    {
+      "classification": "D_PLAUSIBLE_UNCONFIRMED_HYPOTHESIS",
+      "dimension": "Window dependence",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "A long window may preserve stale direction; window effect is not separately identified.",
+      "observation": "Selected V1 12m versus V2 24m; per-horizon mature rows differ; V2 coefficients move slowly.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Predefine future window rule and economic state-transition hypothesis, without new searches now."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Coefficient stability",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Stable fitted direction can be predictively wrong; sign persistence is not economic robustness.",
+      "observation": "V2 Validation successive coefficient cosine medians >=0.99986; H120 d5..d120 mean coefficients negative on every date.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Prospective direction-stability and source-quality evidence."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "H10 behavior",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "H10-only interest is a seen-data hypothesis; simple short-horizon momentum continuation is not supported in V2 Val.",
+      "observation": "V1 Val IC=-0.1401, V2 Val=0.04065. V2 d10 factor-H10 mean IC=-0.07273; rev10=0.09531.",
+      "scope": "BOTH",
+      "unseen_test_needed": "An independent preregistered H10 hypothesis with new Validation and Final OOS."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "H40 behavior",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Average is near zero and varies by period; not a proved stable transition mechanism.",
+      "observation": "V2 Val IC=0.0000918; calendar blocks 0.2527,-0.04118,-0.12152,-0.06625.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Prospective fixed blocks and independently specified medium-horizon hypothesis."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "H120 behavior",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Failure spans all predefined blocks and cannot be removed by any single fixed industry deletion. Not proof across regimes.",
+      "observation": "V2 Val IC=-0.16133, all4 calendar block means negative. Daily best one-industry deletion upper envelope averages -0.08838.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Unseen long-horizon evidence; no inversion/removal experiment now."
+    },
+    {
+      "classification": "E_CONTRADICTED_BY_AVAILABLE_EVIDENCE",
+      "dimension": "Long-horizon mean reversion claim",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Available long-horizon relation is continuation for this price proxy, opposite the fitted direction; universal H120 mean reversion is unsupported.",
+      "observation": "V2 Val d120-H120 mean factor RankIC=+0.24055; fitted standardized d120 coefficient negative throughout.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Preregister economic mechanisms and observe new regimes."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Fusion coherence",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Horizons mostly share ranks, not diversify. H120 contributes -0.04033 to original weighted IC. No alternative fusion evaluated.",
+      "observation": "V2 Val prediction pair correlations 0.9627,0.9053,0.9087 versus realized0.4738,0.3164,0.5791. Top5 overlaps81..83%.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Economic rationale and separate prospective horizon/fusion admission."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Regime dependence",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Market/factor state changes are observed; causal regime attribution is not identified.",
+      "observation": "V1 d120 Dev/Val mean drift2.7345 Dev SD; V2 0.4120. Covariance effective dimension changes1.579 to2.595 in V2.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Prospective finite state proxies, source admission, sufficient separated periods."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Cross-section limitations",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Strong common moves and overlapping labels restrict confidence. Covariance dimension is not the sample size of centered rank IC.",
+      "observation": "30 industries, Top5=1/6; raw daily covariance participation ratios1.45..2.59; Validation IC lag1 correlations0.59..0.88.",
+      "scope": "BOTH",
+      "unseen_test_needed": "More independent periods, not artificial SWL2 pooling or industry pruning."
+    },
+    {
+      "classification": "F_NOT_IDENTIFIABLE",
+      "dimension": "V1/V2 comparability",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Native Validation aggregates cannot identify a model winner; shared Dev changes combine penalty, window and selection.",
+      "observation": "Validation dates/outcomes differ; V1 equal-count blocks versus V2 equal-calendar.156 shared Dev dates available.",
+      "scope": "BOTH",
+      "unseen_test_needed": "A future controlled comparison with same outcome/role/evaluation and preregistered selection."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Primary failure mechanism",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Descriptive failure pattern is supported; a unique causal source/model/window/penalty root cause is NOT_IDENTIFIABLE.",
+      "observation": "Out-of-period directional mismatch concentrated at V2 H120, highly coherent horizon ranks, strong shrinkage and limited independent observations.",
+      "scope": "BOTH",
+      "unseen_test_needed": "DATA_FIRST, then an independently preregistered finite hypothesis if evidence supports feasibility."
+    },
+    {
+      "classification": "D_PLAUSIBLE_UNCONFIRMED_HYPOTHESIS",
+      "dimension": "Overregularization causes H120",
+      "evidence": "summary.json#/phases; frozen source/protocol hashes in evidence-manifest.json",
+      "interpretation": "Plausible underfitting mechanism; cannot state causation or optimum penalty.",
+      "observation": "Strong shrinkage is measured, but no fixed-date same-window alpha-only causal experiment was authorized.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Future preregistered independent controlled evidence."
+    }
+  ]
+}
