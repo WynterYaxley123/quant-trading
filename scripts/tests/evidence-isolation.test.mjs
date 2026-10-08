@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,symlinkSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,symlinkSync,rmSync,realpathSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {checkedDirectory,verifyContainer} from '../engineering/prospective-isolation.mjs';
@@ -19,6 +19,7 @@ test('actual filesystem symlink or Windows junction cannot enter a mount',()=>{
     symlinkSync(target,link,process.platform==='win32'?'junction':'dir');
     assert.throws(()=>checkedDirectory(link),/PROCESS_ISOLATION_DENIED/);
     for(const bad of ['../target','C:relative',target+',target=/mother',target+'\n'])assert.throws(()=>checkedDirectory(bad));
-    assert.equal(checkedDirectory(target),target);
+    assert.equal(checkedDirectory(target),realpathSync.native(target));
+    if(process.platform==='win32')assert.equal(checkedDirectory(target.toUpperCase()),realpathSync.native(target));
   } finally {rmSync(root,{recursive:true,force:true});}
 });

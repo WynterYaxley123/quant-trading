@@ -192,10 +192,10 @@
       "scripts/Install-ForwardShadowTask.ps1": "e15287e1e0c285eb9bc31cbec5cd0e9b7801a933951dd67f8eba4f8a2358db96",
       "scripts/Start-IndustryForecastConsole.ps1": "43ffcda0154f6039a2de48a3dc91621fa71ab73f66285c9711ce919609de4d41",
       "scripts/engineering/integrity_delta.py": "3a96ea68b26cfdb54af26cfdd332e33718597ec1bb2e14d8cfa0aec998c1669e",
-      "scripts/engineering/prospective-isolation.mjs": "2b498965aa06d0bb04fd4b5de5a500850041686e2ac4fbdf0ddeabe8563c98dd",
+      "scripts/engineering/prospective-isolation.mjs": "84488f0bda7fbb5fd8bad0c0c8b9b7032fdae634ecd6a39b69ddc6d05022753e",
       "scripts/operations/host-ports.mjs": "8400a17072ae1930831ebba17e231ae0cc356a7db694a0a152cf773d6c0babe3",
       "scripts/operations/verify_deployment.py": "27a369e95fdea83f9c33806cc467de16effd19087dc7d7fa697f2d131d9686d3",
-      "scripts/tests/evidence-isolation.test.mjs": "7dcdbd1c459315b3f1b8b2e6700453f807fd9a9f6ee6c70bccb321edc6b006ec",
+      "scripts/tests/evidence-isolation.test.mjs": "edd9c2d270585e56d5e0eaa744caaad94336625b93711dae21ff6f9ec19b954d",
       "scripts/tests/launcher-unit.test.mjs": "a3285e8808733a1e07241dfea544e38aeeb9b1179a70648c14dc87c4949c55c1",
       "scripts/tests/operations.test.mjs": "8fe9d560a95ba2324f8bf2b74e93f0b91c3f112627d99ebde3450af64eead147",
       "services/etf-quant-api/README.md": "af210f57af8a55f3ef70ebb7eb42af542080ef031a72510c986a4457bb465722",
@@ -1378,7 +1378,7 @@
       {
         "path": "scripts/engineering/prospective-isolation.mjs",
         "before_sha256": null,
-        "after_sha256": "2b498965aa06d0bb04fd4b5de5a500850041686e2ac4fbdf0ddeabe8563c98dd",
+        "after_sha256": "84488f0bda7fbb5fd8bad0c0c8b9b7032fdae634ecd6a39b69ddc6d05022753e",
         "reason": "SWL1-DATA-FIRST verified remediation"
       },
       {
@@ -1396,7 +1396,7 @@
       {
         "path": "scripts/tests/evidence-isolation.test.mjs",
         "before_sha256": null,
-        "after_sha256": "7dcdbd1c459315b3f1b8b2e6700453f807fd9a9f6ee6c70bccb321edc6b006ec",
+        "after_sha256": "edd9c2d270585e56d5e0eaa744caaad94336625b93711dae21ff6f9ec19b954d",
         "reason": "SWL1-DATA-FIRST verified remediation"
       },
       {
@@ -1839,6 +1839,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-data-first-acceptance.md",
-    "certificate_sha256": "d86fe550e085ef8a2b4f3f65ba9ad874d1133848a1ad2f1d28f918dba6265cac"
+    "certificate_sha256": "3d0a6806cb3cd5aed89fe9da70e07586f78dd02fa8971d095325ed2b4c57d718"
   }
 }

@@ -7,7 +7,12 @@ import {fileURLToPath} from 'node:url';
 const check=v=>{if(!v)throw new Error('PROCESS_ISOLATION_DENIED');};
 export function checkedDirectory(value) {
   check(typeof value==='string' && path.isAbsolute(value) && !value.includes(',') && !value.includes('\n'));
-  const resolved=path.resolve(value);check(realpathSync.native(resolved)===resolved);
+  // Windows temp roots may use 8.3 aliases or different letter casing. Reject
+  // links on the original path BEFORE resolving legitimate filesystem aliases.
+  if(process.platform==='win32')check(/^[A-Za-z]:[\\/]/.test(value));
+  const lexical=path.resolve(value);
+  for(let p=lexical;;p=path.dirname(p)) {check(!lstatSync(p).isSymbolicLink());if(path.dirname(p)===p)break;}
+  const resolved=realpathSync.native(lexical);
   for(let p=resolved;;p=path.dirname(p)) {check(!lstatSync(p).isSymbolicLink());if(path.dirname(p)===p)break;}
   return resolved;
 }
