@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import io
 import json
@@ -63,6 +64,56 @@ def admit(root: Path, name: str, expected: str) -> dict[str, Any]:
         raise ValueError("FROZEN_EVIDENCE_HASH_MISMATCH")
     value: dict[str, Any] = json.loads(path.read_text())
     return value
+
+
+def historical_panel_access(root: Path, implementation: dict[str, str]) -> dict[str, Any]:
+    """Inspect pinned source only; date arithmetic cannot certify historical access.
+
+    This recognizes the exact frozen executors, not arbitrary control flow. It
+    never imports or executes them, opens their panel, or infers human inspection.
+    """
+    sources = {}
+    for version in ("v1", "v2"):
+        name = f"research/swl1_ridge_{version}/execute.py"
+        if name not in implementation:
+            continue
+        path = contained(root, name)
+        if sha(path) != implementation[name]:
+            raise ValueError("FROZEN_IMPLEMENTATION_HASH_MISMATCH")
+        nodes = list(ast.walk(ast.parse(path.read_text())))
+        loads = sorted(
+            n.lineno
+            for n in nodes
+            if isinstance(n, ast.Call)
+            and isinstance(n.func, ast.Attribute)
+            and isinstance(n.func.value, ast.Name)
+            and n.func.value.id == "np"
+            and n.func.attr == "load"
+        )
+        members = {
+            member: sorted(
+                n.lineno
+                for n in nodes
+                if isinstance(n, ast.Subscript)
+                and isinstance(n.value, ast.Name)
+                and n.value.id == "data"
+                and isinstance(n.slice, ast.Constant)
+                and n.slice.value == member
+            )
+            for member in ("returns", "features")
+        }
+        sources[name] = {
+            "sha256": implementation[name],
+            "np_load_lines": loads,
+            "numeric_member_lines": members,
+            "full_numeric_members_materialized": bool(loads and all(members.values())),
+        }
+    return {
+        "method": "PINNED_SOURCE_INSPECTION_NOT_RUNTIME_OR_HUMAN_ACCESS_TRACE",
+        "sources": sources,
+        "historical_unseen_access_certified": False,
+        "declared_target_maturity_is_not_access_isolation_proof": True,
+    }
 
 
 class LimitedInflater:
@@ -206,11 +257,13 @@ def boundary(dates: list[str], protocols: dict[str, dict[str, Any]]) -> dict[str
         "permitted_feature_rows": signal + 1,
         "spine_first": dates[0],
         "spine_last_metadata_only": dates[-1],
-        "historically_available_unseen_outcomes": {
+        "outcomes_beyond_declared_consumption": {
             "first": dates[union + 1] if union + 1 < len(dates) else None,
             "last": dates[-1] if union + 1 < len(dates) else None,
             "sessions": len(dates) - union - 1,
-            "outcomes_read": False,
+            "outcomes_read_by_this_forensic_task": False,
+            "historical_unseen_status": "NOT_CERTIFIED_BY_DATE_ARITHMETIC",
+            "independently_unseen_sessions_certified": 0,
         },
         "prospective_only": "Dates beyond the admitted spine; no additional source consulted.",
         "data_unavailable": "Contemporaneous historical membership and independent official index proof.",

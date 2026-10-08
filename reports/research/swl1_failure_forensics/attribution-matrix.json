@@ -1,7 +1,11 @@
 {
   "causal_identification_strength": "LIMITED_NOT_IDENTIFIABLE",
   "confirmed_data_integrity_defects": [],
+  "confirmed_historical_access_isolation_gaps": [
+    "Historical numerical-access isolation"
+  ],
   "confirmed_implementation_defects": [],
+  "implementation_defect_scope": "FROZEN_TARGET_FIT_EVALUATION_CONTRACTS; access isolation separately disclosed",
   "label": "POST_HOC_FAILURE_FORENSICS",
   "rows": [
     {
@@ -165,6 +169,15 @@
       "observation": "Strong shrinkage is measured, but no fixed-date same-window alpha-only causal experiment was authorized.",
       "scope": "BOTH",
       "unseen_test_needed": "Future preregistered independent controlled evidence."
+    },
+    {
+      "classification": "C_SUPPORTED_DESCRIPTIVE_PATTERN",
+      "dimension": "Historical numerical-access isolation",
+      "evidence": "evidence-manifest.json#/historical_numeric_access_audit; frozen V1 execute.py:32-33 and V2 execute.py:88-89",
+      "interpretation": "One confirmed historical isolation gap, not a demonstrated target/fit/evaluation defect. Interval/maturity proof cannot certify historical numerical inaccessibility or human inspection. Original metrics remain exact descriptive results; causal impact and independent unseen status are not established.",
+      "observation": "Both original executors materialize complete numeric features/returns before Development claims; this forensic task excludes all numeric rows beyond declared consumption.",
+      "scope": "BOTH",
+      "unseen_test_needed": "Future prospective outcome-access isolation with source receipts and a public result-free preregistration before new outcomes; no historical replay or original-result replacement."
     }
   ]
 }

@@ -102,3 +102,7 @@ conversion; no future outcome enters a target or performance calculation.
 Ordinary CI never runs the private forensic replay or changes lifecycle claims.
 The separately authorized replay is post-hoc only; the original failures and all
 four registered family contracts stay intact. [Report](research/swl1-v1-v2-failure-forensics.md).
+
+The metadata-only audit also inspects byte-pinned original executor source without
+executing it. Tests require historical access to stay uncertified even when date
+arithmetic puts a row outside declared target consumption or source is absent.

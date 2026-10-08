@@ -17,7 +17,16 @@ import pandas as pd
 
 from strategies.etf_quant.factors import compute_close_factors
 
-from .boundary import FROZEN, PANEL_SHA, admit, boundary, contained, npy_prefix, sha
+from .boundary import (
+    FROZEN,
+    PANEL_SHA,
+    admit,
+    boundary,
+    contained,
+    historical_panel_access,
+    npy_prefix,
+    sha,
+)
 from .replay import phase_replay, shared_development
 from .report import write
 
@@ -55,6 +64,7 @@ def run(repo: Path, evidence: Path, scratch: Path | None = None) -> dict[str, An
         "frozen_implementation_sha256": implementation,
         "panel_sha256": PANEL_SHA,
         "boundary": limits,
+        "historical_numeric_access_audit": historical_panel_access(repo, implementation),
         "unseen_outcomes_read": False,
         "sealed_oos_performance_read": False,
         "formal_validation_reopened": False,

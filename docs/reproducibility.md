@@ -137,7 +137,7 @@ The failed V2 generation is closed and never rerun by reproducibility checks.
 
 ## Post-hoc SWL1 forensic reproduction
 
-The active authority is [the new cumulative forensic layer](../reports/engineering/swl1-failure-forensics-integrity.json).
+The active authority is [the new cumulative forensic layer](../reports/engineering/swl1-forensics-access-integrity.json).
 It carries all earlier deltas and pins the superseded V2 execution certificate;
 old research source/artifacts/certificates retain their bytes. Public reproduction
 needs only the pinned developer Docker image, source, aggregates and synthetic
@@ -168,3 +168,9 @@ fails. The public aggregate/figure exporter rejects private/per-date payloads an
 nonfinite JSON. Exact licensed inputs and private fit traces are not redistributed,
 so public source alone cannot reproduce factual numerical diagnostics. No unseen
 extension is searched/read and no forward/deployment action follows.
+
+Declared target maturity is not a historical numerical-access certificate. The
+original executors materialize full panel arrays; the current source-only audit
+records this limitation without importing them or reading future outcomes. The
+single tail date is not certified independent unseen evidence. See the
+[access clarification](engineering/swl1-forensics-access-clarification.md).
