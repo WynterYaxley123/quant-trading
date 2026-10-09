@@ -232,7 +232,7 @@
       "research/swl1_rev10_short_v1/model.py": "b94b53e9b0ea43c6c22f63eef3dc5ec329944177392d2bd974860953b44e7d32",
       "research/swl1_rev10_short_v1/prospective.py": "54b7ec7a8441d057efda60c5aa95fb4105f9782b5155caf47debf4a0e7f5f1de",
       "research/swl1_rev10_short_v1/replay.py": "1eacb96872953ced062dd608994ba5c524c5a033fa0b4edf3ad42f2d251425f3",
-      "research/swl1_rev10_short_v1/review.py": "45dc1ccabece5492bef351d79ac099ec7a83d192d4538c690fb2e675fae0dbcd",
+      "research/swl1_rev10_short_v1/review.py": "89501699556beea6647662927cf6e64c10b2bbd5630913203551858acbd6f989",
       "research/swl1_ridge_v1/__init__.py": "41cdad267b30825260fa3a3a944cc0e4e38cda076ad92a950907a5ea2420e6fe",
       "research/swl1_ridge_v1/audit.py": "0323f0f36b6cfc2f6f7fe069992131ee22a46f54660498ee483e21b25f24bfce",
       "research/swl1_ridge_v1/data_contract.py": "0411d361d0e01ab68449b8f4e781e26a58d4f74756ec9c92e6372c7dd5dd6398",
@@ -1698,7 +1698,7 @@
       {
         "path": "research/swl1_rev10_short_v1/review.py",
         "before_sha256": null,
-        "after_sha256": "45dc1ccabece5492bef351d79ac099ec7a83d192d4538c690fb2e675fae0dbcd",
+        "after_sha256": "89501699556beea6647662927cf6e64c10b2bbd5630913203551858acbd6f989",
         "reason": "SWL1-REV10-Delivery verified remediation"
       },
       {
@@ -2399,6 +2399,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-rev10-acceptance.md",
-    "certificate_sha256": "0362e6d8498bb1393e7f12b8607ffe0352bdcbe5640ba55def96c7d32bbe5701"
+    "certificate_sha256": "e51aac1795a412f0f67841139cbdae0bd0b9cdd4d93cc18dd9fe150217f9c308"
   }
 }
