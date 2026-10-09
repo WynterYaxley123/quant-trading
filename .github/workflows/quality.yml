@@ -51,6 +51,7 @@ jobs:
             python -m scripts.engineering.source_qualification --verify
             python -m research.evidence.qualification
             python -m research.swl1_short_horizon_exploration --verify-public
+            python -m research.swl1_rev10_short_v1
             python -m scripts.engineering.benchmark
             python -m pytest -q tests/performance
             python -m scripts.engineering.references
@@ -109,4 +110,5 @@ jobs:
         with:
           node-version: '24.19.0'
       - run: node --test scripts/tests/launcher-unit.test.mjs scripts/tests/scheduler.test.mjs scripts/tests/operations.test.mjs
+      - run: node --test scripts/tests/rev10-launcher.test.mjs
       - run: node --test scripts/tests/evidence-isolation.test.mjs

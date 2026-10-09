@@ -13,6 +13,7 @@ FAILED_VALIDATION; SWL2 ETF productization retired.
 
 | Guide | Covers |
 | --- | --- |
+| [REV10 中文控制台](research/swl1-rev10-console.zh-CN.md) | Fixed rule, private historical ranking, offline viewing, one-click launcher and blocked future activation |
 | [Industry forecast](industry-forecast.md) | Canonical names, targets, immutable publication, maturity, metrics |
 | [Architecture](architecture.md) | Industry facts → model → ledger → outcomes → API/UI |
 | [Research status](research-status.md) | Frozen evidence and honest forward status |

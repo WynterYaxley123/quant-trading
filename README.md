@@ -2,6 +2,12 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+[REV10 research console](docs/research/swl1-rev10-console.zh-CN.md) provides a
+fixed-rule, research-only H10/H5 view of the existing PR36 results. The local
+`scripts/Show-SWL1-REV10.ps1` opens the verified dashboard or private offline pack.
+Historical ranking artifacts and build outputs remain outside Git; formal
+preregistration and independent future validation are not active.
+
 SWL1 data/evidence infrastructure is tested with synthetic facts only. Formal
 source admission remains blocked; V1/V2 stay failed, future protocol is not created,
 and formal prospective observations are zero. See [data-first feasibility](docs/research/swl1-data-first-feasibility.md)
