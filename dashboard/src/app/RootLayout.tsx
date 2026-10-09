@@ -18,6 +18,7 @@ const TITLES: Array<{ prefix: string; title: string }> = [
 ];
 
 function titleForPath(pathname: string): string {
+  if (pathname === '/industry-forecast/swl1-rev10') return 'REV10 · 短周期行业研究';
   if (pathname === '/' || pathname === '/industry-forecast') return 'Industry Forecast';
   if (pathname === '/research') return '概览';
   if (pathname.startsWith('/etf-quant/')) return 'ETF Quant · SIMULATION ONLY';
@@ -29,7 +30,7 @@ function Shell() {
   const location = useLocation();
   const { dataMode, loading, error, retry, artifactState, apiBaseUrl, status } = useAppData();
   const isEtf = location.pathname.startsWith('/etf-quant/');
-  const isIndustry = location.pathname === '/' || location.pathname === '/industry-forecast';
+  const isIndustry = location.pathname === '/' || location.pathname.startsWith('/industry-forecast');
   const isResearch = location.pathname === '/research' || TITLES.some(({ prefix }) => location.pathname === prefix);
 
   return (
@@ -73,10 +74,11 @@ function Shell() {
 
 export function RootLayout() {
   const location=useLocation();
+  const industry=location.pathname === '/' || location.pathname.startsWith('/industry-forecast');
   return (
     <TooltipProvider delayDuration={200}>
-      <AppDataProvider observeHealth={location.pathname !== '/' && location.pathname !== '/industry-forecast'} enabled={location.pathname !== '/' && location.pathname !== '/industry-forecast' && !location.pathname.startsWith('/etf-quant/')}>
-        <EtfQuantProvider enabled={location.pathname !== '/' && location.pathname !== '/industry-forecast'}>
+      <AppDataProvider observeHealth={!industry} enabled={!industry && !location.pathname.startsWith('/etf-quant/')}>
+        <EtfQuantProvider enabled={!industry}>
         <Shell />
         </EtfQuantProvider>
       </AppDataProvider>

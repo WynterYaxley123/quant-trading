@@ -1569,6 +1569,18 @@
     {
       "path": "docs/engineering/swl1-short-horizon-acceptance.md",
       "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-rev10-console.zh-CN.md",
+      "class": "ACTIVE_USER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-rev10-preregistration-draft.zh-CN.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/engineering/swl1-rev10-acceptance.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }

@@ -124,3 +124,13 @@ Docker. These synthetic and public aggregate checks never rerun the separately
 authorized historical study. [Acceptance](engineering/swl1-short-horizon-acceptance.md)
 covers bounded source access, fixed scientific targets, mature rolling fits,
 redaction, frozen-reference parity and no formal lifecycle changes.
+
+REV10 delivery adds `tests/test_swl1_rev10_short_v1.py`, the Industry API REV10
+and viewer suites, Dashboard REV10 tests and actual Windows launcher acceptance.
+They cover shared PR36 formula/warmup parity, future poisoning, complete 30-code
+ranking, source-bound public metrics, private manifest tampering, visible blockers,
+synthetic prospective inference and exact H5/H10 maturity. The metadata-only
+`python -m research.swl1_rev10_short_v1` smoke never reads private returns.
+[Viewing guide](research/swl1-rev10-console.zh-CN.md) and
+[acceptance](engineering/swl1-rev10-acceptance.md) separate software readiness from
+unmet source/PIT, authority and statistical-design conditions.

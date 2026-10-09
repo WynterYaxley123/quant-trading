@@ -10,7 +10,9 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 export function Header({ title }: { title: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { dataMode } = useAppData();
-  const isEtf=useLocation().pathname.startsWith('/etf-quant/');
+  const pathname=useLocation().pathname;
+  const isEtf=pathname.startsWith('/etf-quant/');
+  const isRev10=pathname==='/industry-forecast/swl1-rev10';
 
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:px-6">
@@ -27,7 +29,7 @@ export function Header({ title }: { title: string }) {
       <h1 className="truncate text-base font-semibold tracking-tight">{title}</h1>
 
       <div className="ml-auto flex items-center gap-2">
-        {isEtf ? <span className="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium">SIMULATION_ONLY · 只读 API</span> : dataMode === 'mock' ? (
+        {isRev10 ? <span className="rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground">本机只读研究</span> : isEtf ? <span className="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium">SIMULATION_ONLY · 只读 API</span> : dataMode === 'mock' ? (
           <span
             className="rounded-full border border-warning/50 bg-warning/10 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-warning-foreground dark:text-warning"
             title="当前使用合成测试数据"

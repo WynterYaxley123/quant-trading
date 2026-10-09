@@ -5,17 +5,20 @@ import {realpath, access} from 'node:fs/promises';
 import {isDeepStrictEqual} from 'node:util';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {readFileSync} from 'node:fs';
 import {boundedLeaf, containedExists} from '../etf-quant-api/bounded.mjs';
 import {allowedOrigins} from '../etf-quant-api/origins.mjs';
 import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-quant-runner/security-audit.mjs';
 import {publicEvidence} from './evidence.mjs';
+import {rev10Resource} from './rev10.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-short-horizon-integrity.json';
+const ACTIVE='reports/engineering/swl1-rev10-delivery-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
 const sha=raw=>createHash('sha256').update(raw).digest('hex');
+const SERVER_SOURCE_SHA=sha(readFileSync(fileURLToPath(import.meta.url)));
 const check=value=>{if(!value)throw new Error('FORECAST_INTEGRITY_BLOCKER');};
 const read=async(root,name,limit=1024*1024)=>(await boundedLeaf(root,name,limit)).raw;
 const json=raw=>JSON.parse(raw.toString());
@@ -230,7 +233,7 @@ export function compare(a,b) {
   });
 }
 
-export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins(),now=()=>Date.now()}={}) {
+export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins(),now=()=>Date.now(),previewRoot='',manifestPin=''}={}) {
   return http.createServer(async(req,res)=>{
     res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
     const reply=(status,data=null,code=null)=>{res.statusCode=status;res.end(req.method==='HEAD'?undefined:JSON.stringify({schemaVersion:'1.0.0',data,error:code?{code,message:code}:null}));};
@@ -240,9 +243,16 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
     if(!['GET','HEAD','OPTIONS'].includes(req.method))return reply(405,null,'READ_ONLY_API');
     const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|(?:swl2-ridge-v[12]|swl1-ridge-v[12])\/(current|history|evaluation|status))$/);
     const evidence=url.match(/^\/api\/industry-forecast\/research-evidence\/(sources|source-admissions|prospective-status|access-policy|maturity-status|source-qualification)$/);
-    if(!match && !evidence)return reply(404,null,'INVALID_RESOURCE');
+    const rev10=url.match(/^\/api\/industry-forecast\/swl1-rev10\/(overview|ranking|health|chart\/(?:signal-rankic|temporal-blocks|ridge-comparison|factor-target-correlations|industry-sensitivity|concentration-turnover)|evidence\/(?:design|chinese-report|acceptance|data-boundary|research-decision|source-qualification|preregistration-draft))$/);
+    if(!match && !evidence && !rev10)return reply(404,null,'INVALID_RESOURCE');
     if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
     try {
+      if(rev10) {
+        if(!['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress))return reply(403,null,'LOCAL_CLIENT_REQUIRED');
+        const result=await rev10Resource(repoRoot,rev10[1],{previewRoot,manifestPin,serverSourceHash:SERVER_SOURCE_SHA});
+        if(result.raw) {res.setHeader('Content-Type',result.contentType);return res.end(req.method==='HEAD'?undefined:result.raw);}
+        return reply(200,result.data);
+      }
       if(evidence)return reply(200,await publicEvidence(repoRoot,evidence[1]));
       const registry=await families(repoRoot);
       if(match[1]==='families')return reply(200,await Promise.all(registry.map(async f=>(await observe(runtimeRoot,f,now())).family)));
@@ -250,10 +260,10 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
       const family=registry.find(f=>f.family_id===match[1].split('/')[0].replaceAll('-','_'));check(family);
       const view=await observe(runtimeRoot,family,now());
       return reply(200,match[2]==='current'?view:match[2]==='history'?view.history:match[2]==='evaluation'?{evaluations:view.evaluations,metrics:view.metrics}:{family,status:view.status});
-    }catch{return reply(503,null,'FORECAST_INTEGRITY_BLOCKER');}
+    }catch{return reply(503,null,rev10?'REV10_INTEGRITY_BLOCKER':'FORECAST_INTEGRITY_BLOCKER');}
   });
 }
 if(process.argv[1] && path.resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   const port=Number(process.env.INDUSTRY_FORECAST_API_PORT||3313);check(Number.isInteger(port)&&port>=1024&&port<=65535);
-  createApi({runtimeRoot:process.env.INDUSTRY_FORECAST_RUNTIME_ROOT||''}).listen(port,'127.0.0.1',()=>process.stdout.write(`INDUSTRY_FORECAST_READ_ONLY_API 127.0.0.1:${port}\n`));
+  createApi({runtimeRoot:process.env.INDUSTRY_FORECAST_RUNTIME_ROOT||'',previewRoot:process.env.SWL1_REV10_PREVIEW_ROOT||'',manifestPin:process.env.SWL1_REV10_MANIFEST_SHA256||''}).listen(port,'127.0.0.1',()=>process.stdout.write(`INDUSTRY_FORECAST_READ_ONLY_API 127.0.0.1:${port}\n`));
 }

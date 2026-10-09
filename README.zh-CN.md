@@ -2,6 +2,11 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
+[REV10 中文研究控制台](docs/research/swl1-rev10-console.zh-CN.md)已接入现有
+Dashboard，展示 PR36 的 H10/H5 历史探索指标、六张图和经核验的私有历史排名。
+运行 `scripts/Show-SWL1-REV10.ps1` 打开本机页面或离线成果包。
+模型为固定规则、无需训练；正式预注册和独立未来验证尚未开始。
+
 SWL1 数据与证据基础设施已完成合成验收；正式来源准入仍阻断，V1/V2 保持失败，
 未来协议尚未创建，正式前瞻观察为 0。参见[数据可行性](docs/research/swl1-data-first-feasibility.zh-CN.md)
 和[独立 Docker 演示与操作边界](docs/engineering/prospective-evidence-operations.md)。
