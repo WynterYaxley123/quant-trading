@@ -85,8 +85,11 @@ describe('stable read-only HTTP boundary', () => {
   it('health does not require artifacts and advertises read-only source of truth', async () => {
     const result = await response('/api/v1/health')
     expect(result.status).toBe(200)
-    expect(result.body).toEqual({ schemaVersion: '1.0.0',
+    expect(result.body).toMatchObject({ schemaVersion: '1.0.0',
       data: { status: 'ok', readOnly: true, sourceOfTruth: 'RESEARCH_ARTIFACTS' } })
+    expect(result.body.data.identity).toMatchObject({ service: 'QUANT_RESEARCH_API', pid: process.pid })
+    expect(result.body.data.identity.sourceSha256).toMatch(/^[a-f0-9]{64}$/)
+    expect(result.body.data.identity.configurationSha256).toMatch(/^[a-f0-9]{64}$/)
   })
 
   it('blocks all mutations with 405 even for otherwise valid and unknown API paths', async () => {

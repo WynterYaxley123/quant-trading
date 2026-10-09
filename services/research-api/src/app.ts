@@ -4,6 +4,7 @@ import type { ApiConfig } from './config.js'
 import { ApiError } from './errors.js'
 import { ArtifactRepository } from './artifacts/repository.js'
 import { SCHEMA_VERSION, type Horizon } from './protocol.js'
+import { serviceIdentity } from './identity.js'
 import {
   candidateItems, dailyView, diagnosticView, integrity, metricView,
   predictionView, researchStatus, runDetail, runItem,
@@ -95,6 +96,7 @@ function pagination(params: URLSearchParams) {
 }
 
 export function createApp(config: ApiConfig, repo = new ArtifactRepository(config.reportRoot, config)) {
+  const identity = serviceIdentity(config)
   const app = new Hono()
   app.use('/api/v1/*', async (c, next) => {
     const origin = c.req.header('Origin')
@@ -124,7 +126,7 @@ export function createApp(config: ApiConfig, repo = new ArtifactRepository(confi
   })
 
   app.get('/api/v1/health', (c) => c.json({ schemaVersion: SCHEMA_VERSION,
-    data: { status: 'ok', readOnly: true, sourceOfTruth: 'RESEARCH_ARTIFACTS' } }))
+    data: { status: 'ok', readOnly: true, sourceOfTruth: 'RESEARCH_ARTIFACTS', identity } }))
 
   app.get('/api/v1/capabilities', async (c) => {
     const workspace = await repo.workspace()

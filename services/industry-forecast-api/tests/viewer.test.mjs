@@ -29,7 +29,10 @@ test('viewer serves only known read-only local resources and rechecks bytes',asy
   const f=await fixture(t),server=await createViewer(f),port=await listen(server);t.after(()=>new Promise(r=>server.close(r)));
   const base=`http://127.0.0.1:${port}`;
   const health=await (await fetch(base+'/health')).json();assert.equal(health.service,'REV10_STATIC_VIEWER');assert.equal(health.read_only,true);assert.equal(health.bundle_sha256,f.bundlePin);
-  assert.equal((await fetch(base+'/industry-forecast/swl1-rev10')).status,200);assert.equal((await fetch(base+'/offline-review/index.html')).status,200);
+  const page=await fetch(base+'/industry-forecast/swl1-rev10');assert.equal(page.status,200);
+  assert.match(page.headers.get('content-security-policy'),/connect-src 'self' http:\/\/127\.0\.0\.1:8787;/);
+  assert.doesNotMatch(page.headers.get('content-security-policy'),/connect-src[^;]*(\*|https:)/);
+  assert.equal((await fetch(base+'/research')).status,200);assert.equal((await fetch(base+'/offline-review/index.html')).status,200);
   assert.equal((await fetch(base+'/index.html',{method:'HEAD'})).status,200);
   assert.equal((await fetch(base+'/index.html',{method:'POST'})).status,405);
   assert.equal((await fetch(base+'/index.html',{headers:{origin:'https://unknown.example'}})).status,403);

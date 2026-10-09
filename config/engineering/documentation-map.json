@@ -1581,6 +1581,10 @@
     {
       "path": "docs/engineering/swl1-rev10-acceptance.md",
       "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/engineering/rev10-research-api-repair.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }

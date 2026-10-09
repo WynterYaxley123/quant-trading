@@ -13,7 +13,7 @@ import {publicEvidence} from './evidence.mjs';
 import {rev10Resource} from './rev10.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-rev10-delivery-integrity.json';
+const ACTIVE='reports/engineering/rev10-research-api-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;

@@ -11,6 +11,26 @@ $rev10Started = @()
 $rev10SavedEnvironment = @{}
 $rev10OfflineVerified = $false
 $rev10Offline = Join-Path $DeliveryRoot 'review\index.html'
+# The shipped dashboard bundle targets 127.0.0.1:8787/api/v1; do not silently choose a different port.
+$rev10ResearchPort = 8787
+$rev10ResearchEntry = Join-Path $rev10Repo 'services\research-api\src\index.ts'
+$rev10ResearchCwd = Join-Path $rev10Repo 'services\research-api'
+$rev10ResearchIdentity = $null
+$rev10ListenerSnapshot = @()
+function Test-REV10Process([int]$Port,[string]$Entry,[int]$ExpectedPid=0,[switch]$UseSnapshot) {
+    if (-not $UseSnapshot) { $script:rev10ListenerSnapshot = @(Get-NetTCPConnection -State Listen -ErrorAction Stop) }
+    $rev10Listeners = @($script:rev10ListenerSnapshot | Where-Object { $_.LocalPort -eq $Port })
+    if (-not $rev10Listeners.Count -or @($rev10Listeners | Where-Object { $_.LocalAddress -ne '127.0.0.1' }).Count) { return $false }
+    $rev10Owners = @($rev10Listeners | Select-Object -ExpandProperty OwningProcess -Unique)
+    if ($rev10Owners.Count -ne 1 -or ($ExpectedPid -and $rev10Owners[0] -ne $ExpectedPid)) { return $false }
+    try {
+        $rev10Owner = Get-CimInstance Win32_Process -Filter "ProcessId = $($rev10Owners[0])" -ErrorAction Stop
+        $rev10EntryPattern = '^"?' + [regex]::Escape($rev10Node) + '"?\s+'
+        if ($Entry -ieq $rev10ResearchEntry) { $rev10EntryPattern += '--import\s+tsx\s+' }
+        $rev10EntryPattern += '"?' + [regex]::Escape($Entry) + '"?\s*$'
+        return $rev10Owner -and $rev10Owner.ExecutablePath -ieq $rev10Node -and $rev10Owner.CommandLine -imatch $rev10EntryPattern
+    } catch { return $false }
+}
 function Get-REV10Hash([string]$Path) {
     (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
@@ -48,10 +68,10 @@ function Test-REV10Service([int]$Port,[string]$Resource,[hashtable]$Expected,[sw
         return $true
     } catch { return $false }
 }
-function Find-REV10Port([int]$Preferred,[string]$Resource,[hashtable]$Expected,[switch]$Envelope,[int]$ExcludedPort=0) {
+function Find-REV10Port([int]$Preferred,[string]$Resource,[hashtable]$Expected,[string]$Entry,[switch]$Envelope,[int]$ExcludedPort=0) {
     for ($rev10Candidate=$Preferred; $rev10Candidate -lt $Preferred+30; $rev10Candidate++) {
-        if ($rev10Candidate -eq $ExcludedPort) { continue }
-        $rev10Listening = @(Get-NetTCPConnection -LocalPort $rev10Candidate -State Listen -ErrorAction SilentlyContinue)
+        if ($rev10Candidate -in @($ExcludedPort,$rev10ResearchPort)) { continue }
+        $rev10Listening = @($script:rev10ListenerSnapshot | Where-Object { $_.LocalPort -eq $rev10Candidate })
         if ($rev10Listening.Count -eq 0) {
             # Windows can reserve a port without a listener. Probe loopback without changing OS policy.
             $rev10Probe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,$rev10Candidate)
@@ -59,9 +79,38 @@ function Find-REV10Port([int]$Preferred,[string]$Resource,[hashtable]$Expected,[
             catch [Net.Sockets.SocketException] { continue }
             finally { $rev10Probe.Stop() }
         }
-        if (Test-REV10Service $rev10Candidate $Resource $Expected -Envelope:$Envelope) { return @{Port=$rev10Candidate;Reuse=$true} }
+        if ((Test-REV10Process $rev10Candidate $Entry -UseSnapshot) -and (Test-REV10Service $rev10Candidate $Resource $Expected -Envelope:$Envelope)) { return @{Port=$rev10Candidate;Reuse=$true} }
     }
     throw 'No unused or identity-matching local port; existing services preserved.'
+}
+function Test-REV10ResearchHealth([int]$Port,[int]$ViewerPort) {
+    try {
+        $rev10Base = "http://127.0.0.1:$Port/api/v1"
+        $rev10Health = Get-REV10Json "$rev10Base/health"
+        $rev10Caps = Get-REV10Json "$rev10Base/capabilities"
+        if ($rev10Health.schemaVersion -ne '1.0.0' -or $rev10Health.data.status -ne 'ok' -or $rev10Health.data.readOnly -ne $true) { return $false }
+        foreach ($rev10Key in @('service','sourceSha256','configurationSha256')) {
+            if (-not $rev10ResearchIdentity -or $rev10Health.data.identity.$rev10Key -cne $rev10ResearchIdentity.$rev10Key) { return $false }
+        }
+        if (-not (Test-REV10Process $Port $rev10ResearchEntry $rev10Health.data.identity.pid)) { return $false }
+        if ($rev10Caps.data.readOnly -ne $true -or $rev10Caps.data.mutations -ne $false -or $rev10Caps.data.validationAvailable -ne $false -or $rev10Caps.data.finalOosAvailable -ne $false) { return $false }
+        $rev10Status = Get-REV10Json "$rev10Base/research/status"
+        if ($rev10Status.data.artifactState -ne 'NOT_CONFIGURED' -or $rev10Status.data.executable -ne $false -or $rev10Status.data.tradable -ne $false) { return $false }
+        $rev10Origin = "http://127.0.0.1:$ViewerPort"
+        $rev10Cors = Invoke-WebRequest -UseBasicParsing -Uri "$rev10Base/health" -Method Get -Headers @{Origin=$rev10Origin} -TimeoutSec 5
+        return $rev10Cors.StatusCode -eq 200 -and [string]$rev10Cors.Headers['Access-Control-Allow-Origin'] -eq $rev10Origin
+    } catch { return $false }
+}
+function Test-REV10TrustedResearch([int]$Port,[int]$ViewerPort) {
+    return Test-REV10ResearchHealth $Port $ViewerPort
+}
+function Wait-REV10Research([int]$Port,[int]$ViewerPort) {
+    $rev10Deadline = [DateTime]::UtcNow.AddSeconds(30)
+    while ([DateTime]::UtcNow -lt $rev10Deadline) {
+        if (Test-REV10ResearchHealth $Port $ViewerPort) { return }
+        Start-Sleep -Milliseconds 250
+    }
+    throw 'Research API not ready or its exact local CORS/readonly health rejected this dashboard origin.'
 }
 function Set-REV10Environment([string]$Name,[string]$Value) {
     if (-not $rev10SavedEnvironment.ContainsKey($Name)) { $rev10SavedEnvironment[$Name] = [Environment]::GetEnvironmentVariable($Name,'Process') }
@@ -77,7 +126,7 @@ function Wait-REV10Service([int]$Port,[string]$Resource,[hashtable]$Expected,[sw
         if (Test-REV10Service $Port $Resource $Expected -Envelope:$Envelope) { return }
         Start-Sleep -Milliseconds 250
     }
-    throw 'Read-only service health or identity check failed; inspect delivery launch logs.'
+    throw "Read-only service health or identity failed at $Resource on port $Port; inspect delivery launch logs."
 }
 try {
     Assert-REV10External $DeliveryRoot
@@ -109,12 +158,15 @@ try {
         if ($rev10PreviewPin -ne $rev10Review.preview_manifest_sha256 -or $rev10Preview.namespace -ne 'RESEARCH_REPLAY_ONLY') { throw 'Private preview pin mismatch.' }
     }
     $rev10Node = (Get-Command node -ErrorAction Stop).Source
+    $rev10ListenerSnapshot = @(Get-NetTCPConnection -State Listen -ErrorAction Stop)
+    $rev10ApiEntry = Join-Path $rev10Repo 'services\industry-forecast-api\server.mjs'
+    $rev10ViewerEntry = Join-Path $rev10Repo 'services\industry-forecast-api\viewer.mjs'
     $rev10ApiIdentity = @{service='SWL1_REV10_READ_ONLY_RESEARCH';read_only=$true;model_hash=$rev10ModelHash;module_sha256=(Get-REV10Hash (Join-Path $rev10Repo 'services\industry-forecast-api\rev10.mjs'));server_module_sha256=(Get-REV10Hash (Join-Path $rev10Repo 'services\industry-forecast-api\server.mjs'));manifest_sha256=$(if ($rev10PreviewPin) {$rev10PreviewPin} else {$null})}
-    $rev10Api = Find-REV10Port $ApiPort 'api/industry-forecast/swl1-rev10/health' $rev10ApiIdentity -Envelope
+    $rev10Api = Find-REV10Port $ApiPort 'api/industry-forecast/swl1-rev10/health' $rev10ApiIdentity $rev10ApiEntry -Envelope
     $rev10BundlePin = Get-REV10Hash (Join-Path $rev10BundleRoot 'bundle-manifest.json')
     $rev10ReviewPin = Get-REV10Hash (Join-Path $rev10ReviewRoot 'delivery-manifest.json')
     $rev10ViewerIdentity = @{service='REV10_STATIC_VIEWER';read_only=$true;bundle_sha256=$rev10BundlePin;review_sha256=$rev10ReviewPin;model_hash=$rev10ModelHash;module_sha256=(Get-REV10Hash (Join-Path $rev10Repo 'services\industry-forecast-api\viewer.mjs'));api_port=$rev10Api.Port}
-    $rev10Viewer = Find-REV10Port $DashboardPort 'health' $rev10ViewerIdentity -ExcludedPort $rev10Api.Port
+    $rev10Viewer = Find-REV10Port $DashboardPort 'health' $rev10ViewerIdentity $rev10ViewerEntry -ExcludedPort $rev10Api.Port
     if ($rev10Viewer.Port -eq $rev10Api.Port) { throw 'Distinct local ports required.' }
     $rev10Logs = Join-Path $DeliveryRoot ('launch\' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff') + '-' + $PID)
     New-Item -ItemType Directory -Path $rev10Logs -Force | Out-Null
@@ -123,20 +175,46 @@ try {
         SWL1_REV10_PREVIEW_ROOT=$rev10PreviewRoot;SWL1_REV10_MANIFEST_SHA256=$rev10PreviewPin;
         DASHBOARD_ORIGINS="http://127.0.0.1:$($rev10Viewer.Port),http://localhost:$($rev10Viewer.Port)";
         REV10_VIEWER_PORT="$($rev10Viewer.Port)";REV10_BUNDLE_ROOT=$rev10BundleRoot;REV10_BUNDLE_SHA256=$rev10BundlePin;
-        REV10_REVIEW_ROOT=$rev10ReviewRoot;REV10_REVIEW_SHA256=$rev10ReviewPin
+        REV10_REVIEW_ROOT=$rev10ReviewRoot;REV10_REVIEW_SHA256=$rev10ReviewPin;
+        HOST='127.0.0.1';PORT="$rev10ResearchPort";
+        RESEARCH_REPORT_ROOT='';RESEARCH_WORKSPACE_CONFIG='';RESEARCH_ARTIFACT_ID=''
     }
     foreach ($rev10Name in $rev10Environment.Keys) { Set-REV10Environment $rev10Name $rev10Environment[$rev10Name] }
-    if (-not $rev10Api.Reuse) { $rev10Started += Start-REV10Service (Join-Path $rev10Repo 'services\industry-forecast-api\server.mjs') 'industry-api' }
+    if (-not $rev10Api.Reuse) { $rev10Started += Start-REV10Service $rev10ApiEntry 'industry-api' }
     Wait-REV10Service $rev10Api.Port 'api/industry-forecast/swl1-rev10/health' $rev10ApiIdentity -Envelope
-    if (-not $rev10Viewer.Reuse) { $rev10Started += Start-REV10Service (Join-Path $rev10Repo 'services\industry-forecast-api\viewer.mjs') 'dashboard-viewer' }
+    if (-not (Test-REV10Process $rev10Api.Port $rev10ApiEntry)) { throw 'Industry API process identity failed.' }
+    if (-not (Test-Path -LiteralPath (Join-Path $rev10ResearchCwd 'node_modules\tsx\package.json') -PathType Leaf)) {
+        throw 'Research API locked dependencies absent: restore existing services/research-api pnpm lockfile dependencies; no automatic install.'
+    }
+    Push-Location $rev10ResearchCwd
+    try {
+        $rev10IdentityRaw = & $rev10Node --import tsx (Join-Path $rev10ResearchCwd 'src\identity.ts')
+        if ($LASTEXITCODE -ne 0) { throw 'Research API source/configuration identity unavailable.' }
+        $rev10ResearchIdentity = $rev10IdentityRaw | ConvertFrom-Json
+    } finally { Pop-Location }
+    # The REV10 static build uses the existing Research API default URL. Launch it,
+    # or reuse a verified local instance; never hijack unknown port owners.
+    $rev10ResearchListeners = @($rev10ListenerSnapshot | Where-Object { $_.LocalPort -eq $rev10ResearchPort })
+    $rev10ResearchReused = $rev10ResearchListeners.Count -gt 0
+    if ($rev10ResearchReused) {
+        if (-not (Test-REV10TrustedResearch $rev10ResearchPort $rev10Viewer.Port)) {
+            throw 'Research API port 8787 is occupied by an unknown, incorrectly configured, or unhealthy process. Existing process preserved.'
+        }
+    } else {
+        $rev10Started += Start-Process -FilePath $rev10Node -ArgumentList @('--import','tsx',('"' + $rev10ResearchEntry + '"')) -WindowStyle Hidden -WorkingDirectory $rev10ResearchCwd -RedirectStandardOutput (Join-Path $rev10Logs 'research-api.stdout.log') -RedirectStandardError (Join-Path $rev10Logs 'research-api.stderr.log') -PassThru
+        Wait-REV10Research $rev10ResearchPort $rev10Viewer.Port
+    }
+    if (-not $rev10Viewer.Reuse) { $rev10Started += Start-REV10Service $rev10ViewerEntry 'dashboard-viewer' }
     Wait-REV10Service $rev10Viewer.Port 'health' $rev10ViewerIdentity
+    if (-not (Test-REV10Process $rev10Viewer.Port $rev10ViewerEntry)) { throw 'Dashboard viewer process identity failed.' }
     $rev10Url = "http://127.0.0.1:$($rev10Viewer.Port)/industry-forecast/swl1-rev10"
     $rev10Overview = Get-REV10Json "http://127.0.0.1:$($rev10Viewer.Port)/api/industry-forecast/swl1-rev10/overview"
     $rev10Ranking = Get-REV10Json "http://127.0.0.1:$($rev10Viewer.Port)/api/industry-forecast/swl1-rev10/ranking"
     if ($rev10Overview.data.classification -ne 'EXPLORATORY_POST_HOC' -or ($rev10PreviewPin -and $rev10Ranking.data.count -ne 30)) { throw 'REV10 content health check failed.' }
     $rev10Page = Invoke-WebRequest -UseBasicParsing -Uri $rev10Url -TimeoutSec 5
     if ($rev10Page.StatusCode -ne 200 -or -not $rev10Page.Content.Contains('id="root"')) { throw 'Existing dashboard route unavailable.' }
-    $rev10Receipt = @{status='READ_ONLY_WEB_READY';web_url=$rev10Url;api_port=$rev10Api.Port;dashboard_port=$rev10Viewer.Port;api_reused=$rev10Api.Reuse;viewer_reused=$rev10Viewer.Reuse;offline_html=$rev10Offline;ranking_asof=$rev10Ranking.data.asof;ranking_count=$rev10Ranking.data.count;started_pids=@($rev10Started | ForEach-Object {$_.Id});model_hash=$rev10ModelHash;preview_manifest_sha256=$rev10PreviewPin;formal_forecasts_created=0;live_scheduler_enabled=$false}
+    $rev10ResearchStatus = Get-REV10Json "http://127.0.0.1:$rev10ResearchPort/api/v1/research/status"
+    $rev10Receipt = @{status='READ_ONLY_WEB_READY';web_url=$rev10Url;api_port=$rev10Api.Port;dashboard_port=$rev10Viewer.Port;research_api_port=$rev10ResearchPort;research_api_connected=$true;research_api_reused=$rev10ResearchReused;research_artifact_state=$rev10ResearchStatus.data.artifactState;api_reused=$rev10Api.Reuse;viewer_reused=$rev10Viewer.Reuse;offline_html=$rev10Offline;ranking_asof=$rev10Ranking.data.asof;ranking_count=$rev10Ranking.data.count;started_pids=@($rev10Started | ForEach-Object {$_.Id});model_hash=$rev10ModelHash;preview_manifest_sha256=$rev10PreviewPin;formal_forecasts_created=0;live_scheduler_enabled=$false}
     $rev10Receipt | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $DeliveryRoot 'launch-receipt.json') -Encoding utf8
     if (-not $NoBrowser) { Start-Process -FilePath $rev10Url }
     $rev10Receipt | ConvertTo-Json -Depth 5
@@ -145,7 +223,7 @@ try {
     if (-not $rev10OfflineVerified) { throw }
     Write-Warning "Web view unavailable: $($_.Exception.Message)"
     if (-not $NoBrowser) { Start-Process -FilePath $rev10Offline }
-    @{status='VERIFIED_OFFLINE_FALLBACK';offline_html=$rev10Offline;web_url=$null;reason=$_.Exception.Message} | ConvertTo-Json
+    @{status='VERIFIED_OFFLINE_FALLBACK';offline_html=$rev10Offline;web_url=$null;reason=$_.Exception.Message;cleaned_started_pids=@($rev10Started | ForEach-Object {$_.Id})} | ConvertTo-Json
 } finally {
     foreach ($rev10Name in $rev10SavedEnvironment.Keys) { [Environment]::SetEnvironmentVariable($rev10Name,$rev10SavedEnvironment[$rev10Name],'Process') }
 }

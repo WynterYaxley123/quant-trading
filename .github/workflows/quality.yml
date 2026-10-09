@@ -110,5 +110,9 @@ jobs:
         with:
           node-version: '24.19.0'
       - run: node --test scripts/tests/launcher-unit.test.mjs scripts/tests/scheduler.test.mjs scripts/tests/operations.test.mjs
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: 11.25.0
+      - run: pnpm --dir services/research-api install --frozen-lockfile
       - run: node --test scripts/tests/rev10-launcher.test.mjs
       - run: node --test scripts/tests/evidence-isolation.test.mjs
