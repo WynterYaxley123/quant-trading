@@ -117,7 +117,7 @@ def private_preview(root: Path, preview: Path, pin: str) -> dict[str, Any]:
 
 STYLE = """
 :root{color-scheme:light;font-family:system-ui,'Microsoft YaHei',sans-serif;color:#182b3d;background:#edf2f5}
-*{box-sizing:border-box}body{margin:0}header{background:#142c40;color:#fff;padding:32px max(24px,calc((100vw - 1200px)/2))}
+*{box-sizing:border-box}body{margin:0}section,.card,details{min-width:0}header{background:#142c40;color:#fff;padding:32px max(24px,calc((100vw - 1200px)/2))}
 header small{color:#a9c6d8;letter-spacing:.1em}h1{font-size:30px;margin:10px 0}h2{font-size:20px;margin:0 0 16px}p{line-height:1.7}
 main{max-width:1248px;margin:auto;padding:24px;display:grid;gap:24px}.badge{display:inline-block;background:#fdf0d7;color:#80500a;border-radius:4px;padding:5px 10px;font-size:12px}
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card,section{background:white;border:1px solid #d9e3ea;border-radius:10px;padding:24px}
