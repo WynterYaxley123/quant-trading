@@ -1,0 +1,103 @@
+{
+  "accounting": {
+    "10": {
+      "complete_signals": 757,
+      "incomplete_fixed_universe_signals": 0,
+      "last_signal": "2026-09-14",
+      "last_target_maturity": "2026-09-29",
+      "required_signals": 757
+    },
+    "5": {
+      "complete_signals": 762,
+      "incomplete_fixed_universe_signals": 0,
+      "last_signal": "2026-09-21",
+      "last_target_maturity": "2026-09-29",
+      "required_signals": 762
+    }
+  },
+  "authorization": "OWNER_AUTHORIZED_CONSUMED_HISTORICAL_EXPLORATION_WITH_UNRESOLVED_VENDOR_RIGHTS",
+  "boundary_persisted_before_numeric_decode": true,
+  "design_sha256": "ad4c71407ef322183bc8b6205d3b54267a59b635f54602673b5c1735c619df1d",
+  "historical_independent_unseen_access_certified": false,
+  "internal_design_commit": "ca959d99e01bc9093bde714dd67004f31940c09b",
+  "label": "EXPLORATORY_POST_HOC_RESEARCH",
+  "last_outcome": "2026-09-29",
+  "later_numeric_rows_decoded": 0,
+  "new_ledger_entries": 0,
+  "new_source_downloads": 0,
+  "new_source_registry_entries": 0,
+  "original_feature_rows": 1132,
+  "original_panel_historical_unseen_access": "NOT_CERTIFIED",
+  "owner_task_sha256": "5f7b6bbedf7662bb4bf92d176fdadeac395eb8312e5184e20feca03def844ae5",
+  "panel_sha256": "20c038f87daa93cccf1515f41bda7de5b30fa70a4d1443ae6c34b770e19a5776",
+  "pit": "CURRENT_TAXONOMY_RECONSTRUCTION_NOT_CERTIFIED_HISTORICAL_PIT",
+  "preparation_isolation": {
+    "docker": true,
+    "interfaces": [
+      "lo"
+    ],
+    "network": "NONE",
+    "quantitative_execution_on_host": false,
+    "read_only_inputs": true
+  },
+  "read_receipts": [
+    {
+      "decompressed_read_ahead": 0,
+      "member": "returns.npy",
+      "opaque_layout_bytes_discarded_without_numeric_conversion": 232,
+      "payload_bytes_decoded": 300480,
+      "payload_bytes_permitted": 300480,
+      "rows_decoded": 1252,
+      "shape_metadata": [
+        1253,
+        30
+      ],
+      "storage_order": "FORTRAN",
+      "tail_rows_not_decoded": 1
+    },
+    {
+      "decompressed_read_ahead": 0,
+      "member": "features.npy",
+      "opaque_layout_bytes_discarded_without_numeric_conversion": 0,
+      "payload_bytes_decoded": 5161920,
+      "payload_bytes_permitted": 5161920,
+      "rows_decoded": 1132,
+      "shape_metadata": [
+        1253,
+        30,
+        19
+      ],
+      "storage_order": "C",
+      "tail_rows_not_decoded": 121
+    }
+  ],
+  "reference_sha256": {
+    "v2_development-private-replay.json": "b81fb64021f7ccd5e7e5d8f38728adc644c05aa38f24bf241392227814053d7e",
+    "v2_validation-private-replay.json": "aeff23ccc230f893032e4554d909cc516595fcf06bf6f5387ca99ec70482ee78"
+  },
+  "reference_signal_counts": {
+    "development": 401,
+    "validation": 126
+  },
+  "research_worker_isolation": {
+    "docker": true,
+    "interfaces": [
+      "lo"
+    ],
+    "network": "NONE",
+    "quantitative_execution_on_host": false,
+    "read_only_inputs": true
+  },
+  "return_rows": 1252,
+  "rev_reconstruction_max_absolute_error": 1.1622647289044608e-16,
+  "source_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "source_rights_uncertainty": "OWNER_HISTORICAL_SCOPE_ONLY_NOT_VENDOR_OR_PRODUCTION_ADMISSION",
+  "unseen_outcomes_read": false,
+  "vendor_grant_or_production_admission": false,
+  "view_sha256": {
+    "metadata.json": "4ad5c9447148cb94714b020ae8add5a6dbfe5045c84f77ea5ca485dabe85b9d6",
+    "reference.json": "4f1bf3aedc6d265fd65401f80fbbfaab2779279a5aa408a1bfcb061aad0ee1c6",
+    "returns.npy": "14765234ca20f19718b86e316888f133bf5c658c41456871fe89e5d796bd7f41"
+  },
+  "worker_input_is_physically_truncated": true
+}

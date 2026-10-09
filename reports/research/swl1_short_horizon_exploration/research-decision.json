@@ -1,0 +1,31 @@
+{
+  "V3_trained": false,
+  "decision": "A",
+  "formal_forecasts_created": 0,
+  "independent_validation_created": false,
+  "label": "EXPLORATORY_POST_HOC_RESEARCH",
+  "limitations": [
+    "CURRENT_TAXONOMY_RECONSTRUCTION_NOT_HISTORICAL_PIT",
+    "SURVIVORSHIP_AND_ADJUSTMENT_CONVENTIONS_UNCERTIFIED",
+    "RECONSTRUCTED_EQUAL_WEIGHT_NOT_OFFICIAL_INDEX",
+    "VENDOR_RIGHTS_AND_PRODUCTION_ADMISSION_UNRESOLVED",
+    "30_CORRELATED_INDUSTRIES_NOT_30_INDEPENDENT_ASSETS",
+    "ALL_LABELS_ALREADY_CONSUMED_OR_RETROSPECTIVE",
+    "RAW_SPREAD_NOT_EXECUTABLE_NET_PROFIT",
+    "POST_HOC_REGIMES_AND_DESCRIPTIVE_DEPENDENCE_ONLY"
+  ],
+  "new_formal_model_created": false,
+  "primary_economic_hypothesis": "FIXED_DIRECTION_SHORT_HORIZON_INDUSTRY_REVERSAL",
+  "real_orders_created": 0,
+  "recommended_next_action": "CONSIDER_SIMPLE_REVERSAL_INDEPENDENT_PREREGISTRATION_AFTER_DATA_RIGHTS_AND_PIT_QUALIFICATION",
+  "rule": {
+    "A": "both fixed S1 and S2, at both H5 and H10, have positive mean and median RankIC and positive raw signed spread, at least 3/4 positive blocks, and all 30 leave-one-out mean RankICs positive; recommend only future independent preregistration",
+    "B": "A is not met but at least one fixed single-factor signal has positive mean RankIC at both horizons; seek more independent evidence rather than promote a model",
+    "C": "neither fixed single-factor signal has positive mean RankIC at both horizons; the present short-horizon reversal hypothesis is not supported",
+    "D": "actual access or quality prevents a valid historical numerical run",
+    "label": "EXPLORATORY_RECOMMENDATION_HEURISTIC_NOT_VALIDATION",
+    "ridge": "paired complexity comparison is reported; learned sign reversals never silently redefine the reversal hypothesis or create a formal candidate"
+  },
+  "swl1_v1_status": "FAILED_VALIDATION",
+  "swl1_v2_status": "FAILED_VALIDATION"
+}

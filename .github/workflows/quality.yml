@@ -50,6 +50,7 @@ jobs:
             python -m examples.prospective_evidence_demo
             python -m scripts.engineering.source_qualification --verify
             python -m research.evidence.qualification
+            python -m research.swl1_short_horizon_exploration --verify-public
             python -m scripts.engineering.benchmark
             python -m pytest -q tests/performance
             python -m scripts.engineering.references

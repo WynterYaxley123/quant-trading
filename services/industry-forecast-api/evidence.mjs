@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {boundedLeaf} from '../etf-quant-api/bounded.mjs';
 import {verifyCurrentCertificate,certificateHash} from '../etf-quant-runner/security-audit.mjs';
 
-const ACTIVE='reports/engineering/swl1-source-qualification-integrity.json';
+const ACTIVE='reports/engineering/swl1-short-horizon-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const DIR='reports/research/swl1_data_first/';
 const check=v=>{if(!v)throw new Error('RESEARCH_EVIDENCE_INTEGRITY_BLOCKER');};

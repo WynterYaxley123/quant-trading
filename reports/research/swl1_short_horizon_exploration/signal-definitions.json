@@ -1,0 +1,64 @@
+{
+  "absolute_relative_rank_equivalence": "SUBTRACTING_COMMON_SAME_DATE_MEAN_PRESERVES_RANKS_EXACTLY",
+  "label": "EXPLORATORY_POST_HOC_RESEARCH",
+  "rank_contract": "SPEARMAN_AVERAGE_TIES; top and bottom ties independently use ascending industry code; overlapping tied groups have null spread; zero-score rankings are undefined",
+  "source_definition_parity_max_error": 1.1622647289044608e-16,
+  "specifications": [
+    {
+      "definition": "all scores zero",
+      "id": "S0",
+      "name": "ZERO",
+      "rank_ic": null,
+      "ranked_groups": null,
+      "reason": "CONSTANT_SCORE_HAS_NO_DIRECTION"
+    },
+    {
+      "definition": "negative arithmetic mean of the last 5 daily industry returns, including T; fixed positive direction",
+      "id": "S1",
+      "name": "REV5"
+    },
+    {
+      "definition": "negative arithmetic mean of the last 10 daily industry returns, including T; fixed positive direction",
+      "id": "S2",
+      "name": "REV10"
+    },
+    {
+      "constant_component": "zero centered component; never choose a substitute",
+      "definition": "0.5 * same-date population-z(REV5) + 0.5 * same-date population-z(REV10)",
+      "id": "S3",
+      "name": "EQUAL_REV"
+    },
+    {
+      "features": [
+        "relative_rev5",
+        "relative_rev10"
+      ],
+      "id": "S4",
+      "intercept": "UNPENALIZED",
+      "minimum_training_dates": 30,
+      "months": 24,
+      "name": "TWO_FACTOR_RIDGE",
+      "objective": "mean squared training error + 10 * squared standardized coefficients",
+      "penalty_per_industry_row": 10.0,
+      "scale": "POOLED_TRAIN_ONLY_POPULATION_DDOF_0; scale <= 1e-12 replaced by 1",
+      "solver": "EXISTING_NUMPYRIDGE_CENTERED_AUGMENTED_LEAST_SQUARES",
+      "training_window": "[T minus 24 calendar months, T minus H exchange sessions] inclusive; all training dates < T; label maturity <= T"
+    },
+    {
+      "comparison": "EXPLORATORY_INFORMED_COMPARISON_ON_EXACT_MATCHED_DATES_TARGET_UNIVERSE_AND_RANKING",
+      "definition": "read only already consumed, hash-pinned H10 predictions in existing failure-forensics replay",
+      "h5": "NOT_APPLICABLE_NO_FROZEN_H5_REFERENCE",
+      "id": "S5",
+      "name": "FROZEN_V2_H10_REFERENCE",
+      "refit": false
+    }
+  ],
+  "targets": {
+    "clock": "EXACT_ADJACENT_SESSIONS_FROM_FROZEN_EXCHANGE_SPINE",
+    "h5_status": "RETROSPECTIVE_EXPLORATORY_LABEL",
+    "missing": "NO_FILL_NO_INDUSTRY_DROPS; incomplete feature or target cross-sections are excluded with reason counts",
+    "raw": "product(1+r[t+1:t+h+1], axis=time)-1",
+    "relative": "raw_forward_return minus same-date mean over the identical fixed 30 industries",
+    "timing": "FEATURES_AT_T_CLOSE; EVALUATION_USES_T_PLUS_1_THROUGH_T_PLUS_H; TRAINING_LABEL_MATURITY_LE_T"
+  }
+}

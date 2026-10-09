@@ -218,3 +218,8 @@ because reliable executable ETF coverage was structurally insufficient relative
 to the Level-2 research universe. Historical engineering remains reproducible.
 
 Real SWL1 source qualification: [audit](docs/research/swl1-real-data-source-qualification.md), [acquisition plan](docs/research/swl1-source-acquisition-plan.md). Twelve source roles audited; 15 exact public document claims reviewed; real admission remains 0 and DATA_SOURCE_NOT_READY.
+
+Owner-authorized consumed-history [SWL1 H5/H10 exploration](docs/research/swl1-short-horizon-exploration.md)
+([中文](docs/research/swl1-short-horizon-exploration.zh-CN.md)) reports fixed reversal
+signals, one two-feature Ridge and all robustness diagnostics. The recommendation
+concerns future independent research; V1/V2 remain FAILED_VALIDATION.

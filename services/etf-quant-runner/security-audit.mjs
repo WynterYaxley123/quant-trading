@@ -87,6 +87,20 @@ export function secretKinds(text) {
 // Reviewed aggregate-only V1 closure. Both path and exact bytes must match;
 // altered reports and all other research payloads remain prohibited.
 const reviewedResearchHashes = Object.freeze({
+  'reports/research/swl1_short_horizon_exploration/concentration-turnover.svg':'71bcbe175bcda33a0c9e33a9d173a0f0bd231cb24855d6afd306d4966be5a9bb',
+  'reports/research/swl1_short_horizon_exploration/data-boundary.json':'b7e40ea60040b91e3fac8fe721849761000a552acf0477e625dd9ac3d06e8ea5',
+  'reports/research/swl1_short_horizon_exploration/exploratory-design-manifest.json':'9babc04a20f369a2c1cfc729ee27384865ea79d3322b6b7ad7e8aed65ff4dd4b',
+  'reports/research/swl1_short_horizon_exploration/factor-target-correlations.svg':'1621362b88f68ba6dbab34244dbb3879f9235ec2c1e4372e5f5efdf06fc058fb',
+  'reports/research/swl1_short_horizon_exploration/industry-sensitivity.json':'4148b0807136e4448f54485a161633f176d979ff1b00f5dbff9c926026e6d1aa',
+  'reports/research/swl1_short_horizon_exploration/industry-sensitivity.svg':'3fee1784740539406971fc3e2c50bff3cf36aee6f0c54edec30c6c68e2627d6a',
+  'reports/research/swl1_short_horizon_exploration/model-comparison.json':'5319c109ac3f5dd4e4944b37de650499b052aab971f8cc1f1bfe5326ab46b5d9',
+  'reports/research/swl1_short_horizon_exploration/research-decision.json':'3048d4148525fa7f273b27e9dfe350413630e394150ab7b2f13cede7dbe3676e',
+  'reports/research/swl1_short_horizon_exploration/research-summary.json':'44b226eae5cde925f31f3e344efde6783ee16f6af86b3415f9ce8d4ef511f8ab',
+  'reports/research/swl1_short_horizon_exploration/ridge-comparison.svg':'8bcaee29102a75187d80fd2e19878a2082286ef5bddf531ce7b8d1cee1984c1a',
+  'reports/research/swl1_short_horizon_exploration/signal-definitions.json':'cc20e4ead9ac93283a832c8642b3c84a622a0faf4a980016c17d73df8d325146',
+  'reports/research/swl1_short_horizon_exploration/signal-rankic.svg':'9775b79a3842f09fb29f18965255af2afeb8c6c2c4879caa2b68db8abd5b4171',
+  'reports/research/swl1_short_horizon_exploration/temporal-blocks.svg':'214b6fbb89553d7866accb74374cdd6ac991613ce06f63e858960cc5c3300315',
+  'reports/research/swl1_short_horizon_exploration/temporal-robustness.json':'8e938d30153158514f63360230ad13750fc639974abb79681328da543ade8583',
   'reports/research/swl1_source_qualification/admission-results.json':'c54f8cad06b8f578dfb5b514c825c1bcb38ca13b60b02858c8f102c8ee37922f',
   'reports/research/swl1_source_qualification/data-quality-assessment.json':'854af07e6790e3325270397c08bbe14e8303424c8dc8584ad62d159751aeb282',
   'reports/research/swl1_source_qualification/final-readiness.json':'834456df371b1f704c81e536e61cb702cb184fd3a0a211c0e0e40e388120a539',
@@ -252,7 +266,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-source-qualification-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-short-horizon-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

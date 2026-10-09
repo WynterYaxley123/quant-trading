@@ -1,0 +1,204 @@
+{
+  "independent_preregistration": false,
+  "internal_lock_commit": "ca959d99e01bc9093bde714dd67004f31940c09b",
+  "label": "EXPLORATORY_POST_HOC_RESEARCH",
+  "locked_before_new_diagnostics": true,
+  "manifest": {
+    "access_is_vendor_grant_or_production_admission": false,
+    "access_scope": "OWNER_AUTHORIZED_CONSUMED_HISTORICAL_EXPLORATION_WITH_UNRESOLVED_VENDOR_RIGHTS",
+    "allowed_original_feature_rows": 1132,
+    "allowed_return_rows": 1252,
+    "base_sha": "bcb271cdb14621e6f9ab37a577c9fbefcdc8e28d",
+    "budget": {
+      "factor_search": false,
+      "formal_candidate_creation": false,
+      "horizon_selection": false,
+      "hyperparameter_trials": 1,
+      "new_source_acquisition": false,
+      "penalty_search": false,
+      "structural_specs": 6,
+      "weight_search": false,
+      "window_search": false
+    },
+    "consumed_outcome_end": "2026-09-29",
+    "correlations": "pooled relative REV5/REV10/Y5/Y10 on common mature dates and mean daily cross-sectional correlations; disclose duplicated dates/dependence",
+    "decision_rule": {
+      "A": "both fixed S1 and S2, at both H5 and H10, have positive mean and median RankIC and positive raw signed spread, at least 3/4 positive blocks, and all 30 leave-one-out mean RankICs positive; recommend only future independent preregistration",
+      "B": "A is not met but at least one fixed single-factor signal has positive mean RankIC at both horizons; seek more independent evidence rather than promote a model",
+      "C": "neither fixed single-factor signal has positive mean RankIC at both horizons; the present short-horizon reversal hypothesis is not supported",
+      "D": "actual access or quality prevents a valid historical numerical run",
+      "label": "EXPLORATORY_RECOMMENDATION_HEURISTIC_NOT_VALIDATION",
+      "ridge": "paired complexity comparison is reported; learned sign reversals never silently redefine the reversal hypothesis or create a formal candidate"
+    },
+    "dependence": {
+      "assumption": "approximate local stationarity within adjacent sessions; four-block regime variation can invalidate a global interval",
+      "autocorrelation_lags_sessions": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "block_sessions": 20,
+      "bootstrap": "DESCRIPTIVE_CIRCULAR_MOVING_BLOCK",
+      "overlap": "H5/H10 daily forward windows overlap; no IID standard errors or p-values",
+      "percentiles": [
+        5,
+        95
+      ],
+      "replicates": 500,
+      "seed": 20261009
+    },
+    "design_lock_is_independent_preregistration": false,
+    "excluded_identity": "510000",
+    "exclusion_reason": "EXISTING_RECURSIVE_SERIES_FACTUAL_GAP_NOT_PERFORMANCE_SELECTION",
+    "first_signal": "2023-08-02",
+    "horizons": [
+      5,
+      10
+    ],
+    "hypotheses": [
+      "Recent industry winners may underperform recent losers over H5 and H10 (short-term reversal).",
+      "Relative versus absolute reversal differs in level but subtracting a common same-date mean cannot change cross-sectional ranks.",
+      "H5 and H10 may have different signs or decay; neither horizon is selected or fused.",
+      "Two transparent features may be easier to explain than the frozen 19-factor multi-horizon model; extra Ridge complexity must earn stable paired gains."
+    ],
+    "industry_robustness": "ALL_30_LEAVE_ONE_INDUSTRY_OUT_EVALUATIONS_WITHOUT_RETRAINING_OR_PRUNING; fixed original centered target ranks",
+    "label": "EXPLORATORY_POST_HOC_RESEARCH",
+    "last_mature_signal": {
+      "10": "2026-09-14",
+      "5": "2026-09-21"
+    },
+    "limitations": [
+      "CURRENT_TAXONOMY_RECONSTRUCTION_NOT_HISTORICAL_PIT",
+      "SURVIVORSHIP_AND_ADJUSTMENT_CONVENTIONS_UNCERTIFIED",
+      "RECONSTRUCTED_EQUAL_WEIGHT_NOT_OFFICIAL_INDEX",
+      "VENDOR_RIGHTS_AND_PRODUCTION_ADMISSION_UNRESOLVED",
+      "30_CORRELATED_INDUSTRIES_NOT_30_INDEPENDENT_ASSETS",
+      "ALL_LABELS_ALREADY_CONSUMED_OR_RETROSPECTIVE",
+      "RAW_SPREAD_NOT_EXECUTABLE_NET_PROFIT",
+      "POST_HOC_REGIMES_AND_DESCRIPTIVE_DEPENDENCE_ONLY"
+    ],
+    "metrics": [
+      "rank_ic_mean",
+      "rank_ic_median",
+      "rank_ic_positive_fraction",
+      "raw_top5_minus_bottom5_signed_spread",
+      "four_calendar_blocks",
+      "top_and_bottom_list_turnover",
+      "all_industry_selection_frequency_and_hhi",
+      "coefficient_distribution_and_sign_stability",
+      "all_30_leave_one_industry_out_rank_ic"
+    ],
+    "owner_task_sha256": "5f7b6bbedf7662bb4bf92d176fdadeac395eb8312e5184e20feca03def844ae5",
+    "panel_sha256": "20c038f87daa93cccf1515f41bda7de5b30fa70a4d1443ae6c34b770e19a5776",
+    "primary_series": "RECONSTRUCTED_SWL1_EQUAL_WEIGHT",
+    "prior_information": "V1/V2 failed Validation and consumed failure-forensics results were already known. This internal lock limits this round's discretion; it is not a scientific time anchor.",
+    "publication": "ONLY_AGGREGATES_AND_SIX_WATERMARKED_CHARTS; per-date scores, labels, fits and source bytes remain private outside Git",
+    "rank_contract": "SPEARMAN_AVERAGE_TIES; top and bottom ties independently use ascending industry code; overlapping tied groups have null spread; zero-score rankings are undefined",
+    "reference_sha256": {
+      "v2_development-private-replay.json": "b81fb64021f7ccd5e7e5d8f38728adc644c05aa38f24bf241392227814053d7e",
+      "v2_validation-private-replay.json": "aeff23ccc230f893032e4554d909cc516595fcf06bf6f5387ca99ec70482ee78"
+    },
+    "regimes": {
+      "co_movement": "trailing 60-session 30-industry covariance participation ratio",
+      "dispersion": "trailing 20-session mean cross-sectional daily return standard deviation versus expanding median of that statistic strictly before T",
+      "groups": "all four trend-sign x high/low-dispersion states",
+      "label": "POST_HOC_DESCRIPTIVE",
+      "leadership": "contemporaneous top5 list persistence; descriptive only",
+      "search": false,
+      "trend": "sign of trailing 20-session equal-weight industry mean compounded return through T"
+    },
+    "reused_implementation_sha256": {
+      "research/swl1_failure_forensics/boundary.py": "c00ef7d8e1593473367d3cb722b21e7041aaf603b8771be089445f5560e8aa81",
+      "research/swl1_ridge_v1/evaluation.py": "a1fff51b86f4225e4f5ff0e49ac579752a0477c1c87bdaf7c0730be54a31ef10",
+      "research/swl1_ridge_v1/protocol.py": "23f38a30c3624ff7acd31c534b000173b5e99ef885ff8ad2d8bf12a82cbf884b",
+      "research/swl1_ridge_v2/evaluation.py": "2736a737abbb28712d4fc46b5f30a554d3a09be7760a7a9cea758093ef9b3d4d",
+      "strategies/etf_quant/factors/__init__.py": "4cb7c80e0cf31650efb4dc4989fa4744eb1a61e1bd166c31d9cdca76ad37f655",
+      "strategies/etf_quant/models/__init__.py": "01a2153173ecabc55f1d9214dd2a852008bf9356aadb206cc9d577e7c2d7cf0a"
+    },
+    "schema_version": 1,
+    "source": "CNEquity",
+    "source_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+    "specifications": [
+      {
+        "definition": "all scores zero",
+        "id": "S0",
+        "name": "ZERO",
+        "rank_ic": null,
+        "ranked_groups": null,
+        "reason": "CONSTANT_SCORE_HAS_NO_DIRECTION"
+      },
+      {
+        "definition": "negative arithmetic mean of the last 5 daily industry returns, including T; fixed positive direction",
+        "id": "S1",
+        "name": "REV5"
+      },
+      {
+        "definition": "negative arithmetic mean of the last 10 daily industry returns, including T; fixed positive direction",
+        "id": "S2",
+        "name": "REV10"
+      },
+      {
+        "constant_component": "zero centered component; never choose a substitute",
+        "definition": "0.5 * same-date population-z(REV5) + 0.5 * same-date population-z(REV10)",
+        "id": "S3",
+        "name": "EQUAL_REV"
+      },
+      {
+        "features": [
+          "relative_rev5",
+          "relative_rev10"
+        ],
+        "id": "S4",
+        "intercept": "UNPENALIZED",
+        "minimum_training_dates": 30,
+        "months": 24,
+        "name": "TWO_FACTOR_RIDGE",
+        "objective": "mean squared training error + 10 * squared standardized coefficients",
+        "penalty_per_industry_row": 10.0,
+        "scale": "POOLED_TRAIN_ONLY_POPULATION_DDOF_0; scale <= 1e-12 replaced by 1",
+        "solver": "EXISTING_NUMPYRIDGE_CENTERED_AUGMENTED_LEAST_SQUARES",
+        "training_window": "[T minus 24 calendar months, T minus H exchange sessions] inclusive; all training dates < T; label maturity <= T"
+      },
+      {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON_ON_EXACT_MATCHED_DATES_TARGET_UNIVERSE_AND_RANKING",
+        "definition": "read only already consumed, hash-pinned H10 predictions in existing failure-forensics replay",
+        "h5": "NOT_APPLICABLE_NO_FROZEN_H5_REFERENCE",
+        "id": "S5",
+        "name": "FROZEN_V2_H10_REFERENCE",
+        "refit": false
+      }
+    ],
+    "study": "SWL1_H5_H10_SHORT_HORIZON",
+    "targets": {
+      "clock": "EXACT_ADJACENT_SESSIONS_FROM_FROZEN_EXCHANGE_SPINE",
+      "h5_status": "RETROSPECTIVE_EXPLORATORY_LABEL",
+      "missing": "NO_FILL_NO_INDUSTRY_DROPS; incomplete feature or target cross-sections are excluded with reason counts",
+      "raw": "product(1+r[t+1:t+h+1], axis=time)-1",
+      "relative": "raw_forward_return minus same-date mean over the identical fixed 30 industries",
+      "timing": "FEATURES_AT_T_CLOSE; EVALUATION_USES_T_PLUS_1_THROUGH_T_PLUS_H; TRAINING_LABEL_MATURITY_LE_T"
+    },
+    "temporal_blocks": {
+      "assign_before_filtering": true,
+      "count": 4,
+      "end": "2026-09-21",
+      "method": "EXISTING_EQUAL_CALENDAR_DURATION",
+      "start": "2023-08-02"
+    },
+    "unchanged": {
+      "final_oos_opened": false,
+      "formal_forecasts_created": 0,
+      "frozen_artifacts": true,
+      "orders_created": 0,
+      "scheduler": "DISABLED",
+      "swl1_v1": "FAILED_VALIDATION",
+      "swl1_v2": "FAILED_VALIDATION"
+    },
+    "universe_count": 30,
+    "universe_file": "config/research/swl1-ridge-v1-universe.json",
+    "universe_sha256": "cdd23d6822a3300f5f9dd301b3e2aefbb4ca9434a5a609e90ade0023d2985163"
+  },
+  "manifest_path": "config/research/swl1-short-horizon-exploratory-design.json",
+  "manifest_sha256": "ad4c71407ef322183bc8b6205d3b54267a59b635f54602673b5c1735c619df1d",
+  "spec_count": 6
+}

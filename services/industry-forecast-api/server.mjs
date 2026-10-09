@@ -11,7 +11,7 @@ import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-q
 import {publicEvidence} from './evidence.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-source-qualification-integrity.json';
+const ACTIVE='reports/engineering/swl1-short-horizon-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
