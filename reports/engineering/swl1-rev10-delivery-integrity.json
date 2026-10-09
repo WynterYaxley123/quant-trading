@@ -232,7 +232,7 @@
       "research/swl1_rev10_short_v1/model.py": "b94b53e9b0ea43c6c22f63eef3dc5ec329944177392d2bd974860953b44e7d32",
       "research/swl1_rev10_short_v1/prospective.py": "54b7ec7a8441d057efda60c5aa95fb4105f9782b5155caf47debf4a0e7f5f1de",
       "research/swl1_rev10_short_v1/replay.py": "1eacb96872953ced062dd608994ba5c524c5a033fa0b4edf3ad42f2d251425f3",
-      "research/swl1_rev10_short_v1/review.py": "e2a779cb6ef98af7f7fc99b87162c56cdbc3ba915e7396f1941bb4545a11b052",
+      "research/swl1_rev10_short_v1/review.py": "60c98a29f6cb52265960ea7b371e65ea76e68a23cd7bd73bffd5e8fb453e5ebc",
       "research/swl1_ridge_v1/__init__.py": "41cdad267b30825260fa3a3a944cc0e4e38cda076ad92a950907a5ea2420e6fe",
       "research/swl1_ridge_v1/audit.py": "0323f0f36b6cfc2f6f7fe069992131ee22a46f54660498ee483e21b25f24bfce",
       "research/swl1_ridge_v1/data_contract.py": "0411d361d0e01ab68449b8f4e781e26a58d4f74756ec9c92e6372c7dd5dd6398",
@@ -1698,7 +1698,7 @@
       {
         "path": "research/swl1_rev10_short_v1/review.py",
         "before_sha256": null,
-        "after_sha256": "e2a779cb6ef98af7f7fc99b87162c56cdbc3ba915e7396f1941bb4545a11b052",
+        "after_sha256": "60c98a29f6cb52265960ea7b371e65ea76e68a23cd7bd73bffd5e8fb453e5ebc",
         "reason": "SWL1-REV10-Delivery verified remediation"
       },
       {
@@ -2399,6 +2399,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-rev10-acceptance.md",
-    "certificate_sha256": "6b83de909e91e643ddc3f1d4b0d89e0cfd74621209515629d8a314fa7934c3e8"
+    "certificate_sha256": "70968b94c1eade7c86c81dcd73251a6dff02bb7699c4cf424ec263cede6b2b8e"
   }
 }
