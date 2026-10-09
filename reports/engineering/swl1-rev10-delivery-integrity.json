@@ -270,7 +270,7 @@
       "scripts/tests/evidence-isolation.test.mjs": "edd9c2d270585e56d5e0eaa744caaad94336625b93711dae21ff6f9ec19b954d",
       "scripts/tests/launcher-unit.test.mjs": "a3285e8808733a1e07241dfea544e38aeeb9b1179a70648c14dc87c4949c55c1",
       "scripts/tests/operations.test.mjs": "8fe9d560a95ba2324f8bf2b74e93f0b91c3f112627d99ebde3450af64eead147",
-      "scripts/tests/rev10-launcher.test.mjs": "13f669488f1e256554d68d76c26d51155f121d1866d13cf7f8f4488e8152420b",
+      "scripts/tests/rev10-launcher.test.mjs": "3bbcc891fa54455350021654f9c4505456beb7026ba8cc1d56eef92c456a0d96",
       "services/etf-quant-api/README.md": "af210f57af8a55f3ef70ebb7eb42af542080ef031a72510c986a4457bb465722",
       "services/etf-quant-api/bounded.mjs": "7ed5c1026f5d8ae85843c9cd5bb12ad20101cff6c5a58f19bb8b8c4c8eb82313",
       "services/etf-quant-api/current.mjs": "0bd30c805cbe05044d07d733c1cb323e34f261e81dc3ab67e09a459b5bf84620",
@@ -1926,7 +1926,7 @@
       {
         "path": "scripts/tests/rev10-launcher.test.mjs",
         "before_sha256": null,
-        "after_sha256": "13f669488f1e256554d68d76c26d51155f121d1866d13cf7f8f4488e8152420b",
+        "after_sha256": "3bbcc891fa54455350021654f9c4505456beb7026ba8cc1d56eef92c456a0d96",
         "reason": "SWL1-REV10-Delivery verified remediation"
       },
       {
@@ -2399,6 +2399,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-rev10-acceptance.md",
-    "certificate_sha256": "30be472402e1f542458a9feb1c84419938a2a047ade785413ad652e31c5651aa"
+    "certificate_sha256": "12fe12b873651d5ab4185242c0ebaae8f4cb074ccbec9091519e3d73bf450b52"
   }
 }

@@ -1,7 +1,7 @@
 /** Actual Windows launch/reuse/conflict/fallback using disposable synthetic HTML, never private returns. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,mkdtempSync,mkdirSync,writeFileSync,rmSync,realpathSync} from 'node:fs';
+import {readFileSync,readdirSync,mkdtempSync,mkdirSync,writeFileSync,rmSync,realpathSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import http from 'node:http';
@@ -15,7 +15,8 @@ test('REV10 launcher has a read-only boundary and preserves unknown processes',(
   assert.doesNotMatch(text,/one_shot\.py|run_forecast\.py|Register-ScheduledTask|Stop-Process|pip install|pnpm install/);
 });
 test('actual Windows launcher parses, skips unknown listener, reuses exact identity and verifies offline fallback',{skip:process.platform!=='win32',timeout:180000},async()=>{
-  const temp=mkdtempSync(path.join(os.tmpdir(),'rev10-launch-synthetic-')),started=new Set();
+  // Hosted Windows TEMP may be an 8.3 alias; keep strict service realpath checks intact.
+  const temp=realpathSync(mkdtempSync(path.join(os.tmpdir(),'rev10-launch-synthetic-'))),started=new Set();
   const foreign=http.createServer((req,res)=>res.end('UNKNOWN_SERVICE_PRESERVED'));
   await new Promise(r=>foreign.listen(0,'127.0.0.1',r));const occupied=foreign.address().port;
   const probe=http.createServer();await new Promise(r=>probe.listen(0,'127.0.0.1',r));const dashboard=probe.address().port;await new Promise(r=>probe.close(r));
@@ -30,7 +31,9 @@ test('actual Windows launcher parses, skips unknown listener, reuses exact ident
       const result=spawnSync('pwsh',['-NoProfile','-File',target,'-DeliveryRoot',temp,'-ApiPort',String(occupied),'-DashboardPort',String(dashboard),'-NoBrowser'],{encoding:'utf8',timeout:60000});
       assert.equal(result.status,0,result.stdout+result.stderr);const start=result.stdout.indexOf('{');assert(start>=0,result.stdout);const receipt=JSON.parse(result.stdout.slice(start));for(const pid of receipt.started_pids??[])started.add(pid);return receipt;
     };
-    const first=run();assert.equal(first.status,'READ_ONLY_WEB_READY',JSON.stringify(first));assert.notEqual(first.api_port,occupied);assert.equal(first.ranking_count,0);assert.equal(first.started_pids.length,2);
+    const first=run();
+    const diagnostics=first.status==='READ_ONLY_WEB_READY'?'':readdirSync(path.join(temp,'launch'),{recursive:true}).filter(name=>name.endsWith('.stderr.log')).map(name=>readFileSync(path.join(temp,'launch',name),'utf8')).join('\n');
+    assert.equal(first.status,'READ_ONLY_WEB_READY',JSON.stringify(first)+'\n'+diagnostics);assert.notEqual(first.api_port,occupied);assert.equal(first.ranking_count,0);assert.equal(first.started_pids.length,2);
     const second=run();assert.equal(second.status,'READ_ONLY_WEB_READY');assert.equal(second.api_reused,true);assert.equal(second.viewer_reused,true);assert.deepEqual(second.started_pids,[]);assert.equal(second.web_url,first.web_url);
     assert((await (await fetch(first.web_url)).text()).includes('SYNTHETIC_ONLY_TEST_FIXTURE'));
     writeFileSync(path.join(temp,'web','index.html'),'corrupted');const fallback=run();assert.equal(fallback.status,'VERIFIED_OFFLINE_FALLBACK');assert.equal(fallback.web_url,null);
