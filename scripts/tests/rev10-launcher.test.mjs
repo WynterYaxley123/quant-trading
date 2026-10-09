@@ -33,13 +33,13 @@ test('actual Windows launcher parses, skips unknown listener, reuses exact ident
     };
     const first=run();
     const diagnostics=first.status==='READ_ONLY_WEB_READY'?'':readdirSync(path.join(temp,'launch'),{recursive:true}).filter(name=>name.endsWith('.stderr.log')).map(name=>readFileSync(path.join(temp,'launch',name),'utf8')).join('\n');
-    assert.equal(first.status,'READ_ONLY_WEB_READY',JSON.stringify(first)+'\n'+diagnostics);assert.notEqual(first.api_port,occupied);assert.equal(first.ranking_count,0);assert.equal(first.started_pids.length,2);
-    const second=run();assert.equal(second.status,'READ_ONLY_WEB_READY');assert.equal(second.api_reused,true);assert.equal(second.viewer_reused,true);assert.deepEqual(second.started_pids,[]);assert.equal(second.web_url,first.web_url);
-    assert((await (await fetch(first.web_url)).text()).includes('SYNTHETIC_ONLY_TEST_FIXTURE'));
+    assert.equal(first.status,'READ_ONLY_WEB_READY',JSON.stringify(first)+'\n'+diagnostics);assert.notEqual(first.api_port,occupied);assert.equal(first.ranking_count,0);assert.equal(first.started_pids.length,3);assert.equal(first.research_api_connected,true);assert.equal(first.research_artifact_state,'NOT_CONFIGURED');
+    const second=run();assert.equal(second.status,'READ_ONLY_WEB_READY');assert.equal(second.api_reused,true);assert.equal(second.viewer_reused,true);assert.equal(second.research_api_reused,true);assert.deepEqual(second.started_pids,[]);assert.equal(second.web_url,first.web_url);
+    assert((await (await fetch(first.web_url)).text()).includes('SYNTHETIC_ONLY_TEST_FIXTURE'));assert.equal((await (await fetch('http://127.0.0.1:8787/api/v1/health')).json()).data.readOnly,true);
     writeFileSync(path.join(temp,'web','index.html'),'corrupted');const fallback=run();assert.equal(fallback.status,'VERIFIED_OFFLINE_FALLBACK');assert.equal(fallback.web_url,null);
     assert.equal(await (await fetch(`http://127.0.0.1:${occupied}`)).text(),'UNKNOWN_SERVICE_PRESERVED');
   } finally {
-    for(const id of started){const cleanup=spawnSync('pwsh',['-NoProfile','-Command',"$p=Get-CimInstance Win32_Process -Filter ('ProcessId='+$env:REV10_TEST_PID);if($p -and ($p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\industry-forecast-api\\server.mjs') -or $p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\industry-forecast-api\\viewer.mjs'))){Stop-Process -Id $p.ProcessId -ErrorAction Stop}"],{env:{...process.env,REV10_TEST_PID:String(id),REV10_TEST_REPO:repo},encoding:'utf8'});assert.equal(cleanup.status,0,cleanup.stderr);}
+    for(const id of started){const cleanup=spawnSync('pwsh',['-NoProfile','-Command',"$p=Get-CimInstance Win32_Process -Filter ('ProcessId='+$env:REV10_TEST_PID);if($p -and ($p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\industry-forecast-api\\server.mjs') -or $p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\industry-forecast-api\\viewer.mjs') -or $p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\research-api\\src\\index.ts'))){Stop-Process -Id $p.ProcessId -ErrorAction Stop}"],{env:{...process.env,REV10_TEST_PID:String(id),REV10_TEST_REPO:repo},encoding:'utf8'});assert.equal(cleanup.status,0,cleanup.stderr);}
     await new Promise(r=>foreign.close(r));assert.equal(path.dirname(realpathSync.native(temp)),realpathSync.native(os.tmpdir()));assert(path.basename(temp).startsWith('rev10-launch-synthetic-'));rmSync(temp,{recursive:true,force:true});
   }
 });
