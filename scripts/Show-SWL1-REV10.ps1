@@ -52,7 +52,13 @@ function Find-REV10Port([int]$Preferred,[string]$Resource,[hashtable]$Expected,[
     for ($rev10Candidate=$Preferred; $rev10Candidate -lt $Preferred+30; $rev10Candidate++) {
         if ($rev10Candidate -eq $ExcludedPort) { continue }
         $rev10Listening = @(Get-NetTCPConnection -LocalPort $rev10Candidate -State Listen -ErrorAction SilentlyContinue)
-        if ($rev10Listening.Count -eq 0) { return @{Port=$rev10Candidate;Reuse=$false} }
+        if ($rev10Listening.Count -eq 0) {
+            # Windows can reserve a port without a listener. Probe loopback without changing OS policy.
+            $rev10Probe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,$rev10Candidate)
+            try { $rev10Probe.Start(); return @{Port=$rev10Candidate;Reuse=$false} }
+            catch [Net.Sockets.SocketException] { continue }
+            finally { $rev10Probe.Stop() }
+        }
         if (Test-REV10Service $rev10Candidate $Resource $Expected -Envelope:$Envelope) { return @{Port=$rev10Candidate;Reuse=$true} }
     }
     throw 'No unused or identity-matching local port; existing services preserved.'

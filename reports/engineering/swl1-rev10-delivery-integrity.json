@@ -259,7 +259,7 @@
       "research/swl1_short_horizon_exploration/study.py": "3f1348aeb7257d3fd38effc5e50ca544a319df674aab7b1a5a00c818fac7ff63",
       "research/swl1_short_horizon_exploration/verify.py": "883a713837f981432f6ace00682ee33c50a04e352d66a3a96b6e8b6fd52621ef",
       "scripts/Install-ForwardShadowTask.ps1": "e15287e1e0c285eb9bc31cbec5cd0e9b7801a933951dd67f8eba4f8a2358db96",
-      "scripts/Show-SWL1-REV10.ps1": "7cd4de061ef9e737a65df8a851babf3ef8423ad33e15297c430018fcb950d2ab",
+      "scripts/Show-SWL1-REV10.ps1": "a1a875def9a7eb2f7cb4ace3412789a5ae4bd3626241adb3325957a14c788b6a",
       "scripts/Start-IndustryForecastConsole.ps1": "43ffcda0154f6039a2de48a3dc91621fa71ab73f66285c9711ce919609de4d41",
       "scripts/engineering/integrity_delta.py": "3a96ea68b26cfdb54af26cfdd332e33718597ec1bb2e14d8cfa0aec998c1669e",
       "scripts/engineering/prospective-isolation.mjs": "84488f0bda7fbb5fd8bad0c0c8b9b7032fdae634ecd6a39b69ddc6d05022753e",
@@ -270,7 +270,7 @@
       "scripts/tests/evidence-isolation.test.mjs": "edd9c2d270585e56d5e0eaa744caaad94336625b93711dae21ff6f9ec19b954d",
       "scripts/tests/launcher-unit.test.mjs": "a3285e8808733a1e07241dfea544e38aeeb9b1179a70648c14dc87c4949c55c1",
       "scripts/tests/operations.test.mjs": "8fe9d560a95ba2324f8bf2b74e93f0b91c3f112627d99ebde3450af64eead147",
-      "scripts/tests/rev10-launcher.test.mjs": "3bbcc891fa54455350021654f9c4505456beb7026ba8cc1d56eef92c456a0d96",
+      "scripts/tests/rev10-launcher.test.mjs": "49169642585a1e6ea668ba395a5f3d2d18fddb2ba9d19299551e70832f1f3903",
       "services/etf-quant-api/README.md": "af210f57af8a55f3ef70ebb7eb42af542080ef031a72510c986a4457bb465722",
       "services/etf-quant-api/bounded.mjs": "7ed5c1026f5d8ae85843c9cd5bb12ad20101cff6c5a58f19bb8b8c4c8eb82313",
       "services/etf-quant-api/current.mjs": "0bd30c805cbe05044d07d733c1cb323e34f261e81dc3ab67e09a459b5bf84620",
@@ -1860,7 +1860,7 @@
       {
         "path": "scripts/Show-SWL1-REV10.ps1",
         "before_sha256": null,
-        "after_sha256": "7cd4de061ef9e737a65df8a851babf3ef8423ad33e15297c430018fcb950d2ab",
+        "after_sha256": "a1a875def9a7eb2f7cb4ace3412789a5ae4bd3626241adb3325957a14c788b6a",
         "reason": "SWL1-REV10-Delivery verified remediation"
       },
       {
@@ -1926,7 +1926,7 @@
       {
         "path": "scripts/tests/rev10-launcher.test.mjs",
         "before_sha256": null,
-        "after_sha256": "3bbcc891fa54455350021654f9c4505456beb7026ba8cc1d56eef92c456a0d96",
+        "after_sha256": "49169642585a1e6ea668ba395a5f3d2d18fddb2ba9d19299551e70832f1f3903",
         "reason": "SWL1-REV10-Delivery verified remediation"
       },
       {
@@ -2399,6 +2399,6 @@
       }
     ],
     "regression_evidence": "docs/engineering/swl1-rev10-acceptance.md",
-    "certificate_sha256": "12fe12b873651d5ab4185242c0ebaae8f4cb074ccbec9091519e3d73bf450b52"
+    "certificate_sha256": "0362e6d8498bb1393e7f12b8607ffe0352bdcbe5640ba55def96c7d32bbe5701"
   }
 }

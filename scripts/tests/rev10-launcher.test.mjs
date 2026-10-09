@@ -16,7 +16,7 @@ test('REV10 launcher has a read-only boundary and preserves unknown processes',(
 });
 test('actual Windows launcher parses, skips unknown listener, reuses exact identity and verifies offline fallback',{skip:process.platform!=='win32',timeout:180000},async()=>{
   // Hosted Windows TEMP may be an 8.3 alias; keep strict service realpath checks intact.
-  const temp=realpathSync(mkdtempSync(path.join(os.tmpdir(),'rev10-launch-synthetic-'))),started=new Set();
+  const temp=realpathSync.native(mkdtempSync(path.join(os.tmpdir(),'rev10-launch-synthetic-'))),started=new Set();
   const foreign=http.createServer((req,res)=>res.end('UNKNOWN_SERVICE_PRESERVED'));
   await new Promise(r=>foreign.listen(0,'127.0.0.1',r));const occupied=foreign.address().port;
   const probe=http.createServer();await new Promise(r=>probe.listen(0,'127.0.0.1',r));const dashboard=probe.address().port;await new Promise(r=>probe.close(r));
@@ -40,6 +40,6 @@ test('actual Windows launcher parses, skips unknown listener, reuses exact ident
     assert.equal(await (await fetch(`http://127.0.0.1:${occupied}`)).text(),'UNKNOWN_SERVICE_PRESERVED');
   } finally {
     for(const id of started){const cleanup=spawnSync('pwsh',['-NoProfile','-Command',"$p=Get-CimInstance Win32_Process -Filter ('ProcessId='+$env:REV10_TEST_PID);if($p -and ($p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\industry-forecast-api\\server.mjs') -or $p.CommandLine.Contains($env:REV10_TEST_REPO+'\\services\\industry-forecast-api\\viewer.mjs'))){Stop-Process -Id $p.ProcessId -ErrorAction Stop}"],{env:{...process.env,REV10_TEST_PID:String(id),REV10_TEST_REPO:repo},encoding:'utf8'});assert.equal(cleanup.status,0,cleanup.stderr);}
-    await new Promise(r=>foreign.close(r));assert.equal(path.dirname(realpathSync(temp)),realpathSync(os.tmpdir()));assert(path.basename(temp).startsWith('rev10-launch-synthetic-'));rmSync(temp,{recursive:true,force:true});
+    await new Promise(r=>foreign.close(r));assert.equal(path.dirname(realpathSync.native(temp)),realpathSync.native(os.tmpdir()));assert(path.basename(temp).startsWith('rev10-launch-synthetic-'));rmSync(temp,{recursive:true,force:true});
   }
 });
