@@ -125,3 +125,5 @@ it('renders V2 full frozen rows and dynamic inventory metadata',async()=>{
   expect(screen.getByText(/Taxonomy \(SWCLASS2021\): 134 · Frozen model universe: 124/)).toBeInTheDocument();
   expect(screen.getByText(/Centered target 不要求跨家族相等/)).toBeInTheDocument();
 });
+
+vi.mock('@/industry-forecast/qualification-client',async importOriginal=>({...await importOriginal<object>(),fetchSourceQualification:vi.fn().mockImplementation(async()=>JSON.parse(readFileSync('../reports/research/swl1_source_qualification/final-readiness.json','utf8')))}));

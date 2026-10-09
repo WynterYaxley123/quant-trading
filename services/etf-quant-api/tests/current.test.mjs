@@ -149,8 +149,8 @@ test('actual versioned repository preserves frozen V1 certification through an e
   assert.equal(body.data.formal.epoch_count,0);assert.equal(body.data.formal.signal_count,0);
   assert.equal(body.data.formal.nav,null);assert.equal(body.data.calendar.next_eligible_trading_date,'2026-10-08');
   const certificate=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/shadow-task-installation-integrity.json')));
-  const delta=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/swl1-data-first-integrity.json')));
-  for(const name of [...new Set([...Object.keys(certificate.implementation_integrity.files),...Object.keys(delta.implementation_integrity.files),'reports/engineering/swl1-data-first-integrity.json','reports/engineering/shadow-task-installation-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json'])]) {
+  const delta=JSON.parse(await readFile(path.join(repoRoot,'reports/engineering/swl1-source-qualification-integrity.json')));
+  for(const name of [...new Set([...Object.keys(certificate.implementation_integrity.files),...Object.keys(delta.implementation_integrity.files),'reports/engineering/swl1-source-qualification-integrity.json','reports/engineering/shadow-task-installation-integrity.json','reports/etf_quant/etf_quant_v1_final_release_v1.json'])]) {
     await save(path.join(f.repo,name),await readFile(path.join(repoRoot,name)));
   }
   await save(path.join(f.repo,'services/etf-quant-api/server.mjs'),Buffer.from('UNREVIEWED_SERVER_DRIFT'));

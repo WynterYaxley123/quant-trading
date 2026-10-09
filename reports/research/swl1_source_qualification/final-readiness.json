@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "scope": "PUBLIC_METADATA_ONLY_NO_REAL_SOURCE_PROMOTION",
+  "source_identity": "SWL1_SOURCE_QUALIFICATION_2026_10_09",
+  "evidence_reference": "config/research/swl1-source-qualification-evidence.json",
+  "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+  "document_hash": "18c66d2ae973d50603dd7031d296bad648a24fe75db6e0c6241788840c78875a",
+  "admission_requirement": "RIGHTS_PIT_QUALITY_IDENTITY_REVISION_AND_PRODUCTION_AUTHORITY",
+  "verification_result": "REAL_ADMISSION_BLOCKED",
+  "remaining_gap": "DATASET_RIGHTS_CONTEMPORANEOUS_PIT_BLIND_QA_AND_APPROVED_IDENTITY",
+  "current_sources_audited": 12,
+  "official_documents_verified": 15,
+  "public_documents_collected": 17,
+  "attempted_document_endpoints": 19,
+  "real_source_rights_verified": 0,
+  "real_pit_sources_verified": 0,
+  "real_sources_admitted": 0,
+  "rights_readiness": "BLOCKED_DATASET_SPECIFIC_GRANTS_NOT_ESTABLISHED",
+  "pit_readiness": "CONTEMPORANEOUS_MEMBERSHIP_NOT_ESTABLISHED",
+  "quality_readiness": "METADATA_REVIEWED_NUMERIC_QA_BLOCKED",
+  "official_index_source": "NOT_ESTABLISHED",
+  "production_authority": "SIGNATURE_AUTHORITY_NOT_ESTABLISHED",
+  "linux_worker_isolation": "PASS_LINUX_DOCKER_SYNTHETIC",
+  "windows_native_isolation": "NOT_ESTABLISHED",
+  "independent_unseen_evidence_ready": false,
+  "research_readiness": "DATA_SOURCE_NOT_READY",
+  "next_decision": "C",
+  "formal_observations": 0,
+  "formal_forecasts": 0,
+  "future_protocol": "NOT_CREATED",
+  "historical_access_isolation": "NOT_CERTIFIED",
+  "certified_historically_unseen_sessions": 0,
+  "models": {
+    "swl1_v1": "FAILED_VALIDATION",
+    "swl1_v2": "FAILED_VALIDATION"
+  },
+  "sources": [
+    {
+      "source_id": "sws-taxonomy",
+      "provider": "SWS Research",
+      "dataset": "SWCLASS2021 hierarchy / explicit L2 to L1",
+      "kind": "OFFICIAL_TAXONOMY",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "sws-membership",
+      "provider": "SWS Research via CNEquity",
+      "dataset": "Effective-dated constituent intervals",
+      "kind": "HISTORICAL_MEMBERSHIP",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "sws-official-index",
+      "provider": "SWS Research",
+      "dataset": "Requested official SWL1 index price series",
+      "kind": "OFFICIAL_INDEX_PRICE_SERIES",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "tdx-daily-bars",
+      "provider": "TDX via CNEquity",
+      "dataset": "Stock bars; documented alternative provider routes",
+      "kind": "STOCK_PRICE",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "sina-adjustment-factors",
+      "provider": "Sina via CNEquity",
+      "dataset": "Sina hfq factor endpoint",
+      "kind": "ADJUSTMENT_FACTOR",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "tdx-corporate-actions",
+      "provider": "TDX via CNEquity",
+      "dataset": "TDX xdxr corporate actions, schema 2",
+      "kind": "CORPORATE_ACTIONS",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "baostock-lifecycle",
+      "provider": "BaoStock via CNEquity",
+      "dataset": "Instrument listing and delisting basics",
+      "kind": "LISTING_DELISTING",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "baostock-adjusted-prices",
+      "provider": "BaoStock via CNEquity",
+      "dataset": "Raw/adjusted price fallback for factor reconstruction",
+      "kind": "ADJUSTED_STOCK_PRICE",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "cnequity-derived-factors",
+      "provider": "CNEquity derived",
+      "dataset": "Sina factors with BaoStock fallback and row provenance",
+      "kind": "DERIVED_ADJUSTMENT",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "cnequity-calendar",
+      "provider": "CNEquity seeds / bar fallback",
+      "dataset": "Exchange session spine",
+      "kind": "EXCHANGE_CALENDAR",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "cnequity-industry-returns",
+      "provider": "CNEquity derived",
+      "dataset": "Membership and adjusted-stock derived series",
+      "kind": "RECONSTRUCTED_INDUSTRY_RETURN",
+      "source_admission": "SOURCE_BLOCKED"
+    },
+    {
+      "source_id": "project-reconstructed-swl1",
+      "provider": "quant-trading frozen V1/V2",
+      "dataset": "RECONSTRUCTED_SWL1_EQUAL_WEIGHT",
+      "kind": "RECONSTRUCTED_INDUSTRY_RETURN",
+      "source_admission": "SOURCE_BLOCKED"
+    }
+  ],
+  "owner_actions": [
+    {
+      "id": "OWNER_SWS",
+      "provider": "SWS Research",
+      "action": "Authorize sending the prepared SWS packet; obtain dataset rights and contemporaneous archives; approve any quoted contract separately",
+      "packet": "docs/research/source-qualification/vendor-evidence-requests/sws.md"
+    },
+    {
+      "id": "OWNER_TDX",
+      "provider": "TDX",
+      "action": "Authorize the TDX enquiry and obtain owner-specific API/data rights",
+      "packet": "docs/research/source-qualification/vendor-evidence-requests/tdx.md"
+    },
+    {
+      "id": "OWNER_SINA",
+      "provider": "Sina",
+      "action": "Authorize written confirmation of hfq endpoint research and derivation rights",
+      "packet": "docs/research/source-qualification/vendor-evidence-requests/sina.md"
+    },
+    {
+      "id": "OWNER_BAOSTOCK",
+      "provider": "BaoStock",
+      "action": "Authorize the BaoStock enquiry for licence scope, archive and complete lifecycle evidence",
+      "packet": "docs/research/source-qualification/vendor-evidence-requests/baostock.md"
+    },
+    {
+      "id": "OWNER_AUTHORITY",
+      "provider": "Owner governance",
+      "action": "Approve named admission authority, controlled signing-key storage and durable external receipts",
+      "packet": "docs/engineering/real-source-admission-acceptance.md"
+    }
+  ],
+  "production_identity_requirements": [
+    "APPROVED_NAMED_AUTHORITY",
+    "CONTROLLED_KEY_STORE",
+    "VERIFIABLE_PUBLIC_KEY",
+    "ROTATION_AND_REVOCATION",
+    "DURABLE_INDEPENDENT_RECEIPTS"
+  ],
+  "no_credentials_inspected": true,
+  "no_production_keys_created": true,
+  "external_provider_confirmations_required": 4,
+  "license_requests_required": 4,
+  "owner_approval_actions": 5,
+  "performance_blind": true,
+  "numeric_qa_run": false
+}

@@ -183,3 +183,5 @@ original executors materialize full panel arrays; the current source-only audit
 records this limitation without importing them or reading future outcomes. The
 single tail date is not certified independent unseen evidence. See the
 [access clarification](engineering/swl1-forensics-access-clarification.md).
+
+Source qualification replay is metadata-only: in developer Docker run python -m scripts.engineering.source_qualification --verify and python -m research.evidence.qualification. [Exact document receipts](../config/research/swl1-source-qualification-evidence.json) contain no retained payload or private grant. Active source integrity moves to [the qualification delta](../reports/engineering/swl1-source-qualification-integrity.json).

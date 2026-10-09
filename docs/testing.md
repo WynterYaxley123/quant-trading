@@ -115,3 +115,5 @@ four registered family contracts stay intact. [Report](research/swl1-v1-v2-failu
 The metadata-only audit also inspects byte-pinned original executor source without
 executing it. Tests require historical access to stay uncertified even when date
 arithmetic puts a row outside declared target consumption or source is absent.
+
+Run tests/test_source_qualification.py with the existing prospective/invariance suites in developer Docker. The metadata report verifier and read-only qualification smoke are also hosted gates. [Acceptance](engineering/real-source-admission-acceptance.md) distinguishes synthetic qualification, exact public-document review and blocked real numeric QA.

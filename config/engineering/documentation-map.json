@@ -3,6 +3,38 @@
   "semantics": "LITERAL_ACTIVE_LINKS_REQUIRED; RETAINED_ARCHIVE_BYTES_PINNED; REDUNDANT_TRANSCRIPTS_RECOVERABLE_FROM_GIT",
   "documents": [
     {
+      "path": "docs/engineering/real-source-admission-acceptance.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-real-data-source-qualification.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/swl1-real-data-source-qualification.zh-CN.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/swl1-source-acquisition-plan.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/source-qualification/vendor-evidence-requests/sws.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/source-qualification/vendor-evidence-requests/tdx.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/source-qualification/vendor-evidence-requests/sina.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/source-qualification/vendor-evidence-requests/baostock.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
       "path": "docs/engineering/swl1-forensics-access-clarification.md",
       "class": "ACTIVE_DEVELOPER_DOC"
     },

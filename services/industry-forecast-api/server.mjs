@@ -11,7 +11,7 @@ import {canonicalJSON, verifyCurrentCertificate, certificateHash} from '../etf-q
 import {publicEvidence} from './evidence.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const ACTIVE='reports/engineering/swl1-data-first-integrity.json';
+const ACTIVE='reports/engineering/swl1-source-qualification-integrity.json';
 const PARENT='reports/engineering/shadow-task-installation-integrity.json';
 const REGISTRY='config/research/swl2-ridge-families.json';
 const HASH=/^[a-f0-9]{64}$/, COMMIT=/^[a-f0-9]{40}$/;
@@ -239,7 +239,7 @@ export function createApi({runtimeRoot='',repoRoot=ROOT,origins=allowedOrigins()
     if(req.headers.origin){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
     if(!['GET','HEAD','OPTIONS'].includes(req.method))return reply(405,null,'READ_ONLY_API');
     const url=req.url??'',match=url.match(/^\/api\/industry-forecast\/(families|swl2-ridge\/compare|(?:swl2-ridge-v[12]|swl1-ridge-v[12])\/(current|history|evaluation|status))$/);
-    const evidence=url.match(/^\/api\/industry-forecast\/research-evidence\/(sources|source-admissions|prospective-status|access-policy|maturity-status)$/);
+    const evidence=url.match(/^\/api\/industry-forecast\/research-evidence\/(sources|source-admissions|prospective-status|access-policy|maturity-status|source-qualification)$/);
     if(!match && !evidence)return reply(404,null,'INVALID_RESOURCE');
     if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, HEAD, OPTIONS');return reply(204);}
     try {

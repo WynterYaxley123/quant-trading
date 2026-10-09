@@ -1,5 +1,6 @@
 import { useResource } from '@/hooks/useResource';
 import { fetchEvidenceReadiness } from './evidence-client';
+import { SourceQualification } from './SourceQualification';
 
 export function EvidenceReadiness() {
   const resource=useResource(fetchEvidenceReadiness,[]);
@@ -19,5 +20,6 @@ export function EvidenceReadiness() {
       </dl>
       <p className="mt-3 text-sm">{resource.data.maturity.map(m=>`H${m.horizon}：待成熟，${m.matured_observations} 条`).join(' · ')}</p>
     </>:null}
+    <SourceQualification/>
   </section>;
 }

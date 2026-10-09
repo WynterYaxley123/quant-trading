@@ -87,6 +87,15 @@ export function secretKinds(text) {
 // Reviewed aggregate-only V1 closure. Both path and exact bytes must match;
 // altered reports and all other research payloads remain prohibited.
 const reviewedResearchHashes = Object.freeze({
+  'reports/research/swl1_source_qualification/admission-results.json':'c54f8cad06b8f578dfb5b514c825c1bcb38ca13b60b02858c8f102c8ee37922f',
+  'reports/research/swl1_source_qualification/data-quality-assessment.json':'854af07e6790e3325270397c08bbe14e8303424c8dc8584ad62d159751aeb282',
+  'reports/research/swl1_source_qualification/final-readiness.json':'834456df371b1f704c81e536e61cb702cb184fd3a0a211c0e0e40e388120a539',
+  'reports/research/swl1_source_qualification/pit-evidence.json':'4362ca0c917a44292675895e83945045fd9de78dad2b883a482ad2b608d65663',
+  'reports/research/swl1_source_qualification/public-evidence.json':'b13cf0561ea85c8a20c359f465543272278ea24c39a8597118d6b1e4495a1975',
+  'reports/research/swl1_source_qualification/remediation-matrix.json':'7b6c9f168a1c5a085fdfeb9bb34daa489e2fe0dcc2d882e7c8da6768341f0302',
+  'reports/research/swl1_source_qualification/rights-matrix.json':'e97735bba7725c6fad2a4db802312057665982f448bdc72e5a3a767df4693394',
+  'reports/research/swl1_source_qualification/source-inventory.json':'2d483c568f84bd6e6b0515b4ab2984a179ca1648c06efffc28c61fcc03e50b74',
+  'reports/research/swl1_source_qualification/source-reconciliation.json':'895a75c75b8e0443bbf4e5304cacdde272f3ab403ce874476a8efe2007443bde',
   'reports/research/swl1_data_first/source-inventory.json':'a59cefa8e760900ce0b29170a6f3b3bc2269c2002325ccf3fe0c1c3a834ac8a4',
   'reports/research/swl1_data_first/pit-evidence-assessment.json':'b425233fcc74fbf722ec375c18ef66d7431558eeebbc99edcf5e9bd11c03db49',
   'reports/research/swl1_data_first/source-admission-summary.json':'d5a86b523183eb2ed6705e4133989d8b9f3166d2f4733f37e629f533f7dbbfda',
@@ -243,7 +252,7 @@ export function audit() {
   const installationBytes=readFileSync(repositoryFile(repo,installationPath));
   const installation=JSON.parse(installationBytes).implementation_integrity;
   verifyCurrentCertificate(installation,operations,operationsBytes,operationsPath);
-  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-data-first-integrity.json'))).implementation_integrity;
+  const delta=JSON.parse(readFileSync(repositoryFile(repo,'reports/engineering/swl1-source-qualification-integrity.json'))).implementation_integrity;
   const current=verifyCurrentCertificate(delta,installation,installationBytes,installationPath);
   const firewall=Object.entries(current.files).filter(([name,expected])=>
     createHash('sha256').update(readFileSync(repositoryFile(repo,name))).digest('hex')!==expected

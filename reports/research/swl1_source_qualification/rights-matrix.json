@@ -1,0 +1,493 @@
+{
+  "schema_version": 1,
+  "scope": "PUBLIC_METADATA_ONLY_NO_REAL_SOURCE_PROMOTION",
+  "source_identity": "SWL1_SOURCE_QUALIFICATION_2026_10_09",
+  "evidence_reference": "config/research/swl1-source-qualification-evidence.json",
+  "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+  "document_hash": "18c66d2ae973d50603dd7031d296bad648a24fe75db6e0c6241788840c78875a",
+  "admission_requirement": "RIGHTS_PIT_QUALITY_IDENTITY_REVISION_AND_PRODUCTION_AUTHORITY",
+  "verification_result": "REAL_ADMISSION_BLOCKED",
+  "remaining_gap": "DATASET_RIGHTS_CONTEMPORANEOUS_PIT_BLIND_QA_AND_APPROVED_IDENTITY",
+  "sources": [
+    {
+      "source_identity": "sws-taxonomy",
+      "rights": {
+        "dataset_access": "NOT_ESTABLISHED",
+        "local_storage": "NOT_ESTABLISHED",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "sws-announcements",
+          "source_url": "https://www.swsresearch.com/institute_sw/allIndex/announcementIndex",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "sws-membership",
+      "rights": {
+        "dataset_access": "NOT_ESTABLISHED",
+        "local_storage": "NOT_ESTABLISHED",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "sws-official-index",
+      "rights": {
+        "dataset_access": "NOT_ESTABLISHED",
+        "local_storage": "NOT_ESTABLISHED",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "sws-announcements",
+          "source_url": "https://www.swsresearch.com/institute_sw/allIndex/announcementIndex",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "tdx-daily-bars",
+      "rights": {
+        "dataset_access": "REQUIRES_PROVIDER_CONFIRMATION",
+        "local_storage": "REQUIRES_PROVIDER_CONFIRMATION",
+        "internal_research": "REQUIRES_PROVIDER_CONFIRMATION",
+        "automated_processing": "REQUIRES_PROVIDER_CONFIRMATION",
+        "derived_data": "REQUIRES_PROVIDER_CONFIRMATION",
+        "backtesting": "REQUIRES_PROVIDER_CONFIRMATION",
+        "commercial_use": "REQUIRES_PROVIDER_CONFIRMATION",
+        "public_redisplay": "REQUIRES_PROVIDER_CONFIRMATION",
+        "redistribution": "REQUIRES_PROVIDER_CONFIRMATION",
+        "retention": "REQUIRES_PROVIDER_CONFIRMATION",
+        "revision_access": "REQUIRES_PROVIDER_CONFIRMATION"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "tdx-provider-license",
+          "source_url": "https://www.tdx.com.cn/article/license.html",
+          "content_sha256": "b8f6004fba3ea135e0a5d8807b9d74507fca3ab9c26adc60b2dcb942a1c45cd8",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "tdx-data-product",
+          "source_url": "https://www.tdx.com.cn/tdxdata.html",
+          "content_sha256": "ba5224a8f1473ba2869dfd4bbefa16711c1e09f04aab9b467237f109e0c02889",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "sina-adjustment-factors",
+      "rights": {
+        "dataset_access": "REQUIRES_PROVIDER_CONFIRMATION",
+        "local_storage": "REQUIRES_PROVIDER_CONFIRMATION",
+        "internal_research": "REQUIRES_PROVIDER_CONFIRMATION",
+        "automated_processing": "REQUIRES_PROVIDER_CONFIRMATION",
+        "derived_data": "REQUIRES_PROVIDER_CONFIRMATION",
+        "backtesting": "REQUIRES_PROVIDER_CONFIRMATION",
+        "commercial_use": "REQUIRES_PROVIDER_CONFIRMATION",
+        "public_redisplay": "REQUIRES_PROVIDER_CONFIRMATION",
+        "redistribution": "REQUIRES_PROVIDER_CONFIRMATION",
+        "retention": "REQUIRES_PROVIDER_CONFIRMATION",
+        "revision_access": "REQUIRES_PROVIDER_CONFIRMATION"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sina-copyright",
+          "source_url": "https://corp.sina.com.cn/chn/copyright.html",
+          "content_sha256": "6a6e8ced314992953edba492b20d70daa812abc2ca1a7c9dc4326d6e807e9f77",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sina-finance-terms",
+          "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+          "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "tdx-corporate-actions",
+      "rights": {
+        "dataset_access": "REQUIRES_PROVIDER_CONFIRMATION",
+        "local_storage": "REQUIRES_PROVIDER_CONFIRMATION",
+        "internal_research": "REQUIRES_PROVIDER_CONFIRMATION",
+        "automated_processing": "REQUIRES_PROVIDER_CONFIRMATION",
+        "derived_data": "REQUIRES_PROVIDER_CONFIRMATION",
+        "backtesting": "REQUIRES_PROVIDER_CONFIRMATION",
+        "commercial_use": "REQUIRES_PROVIDER_CONFIRMATION",
+        "public_redisplay": "REQUIRES_PROVIDER_CONFIRMATION",
+        "redistribution": "REQUIRES_PROVIDER_CONFIRMATION",
+        "retention": "REQUIRES_PROVIDER_CONFIRMATION",
+        "revision_access": "REQUIRES_PROVIDER_CONFIRMATION"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "tdx-provider-license",
+          "source_url": "https://www.tdx.com.cn/article/license.html",
+          "content_sha256": "b8f6004fba3ea135e0a5d8807b9d74507fca3ab9c26adc60b2dcb942a1c45cd8",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "baostock-lifecycle",
+      "rights": {
+        "dataset_access": "CONDITIONAL",
+        "local_storage": "CONDITIONAL",
+        "internal_research": "CONDITIONAL",
+        "automated_processing": "CONDITIONAL",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "baostock-home-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/home.md",
+          "content_sha256": "4c36406af64644cb97110bb5bb399db40011915cf3673c983099e9a1c068bd1e",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-lifecycle-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockBasic.md",
+          "content_sha256": "f8d5ba4ff8f3f664dc7f3fa8205a03e7827aa025044f16e4aa41aa5d3f0f70c8",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sse-delisting-example",
+          "source_url": "https://www.sse.com.cn/disclosure/announcement/listing/stock/c/c_20260629_10823832.shtml",
+          "content_sha256": "5b7884346166d384b007376e938eae0cdc9b7630a96f8288c1dcf7803654fc34",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "baostock-adjusted-prices",
+      "rights": {
+        "dataset_access": "CONDITIONAL",
+        "local_storage": "CONDITIONAL",
+        "internal_research": "CONDITIONAL",
+        "automated_processing": "CONDITIONAL",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "baostock-home-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/home.md",
+          "content_sha256": "4c36406af64644cb97110bb5bb399db40011915cf3673c983099e9a1c068bd1e",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-bars-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockKData.md",
+          "content_sha256": "2a6db3b24ab21a199aa17bd949dfbe545d3279007bea1664854f9b7c20542aac",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-factor-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/factorInfo.md",
+          "content_sha256": "6820224b59a62b5e96b3347e0342263f0f9fb448a00a5c4ce1e61d2857b8984b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-adjustment",
+          "source_url": "https://www.baostock.com/helpdocs/pdf/BaoStock%E5%A4%8D%E6%9D%83%E5%9B%A0%E5%AD%90%E7%AE%80%E4%BB%8B.pdf",
+          "content_sha256": "d2cce9fca6e9035561518c8197b0c7b31183a3de70cce0d2bef2ad55f25aaed1",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-revision-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/modifyRecord.md",
+          "content_sha256": "3c6a08854e08356f7c3a7f05a153374c314e300845e21fc2dd516b3f6eca0912",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "cnequity-derived-factors",
+      "rights": {
+        "dataset_access": "NOT_ESTABLISHED",
+        "local_storage": "NOT_ESTABLISHED",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sina-finance-terms",
+          "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+          "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-factor-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/factorInfo.md",
+          "content_sha256": "6820224b59a62b5e96b3347e0342263f0f9fb448a00a5c4ce1e61d2857b8984b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "cnequity-calendar",
+      "rights": {
+        "dataset_access": "CONDITIONAL",
+        "local_storage": "CONDITIONAL",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sse-calendar",
+          "source_url": "https://www.sse.com.cn/disclosure/dealinstruc/closed/",
+          "content_sha256": "7ea10c16202c4748f0ad5bcdfe6ee07b85b5462589504604b17c9d63865e7d8c",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sse-legal",
+          "source_url": "https://www.sse.com.cn/home/legal/",
+          "content_sha256": "26733c0c6cd93428d1ec5d62401b6ad269a26990a9181c5f5d63237c35431f69",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "cnequity-industry-returns",
+      "rights": {
+        "dataset_access": "NOT_ESTABLISHED",
+        "local_storage": "NOT_ESTABLISHED",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-adjustment",
+          "source_url": "https://www.baostock.com/helpdocs/pdf/BaoStock%E5%A4%8D%E6%9D%83%E5%9B%A0%E5%AD%90%E7%AE%80%E4%BB%8B.pdf",
+          "content_sha256": "d2cce9fca6e9035561518c8197b0c7b31183a3de70cce0d2bef2ad55f25aaed1",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    },
+    {
+      "source_identity": "project-reconstructed-swl1",
+      "rights": {
+        "dataset_access": "NOT_ESTABLISHED",
+        "local_storage": "NOT_ESTABLISHED",
+        "internal_research": "NOT_ESTABLISHED",
+        "automated_processing": "NOT_ESTABLISHED",
+        "derived_data": "NOT_ESTABLISHED",
+        "backtesting": "NOT_ESTABLISHED",
+        "commercial_use": "NOT_ESTABLISHED",
+        "public_redisplay": "NOT_ESTABLISHED",
+        "redistribution": "NOT_ESTABLISHED",
+        "retention": "NOT_ESTABLISHED",
+        "revision_access": "NOT_ESTABLISHED"
+      },
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sina-finance-terms",
+          "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+          "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "verification_result": "DATASET_SPECIFIC_GRANT_NOT_ESTABLISHED",
+      "rights_verified": false,
+      "legal_review_required": true,
+      "grant_scope": "NOT_ESTABLISHED",
+      "terms_historical_applicability": "NOT_ESTABLISHED",
+      "software_license_grants_data_rights": false,
+      "why": "Provider documentation or general product terms do not establish a dataset-specific grant to this owner; derived sources inherit all upstream restrictions."
+    }
+  ]
+}
