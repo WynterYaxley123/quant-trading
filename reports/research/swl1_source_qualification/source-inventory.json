@@ -1,0 +1,512 @@
+{
+  "schema_version": 1,
+  "scope": "PUBLIC_METADATA_ONLY_NO_REAL_SOURCE_PROMOTION",
+  "source_identity": "SWL1_SOURCE_QUALIFICATION_2026_10_09",
+  "evidence_reference": "config/research/swl1-source-qualification-evidence.json",
+  "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+  "document_hash": "18c66d2ae973d50603dd7031d296bad648a24fe75db6e0c6241788840c78875a",
+  "admission_requirement": "RIGHTS_PIT_QUALITY_IDENTITY_REVISION_AND_PRODUCTION_AUTHORITY",
+  "verification_result": "REAL_ADMISSION_BLOCKED",
+  "remaining_gap": "DATASET_RIGHTS_CONTEMPORANEOUS_PIT_BLIND_QA_AND_APPROVED_IDENTITY",
+  "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "source_code_hashes": [
+    {
+      "path": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/LICENSE"
+    },
+    {
+      "path": "src/cnequity/adapters/sw/industry_history.py",
+      "sha256": "e8ed4ea74690e0a2aeec9a3534c1629a49e2f6b4da8cbac2bbde6353a0ca0817",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sw/industry_history.py"
+    },
+    {
+      "path": "src/cnequity/adapters/tdx_protocol/bars.py",
+      "sha256": "2eb4e03105c13986d9a2d0d0438b818b268743de00570a9ca238cd472610dcd6",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/tdx_protocol/bars.py"
+    },
+    {
+      "path": "src/cnequity/adapters/tdx_protocol/corporate_actions.py",
+      "sha256": "1669d8409ddbc769f3b0bff99e9d584a0ecb517fd9e843d82ce6e7ce7ee88020",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/tdx_protocol/corporate_actions.py"
+    },
+    {
+      "path": "src/cnequity/adapters/sina/adj_factors.py",
+      "sha256": "768e70fde46883db1b2b8238638dbb85d53702c3714a2eabf002279c9af1c252",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sina/adj_factors.py"
+    },
+    {
+      "path": "src/cnequity/adapters/baostock/instruments.py",
+      "sha256": "581800342467fc04a8add178d2b1cb4a496e3a868513d9d4cbde7776e8d3a579",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/baostock/instruments.py"
+    },
+    {
+      "path": "src/cnequity/adapters/baostock/adj_factors.py",
+      "sha256": "1fe0488645746df4ace86f49af3cfe1664c23555595b70ae87cf52a318f250e9",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/baostock/adj_factors.py"
+    },
+    {
+      "path": "src/cnequity/adapters/calendar/exchange_calendar.py",
+      "sha256": "722c8d7cf4be56b60766f9290d8b5d2a58b8ff36f138c8cc71a17a73e7cec772",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/calendar/exchange_calendar.py"
+    },
+    {
+      "path": "src/cnequity/adapters/calendar/holidays_cn.py",
+      "sha256": "e966ec23771a77e0dfee1a375d2a02f22f01c3f23012275f9596df79997a0996",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/calendar/holidays_cn.py"
+    },
+    {
+      "path": "src/cnequity/derive/adj_factors.py",
+      "sha256": "05fbebfcf9d03cc127280a6826fb1d97ea4f78d80d26afa33a9d401b31f66082",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/derive/adj_factors.py"
+    },
+    {
+      "path": "src/cnequity/derive/industry_index.py",
+      "sha256": "3563a87c3d4c3185449b2c29e43be6fe517dbb965a21fbb42ffcc678827372de",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/derive/industry_index.py"
+    },
+    {
+      "path": "src/cnequity/query/reader.py",
+      "sha256": "d104d2dcc50882885653880403b5d455bf4363c246804f0c462fbab58b831507",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/query/reader.py"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "sws-taxonomy",
+      "provider": "SWS Research",
+      "dataset": "SWCLASS2021 hierarchy / explicit L2 to L1",
+      "kind": "OFFICIAL_TAXONOMY",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "sws-taxonomy",
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "sws-announcements",
+          "source_url": "https://www.swsresearch.com/institute_sw/allIndex/announcementIndex",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/sw/industry_history.py",
+      "source_contract": {
+        "source_id": "sws-taxonomy",
+        "source_hash": "82ce6db6d4744e5a7b1ce605b2adc9d20a651d4540e88ef162a5fb8d89ef0c78",
+        "data_contract_hash": "76d6e1937182782d108b80c7af8b7258374fab0e1e9787438fca62ff27197369",
+        "taxonomy_identity": "SWCLASS2021",
+        "membership_identity": "UNVERIFIED_MEMBER_RECEIPTS",
+        "kind": "OFFICIAL_TAXONOMY",
+        "tier": "D",
+        "revision_identity": "99e1698e11aae08e5536cab47d39cbe04157d3b8d5853090f61fcf6b8ec21be2"
+      },
+      "source_hash_basis": "QUALIFICATION_METADATA_NOT_NUMERIC_DATASET_IDENTITY"
+    },
+    {
+      "source_id": "sws-membership",
+      "provider": "SWS Research via CNEquity",
+      "dataset": "Effective-dated constituent intervals",
+      "kind": "HISTORICAL_MEMBERSHIP",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "sws-membership",
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/sw/industry_history.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "sws-official-index",
+      "provider": "SWS Research",
+      "dataset": "Requested official SWL1 index price series",
+      "kind": "OFFICIAL_INDEX_PRICE_SERIES",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "sws-official-index",
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "sws-announcements",
+          "source_url": "https://www.swsresearch.com/institute_sw/allIndex/announcementIndex",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": null,
+      "source_contract": {
+        "source_id": "sws-official-index",
+        "source_hash": "76ae2d2357836d1495b2f91fffa10aba3f71345694fbc8df96367da436965070",
+        "data_contract_hash": "b19f7aa43fca12b6b59e71cede5bb9538b166e016c7f59f54aff601b2de49375",
+        "taxonomy_identity": "SWCLASS2021",
+        "membership_identity": "UNVERIFIED_MEMBER_RECEIPTS",
+        "kind": "OFFICIAL_INDEX_PRICE_SERIES",
+        "tier": "D",
+        "revision_identity": "99e1698e11aae08e5536cab47d39cbe04157d3b8d5853090f61fcf6b8ec21be2"
+      },
+      "source_hash_basis": "QUALIFICATION_METADATA_NOT_NUMERIC_DATASET_IDENTITY"
+    },
+    {
+      "source_id": "tdx-daily-bars",
+      "provider": "TDX via CNEquity",
+      "dataset": "Stock bars; documented alternative provider routes",
+      "kind": "STOCK_PRICE",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "tdx-daily-bars",
+      "evidence_reference": [
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "tdx-provider-license",
+          "source_url": "https://www.tdx.com.cn/article/license.html",
+          "content_sha256": "b8f6004fba3ea135e0a5d8807b9d74507fca3ab9c26adc60b2dcb942a1c45cd8",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "tdx-data-product",
+          "source_url": "https://www.tdx.com.cn/tdxdata.html",
+          "content_sha256": "ba5224a8f1473ba2869dfd4bbefa16711c1e09f04aab9b467237f109e0c02889",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/tdx_protocol/bars.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "sina-adjustment-factors",
+      "provider": "Sina via CNEquity",
+      "dataset": "Sina hfq factor endpoint",
+      "kind": "ADJUSTMENT_FACTOR",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "sina-adjustment-factors",
+      "evidence_reference": [
+        {
+          "document_id": "sina-copyright",
+          "source_url": "https://corp.sina.com.cn/chn/copyright.html",
+          "content_sha256": "6a6e8ced314992953edba492b20d70daa812abc2ca1a7c9dc4326d6e807e9f77",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sina-finance-terms",
+          "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+          "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/sina/adj_factors.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "tdx-corporate-actions",
+      "provider": "TDX via CNEquity",
+      "dataset": "TDX xdxr corporate actions, schema 2",
+      "kind": "CORPORATE_ACTIONS",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "tdx-corporate-actions",
+      "evidence_reference": [
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "tdx-provider-license",
+          "source_url": "https://www.tdx.com.cn/article/license.html",
+          "content_sha256": "b8f6004fba3ea135e0a5d8807b9d74507fca3ab9c26adc60b2dcb942a1c45cd8",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/tdx_protocol/corporate_actions.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "baostock-lifecycle",
+      "provider": "BaoStock via CNEquity",
+      "dataset": "Instrument listing and delisting basics",
+      "kind": "LISTING_DELISTING",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "baostock-lifecycle",
+      "evidence_reference": [
+        {
+          "document_id": "baostock-home-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/home.md",
+          "content_sha256": "4c36406af64644cb97110bb5bb399db40011915cf3673c983099e9a1c068bd1e",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-lifecycle-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockBasic.md",
+          "content_sha256": "f8d5ba4ff8f3f664dc7f3fa8205a03e7827aa025044f16e4aa41aa5d3f0f70c8",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sse-delisting-example",
+          "source_url": "https://www.sse.com.cn/disclosure/announcement/listing/stock/c/c_20260629_10823832.shtml",
+          "content_sha256": "5b7884346166d384b007376e938eae0cdc9b7630a96f8288c1dcf7803654fc34",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/baostock/instruments.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "baostock-adjusted-prices",
+      "provider": "BaoStock via CNEquity",
+      "dataset": "Raw/adjusted price fallback for factor reconstruction",
+      "kind": "ADJUSTED_STOCK_PRICE",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "baostock-adjusted-prices",
+      "evidence_reference": [
+        {
+          "document_id": "baostock-home-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/home.md",
+          "content_sha256": "4c36406af64644cb97110bb5bb399db40011915cf3673c983099e9a1c068bd1e",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-bars-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockKData.md",
+          "content_sha256": "2a6db3b24ab21a199aa17bd949dfbe545d3279007bea1664854f9b7c20542aac",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-factor-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/factorInfo.md",
+          "content_sha256": "6820224b59a62b5e96b3347e0342263f0f9fb448a00a5c4ce1e61d2857b8984b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-adjustment",
+          "source_url": "https://www.baostock.com/helpdocs/pdf/BaoStock%E5%A4%8D%E6%9D%83%E5%9B%A0%E5%AD%90%E7%AE%80%E4%BB%8B.pdf",
+          "content_sha256": "d2cce9fca6e9035561518c8197b0c7b31183a3de70cce0d2bef2ad55f25aaed1",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-revision-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/modifyRecord.md",
+          "content_sha256": "3c6a08854e08356f7c3a7f05a153374c314e300845e21fc2dd516b3f6eca0912",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/baostock/adj_factors.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "cnequity-derived-factors",
+      "provider": "CNEquity derived",
+      "dataset": "Sina factors with BaoStock fallback and row provenance",
+      "kind": "DERIVED_ADJUSTMENT",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "cnequity-derived-factors",
+      "evidence_reference": [
+        {
+          "document_id": "sina-finance-terms",
+          "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+          "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-factor-doc",
+          "source_url": "https://www.baostock.com/helpdocs/api/markdown/factorInfo.md",
+          "content_sha256": "6820224b59a62b5e96b3347e0342263f0f9fb448a00a5c4ce1e61d2857b8984b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": null,
+      "source_contract": null
+    },
+    {
+      "source_id": "cnequity-calendar",
+      "provider": "CNEquity seeds / bar fallback",
+      "dataset": "Exchange session spine",
+      "kind": "EXCHANGE_CALENDAR",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "cnequity-calendar",
+      "evidence_reference": [
+        {
+          "document_id": "sse-calendar",
+          "source_url": "https://www.sse.com.cn/disclosure/dealinstruc/closed/",
+          "content_sha256": "7ea10c16202c4748f0ad5bcdfe6ee07b85b5462589504604b17c9d63865e7d8c",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sse-legal",
+          "source_url": "https://www.sse.com.cn/home/legal/",
+          "content_sha256": "26733c0c6cd93428d1ec5d62401b6ad269a26990a9181c5f5d63237c35431f69",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": "src/cnequity/adapters/calendar/exchange_calendar.py",
+      "source_contract": null
+    },
+    {
+      "source_id": "cnequity-industry-returns",
+      "provider": "CNEquity derived",
+      "dataset": "Membership and adjusted-stock derived series",
+      "kind": "RECONSTRUCTED_INDUSTRY_RETURN",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "cnequity-industry-returns",
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "baostock-adjustment",
+          "source_url": "https://www.baostock.com/helpdocs/pdf/BaoStock%E5%A4%8D%E6%9D%83%E5%9B%A0%E5%AD%90%E7%AE%80%E4%BB%8B.pdf",
+          "content_sha256": "d2cce9fca6e9035561518c8197b0c7b31183a3de70cce0d2bef2ad55f25aaed1",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": null,
+      "source_contract": {
+        "source_id": "cnequity-industry-returns",
+        "source_hash": "cf4429a611972fc68374508c618903ac9ba71e9595837528fb261daad2725ce0",
+        "data_contract_hash": "7dfc8e27152e070a70090f3df00dbb224ea00f4805ee5808c3d634a898c9e539",
+        "taxonomy_identity": "SWCLASS2021",
+        "membership_identity": "UNVERIFIED_MEMBER_RECEIPTS",
+        "kind": "RECONSTRUCTED_INDUSTRY_RETURN",
+        "tier": "C",
+        "revision_identity": "518c73f1f1bd92737c7970beb0414166df4a93333e378d55ab5e8a5dd3c90df9"
+      },
+      "source_hash_basis": "QUALIFICATION_METADATA_NOT_NUMERIC_DATASET_IDENTITY"
+    },
+    {
+      "source_id": "project-reconstructed-swl1",
+      "provider": "quant-trading frozen V1/V2",
+      "dataset": "RECONSTRUCTED_SWL1_EQUAL_WEIGHT",
+      "kind": "RECONSTRUCTED_INDUSTRY_RETURN",
+      "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+      "source_identity": "project-reconstructed-swl1",
+      "evidence_reference": [
+        {
+          "document_id": "sws-2021-classification",
+          "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+          "content_sha256": null,
+          "verification": "NOT_ESTABLISHED"
+        },
+        {
+          "document_id": "tdx-terms-text",
+          "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+          "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        },
+        {
+          "document_id": "sina-finance-terms",
+          "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+          "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+          "verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION"
+        }
+      ],
+      "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+      "numeric_snapshot_hash": null,
+      "source_admitted": false,
+      "research_target_level": 1,
+      "source_generation_scope": "QUALIFICATION_METADATA_ONLY",
+      "source_admission": "SOURCE_BLOCKED",
+      "code_adapter": null,
+      "source_contract": {
+        "source_id": "project-reconstructed-swl1",
+        "source_hash": "5c0403b19a4492e874a784a1b374118b8f39ec47eb0d85f90c6081d58cd960bf",
+        "data_contract_hash": "efa87583ee06c7d2a9a6f932342bf26eea32435d9e9a9198383e55bb0b155ca6",
+        "taxonomy_identity": "SWCLASS2021",
+        "membership_identity": "UNVERIFIED_MEMBER_RECEIPTS",
+        "kind": "RECONSTRUCTED_INDUSTRY_RETURN",
+        "tier": "C",
+        "revision_identity": "391fee3f43544e2e07771be05de8e5b2d5bfb511f2923fb96876198b40a00788"
+      },
+      "source_hash_basis": "QUALIFICATION_METADATA_NOT_NUMERIC_DATASET_IDENTITY"
+    }
+  ]
+}

@@ -22,3 +22,5 @@ describe('scientific and engineering readiness remain separate',()=>{
     for(const value of [{...record,live_activation:true},{...record,formal_observations:1},{...record,future_protocol:'V3'},{...record,process_isolation:'PASS_WINDOWS_NATIVE'},{...record,models:{...record.models,swl1_ridge_v2:'PASS'}}])expect(()=>evidenceReadinessSchema.parse(value)).toThrow();
   });
 });
+
+vi.mock('@/industry-forecast/qualification-client',async importOriginal=>({...await importOriginal<object>(),fetchSourceQualification:vi.fn().mockImplementation(async()=>JSON.parse(readFileSync('../reports/research/swl1_source_qualification/final-readiness.json','utf8')))}));

@@ -1,0 +1,612 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-08T23:55:00.329918+00:00",
+  "upstream_commit": "1650e384a3fd1f67a70144a489acc91432f1df27",
+  "documents": [
+    {
+      "document_id": "sws-2021-classification",
+      "source_url": "https://wxweb.swsresearch.com/swsreport/2021_08/328340.pdf",
+      "publisher": "SWS Research",
+      "retrieved_at": "2026-10-08T23:38:34.421617+00:00",
+      "content_sha256": null,
+      "transport_status": "HTTP_UNAVAILABLE",
+      "http_status": 403,
+      "original_retained": false,
+      "claim_verification": "NOT_ESTABLISHED",
+      "document_title": "申万行业分类标准2021版说明",
+      "document_date": "2021-08-20",
+      "document_version": "2021_INDEXED_REFERENCE_ONLY",
+      "supported_claims": [
+        "Indexed official reference describes the 2021 classification release; exact document acquisition failed, so no verified snapshot or first availability claim."
+      ],
+      "confidence": "DISCOVERY_ONLY_NO_EXACT_BYTES",
+      "effective_scope": "NOT_ESTABLISHED",
+      "publication_scope": "INDEXED_OFFICIAL_REFERENCE_NOT_HISTORICAL_RECEIPT",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "sws-announcements",
+      "source_url": "https://www.swsresearch.com/institute_sw/allIndex/announcementIndex",
+      "publisher": "SWS Research",
+      "retrieved_at": "2026-10-08T23:38:36.359533+00:00",
+      "content_sha256": null,
+      "transport_status": "TRANSPORT_UNAVAILABLE",
+      "original_retained": false,
+      "claim_verification": "NOT_ESTABLISHED",
+      "document_title": null,
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [],
+      "confidence": "NOT_ESTABLISHED",
+      "effective_scope": "NOT_ESTABLISHED",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true,
+      "secondary_transport_probe": {
+        "public_intermediate_sha256": "2182efcbf5b27c34ba8901fae4715a6c6bdc54d9e186adc7b43523ce2e9176c1",
+        "tls_verification_disabled": false,
+        "http_status": 508,
+        "payload_retained": false
+      }
+    },
+    {
+      "document_id": "tdx-terms",
+      "source_url": "https://www.tdx.com.cn/about/yhxy/index.html?tabindex=0",
+      "final_url": "https://www.tdx.com.cn/about/yhxy/index.html?tabindex=0",
+      "publisher": "TDX",
+      "retrieved_at": "2026-10-08T23:38:37.472320+00:00",
+      "content_sha256": "0fd44a6966a80ebefc86aeb0a3720087eb6f903d3ce07214af95cda5c0f205be",
+      "bytes": 1750,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "SHELL_ONLY_NO_DOCUMENT_CLAIM",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": null,
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [],
+      "confidence": "NOT_ESTABLISHED",
+      "effective_scope": "NOT_ESTABLISHED",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "sina-copyright",
+      "source_url": "https://corp.sina.com.cn/chn/copyright.html",
+      "final_url": "https://corp.sina.com.cn/chn/copyright.html",
+      "publisher": "Sina",
+      "retrieved_at": "2026-10-08T23:38:37.640211+00:00",
+      "content_sha256": "6a6e8ced314992953edba492b20d70daa812abc2ca1a7c9dc4326d6e807e9f77",
+      "bytes": 25812,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": "新浪版权声明",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "Sina publishes restrictions on copying and use of its protected content; precise hfq endpoint applicability requires confirmation."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "sina-finance-terms",
+      "source_url": "https://finance.sina.cn/app/SFAuser.shtml",
+      "final_url": "https://finance.sina.cn/app/SFAuser.shtml",
+      "publisher": "Sina",
+      "retrieved_at": "2026-10-08T23:38:37.940293+00:00",
+      "content_sha256": "faacc1d1c04f99f4570e5f89497f7e029eccc6e856e9a7db5587a676c9cf693b",
+      "bytes": 47078,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": "新浪财经用户协议",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "Finance app terms restrict certain data reuse outside written permission; adapter endpoint scope is not established."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-home",
+      "source_url": "https://www.baostock.com/",
+      "final_url": "https://www.baostock.com/",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:38:38.387668+00:00",
+      "content_sha256": "8806d51df625bdc24066e2e6b2659615ed3d6eeb5fe29dafc434bd938f4c8674",
+      "bytes": 8086,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "SHELL_ONLY_NO_DOCUMENT_CLAIM",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": null,
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [],
+      "confidence": "NOT_ESTABLISHED",
+      "effective_scope": "NOT_ESTABLISHED",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-adjustment",
+      "source_url": "https://www.baostock.com/helpdocs/pdf/BaoStock%E5%A4%8D%E6%9D%83%E5%9B%A0%E5%AD%90%E7%AE%80%E4%BB%8B.pdf",
+      "final_url": "https://www.baostock.com/helpdocs/pdf/BaoStock%E5%A4%8D%E6%9D%83%E5%9B%A0%E5%AD%90%E7%AE%80%E4%BB%8B.pdf",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:38:38.717406+00:00",
+      "content_sha256": "d2cce9fca6e9035561518c8197b0c7b31183a3de70cce0d2bef2ad55f25aaed1",
+      "bytes": 389127,
+      "media_type": "application/pdf",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": "BaoStock复权因子简介",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "The PDF documents a price-change-based adjustment method and limits of interpreting subscription/dividend returns; no real prices were reconciled."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "sse-legal",
+      "source_url": "https://www.sse.com.cn/home/legal/",
+      "final_url": "https://www.sse.com.cn/home/legal/",
+      "publisher": "Shanghai Stock Exchange",
+      "retrieved_at": "2026-10-08T23:38:38.852199+00:00",
+      "content_sha256": "26733c0c6cd93428d1ec5d62401b6ad269a26990a9181c5f5d63237c35431f69",
+      "bytes": 30155,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": "上海证券交易所法律声明",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "The legal statement allows noncommercial browsing/download subject to its conditions and requires permission for specified commercial reuse; it is not an unrestricted licence."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "sse-delisting-example",
+      "source_url": "https://www.sse.com.cn/disclosure/announcement/listing/stock/c/c_20260629_10823832.shtml",
+      "final_url": "https://www.sse.com.cn/disclosure/announcement/listing/stock/c/c_20260629_10823832.shtml",
+      "publisher": "Shanghai Stock Exchange",
+      "retrieved_at": "2026-10-08T23:38:39.420215+00:00",
+      "content_sha256": "5b7884346166d384b007376e938eae0cdc9b7630a96f8288c1dcf7803654fc34",
+      "bytes": 27646,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": "关于上海太和水科技发展股份有限公司股票摘牌的公告",
+      "document_date": "2026-06-29",
+      "document_version": "SSE_2026_084",
+      "supported_claims": [
+        "An official dated delisting announcement exists with a distinct later removal date; one event is not complete lifecycle evidence."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "ONE_ANNOUNCEMENT_2026_06_29_REMOVAL_2026_07_03_NO_UNIVERSE_CLAIM",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "sse-calendar",
+      "source_url": "https://www.sse.com.cn/disclosure/dealinstruc/closed/",
+      "final_url": "https://www.sse.com.cn/disclosure/dealinstruc/closed/",
+      "publisher": "Shanghai Stock Exchange",
+      "retrieved_at": "2026-10-08T23:38:39.606912+00:00",
+      "content_sha256": "7ea10c16202c4748f0ad5bcdfe6ee07b85b5462589504604b17c9d63865e7d8c",
+      "bytes": 30794,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "document_title": "上海证券交易所休市安排",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "The exchange publishes a 2026 closure schedule; future session announcements do not finalize price facts."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "tdx-terms-text",
+      "source_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+      "final_url": "https://www.tdx.com.cn/about/yhxy/js/index.js?ver=20251224.1619",
+      "publisher": "TDX",
+      "retrieved_at": "2026-10-08T23:43:55.372642+00:00",
+      "content_sha256": "81318b55104499be2de288150f1d0939c0657c7efb4e4fda5ab8909152c6666b",
+      "bytes": 47925,
+      "media_type": "application/javascript",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "GET",
+      "document_title": "通达信用户服务协议",
+      "document_date": null,
+      "document_version": "WEBSITE_BUNDLE_20251224.1619_NOT_TERMS_EFFECTIVE_DATE",
+      "supported_claims": [
+        "General product terms restrict unapproved third-party system access and reuse; endpoint-specific owner authorization remains unknown."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "tdx-provider-license",
+      "source_url": "https://www.tdx.com.cn/article/license.html",
+      "final_url": "https://www.tdx.com.cn/article/license.html",
+      "publisher": "TDX",
+      "retrieved_at": "2026-10-08T23:43:55.494335+00:00",
+      "content_sha256": "b8f6004fba3ea135e0a5d8807b9d74507fca3ab9c26adc60b2dcb942a1c45cd8",
+      "bytes": 28383,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "GET",
+      "document_title": "通达信行情授权",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "TDX lists exchange market-data licences held by the provider; this is not a grant to this owner."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "tdx-data-product",
+      "source_url": "https://www.tdx.com.cn/tdxdata.html",
+      "final_url": "https://www.tdx.com.cn/tdxdata.html",
+      "publisher": "TDX",
+      "retrieved_at": "2026-10-08T23:43:55.599555+00:00",
+      "content_sha256": "ba5224a8f1473ba2869dfd4bbefa16711c1e09f04aab9b467237f109e0c02889",
+      "bytes": 17481,
+      "media_type": "text/html",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "GET",
+      "document_title": "通达信全品类数据库",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "TDX offers a data-product enquiry route; no public owner-specific quotation or grant was established."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-home-doc",
+      "source_url": "https://www.baostock.com/helpdocs/api/markdown/home.md",
+      "final_url": "https://www.baostock.com/helpdocs/api/markdown/home.md",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:43:55.690536+00:00",
+      "content_sha256": "4c36406af64644cb97110bb5bb399db40011915cf3673c983099e9a1c068bd1e",
+      "bytes": 10167,
+      "media_type": "text/plain",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "POST",
+      "document_title": "BaoStock 平台介绍",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "Official platform documentation advertises free API access without registration and local analysis/storage; complete dataset sublicensing and reuse scope are not established."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-lifecycle-doc",
+      "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockBasic.md",
+      "final_url": "https://www.baostock.com/helpdocs/api/markdown/stockBasic.md",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:43:55.773011+00:00",
+      "content_sha256": "f8d5ba4ff8f3f664dc7f3fa8205a03e7827aa025044f16e4aa41aa5d3f0f70c8",
+      "bytes": 2114,
+      "media_type": "text/plain",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "POST",
+      "document_title": "BaoStock 证券基本资料",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "The documented basics interface exposes listing date, delisting date and listed/delisted status; completeness is not proved."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-bars-doc",
+      "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockKData.md",
+      "final_url": "https://www.baostock.com/helpdocs/api/markdown/stockKData.md",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:43:55.852139+00:00",
+      "content_sha256": "2a6db3b24ab21a199aa17bd949dfbe545d3279007bea1664854f9b7c20542aac",
+      "bytes": 12485,
+      "media_type": "text/plain",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "POST",
+      "document_title": "BaoStock A股K线数据",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "Documented flags distinguish raw, backward and forward adjustment; suspension rows use flat prices and zero volume; these are specifications, not actual dataset QA."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-factor-doc",
+      "source_url": "https://www.baostock.com/helpdocs/api/markdown/factorInfo.md",
+      "final_url": "https://www.baostock.com/helpdocs/api/markdown/factorInfo.md",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:43:55.936552+00:00",
+      "content_sha256": "6820224b59a62b5e96b3347e0342263f0f9fb448a00a5c4ce1e61d2857b8984b",
+      "bytes": 2789,
+      "media_type": "text/plain",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "POST",
+      "document_title": "BaoStock 复权因子信息",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "Factor-field documentation gives ratios whose naming/direction needs reconciliation with the PDF before equivalence is certified."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-revision-doc",
+      "source_url": "https://www.baostock.com/helpdocs/api/markdown/modifyRecord.md",
+      "final_url": "https://www.baostock.com/helpdocs/api/markdown/modifyRecord.md",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:43:56.031811+00:00",
+      "content_sha256": "3c6a08854e08356f7c3a7f05a153374c314e300845e21fc2dd516b3f6eca0912",
+      "bytes": 7286,
+      "media_type": "text/plain",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "POST",
+      "document_title": "BaoStock 数据调整记录",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "The provider lists historical data corrections, including suspension and non-session rows; original as-published versions and receipts are not supplied here."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    },
+    {
+      "document_id": "baostock-industry-doc",
+      "source_url": "https://www.baostock.com/helpdocs/api/markdown/stockIndustry.md",
+      "final_url": "https://www.baostock.com/helpdocs/api/markdown/stockIndustry.md",
+      "publisher": "BaoStock",
+      "retrieved_at": "2026-10-08T23:43:56.109536+00:00",
+      "content_sha256": "c465300588502ffd0c6b2d5dc45c5412194ad8ae9c0260f5a34dca5de3266e50",
+      "bytes": 1922,
+      "media_type": "text/plain",
+      "transport_status": "RETRIEVED_HASHED",
+      "publisher_identity_basis": "REVIEWED_OFFICIAL_HTTPS_ENDPOINT",
+      "original_retained": false,
+      "claim_verification": "REVIEWED_EXACT_BYTES_NOT_DATASET_AUTHORIZATION",
+      "dataset_permission": "NOT_ESTABLISHED",
+      "request_method": "POST",
+      "document_title": "BaoStock 行业分类",
+      "document_date": null,
+      "document_version": "AS_RETRIEVED",
+      "supported_claims": [
+        "The illustrated industry taxonomy is CSRC classification, updated weekly; this is not independent Shenwan membership proof."
+      ],
+      "confidence": "HIGH_DOCUMENT_IDENTITY_AND_LIMITED_CLAIMS",
+      "effective_scope": "CURRENT_DOCUMENT_SCOPE_ONLY_NO_RETROACTIVE_LICENCE",
+      "publication_scope": "CURRENT_RETRIEVAL_NOT_HISTORICAL_FIRST_AVAILABILITY",
+      "legal_review_required": true
+    }
+  ],
+  "source_code_hashes": [
+    {
+      "path": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/LICENSE"
+    },
+    {
+      "path": "src/cnequity/adapters/sw/industry_history.py",
+      "sha256": "e8ed4ea74690e0a2aeec9a3534c1629a49e2f6b4da8cbac2bbde6353a0ca0817",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sw/industry_history.py"
+    },
+    {
+      "path": "src/cnequity/adapters/tdx_protocol/bars.py",
+      "sha256": "2eb4e03105c13986d9a2d0d0438b818b268743de00570a9ca238cd472610dcd6",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/tdx_protocol/bars.py"
+    },
+    {
+      "path": "src/cnequity/adapters/tdx_protocol/corporate_actions.py",
+      "sha256": "1669d8409ddbc769f3b0bff99e9d584a0ecb517fd9e843d82ce6e7ce7ee88020",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/tdx_protocol/corporate_actions.py"
+    },
+    {
+      "path": "src/cnequity/adapters/sina/adj_factors.py",
+      "sha256": "768e70fde46883db1b2b8238638dbb85d53702c3714a2eabf002279c9af1c252",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/sina/adj_factors.py"
+    },
+    {
+      "path": "src/cnequity/adapters/baostock/instruments.py",
+      "sha256": "581800342467fc04a8add178d2b1cb4a496e3a868513d9d4cbde7776e8d3a579",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/baostock/instruments.py"
+    },
+    {
+      "path": "src/cnequity/adapters/baostock/adj_factors.py",
+      "sha256": "1fe0488645746df4ace86f49af3cfe1664c23555595b70ae87cf52a318f250e9",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/baostock/adj_factors.py"
+    },
+    {
+      "path": "src/cnequity/adapters/calendar/exchange_calendar.py",
+      "sha256": "722c8d7cf4be56b60766f9290d8b5d2a58b8ff36f138c8cc71a17a73e7cec772",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/calendar/exchange_calendar.py"
+    },
+    {
+      "path": "src/cnequity/adapters/calendar/holidays_cn.py",
+      "sha256": "e966ec23771a77e0dfee1a375d2a02f22f01c3f23012275f9596df79997a0996",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/adapters/calendar/holidays_cn.py"
+    },
+    {
+      "path": "src/cnequity/derive/adj_factors.py",
+      "sha256": "05fbebfcf9d03cc127280a6826fb1d97ea4f78d80d26afa33a9d401b31f66082",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/derive/adj_factors.py"
+    },
+    {
+      "path": "src/cnequity/derive/industry_index.py",
+      "sha256": "3563a87c3d4c3185449b2c29e43be6fe517dbb965a21fbb42ffcc678827372de",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/derive/industry_index.py"
+    },
+    {
+      "path": "src/cnequity/query/reader.py",
+      "sha256": "d104d2dcc50882885653880403b5d455bf4363c246804f0c462fbab58b831507",
+      "url": "https://github.com/rootSunc/CNEquity/blob/1650e384a3fd1f67a70144a489acc91432f1df27/src/cnequity/query/reader.py"
+    }
+  ],
+  "pit_findings": [
+    {
+      "finding_id": "MEMBERSHIP_UPDATE_TIME_DISCARDED",
+      "source": "CNEquity adapters/sw/industry_history.py",
+      "finding": "The workbook update column is renamed but only symbol, start_date and industry_code are emitted. No publication/observed/receipt timestamps are retained.",
+      "verification": "SOURCE_CODE_VERIFIED_NOT_DATASET_QA"
+    },
+    {
+      "finding_id": "CLASSIFICATION_RELEASE_NOT_INDEX_ADJUSTMENT",
+      "source": "Indexed SWS 2021 explanation",
+      "finding": "The indexed reference distinguishes classification release from later index adjustment. Exact release document and constituent history are not byte-verified.",
+      "verification": "DISCOVERY_ONLY"
+    },
+    {
+      "finding_id": "BAOSTOCK_NOT_SHENWAN",
+      "source": "baostock-industry-doc",
+      "finding": "Weekly CSRC industry classifications cannot independently certify SWCLASS2021 member history.",
+      "verification": "EXACT_DOCUMENT_VERIFIED"
+    },
+    {
+      "finding_id": "CALENDAR_NOT_PRICE_FINALIZATION",
+      "source": "sse-calendar / pinned calendar adapter",
+      "finding": "Announced calendar and bar-derived fallback do not prove future price finalization or contemporaneous historical availability.",
+      "verification": "METADATA_ONLY"
+    }
+  ],
+  "quality_findings": [
+    {
+      "finding_id": "CORPORATE_ACTION_LINEAGE",
+      "finding": "TDX xdxr is the actual corporate_actions adapter (schema 2); Sina supplies adjustment factors. This new inventory clarifies the earlier aggregate label without changing PR34 reports.",
+      "verification": "PINNED_SOURCE_CODE_VERIFIED"
+    },
+    {
+      "finding_id": "ADJUSTMENT_FORMULA",
+      "finding": "Reader adjusted prices multiply raw prices by stored hfq factors; qfq divides by a scoped latest hfq anchor. BaoStock fallback divides adjusted/raw closes and rescales its newest shared session. Source code formulas are verified, exact historical values and PIT are not.",
+      "verification": "SOURCE_FORMULA_VERIFIED_NUMERIC_QA_NOT_RUN"
+    },
+    {
+      "finding_id": "METHOD_DIRECTION_AMBIGUITY",
+      "finding": "BaoStock PDF and factor-field document express opposing ratios for forward/backward factor names. Provider must clarify definitions and equivalence before cross-provider QA is certified.",
+      "verification": "OFFICIAL_DOCUMENT_AMBIGUITY_REQUIRES_PROVIDER_CONFIRMATION"
+    },
+    {
+      "finding_id": "SUSPENSION_AND_REVISION",
+      "finding": "BaoStock specifies flat-price/zero-volume suspension rows and publishes later corrections. Current returned history is not original contemporaneous data.",
+      "verification": "DOCUMENTED_METHOD_ONLY"
+    },
+    {
+      "finding_id": "DELISTING_SAMPLE_NOT_COMPLETENESS",
+      "finding": "SSE example distinguishes announcement, end of delisting period and removal. No complete SH/SZ/BJ universe was reconciled.",
+      "verification": "ONE_PUBLIC_EVENT_ONLY"
+    },
+    {
+      "finding_id": "DERIVED_NOT_OFFICIAL",
+      "finding": "CNEquity industry_index is derived from members and adjusted stocks and excludes rows without exact adjustments; project SWL1 uses explicit hierarchy mapping. Neither becomes an official index through code naming.",
+      "verification": "SOURCE_CODE_ONLY"
+    },
+    {
+      "finding_id": "UPSTREAM_COMMENT_NOT_PIT_PROOF",
+      "finding": "Comments claiming historical known membership or provider independence do not establish actual publication receipts or independent upstream origin.",
+      "verification": "SOURCE_COMMENT_NOT_EVIDENCE"
+    }
+  ],
+  "raw_payloads_retained": false,
+  "market_data_downloads": 0,
+  "numeric_qa_run": false,
+  "credentials_used": false,
+  "vendors_contacted": 0
+}

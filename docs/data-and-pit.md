@@ -60,3 +60,5 @@ historical Tier A=0/B=0/C=reconstructed. Publication, effective, observation,
 ingestion and revision times are distinct. Metadata watermarks do not establish
 rights, contemporary availability or adjustment/delisting completeness. Formal
 source admission remains blocked; revisions require immutable new generations.
+
+[Real-source qualification](research/swl1-real-data-source-qualification.md) verifies public documents and exact provider lineage. TDX supplies corporate actions; Sina supplies factors. No authorized numeric QA or contemporaneous full membership archive was established. PR34 historical reports and tiers stay immutable.

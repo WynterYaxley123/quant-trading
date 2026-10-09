@@ -216,3 +216,5 @@ Common diagnostics verify shared **raw returns**, not equality of differently
 centered targets. Historical ETF productization was retired for the SWL2 family
 because reliable executable ETF coverage was structurally insufficient relative
 to the Level-2 research universe. Historical engineering remains reproducible.
+
+Real SWL1 source qualification: [audit](docs/research/swl1-real-data-source-qualification.md), [acquisition plan](docs/research/swl1-source-acquisition-plan.md). Twelve source roles audited; 15 exact public document claims reviewed; real admission remains 0 and DATA_SOURCE_NOT_READY.

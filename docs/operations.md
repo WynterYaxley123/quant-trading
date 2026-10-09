@@ -64,3 +64,5 @@ See [deployment](deployment.md), [industry contracts](industry-forecast.md),
 ## Industry Forecast closure runbook
 
 Read-only preflight/dry-run never initialize or write. Genuine retries return NOOP without fitting; mature checks append evaluations only after exact finalized exchange sessions. DATA_UNAVAILABLE/CALENDAR_UNAVAILABLE stay blocked or pending. Under the runner mutex, journals recover byte-identical publications; stale OS locks do not authorize overlap. Hash/source/model mismatch blocks and requires an independently reviewed source transition. Back up complete objects, generations, pointers and journals together; restore to an isolated external namespace and verify before any separately authorized activation. Legacy read-only inspection remains permitted; state-mutating ETF commands are retired.
+
+[Source acquisition packets](research/swl1-source-acquisition-plan.md) remain unsent. No new provider refresh, credentials, real admission, key creation, scheduler enablement or live deployment is authorized by public readiness inspection. Real-source status is read-only at the existing evidence observer.

@@ -64,3 +64,5 @@ Strong shrinkage and horizon-direction mismatch are descriptive findings;
 causal source/window/penalty attribution remains unidentified. Next generation
 NOT_STARTED; [design review](research/swl1-next-generation-design-review.md)
 recommends DATA_FIRST. This is not a new Validation or model generation.
+
+SWL1 real-source qualification examined 12 roles and verified 15 public documents. REAL_SOURCES_ADMITTED=0; DATA_SOURCE_NOT_READY / C. See [audit](research/swl1-real-data-source-qualification.md) and [owner acquisition actions](research/swl1-source-acquisition-plan.md). V3 remains not created.

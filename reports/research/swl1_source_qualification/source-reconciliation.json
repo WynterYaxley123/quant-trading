@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "scope": "PUBLIC_METADATA_ONLY_NO_REAL_SOURCE_PROMOTION",
+  "source_identity": "SWL1_SOURCE_QUALIFICATION_2026_10_09",
+  "evidence_reference": "config/research/swl1-source-qualification-evidence.json",
+  "retrieval_timestamp": "2026-10-08T23:55:00.329918+00:00",
+  "document_hash": "18c66d2ae973d50603dd7031d296bad648a24fe75db6e0c6241788840c78875a",
+  "admission_requirement": "RIGHTS_PIT_QUALITY_IDENTITY_REVISION_AND_PRODUCTION_AUTHORITY",
+  "verification_result": "REAL_ADMISSION_BLOCKED",
+  "remaining_gap": "DATASET_RIGHTS_CONTEMPORANEOUS_PIT_BLIND_QA_AND_APPROVED_IDENTITY",
+  "independent_reconciliation": "NOT_AVAILABLE",
+  "numeric_comparisons_run": false,
+  "performance_fields": [],
+  "candidate_pairs": [
+    {
+      "source_a": "Sina factors",
+      "source_b": "BaoStock reconstructed factors",
+      "status": "NOT_AVAILABLE_UNAUTHORIZED_AND_METHOD_EQUIVALENCE_UNKNOWN"
+    },
+    {
+      "source_a": "BaoStock lifecycle",
+      "source_b": "SSE public delisting announcement",
+      "status": "ONE_PUBLIC_DOCUMENT_NOT_UNIVERSE_RECONCILIATION"
+    },
+    {
+      "source_a": "CNEquity calendar",
+      "source_b": "SSE published closure schedule",
+      "status": "METHODOLOGY_REFERENCE_ONLY_NO_RUNTIME_COMPARISON"
+    }
+  ]
+}

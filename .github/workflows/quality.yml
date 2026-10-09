@@ -48,6 +48,8 @@ jobs:
             python -m examples.minimal_demo
             python -m examples.industry_forecast_demo
             python -m examples.prospective_evidence_demo
+            python -m scripts.engineering.source_qualification --verify
+            python -m research.evidence.qualification
             python -m scripts.engineering.benchmark
             python -m pytest -q tests/performance
             python -m scripts.engineering.references

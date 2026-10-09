@@ -36,3 +36,7 @@ FAILED_VALIDATION; SWL2 ETF productization retired.
 [security](../SECURITY.md), [repository rules](../AGENTS.md), [archive](archive/README.md),
 [V2 protocol](etf-quant-v2-protocol.md), [historical V2 research](etf-quant-v2-development.md),
 [data rights](data/market_data_policy.md), [transition evidence](engineering/swl2-industry-forecast-transition.md).
+
+- [SWL1 real-source qualification](research/swl1-real-data-source-qualification.md) / [中文](research/swl1-real-data-source-qualification.zh-CN.md)
+- [Source acquisition plan](research/swl1-source-acquisition-plan.md)
+- [Real-source admission acceptance](engineering/real-source-admission-acceptance.md)

@@ -157,3 +157,5 @@ SWL1-Ridge-V1 已因 Validation 失败关闭，未挪用 SWL2 的已消费证据
 
 历史 ETF 产品化退役原因是相对于二级行业研究宇宙，可靠可执行产品覆盖存在结构性
 不足。历史 mapping、账户、Shadow、合同与证书完整保留。
+
+SWL1 真实来源资格审查见[中文报告](docs/research/swl1-real-data-source-qualification.zh-CN.md)和[材料取得计划](docs/research/swl1-source-acquisition-plan.md)。已审计 12 类来源、核验 15 份公开材料；真实准入仍为 0，下一代研究暂缓。
