@@ -15,7 +15,7 @@ beforeEach(() => {
     async getReadiness() { return notReachedReadiness(); },
   });
 });
-afterEach(() => { setEtfQuantPortForTesting(null); vi.restoreAllMocks(); });
+afterEach(() => { setEtfQuantPortForTesting(null); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 function emptyResearch() {
   const port = createMockApiAdapter();
@@ -33,6 +33,21 @@ function emptyResearch() {
 }
 
 describe('unified console observation', () => {
+  for(const connected of [true,false]) {
+    it(`observes Research health on the industry route without opening run artifacts (${connected})`,async()=>{
+      vi.stubGlobal('fetch',vi.fn(async()=>new Response('{"error":"SYNTHETIC_UNAVAILABLE"}',{status:503})));
+      const port=emptyResearch();
+      port.getResearchStatus=async()=>({...await createMockApiAdapter().getResearchStatus(),artifactState:'NOT_CONFIGURED',phase:'NOT_CONFIGURED'});
+      if(!connected)port.getHealth=async()=>{throw new ResearchApiError('NETWORK_UNREACHABLE');};
+      await renderApp('/industry-forecast/swl1-rev10',port);
+      const services=within(screen.getByRole('region',{name:'控制台服务'}));
+      expect(await services.findByText(connected?'CONNECTED':'DISCONNECTED')).toBeInTheDocument();
+      expect(services.getByText(connected?'NOT_CONFIGURED':'UNAVAILABLE')).toBeInTheDocument();
+      expect(port.getRuns).not.toHaveBeenCalled();
+      expect(services.queryByText('ETF Quant API')).not.toBeInTheDocument();
+      expect(screen.queryByText('研究数据接口未连接')).not.toBeInTheDocument();
+    });
+  }
   for (const path of ['/', '/candidates', '/development', '/sectors', '/diagnostics', '/integrity']) {
     it(`keeps a healthy API distinct from an invalid artifact at ${path} and retries only observations`, async () => {
       const port = emptyResearch();
@@ -43,7 +58,7 @@ describe('unified console observation', () => {
       port.getResearchStatus = status;
       await renderApp(path,port);
       expect(await screen.findByText('SERVICE READY · ARTIFACT INVALID · DEGRADED')).toBeInTheDocument();
-      expect(within(screen.getByRole('region',{name:'控制台服务'})).getAllByText('READY')).toHaveLength(3);
+      expect(within(screen.getByRole('region',{name:'控制台服务'})).getAllByText('READY')).toHaveLength(2);
       expect(screen.queryByText('API DISCONNECTED')).not.toBeInTheDocument();
       expect(screen.queryByText('未配置获准的 Development 研究产物。')).not.toBeInTheDocument();
       expect(port.getRuns).not.toHaveBeenCalled();
@@ -62,7 +77,7 @@ describe('unified console observation', () => {
       expect(screen.getByText('未配置获准的 Development 研究产物。')).toBeInTheDocument();
       expect(screen.queryByText('API DISCONNECTED')).not.toBeInTheDocument();
       const services = screen.getByRole('region', { name: '控制台服务' });
-      expect(within(services).getAllByText('READY')).toHaveLength(3);
+      expect(within(services).getAllByText('READY')).toHaveLength(2);
       for (const request of [port.getCandidates, port.getIntegrity, port.getMetrics,
         port.getPredictions, port.getDailyMetrics, port.getDiagnostics]) expect(request).not.toHaveBeenCalled();
     });
@@ -91,7 +106,9 @@ describe('unified console observation', () => {
     await renderApp('/', port);
     expect(await screen.findByText('错误代码：ARTIFACT_SCHEMA_ERROR')).toBeInTheDocument();
     expect(screen.queryByText('Research API 已连接')).not.toBeInTheDocument();
-    expect(within(screen.getByRole('region', { name: '控制台服务' })).getByText('DEGRADED')).toBeInTheDocument();
+    const services=within(screen.getByRole('region', { name: '控制台服务' }));
+    expect(services.getByText('CONNECTED')).toBeInTheDocument();
+    expect(services.getByText('DEGRADED')).toBeInTheDocument();
   });
 
   it('rechecks after empty-state retry', async () => {
@@ -114,7 +131,7 @@ describe('unified console observation', () => {
     expect(capabilities).not.toHaveBeenCalled();
     expect(status).not.toHaveBeenCalled();
     expect(port.getRuns).not.toHaveBeenCalled();
-    expect(within(screen.getByRole('region', { name: '控制台服务' })).getAllByText('READY')).toHaveLength(3);
+    expect(within(screen.getByRole('region', { name: '控制台服务' })).getAllByText('READY')).toHaveLength(2);
   });
 
   for (const [code, state] of [['UNREACHABLE', 'DISCONNECTED'], ['INTEGRITY_BLOCKED', 'DEGRADED']] as const) {

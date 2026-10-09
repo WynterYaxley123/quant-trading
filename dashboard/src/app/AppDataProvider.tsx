@@ -27,7 +27,7 @@ export interface AppData {
 
 const AppDataContext = createContext<AppData | null>(null);
 
-export function AppDataProvider({ children, enabled=true, observeHealth=true }: { children: ReactNode; enabled?:boolean; observeHealth?:boolean }) {
+export function AppDataProvider({ children, enabled=true, observeHealth=true, statusOnly=false }: { children: ReactNode; enabled?:boolean; observeHealth?:boolean; statusOnly?:boolean }) {
   const env = useMemo(() => getAppEnv(), []);
   const api = useMemo(() => getResearchApi(), []);
   // Process health never opens an artifact, including on ETF observation pages.
@@ -37,12 +37,13 @@ export function AppDataProvider({ children, enabled=true, observeHealth=true }: 
     // ETF rendering never opens a Research artifact or depends on its availability.
     if(!enabled) return {capabilities:null,status:null,runs:[]};
     const status = await api.getResearchStatus(signal);
+    if(statusOnly) return {capabilities:null,status,runs:[]};
     const [capabilities, runs] = await Promise.all([
       api.getCapabilities(signal),
       status.artifactState === 'DEGRADED' ? Promise.resolve([]) : api.getRuns(signal),
     ]);
     return { capabilities, status, runs };
-  }, [api,enabled]);
+  }, [api,enabled,statusOnly]);
 
   const value: AppData = {
     capabilities: shell.data?.capabilities ?? null,

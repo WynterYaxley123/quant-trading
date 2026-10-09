@@ -51,7 +51,7 @@ export async function createViewer({repoRoot,bundleRoot,bundlePin,reviewRoot,rev
     try {
       let chosen=bundle,name=url.slice(1),offline=false;
       if(url.startsWith('/offline-review/')) {chosen=review;name=url.slice('/offline-review/'.length);offline=true;}
-      else if(['/','/industry-forecast','/industry-forecast/swl1-rev10'].includes(url))name='index.html';
+      else if(['/','/industry-forecast','/industry-forecast/swl1-rev10','/research','/candidates','/development','/sectors','/diagnostics','/integrity'].includes(url))name='index.html';
       if(!Object.hasOwn(chosen.manifest.files,name))return error(404,'INVALID_VIEW_RESOURCE');
       const raw=(await boundedLeaf(chosen.root,name,4*1024*1024)).raw;check(sha(raw)===chosen.manifest.files[name]);
       res.setHeader('Content-Type',types[path.extname(name)]??'application/octet-stream');

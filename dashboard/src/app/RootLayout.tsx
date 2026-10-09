@@ -44,7 +44,7 @@ function Shell() {
 
         <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4 md:px-6 md:py-6">
           {isEtf ? <p role="note" className="rounded border p-3">HISTORICAL_PRODUCTIZATION_RESULT · ETF_PRODUCTIZATION_RETIRED · 历史账户与映射仅供只读审计，运行入口已退役。</p> : null}
-          {!isIndustry ? <ConsoleServiceStatus /> : null}
+          <ConsoleServiceStatus industry={isIndustry} />
           {!isEtf && !isIndustry && dataMode === 'mock' ? <MockDataBanner /> : null}
           {!isEtf && !isIndustry ? <ResearchStatusBanner /> : null}
 
@@ -77,7 +77,7 @@ export function RootLayout() {
   const industry=location.pathname === '/' || location.pathname.startsWith('/industry-forecast');
   return (
     <TooltipProvider delayDuration={200}>
-      <AppDataProvider observeHealth={!industry} enabled={!industry && !location.pathname.startsWith('/etf-quant/')}>
+      <AppDataProvider enabled={!location.pathname.startsWith('/etf-quant/')} statusOnly={industry}>
         <EtfQuantProvider enabled={!industry}>
         <Shell />
         </EtfQuantProvider>
