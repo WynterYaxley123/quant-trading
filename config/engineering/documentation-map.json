@@ -1553,6 +1553,22 @@
     {
       "path": "docs/engineering/swl1-data-first-acceptance.md",
       "class": "ACTIVE_DEVELOPER_DOC"
+    },
+    {
+      "path": "docs/research/swl1-short-horizon-design-review.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/swl1-short-horizon-exploration.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/research/swl1-short-horizon-exploration.zh-CN.md",
+      "class": "ACTIVE_RESEARCH_DOC"
+    },
+    {
+      "path": "docs/engineering/swl1-short-horizon-acceptance.md",
+      "class": "ACTIVE_DEVELOPER_DOC"
     }
   ]
 }

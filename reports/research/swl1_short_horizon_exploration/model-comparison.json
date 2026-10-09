@@ -1,0 +1,2059 @@
+{
+  "factor_target_correlations": {
+    "common_dates": 757,
+    "independent_observations": false,
+    "labels": [
+      "relative_REV5",
+      "relative_REV10",
+      "Y5",
+      "Y10"
+    ],
+    "mean_daily_cross_sectional_pearson": [
+      [
+        1.0,
+        0.6660103192621919,
+        0.02718377185594618,
+        0.0480783743437825
+      ],
+      [
+        0.666010319262192,
+        1.0,
+        0.05175466728874811,
+        0.06237788267809986
+      ],
+      [
+        0.027183771855946177,
+        0.05175466728874809,
+        1.0,
+        0.6767178501063027
+      ],
+      [
+        0.04807837434378248,
+        0.06237788267809986,
+        0.6767178501063027,
+        1.0
+      ]
+    ],
+    "pooled_pearson": [
+      [
+        1.0,
+        0.6953432105197986,
+        0.035596891615995455,
+        0.05304280740602102
+      ],
+      [
+        0.6953432105197986,
+        0.9999999999999999,
+        0.052132324797310184,
+        0.07318495356764936
+      ],
+      [
+        0.035596891615995455,
+        0.05213232479731019,
+        1.0,
+        0.6917383161682044
+      ],
+      [
+        0.05304280740602102,
+        0.07318495356764936,
+        0.6917383161682044,
+        1.0
+      ]
+    ]
+  },
+  "frozen_reference_native_phase_parity": {
+    "development": {
+      "mean_rank_ic": 0.03721341806773389,
+      "new_validation_execution": false,
+      "original_public_rank_ic": 0.037213418067733886,
+      "raw_spread": 0.00416556115408893,
+      "signals": 401,
+      "status": "READ_ONLY_RECORDED_REFERENCE_PARITY"
+    },
+    "validation": {
+      "mean_rank_ic": 0.0406518706852411,
+      "new_validation_execution": false,
+      "original_public_rank_ic": 0.0406518706852411,
+      "raw_spread": 0.006894908380470668,
+      "signals": 126,
+      "status": "READ_ONLY_RECORDED_REFERENCE_PARITY"
+    }
+  },
+  "frozen_v2_reference": {
+    "10": {
+      "S1": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 527,
+          "maximum": 0.9272525027808676,
+          "mean": 0.017696238493962298,
+          "median": 0.00934371523915456,
+          "minimum": -1.3161290322580645,
+          "positive_fraction": 0.5142314990512334,
+          "std": 0.2929719518769947
+        },
+        "delta_raw_spread": {
+          "count": 527,
+          "maximum": 0.07703248049791828,
+          "mean": -0.0005044095451399764,
+          "median": 0.0003108273592187256,
+          "minimum": -0.1822017431333022,
+          "positive_fraction": 0.5028462998102466,
+          "std": 0.030207809035342814
+        },
+        "matched_signal_count": 527
+      },
+      "S2": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 527,
+          "maximum": 1.0184649610678531,
+          "mean": 0.02474433958879041,
+          "median": 0.03515016685205785,
+          "minimum": -0.9948832035595105,
+          "positive_fraction": 0.5616698292220114,
+          "std": 0.27167046356902746
+        },
+        "delta_raw_spread": {
+          "count": 527,
+          "maximum": 0.09057895018408255,
+          "mean": -4.633348760154761e-05,
+          "median": 0.0020266159843897735,
+          "minimum": -0.11405362467671368,
+          "positive_fraction": 0.5464895635673624,
+          "std": 0.027404954759845394
+        },
+        "matched_signal_count": 527
+      },
+      "S3": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 527,
+          "maximum": 0.90678531701891,
+          "mean": 0.02561986436542395,
+          "median": 0.030255839822024455,
+          "minimum": -1.0416017797552837,
+          "positive_fraction": 0.5559772296015181,
+          "std": 0.2654308844017296
+        },
+        "delta_raw_spread": {
+          "count": 527,
+          "maximum": 0.08285507451955362,
+          "mean": 2.229937765088287e-05,
+          "median": 0.0016702356110028134,
+          "minimum": -0.15705353016907414,
+          "positive_fraction": 0.5332068311195446,
+          "std": 0.02732491609701136
+        },
+        "matched_signal_count": 527
+      },
+      "S4": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 527,
+          "maximum": 1.0028921023359287,
+          "mean": -0.023127531539365895,
+          "median": 0.010678531701890981,
+          "minimum": -1.39265850945495,
+          "positive_fraction": 0.5199240986717267,
+          "std": 0.29744657211504527
+        },
+        "delta_raw_spread": {
+          "count": 527,
+          "maximum": 0.10039831733390978,
+          "mean": -0.003184699790305625,
+          "median": 0.0,
+          "minimum": -0.20114297499885458,
+          "positive_fraction": 0.4971537001897533,
+          "std": 0.030878861124551852
+        },
+        "matched_signal_count": 527
+      }
+    },
+    "5": "NOT_APPLICABLE_NO_FROZEN_H5_REFERENCE"
+  },
+  "label": "EXPLORATORY_POST_HOC_RESEARCH",
+  "new_model_generation": false,
+  "parameter_stability": {
+    "10": {
+      "all_training_dates_before_signal": true,
+      "all_training_labels_mature": true,
+      "alpha": {
+        "count": 757,
+        "maximum": 144600.0,
+        "mean": 142509.90752972258,
+        "median": 142500.0,
+        "minimum": 139500.0,
+        "positive_fraction": 1.0,
+        "std": 455.3740366400056
+      },
+      "calendar_blocks": [
+        {
+          "block": 1,
+          "relative_rev10_weight": {
+            "count": 187,
+            "maximum": 0.0001521829985875494,
+            "mean": 4.691301262478729e-05,
+            "median": 4.874066196715998e-05,
+            "minimum": -9.284685128188023e-05,
+            "positive_fraction": 0.8342245989304813,
+            "std": 5.863907921314216e-05
+          },
+          "relative_rev5_weight": {
+            "count": 187,
+            "maximum": 5.840023745192393e-05,
+            "mean": 3.2625337731897685e-06,
+            "median": 1.710725117163347e-05,
+            "minimum": -0.0001005207940189285,
+            "positive_fraction": 0.6310160427807486,
+            "std": 4.045353862643673e-05
+          }
+        },
+        {
+          "block": 2,
+          "relative_rev10_weight": {
+            "count": 189,
+            "maximum": 0.00023782344296407418,
+            "mean": 0.00020582377095356165,
+            "median": 0.00021005040054502316,
+            "minimum": 0.00014968364699013606,
+            "positive_fraction": 1.0,
+            "std": 1.9336141091400125e-05
+          },
+          "relative_rev5_weight": {
+            "count": 189,
+            "maximum": 0.00014861725809761685,
+            "mean": 0.00010107969709130955,
+            "median": 0.00010388322766493486,
+            "minimum": 5.226178898482447e-05,
+            "positive_fraction": 1.0,
+            "std": 2.7736710359431112e-05
+          }
+        },
+        {
+          "block": 3,
+          "relative_rev10_weight": {
+            "count": 194,
+            "maximum": 0.00023669955280432054,
+            "mean": 0.00017809955804091632,
+            "median": 0.00017843447116768066,
+            "minimum": 0.00014369036467020454,
+            "positive_fraction": 1.0,
+            "std": 2.1449529745420687e-05
+          },
+          "relative_rev5_weight": {
+            "count": 194,
+            "maximum": 0.00016295784182065735,
+            "mean": 0.0001314824908210988,
+            "median": 0.0001294612936085295,
+            "minimum": 9.446478901151646e-05,
+            "positive_fraction": 1.0,
+            "std": 1.584218688403606e-05
+          }
+        },
+        {
+          "block": 4,
+          "relative_rev10_weight": {
+            "count": 187,
+            "maximum": 0.00020682245758684467,
+            "mean": 0.0001265239287641664,
+            "median": 0.00012467290740950467,
+            "minimum": 4.031879446905457e-05,
+            "positive_fraction": 1.0,
+            "std": 3.9920866807273464e-05
+          },
+          "relative_rev5_weight": {
+            "count": 187,
+            "maximum": 0.00021428807176835496,
+            "mean": 0.00013730681323885296,
+            "median": 0.00014129366308272603,
+            "minimum": 4.037784176292561e-05,
+            "positive_fraction": 1.0,
+            "std": 4.345770724733985e-05
+          }
+        }
+      ],
+      "effective_degrees_of_freedom": {
+        "count": 757,
+        "maximum": 0.17494445935484265,
+        "mean": 0.17444012279505053,
+        "median": 0.17441445709393905,
+        "minimum": 0.17401752122866895,
+        "positive_fraction": 1.0,
+        "std": 0.0002024207683759708
+      },
+      "industry_row_count": {
+        "count": 757,
+        "maximum": 14460.0,
+        "mean": 14250.990752972259,
+        "median": 14250.0,
+        "minimum": 13950.0,
+        "positive_fraction": 1.0,
+        "std": 45.537403664000564
+      },
+      "regularized_condition": {
+        "count": 757,
+        "maximum": 1.139863178509879,
+        "mean": 1.1357659308291426,
+        "median": 1.136028891885011,
+        "minimum": 1.1307656383456701,
+        "positive_fraction": 1.0,
+        "std": 0.0019854305396911657
+      },
+      "relative_rev10_weight": {
+        "count": 757,
+        "maximum": 0.00023782344296407418,
+        "mean": 0.00013987412815045608,
+        "median": 0.00015911430098334905,
+        "minimum": -9.284685128188023e-05,
+        "positive_fraction": 0.9590488771466315,
+        "std": 7.136878642542895e-05
+      },
+      "relative_rev5_weight": {
+        "count": 757,
+        "maximum": 0.00021428807176835496,
+        "mean": 9.36567158002677e-05,
+        "median": 0.00011613801359039193,
+        "minimum": -0.0001005207940189285,
+        "positive_fraction": 0.9088507265521797,
+        "std": 6.32200582979478e-05
+      },
+      "trace_accounting": {
+        "dropped": 0,
+        "every_fit_has_training_indices_and_maturity_dates": true,
+        "fits": 757
+      },
+      "training_day_count": {
+        "count": 757,
+        "maximum": 482.0,
+        "mean": 475.0330250990753,
+        "median": 475.0,
+        "minimum": 465.0,
+        "positive_fraction": 1.0,
+        "std": 1.5179134554666853
+      },
+      "training_ranges_private": true
+    },
+    "5": {
+      "all_training_dates_before_signal": true,
+      "all_training_labels_mature": true,
+      "alpha": {
+        "count": 762,
+        "maximum": 146100.0,
+        "mean": 144010.62992125985,
+        "median": 144000.0,
+        "minimum": 141000.0,
+        "positive_fraction": 1.0,
+        "std": 454.64054856123073
+      },
+      "calendar_blocks": [
+        {
+          "block": 1,
+          "relative_rev10_weight": {
+            "count": 187,
+            "maximum": 5.386785953588654e-05,
+            "mean": 1.623713661810068e-06,
+            "median": 9.403034431537916e-06,
+            "minimum": -8.920279855403055e-05,
+            "positive_fraction": 0.6363636363636364,
+            "std": 3.210159655058178e-05
+          },
+          "relative_rev5_weight": {
+            "count": 187,
+            "maximum": 4.7471827474693725e-05,
+            "mean": 6.512995528285113e-06,
+            "median": 4.034297219529855e-06,
+            "minimum": -4.227400628505511e-05,
+            "positive_fraction": 0.6042780748663101,
+            "std": 2.4539019524508458e-05
+          }
+        },
+        {
+          "block": 2,
+          "relative_rev10_weight": {
+            "count": 189,
+            "maximum": 0.00011434518523556055,
+            "mean": 8.082698853417151e-05,
+            "median": 8.296678477773399e-05,
+            "minimum": 5.130507447332988e-05,
+            "positive_fraction": 1.0,
+            "std": 1.922406775626774e-05
+          },
+          "relative_rev5_weight": {
+            "count": 189,
+            "maximum": 2.7089872248438927e-05,
+            "mean": -2.305410917772652e-06,
+            "median": -1.0120598812514378e-06,
+            "minimum": -3.2631136531655725e-05,
+            "positive_fraction": 0.47619047619047616,
+            "std": 1.583349941748776e-05
+          }
+        },
+        {
+          "block": 3,
+          "relative_rev10_weight": {
+            "count": 194,
+            "maximum": 0.00012548916785365508,
+            "mean": 9.945932313640314e-05,
+            "median": 9.824363086490001e-05,
+            "minimum": 7.488255511029423e-05,
+            "positive_fraction": 1.0,
+            "std": 1.0399173855654831e-05
+          },
+          "relative_rev5_weight": {
+            "count": 194,
+            "maximum": 0.00010930386400817396,
+            "mean": 6.754587605395535e-05,
+            "median": 7.895408177722006e-05,
+            "minimum": 5.857592536196683e-06,
+            "positive_fraction": 1.0,
+            "std": 2.6735605655455625e-05
+          }
+        },
+        {
+          "block": 4,
+          "relative_rev10_weight": {
+            "count": 192,
+            "maximum": 0.00016057537158445772,
+            "mean": 9.600514569062237e-05,
+            "median": 9.805689502669178e-05,
+            "minimum": 3.02897006939811e-05,
+            "positive_fraction": 1.0,
+            "std": 3.396196418468395e-05
+          },
+          "relative_rev5_weight": {
+            "count": 192,
+            "maximum": 0.00015346899323872147,
+            "mean": 0.00010352926291358586,
+            "median": 0.00010502385310056018,
+            "minimum": 5.3911267903142805e-05,
+            "positive_fraction": 1.0,
+            "std": 2.668315196214741e-05
+          }
+        }
+      ],
+      "effective_degrees_of_freedom": {
+        "count": 762,
+        "maximum": 0.17494711199945379,
+        "mean": 0.1744407057960772,
+        "median": 0.1744141179862257,
+        "minimum": 0.17400766932593736,
+        "positive_fraction": 1.0,
+        "std": 0.00019868523621377864
+      },
+      "industry_row_count": {
+        "count": 762,
+        "maximum": 14610.0,
+        "mean": 14401.062992125984,
+        "median": 14400.0,
+        "minimum": 14100.0,
+        "positive_fraction": 1.0,
+        "std": 45.46405485612308
+      },
+      "regularized_condition": {
+        "count": 762,
+        "maximum": 1.139957245905656,
+        "mean": 1.1357606621944505,
+        "median": 1.136032205433674,
+        "minimum": 1.1307388556335642,
+        "positive_fraction": 1.0,
+        "std": 0.001948832121902001
+      },
+      "relative_rev10_weight": {
+        "count": 762,
+        "maximum": 0.00016057537158445772,
+        "mean": 6.99580471768748e-05,
+        "median": 8.74496491954285e-05,
+        "minimum": -8.920279855403055e-05,
+        "positive_fraction": 0.910761154855643,
+        "std": 4.722806826889446e-05
+      },
+      "relative_rev5_weight": {
+        "count": 762,
+        "maximum": 0.00015346899323872147,
+        "mean": 4.430935161969306e-05,
+        "median": 3.655942151225522e-05,
+        "minimum": -4.227400628505511e-05,
+        "positive_fraction": 0.7729658792650919,
+        "std": 4.9819575477143435e-05
+      },
+      "trace_accounting": {
+        "dropped": 0,
+        "every_fit_has_training_indices_and_maturity_dates": true,
+        "fits": 762
+      },
+      "training_day_count": {
+        "count": 762,
+        "maximum": 487.0,
+        "mean": 480.03543307086613,
+        "median": 480.0,
+        "minimum": 470.0,
+        "positive_fraction": 1.0,
+        "std": 1.5154684952041024
+      },
+      "training_ranges_private": true
+    }
+  },
+  "private_diagnostics_sha256": "d5a4ddcb92bbff579947d780312755bc3605c652d029b4886fbfe75d3c4084b3",
+  "private_fit_trace_sha256": "ca19b20f911d79591a42c7cfb567ff3c77825988cf44b64f1afef7d8a465254b",
+  "regimes": {
+    "all_states": {
+      "S0": {
+        "10": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 260,
+              "maximum": 4.508708632607273,
+              "mean": 2.471947715252286,
+              "median": 2.6834664572976026,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7743052709368814
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 260,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 161,
+              "maximum": 3.603630651852567,
+              "mean": 1.9065355756262348,
+              "median": 1.5355278908623191,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7252052890413262
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 161,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 150,
+              "maximum": 3.6801443000390055,
+              "mean": 2.139177827558138,
+              "median": 1.8750919384798073,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.7072319855672509
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 150,
+            "state": "DOWN_HIGH"
+          }
+        ],
+        "5": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 261,
+              "maximum": 4.508708632607273,
+              "mean": 2.471234201315745,
+              "median": 2.6826847710106856,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7729061378214638
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 261,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 164,
+              "maximum": 3.603630651852567,
+              "mean": 1.91408432539015,
+              "median": 1.5375793265636064,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7206689649836031
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 164,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 151,
+              "maximum": 3.6801443000390055,
+              "mean": 2.140465866974783,
+              "median": 1.8782378019936234,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.705062768296206
+            },
+            "rank_ic": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "raw_spread": {
+              "count": 0,
+              "maximum": null,
+              "mean": null,
+              "median": null,
+              "minimum": null,
+              "positive_fraction": null,
+              "std": null
+            },
+            "signals": 151,
+            "state": "DOWN_HIGH"
+          }
+        ]
+      },
+      "S1": {
+        "10": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 260,
+              "maximum": 4.508708632607273,
+              "mean": 2.471947715252286,
+              "median": 2.6834664572976026,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7743052709368814
+            },
+            "rank_ic": {
+              "count": 260,
+              "maximum": 0.7842046718576196,
+              "mean": 0.010394455377770171,
+              "median": 0.00778642936596218,
+              "minimum": -0.7699666295884315,
+              "positive_fraction": 0.5153846153846153,
+              "std": 0.3158456647325814
+            },
+            "raw_spread": {
+              "count": 260,
+              "maximum": 0.07157676629659009,
+              "mean": 0.00033524907984261963,
+              "median": 0.002174717441029237,
+              "minimum": -0.0866531288486661,
+              "positive_fraction": 0.5346153846153846,
+              "std": 0.031164141941552335
+            },
+            "signals": 260,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 161,
+              "maximum": 3.603630651852567,
+              "mean": 1.9065355756262348,
+              "median": 1.5355278908623191,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7252052890413262
+            },
+            "rank_ic": {
+              "count": 161,
+              "maximum": 0.6667408231368187,
+              "mean": 0.060958000262541556,
+              "median": 0.05050055617352614,
+              "minimum": -0.6533926585094549,
+              "positive_fraction": 0.5590062111801242,
+              "std": 0.3077842524122261
+            },
+            "raw_spread": {
+              "count": 161,
+              "maximum": 0.09901901558194756,
+              "mean": 0.006147905384263843,
+              "median": 0.005711254276614764,
+              "minimum": -0.10490289551176739,
+              "positive_fraction": 0.5900621118012422,
+              "std": 0.031565065270350315
+            },
+            "signals": 161,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.8736373748609566,
+              "mean": 0.07651034004329782,
+              "median": 0.05161290322580645,
+              "minimum": -0.614238042269188,
+              "positive_fraction": 0.5698924731182796,
+              "std": 0.3070790192635395
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.09077864880050017,
+              "mean": 0.0033929748328897233,
+              "median": 0.004752318094549644,
+              "minimum": -0.09886269449507908,
+              "positive_fraction": 0.5752688172043011,
+              "std": 0.030904773534413694
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 150,
+              "maximum": 3.6801443000390055,
+              "mean": 2.139177827558138,
+              "median": 1.8750919384798073,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.7072319855672509
+            },
+            "rank_ic": {
+              "count": 150,
+              "maximum": 0.735706340378198,
+              "mean": 0.04328958101594363,
+              "median": 0.059844271412680755,
+              "minimum": -0.8327030033370412,
+              "positive_fraction": 0.5666666666666667,
+              "std": 0.3842585469739524
+            },
+            "raw_spread": {
+              "count": 150,
+              "maximum": 0.13521607171604028,
+              "mean": 0.002130907120518506,
+              "median": 0.002744441096187499,
+              "minimum": -0.13807589191777717,
+              "positive_fraction": 0.5266666666666666,
+              "std": 0.049812733725090846
+            },
+            "signals": 150,
+            "state": "DOWN_HIGH"
+          }
+        ],
+        "5": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 261,
+              "maximum": 4.508708632607273,
+              "mean": 2.471234201315745,
+              "median": 2.6826847710106856,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7729061378214638
+            },
+            "rank_ic": {
+              "count": 261,
+              "maximum": 0.7063403781979978,
+              "mean": 0.018403590196003225,
+              "median": -0.0011123470522803114,
+              "minimum": -0.5915461624026697,
+              "positive_fraction": 0.49808429118773945,
+              "std": 0.2906457667116527
+            },
+            "raw_spread": {
+              "count": 261,
+              "maximum": 0.0771735294422866,
+              "mean": 0.0008599476819971257,
+              "median": 0.002159821076710644,
+              "minimum": -0.09562937894884256,
+              "positive_fraction": 0.5287356321839081,
+              "std": 0.022863257868862084
+            },
+            "signals": 261,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 164,
+              "maximum": 3.603630651852567,
+              "mean": 1.91408432539015,
+              "median": 1.5375793265636064,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7206689649836031
+            },
+            "rank_ic": {
+              "count": 164,
+              "maximum": 0.7521690767519466,
+              "mean": 0.04550042052144659,
+              "median": -0.01067853170189099,
+              "minimum": -0.6747497219132369,
+              "positive_fraction": 0.4878048780487805,
+              "std": 0.3276738627563201
+            },
+            "raw_spread": {
+              "count": 164,
+              "maximum": 0.08386843528948723,
+              "mean": 0.0022943665534304086,
+              "median": 0.00095043529385711,
+              "minimum": -0.08696882596860744,
+              "positive_fraction": 0.5182926829268293,
+              "std": 0.02732232527587064
+            },
+            "signals": 164,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.7552836484983315,
+              "mean": 0.044300118411137825,
+              "median": 0.02625139043381535,
+              "minimum": -0.5541713014460512,
+              "positive_fraction": 0.5376344086021505,
+              "std": 0.3027352547859462
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.06567246438227643,
+              "mean": 0.0006608161330294559,
+              "median": 0.0031698466903003946,
+              "minimum": -0.07912052911427661,
+              "positive_fraction": 0.5591397849462365,
+              "std": 0.02317555733889938
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 151,
+              "maximum": 3.6801443000390055,
+              "mean": 2.140465866974783,
+              "median": 1.8782378019936234,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.705062768296206
+            },
+            "rank_ic": {
+              "count": 151,
+              "maximum": 0.8496106785317019,
+              "mean": 0.005373151920087811,
+              "median": -0.0046718576195773085,
+              "minimum": -0.8024471635150167,
+              "positive_fraction": 0.4966887417218543,
+              "std": 0.3622384669666132
+            },
+            "raw_spread": {
+              "count": 151,
+              "maximum": 0.09450658870308452,
+              "mean": -0.00022942423531274405,
+              "median": 0.0005662093073329991,
+              "minimum": -0.0803188927069957,
+              "positive_fraction": 0.5033112582781457,
+              "std": 0.03115068639699529
+            },
+            "signals": 151,
+            "state": "DOWN_HIGH"
+          }
+        ]
+      },
+      "S2": {
+        "10": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 260,
+              "maximum": 4.508708632607273,
+              "mean": 2.471947715252286,
+              "median": 2.6834664572976026,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7743052709368814
+            },
+            "rank_ic": {
+              "count": 260,
+              "maximum": 0.7058954393770857,
+              "mean": 0.0032737229400188255,
+              "median": 0.021134593993325915,
+              "minimum": -0.7659621802002224,
+              "positive_fraction": 0.5307692307692308,
+              "std": 0.3003103733743296
+            },
+            "raw_spread": {
+              "count": 260,
+              "maximum": 0.10303123980116156,
+              "mean": 0.0008040999523130509,
+              "median": 0.0025901492339698174,
+              "minimum": -0.08306959858037222,
+              "positive_fraction": 0.5153846153846153,
+              "std": 0.02893761463465453
+            },
+            "signals": 260,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 161,
+              "maximum": 3.603630651852567,
+              "mean": 1.9065355756262348,
+              "median": 1.5355278908623191,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7252052890413262
+            },
+            "rank_ic": {
+              "count": 161,
+              "maximum": 0.6569521690767519,
+              "mean": 0.04221253428585247,
+              "median": 0.05806451612903226,
+              "minimum": -0.6040044493882091,
+              "positive_fraction": 0.5590062111801242,
+              "std": 0.30930853295480226
+            },
+            "raw_spread": {
+              "count": 161,
+              "maximum": 0.09796110606903782,
+              "mean": 0.0017619341712895586,
+              "median": 0.003382407556885503,
+              "minimum": -0.090361531261956,
+              "positive_fraction": 0.515527950310559,
+              "std": 0.032671527157962676
+            },
+            "signals": 161,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.7868743047830923,
+              "mean": 0.06202351477747079,
+              "median": 0.05650723025583983,
+              "minimum": -0.7423804226918799,
+              "positive_fraction": 0.5698924731182796,
+              "std": 0.34494552970305953
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.09972791072398465,
+              "mean": -0.0005777995688025565,
+              "median": 0.00285860812980595,
+              "minimum": -0.1011254856312048,
+              "positive_fraction": 0.5376344086021505,
+              "std": 0.03679217462023337
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 150,
+              "maximum": 3.6801443000390055,
+              "mean": 2.139177827558138,
+              "median": 1.8750919384798073,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.7072319855672509
+            },
+            "rank_ic": {
+              "count": 150,
+              "maximum": 0.8616240266963292,
+              "mean": 0.15286911383018167,
+              "median": 0.19087875417130146,
+              "minimum": -0.8625139043381536,
+              "positive_fraction": 0.6733333333333333,
+              "std": 0.4016188588666953
+            },
+            "raw_spread": {
+              "count": 150,
+              "maximum": 0.17317667569328193,
+              "mean": 0.016707834399503813,
+              "median": 0.016226440365377768,
+              "minimum": -0.1169634806192912,
+              "positive_fraction": 0.66,
+              "std": 0.050229256284846056
+            },
+            "signals": 150,
+            "state": "DOWN_HIGH"
+          }
+        ],
+        "5": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 261,
+              "maximum": 4.508708632607273,
+              "mean": 2.471234201315745,
+              "median": 2.6826847710106856,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7729061378214638
+            },
+            "rank_ic": {
+              "count": 261,
+              "maximum": 0.7708565072302559,
+              "mean": 0.02852466981192385,
+              "median": 0.04872080088987764,
+              "minimum": -0.6520578420467186,
+              "positive_fraction": 0.5593869731800766,
+              "std": 0.29707974704846335
+            },
+            "raw_spread": {
+              "count": 261,
+              "maximum": 0.1166926605935303,
+              "mean": 0.0012363038332803933,
+              "median": 0.0015263828508164327,
+              "minimum": -0.07435230428367559,
+              "positive_fraction": 0.5287356321839081,
+              "std": 0.022381716486986617
+            },
+            "signals": 261,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 164,
+              "maximum": 3.603630651852567,
+              "mean": 1.91408432539015,
+              "median": 1.5375793265636064,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7206689649836031
+            },
+            "rank_ic": {
+              "count": 164,
+              "maximum": 0.7971078976640712,
+              "mean": 0.04507989907485282,
+              "median": 0.05205784204671858,
+              "minimum": -0.6387096774193548,
+              "positive_fraction": 0.5670731707317073,
+              "std": 0.3324097971845943
+            },
+            "raw_spread": {
+              "count": 164,
+              "maximum": 0.07825741267498147,
+              "mean": 0.0007968195427693231,
+              "median": 0.0012574803445625348,
+              "minimum": -0.0803069802676068,
+              "positive_fraction": 0.5182926829268293,
+              "std": 0.028335640326365985
+            },
+            "signals": 164,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.8149054505005562,
+              "mean": 0.06274833446960183,
+              "median": 0.07764182424916574,
+              "minimum": -0.6169076751946607,
+              "positive_fraction": 0.5698924731182796,
+              "std": 0.3070268612203511
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.07651637123651625,
+              "mean": 0.0007651828758892833,
+              "median": 0.0021148329157605894,
+              "minimum": -0.08524035389942969,
+              "positive_fraction": 0.521505376344086,
+              "std": 0.02513194349696934
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 151,
+              "maximum": 3.6801443000390055,
+              "mean": 2.140465866974783,
+              "median": 1.8782378019936234,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.705062768296206
+            },
+            "rank_ic": {
+              "count": 151,
+              "maximum": 0.8860956618464961,
+              "mean": 0.07170439561249072,
+              "median": 0.05628476084538376,
+              "minimum": -0.8269187986651836,
+              "positive_fraction": 0.5695364238410596,
+              "std": 0.37784485635437914
+            },
+            "raw_spread": {
+              "count": 151,
+              "maximum": 0.10971728929180675,
+              "mean": 0.0060934228692357175,
+              "median": 0.006715662218180516,
+              "minimum": -0.11670905465865374,
+              "positive_fraction": 0.5894039735099338,
+              "std": 0.03606375153877617
+            },
+            "signals": 151,
+            "state": "DOWN_HIGH"
+          }
+        ]
+      },
+      "S3": {
+        "10": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 260,
+              "maximum": 4.508708632607273,
+              "mean": 2.471947715252286,
+              "median": 2.6834664572976026,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7743052709368814
+            },
+            "rank_ic": {
+              "count": 260,
+              "maximum": 0.7793103448275862,
+              "mean": 0.011094378369128093,
+              "median": 0.034482758620689655,
+              "minimum": -0.7690767519466073,
+              "positive_fraction": 0.5346153846153846,
+              "std": 0.3075371518433185
+            },
+            "raw_spread": {
+              "count": 260,
+              "maximum": 0.0739300911752455,
+              "mean": 0.0010168919512284621,
+              "median": 0.0019185942831702711,
+              "minimum": -0.09691566148040465,
+              "positive_fraction": 0.5269230769230769,
+              "std": 0.029818709261633988
+            },
+            "signals": 260,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 161,
+              "maximum": 3.603630651852567,
+              "mean": 1.9065355756262348,
+              "median": 1.5355278908623191,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7252052890413262
+            },
+            "rank_ic": {
+              "count": 161,
+              "maximum": 0.5764182424916574,
+              "mean": 0.055143396043913516,
+              "median": 0.08075639599555061,
+              "minimum": -0.6511679644048943,
+              "positive_fraction": 0.6024844720496895,
+              "std": 0.28481534682585347
+            },
+            "raw_spread": {
+              "count": 161,
+              "maximum": 0.10126297305735661,
+              "mean": 0.004823530128862851,
+              "median": 0.0030133780786310684,
+              "minimum": -0.06273323580667936,
+              "positive_fraction": 0.5527950310559007,
+              "std": 0.029998472134872386
+            },
+            "signals": 161,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.7966629588431591,
+              "mean": 0.0755534823639169,
+              "median": 0.06407119021134594,
+              "minimum": -0.6738598442714127,
+              "positive_fraction": 0.5860215053763441,
+              "std": 0.33174928291558214
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.106010807329745,
+              "mean": 0.001132438006922972,
+              "median": 0.004448618115958791,
+              "minimum": -0.09230131584266242,
+              "positive_fraction": 0.553763440860215,
+              "std": 0.03539847862543668
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 150,
+              "maximum": 3.6801443000390055,
+              "mean": 2.139177827558138,
+              "median": 1.8750919384798073,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.7072319855672509
+            },
+            "rank_ic": {
+              "count": 150,
+              "maximum": 0.8545050055617353,
+              "mean": 0.09860140897293289,
+              "median": 0.14171301446051168,
+              "minimum": -0.8113459399332592,
+              "positive_fraction": 0.6333333333333333,
+              "std": 0.3972712173534722
+            },
+            "raw_spread": {
+              "count": 150,
+              "maximum": 0.17317667569328193,
+              "mean": 0.008134541603760323,
+              "median": 0.010841672578106398,
+              "minimum": -0.14552633492098488,
+              "positive_fraction": 0.6266666666666667,
+              "std": 0.05094182442515177
+            },
+            "signals": 150,
+            "state": "DOWN_HIGH"
+          }
+        ],
+        "5": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 261,
+              "maximum": 4.508708632607273,
+              "mean": 2.471234201315745,
+              "median": 2.6826847710106856,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7729061378214638
+            },
+            "rank_ic": {
+              "count": 261,
+              "maximum": 0.7001112347052281,
+              "mean": 0.03133579669193953,
+              "median": 0.053170189098998885,
+              "minimum": -0.6671857619577308,
+              "positive_fraction": 0.5670498084291188,
+              "std": 0.292716163606432
+            },
+            "raw_spread": {
+              "count": 261,
+              "maximum": 0.09573831242140014,
+              "mean": 0.0010947712247853715,
+              "median": 0.0009880057993564284,
+              "minimum": -0.11109505537858111,
+              "positive_fraction": 0.5095785440613027,
+              "std": 0.023762827251096286
+            },
+            "signals": 261,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 164,
+              "maximum": 3.603630651852567,
+              "mean": 1.91408432539015,
+              "median": 1.5375793265636064,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7206689649836031
+            },
+            "rank_ic": {
+              "count": 164,
+              "maximum": 0.810456062291435,
+              "mean": 0.04271141376597303,
+              "median": 0.014238042269187987,
+              "minimum": -0.6484983314794216,
+              "positive_fraction": 0.5121951219512195,
+              "std": 0.3101806713983179
+            },
+            "raw_spread": {
+              "count": 164,
+              "maximum": 0.0820335530603707,
+              "mean": 0.0013072713435660034,
+              "median": 0.002332542398891902,
+              "minimum": -0.08883975998971089,
+              "positive_fraction": 0.5304878048780488,
+              "std": 0.027318074262168483
+            },
+            "signals": 164,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.8051167964404894,
+              "mean": 0.05761957730812013,
+              "median": 0.05005561735261402,
+              "minimum": -0.553281423804227,
+              "positive_fraction": 0.5376344086021505,
+              "std": 0.30465744567978753
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.08496760121950928,
+              "mean": 0.0006358553059039056,
+              "median": 0.0022341809417348317,
+              "minimum": -0.09635529189857933,
+              "positive_fraction": 0.5591397849462365,
+              "std": 0.02542552543879248
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 151,
+              "maximum": 3.6801443000390055,
+              "mean": 2.140465866974783,
+              "median": 1.8782378019936234,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.705062768296206
+            },
+            "rank_ic": {
+              "count": 151,
+              "maximum": 0.8540600667408231,
+              "mean": 0.04160177975528365,
+              "median": 0.08031145717463849,
+              "minimum": -0.8438264738598442,
+              "positive_fraction": 0.5629139072847682,
+              "std": 0.3668901032052207
+            },
+            "raw_spread": {
+              "count": 151,
+              "maximum": 0.10902176713737205,
+              "mean": 0.002304912160767961,
+              "median": 0.003783808959594648,
+              "minimum": -0.10878262109589998,
+              "positive_fraction": 0.5695364238410596,
+              "std": 0.033640664697659854
+            },
+            "signals": 151,
+            "state": "DOWN_HIGH"
+          }
+        ]
+      },
+      "S4": {
+        "10": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 260,
+              "maximum": 4.508708632607273,
+              "mean": 2.471947715252286,
+              "median": 2.6834664572976026,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7743052709368814
+            },
+            "rank_ic": {
+              "count": 260,
+              "maximum": 0.6849833147942158,
+              "mean": -0.0061675365791049935,
+              "median": 0.01824249165739711,
+              "minimum": -0.7793103448275862,
+              "positive_fraction": 0.5269230769230769,
+              "std": 0.3043856910130936
+            },
+            "raw_spread": {
+              "count": 260,
+              "maximum": 0.0739300911752455,
+              "mean": 0.0008049178644844665,
+              "median": 0.0014116459630709854,
+              "minimum": -0.08359956719518809,
+              "positive_fraction": 0.5115384615384615,
+              "std": 0.029051118374815908
+            },
+            "signals": 260,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 161,
+              "maximum": 3.603630651852567,
+              "mean": 1.9065355756262348,
+              "median": 1.5355278908623191,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7252052890413262
+            },
+            "rank_ic": {
+              "count": 161,
+              "maximum": 0.6008898776418242,
+              "mean": 0.042215297881013414,
+              "median": 0.07185761957730812,
+              "minimum": -0.6324805339265851,
+              "positive_fraction": 0.5652173913043478,
+              "std": 0.3013787009246578
+            },
+            "raw_spread": {
+              "count": 161,
+              "maximum": 0.09796110606903782,
+              "mean": 0.004298209445059604,
+              "median": 0.0023649767709960356,
+              "minimum": -0.06273323580667936,
+              "positive_fraction": 0.546583850931677,
+              "std": 0.031123397741847785
+            },
+            "signals": 161,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.771301446051168,
+              "mean": -0.03513342184266867,
+              "median": -0.04983314794215795,
+              "minimum": -0.7597330367074527,
+              "positive_fraction": 0.44623655913978494,
+              "std": 0.3286966072178334
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.07676346101911052,
+              "mean": -0.007990344460858948,
+              "median": -0.004889107949239846,
+              "minimum": -0.106010807329745,
+              "positive_fraction": 0.43010752688172044,
+              "std": 0.03378950760948599
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 150,
+              "maximum": 3.6801443000390055,
+              "mean": 2.139177827558138,
+              "median": 1.8750919384798073,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.7072319855672509
+            },
+            "rank_ic": {
+              "count": 150,
+              "maximum": 0.8660734149054505,
+              "mean": 0.11563366703744903,
+              "median": 0.1497219132369299,
+              "minimum": -0.8482758620689655,
+              "positive_fraction": 0.62,
+              "std": 0.41663180031724856
+            },
+            "raw_spread": {
+              "count": 150,
+              "maximum": 0.17317667569328193,
+              "mean": 0.010527108635547738,
+              "median": 0.013424983201942919,
+              "minimum": -0.13418578547609536,
+              "positive_fraction": 0.64,
+              "std": 0.05266888826107458
+            },
+            "signals": 150,
+            "state": "DOWN_HIGH"
+          }
+        ],
+        "5": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 261,
+              "maximum": 4.508708632607273,
+              "mean": 2.471234201315745,
+              "median": 2.6826847710106856,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7729061378214638
+            },
+            "rank_ic": {
+              "count": 261,
+              "maximum": 0.7610678531701891,
+              "mean": -0.004936093317820139,
+              "median": 0.0006674082313681868,
+              "minimum": -0.6467185761957731,
+              "positive_fraction": 0.5019157088122606,
+              "std": 0.3095224678183389
+            },
+            "raw_spread": {
+              "count": 261,
+              "maximum": 0.10176006566015525,
+              "mean": -0.00036122587106409034,
+              "median": -1.712337187113888e-05,
+              "minimum": -0.08126228652010181,
+              "positive_fraction": 0.49808429118773945,
+              "std": 0.023759826621298684
+            },
+            "signals": 261,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 164,
+              "maximum": 3.603630651852567,
+              "mean": 1.91408432539015,
+              "median": 1.5375793265636064,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7206689649836031
+            },
+            "rank_ic": {
+              "count": 164,
+              "maximum": 0.7971078976640712,
+              "mean": 0.006766325727773408,
+              "median": 0.0017797552836484984,
+              "minimum": -0.7228031145717464,
+              "positive_fraction": 0.5060975609756098,
+              "std": 0.3338007256830961
+            },
+            "raw_spread": {
+              "count": 164,
+              "maximum": 0.07825741267498147,
+              "mean": -0.0018336002543804786,
+              "median": 0.0005109995488609691,
+              "minimum": -0.08883975998971089,
+              "positive_fraction": 0.5121951219512195,
+              "std": 0.028870770424726695
+            },
+            "signals": 164,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 186,
+              "maximum": 4.293129263201734,
+              "mean": 2.411685559760179,
+              "median": 2.154074400936225,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7586808728666691
+            },
+            "rank_ic": {
+              "count": 186,
+              "maximum": 0.7966629588431591,
+              "mean": -0.05017522456253664,
+              "median": -0.08008898776418243,
+              "minimum": -0.7210233592880979,
+              "positive_fraction": 0.41397849462365593,
+              "std": 0.30874262983307155
+            },
+            "raw_spread": {
+              "count": 186,
+              "maximum": 0.05951557025635246,
+              "mean": -0.006211217465650948,
+              "median": -0.006116134842150545,
+              "minimum": -0.09635529189857933,
+              "positive_fraction": 0.41397849462365593,
+              "std": 0.024916413200042026
+            },
+            "signals": 186,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 151,
+              "maximum": 3.6801443000390055,
+              "mean": 2.140465866974783,
+              "median": 1.8782378019936234,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.705062768296206
+            },
+            "rank_ic": {
+              "count": 151,
+              "maximum": 0.853615127919911,
+              "mean": 0.00996987086461042,
+              "median": 0.01668520578420467,
+              "minimum": -0.8464961067853171,
+              "positive_fraction": 0.5231788079470199,
+              "std": 0.3918640880775767
+            },
+            "raw_spread": {
+              "count": 151,
+              "maximum": 0.10902176713737205,
+              "mean": -0.0008395373599930698,
+              "median": 0.0016423034035746506,
+              "minimum": -0.11654691931187719,
+              "positive_fraction": 0.5364238410596026,
+              "std": 0.0358474738712815
+            },
+            "signals": 151,
+            "state": "DOWN_HIGH"
+          }
+        ]
+      },
+      "S5": {
+        "10": [
+          {
+            "co_movement_effective_dimension": {
+              "count": 150,
+              "maximum": 4.508708632607273,
+              "mean": 2.426121500979741,
+              "median": 2.6834664572976026,
+              "minimum": 1.3333177106003387,
+              "positive_fraction": 1.0,
+              "std": 0.7678100031078232
+            },
+            "rank_ic": {
+              "count": 150,
+              "maximum": 0.714349276974416,
+              "mean": 0.015086392287727107,
+              "median": -0.009121245828698554,
+              "minimum": -0.6880978865406007,
+              "positive_fraction": 0.49333333333333335,
+              "std": 0.3168975275291859
+            },
+            "raw_spread": {
+              "count": 150,
+              "maximum": 0.08975542847108112,
+              "mean": 0.0025408692711928367,
+              "median": -0.0006656727208414594,
+              "minimum": -0.07948624465493968,
+              "positive_fraction": 0.4866666666666667,
+              "std": 0.030165685341124033
+            },
+            "signals": 150,
+            "state": "UP_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 123,
+              "maximum": 3.603630651852567,
+              "mean": 1.8115965035888757,
+              "median": 1.3334795637192836,
+              "minimum": 1.2554775385592962,
+              "positive_fraction": 1.0,
+              "std": 0.7799077029541397
+            },
+            "rank_ic": {
+              "count": 123,
+              "maximum": 0.5448275862068965,
+              "mean": -0.05436754478779492,
+              "median": -0.09810901001112347,
+              "minimum": -0.681868743047831,
+              "positive_fraction": 0.43089430894308944,
+              "std": 0.2750771699747057
+            },
+            "raw_spread": {
+              "count": 123,
+              "maximum": 0.06772002299245619,
+              "mean": -0.0039419882537276565,
+              "median": -0.0022730241087362685,
+              "minimum": -0.08128997173479342,
+              "positive_fraction": 0.4796747967479675,
+              "std": 0.033000463141555685
+            },
+            "signals": 123,
+            "state": "UP_HIGH"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 176,
+              "maximum": 4.293129263201734,
+              "mean": 2.4338777192824192,
+              "median": 2.6230878196838985,
+              "minimum": 1.3387098903212495,
+              "positive_fraction": 1.0,
+              "std": 0.7655895848976197
+            },
+            "rank_ic": {
+              "count": 176,
+              "maximum": 0.796218020022247,
+              "mean": 0.05863838608554961,
+              "median": 0.03848720800889878,
+              "minimum": -0.6409343715239154,
+              "positive_fraction": 0.5681818181818182,
+              "std": 0.27843973194679805
+            },
+            "raw_spread": {
+              "count": 176,
+              "maximum": 0.10516568870608607,
+              "mean": 0.0017443707276477488,
+              "median": 0.004158729986626043,
+              "minimum": -0.136485521508281,
+              "positive_fraction": 0.5625,
+              "std": 0.032065001585475456
+            },
+            "signals": 176,
+            "state": "DOWN_LOW"
+          },
+          {
+            "co_movement_effective_dimension": {
+              "count": 78,
+              "maximum": 3.6801443000390055,
+              "mean": 2.1495893264486394,
+              "median": 1.7014232042197983,
+              "minimum": 1.2631394897555692,
+              "positive_fraction": 1.0,
+              "std": 0.8827627663692441
+            },
+            "rank_ic": {
+              "count": 78,
+              "maximum": 0.9199110122358176,
+              "mean": 0.18139243033570063,
+              "median": 0.1274749721913237,
+              "minimum": -0.5515016685205785,
+              "positive_fraction": 0.6794871794871795,
+              "std": 0.3371033905215947
+            },
+            "raw_spread": {
+              "count": 78,
+              "maximum": 0.21629013896240962,
+              "mean": 0.029947094810160734,
+              "median": 0.017412903018855397,
+              "minimum": -0.04054017692092893,
+              "positive_fraction": 0.7435897435897436,
+              "std": 0.04508539136446472
+            },
+            "signals": 78,
+            "state": "DOWN_HIGH"
+          }
+        ]
+      }
+    },
+    "definitions": {
+      "co_movement": "trailing 60-session 30-industry covariance participation ratio",
+      "dispersion": "trailing 20-session mean cross-sectional daily return standard deviation versus expanding median of that statistic strictly before T",
+      "groups": "all four trend-sign x high/low-dispersion states",
+      "label": "POST_HOC_DESCRIPTIVE",
+      "leadership": "contemporaneous top5 list persistence; descriptive only",
+      "search": false,
+      "trend": "sign of trailing 20-session equal-weight industry mean compounded return through T"
+    },
+    "label": "POST_HOC_DESCRIPTIVE"
+  },
+  "ridge_minus_simple": {
+    "10": {
+      "S1": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 757,
+          "maximum": 1.3481646273637375,
+          "mean": -0.022771228269190924,
+          "median": -0.008008898776418194,
+          "minimum": -1.5515016685205785,
+          "positive_fraction": 0.4795244385733157,
+          "std": 0.2703330964891679
+        },
+        "delta_raw_spread": {
+          "count": 757,
+          "maximum": 0.15315752823703419,
+          "mean": -0.0013653293574476491,
+          "median": 0.0,
+          "minimum": -0.19678945613024518,
+          "positive_fraction": 0.4808454425363276,
+          "std": 0.02829404309529663
+        },
+        "matched_signal_count": 757
+      },
+      "S2": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 757,
+          "maximum": 0.5655172413793104,
+          "mean": -0.03449245675879409,
+          "median": -0.004004449388209121,
+          "minimum": -1.4642936596218021,
+          "positive_fraction": 0.4715984147952444,
+          "std": 0.21329430623547257
+        },
+        "delta_raw_spread": {
+          "count": 757,
+          "maximum": 0.08435375832566644,
+          "mean": -0.0025063266027402316,
+          "median": 0.0,
+          "minimum": -0.20573871805372965,
+          "positive_fraction": 0.42932628797886396,
+          "std": 0.02283423777698753
+        },
+        "matched_signal_count": 757
+      },
+      "S3": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 757,
+          "maximum": 1.0736373748609567,
+          "mean": -0.032499930202793945,
+          "median": 0.0,
+          "minimum": -1.5586206896551724,
+          "positive_fraction": 0.4715984147952444,
+          "std": 0.21210054181802937
+        },
+        "delta_raw_spread": {
+          "count": 757,
+          "maximum": 0.1301283020532777,
+          "mean": -0.0019519714357795067,
+          "median": 0.0,
+          "minimum": -0.21202161465949,
+          "positive_fraction": 0.29326287978863935,
+          "std": 0.021077884519568144
+        },
+        "matched_signal_count": 757
+      }
+    },
+    "5": {
+      "S1": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 762,
+          "maximum": 1.3704115684093439,
+          "mean": -0.03848078500754702,
+          "median": -0.009343715239154615,
+          "minimum": -1.5937708565072302,
+          "positive_fraction": 0.473753280839895,
+          "std": 0.29840299595795333
+        },
+        "delta_raw_spread": {
+          "count": 762,
+          "maximum": 0.09275941961482102,
+          "mean": -0.003105036988203736,
+          "median": -0.0009325555807671478,
+          "minimum": -0.19043035626719249,
+          "positive_fraction": 0.4343832020997375,
+          "std": 0.023574480662286887
+        },
+        "matched_signal_count": 762
+      },
+      "S2": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 762,
+          "maximum": 0.807119021134594,
+          "mean": -0.05950443625025181,
+          "median": -0.006006674082313673,
+          "minimum": -1.6929922135706341,
+          "positive_fraction": 0.45013123359580054,
+          "std": 0.2492514470032221
+        },
+        "delta_raw_spread": {
+          "count": 762,
+          "maximum": 0.06247861083925187,
+          "mean": -0.004190067661032163,
+          "median": 0.0,
+          "minimum": -0.21853777099267316,
+          "positive_fraction": 0.3674540682414698,
+          "std": 0.02016216600726551
+        },
+        "matched_signal_count": 762
+      },
+      "S3": {
+        "comparison": "EXPLORATORY_INFORMED_COMPARISON",
+        "date_matching": "EXACT",
+        "delta_rank_ic": {
+          "count": 762,
+          "maximum": 1.0700778642936597,
+          "mean": -0.05274043191764544,
+          "median": -0.003337041156840942,
+          "minimum": -1.6573971078976641,
+          "positive_fraction": 0.3884514435695538,
+          "std": 0.24596904776231512
+        },
+        "delta_raw_spread": {
+          "count": 762,
+          "maximum": 0.05742580467949249,
+          "mean": -0.003469141203706104,
+          "median": 0.0,
+          "minimum": -0.2176409634017328,
+          "positive_fraction": 0.2847769028871391,
+          "std": 0.01948106377653142
+        },
+        "matched_signal_count": 762
+      }
+    }
+  }
+}
